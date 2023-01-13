@@ -20,8 +20,13 @@ int main() {
     Gnuplot plt{};
 
     tools::timer stopwatch;
-    tools::cpu_timer stopwatch2;
     time_umeasurement mean_time;
+
+    tools::cpu_timer stopwatch2;
+    stopwatch2.start();
+    stopwatch2.stop();
+    std::cout << "CPU timer overhead: " << stopwatch2.elapsed(ns) << "\n";
+    
 
     double d1{3.1};    
     double d2{4.5};

@@ -32,5 +32,5 @@ set_target_properties(${PROJECT_NAME}
     PROPERTIES 
         LINKER_LANGUAGE CXX)
             
-add_executable(bench ${PROJECT_SOURCE_DIR}/test/bench.cpp)
+add_executable(bench ${PROJECT_SOURCE_DIR}/bench/bench.cpp)
 target_link_libraries(bench PRIVATE ${PROJECT_NAME})

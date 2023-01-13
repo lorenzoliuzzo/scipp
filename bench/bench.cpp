@@ -1,7 +1,7 @@
 /**
- * @file    sci++.hpp
+ * @file    bench++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   Test file for sci++ library
+ * @brief   This file contains the benchmarks of the measurements library
  * @date    2023-01-01
  * 
  * @copyright Copyright (c) 2023
@@ -20,13 +20,6 @@ int main() {
     Gnuplot plt{};
 
     tools::timer stopwatch;
-    time_umeasurement mean_time;
-
-    tools::cpu_timer stopwatch2;
-    stopwatch2.start();
-    stopwatch2.stop();
-    std::cout << "CPU timer overhead: " << stopwatch2.elapsed(ns) << "\n";
-    
 
     double d1{3.1};    
     double d2{4.5};
@@ -34,6 +27,8 @@ int main() {
     measurement m2(4.5 * m);
     umeasurement um1(3.1 * m, 0.8 * m);    
     umeasurement um2(4.5 * m, 0.6 * m);
+
+    time_umeasurement mean_time;
 
     std::vector<double> iterations;
     std::vector<double> double_sum_times;

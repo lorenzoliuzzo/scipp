@@ -10,9 +10,6 @@
 
 #pragma once
 
-#include <algorithm>
-#include <vector>
-
 
 namespace scipp::math {
 

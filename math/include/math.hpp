@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <vector>
 
 #include "constants.hpp"
 #include "statistics.hpp"

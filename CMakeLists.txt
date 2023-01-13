@@ -4,7 +4,7 @@ project(sci++ VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g -Wall --pedantic -I/usr/include/python3.11 -lpython3.11")
+set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g -Wall --pedantic -I/home/lorenzo/miniconda3/envs/cling/include/python3.11 -lpython3.11")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/math)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tools)

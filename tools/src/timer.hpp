@@ -77,4 +77,72 @@ namespace scipp::tools {
     }; // class timer
 
 
+    /// @brief Class for timing the execution of a generic function/process
+    class cpu_timer {
+
+        
+        public:
+
+        // =============================================
+        // constructor and destructor
+        // =============================================   
+
+            /// @brief Construct a new cpu_timer object
+            cpu_timer() noexcept {}
+
+
+            /// @brief Default destructor
+            ~cpu_timer() = default;
+
+        
+        // =============================================
+        // cpu_timer methods
+        // =============================================   
+
+
+            constexpr void start() noexcept {
+
+                start_ = __builtin_ia32_rdtsc();
+
+            }
+
+
+            constexpr void stop() noexcept {
+
+                stop_ = __builtin_ia32_rdtsc();
+
+            }
+
+
+            constexpr uint64_t cpu_cycles() const noexcept {
+
+                return stop_ - start_;
+
+            }
+
+
+            constexpr time_measurement elapsed(const unit& units = s) const {
+
+                if (units.base_ != basis::second) 
+                    throw std::invalid_argument("Wrong unit, the unit_base must be second");
+
+                time_measurement s_elapsed = (stop_ - start_) / (1.8 * GHz);
+
+                return s_elapsed.convert_to(units);
+            
+            }             
+
+
+        protected: 
+
+            // =============================================
+            // class members
+            // =============================================     
+
+            uint64_t start_, stop_;
+
+
+    }; // class cpu_timer
+
+
 } // namespace scipp::tools

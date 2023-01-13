@@ -11,5 +11,5 @@
 #pragma once
 
 
-#include "../src/timer.hpp"
-#include "../src/bench.hpp"
+#include "timer.hpp"
+#include "bench.hpp"

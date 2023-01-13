@@ -14,13 +14,13 @@ namespace scipp::math {
     namespace constants {
 
 
-        constexpr double nan = std::numeric_limits<double>::signaling_NaN();
+        constexpr scalar nan = std::numeric_limits<scalar>::signaling_NaN();
 
-        constexpr double infinity = std::numeric_limits<double>::infinity();
+        constexpr scalar infinity = std::numeric_limits<scalar>::infinity();
         
-        constexpr double pi = 3.14159265358979323846;
+        constexpr scalar pi = 3.14159265358979323846;
         
-        constexpr double e = 2.7182818284590452353603;
+        constexpr scalar e = 2.7182818284590452353603;
         
 
     } // namespace constants

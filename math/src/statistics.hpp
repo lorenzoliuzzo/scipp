@@ -60,9 +60,11 @@ namespace scipp::math {
                 throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
             
             measurement average = std::accumulate(vec.begin(), vec.end(), measurement(0., vec[0].units())) / N;
-            measurement sigma_sq(0., vec[0].units().square()); 
+            
+            measurement sigma_sq(0., vec[0].units().square());
+
             for (auto x : vec) 
-                sigma_sq += square(x - average); 
+                sigma_sq += square(x - average).as_measurement(); 
 
             return umeasurement(average, sqrt(sigma_sq / (N * (N - 1))));                 
 
@@ -101,7 +103,7 @@ namespace scipp::math {
          * 
          * @return umeasurement 
          */
-        umeasurement weighted_mean(const std::vector<umeasurement>& vec) {
+        umeasurement wmean(const std::vector<umeasurement>& vec) {
 
             if (vec.size() == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
@@ -146,7 +148,7 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        measurement weighted_variance(const std::vector<umeasurement>& vec) {
+        measurement wvariance(const std::vector<umeasurement>& vec) {
 
             if (vec.size() == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
@@ -167,7 +169,7 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement standard_dev(const std::vector<measurement>& vec) { 
+        inline measurement sd(const std::vector<measurement>& vec) { 
             
             return sqrt(variance(vec)); 
         
@@ -181,7 +183,7 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement standard_dev_of_mean(const std::vector<measurement>& vec) { 
+        inline measurement sdom(const std::vector<measurement>& vec) { 
             
             return sqrt(variance(vec) / (vec.size() - 1)); 
         
@@ -195,9 +197,9 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement weighted_standard_dev(const std::vector<umeasurement>& vec) {
+        inline measurement wsd(const std::vector<umeasurement>& vec) {
 
-            return sqrt(weighted_variance(vec));
+            return sqrt(wvariance(vec));
         
         }
 

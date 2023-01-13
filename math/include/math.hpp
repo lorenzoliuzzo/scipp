@@ -11,5 +11,5 @@
 #include <algorithm>
 #include <numeric>
 
-#include "../src/constants.hpp"
-#include "../src/statistics.hpp"
+#include "constants.hpp"
+#include "statistics.hpp"

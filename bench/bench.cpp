@@ -10,161 +10,200 @@
 
 #include "sci++.hpp"
 #include "../plot/gplot++.hpp"
+#include <thread>
 
 
 using namespace scipp; 
 
 
-int main() {
+std::vector<double> bench_double_sum(const std::size_t& n) {
+
+    double a = std::rand() % 10000 + 1;
+    double b = std::rand() % 10000 + 1;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_double_prod(const std::size_t& n) {
+
+    double a = std::rand() % 10000 + 1;
+    double b = std::rand() % 10000 + 1;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_double_div(const std::size_t& n) {
+
+    double a = std::rand() % 10000 + 1;
+    double b = std::rand() % 10000 + 1;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    
+    return times;
+
+}
+
+
+std::vector<double> bench_measurement_sum(const std::size_t& n) {
+
+    measurement a = (std::rand() % 10000 + 1) * N;
+    measurement b = (std::rand() % 10000 + 1) * N;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_measurement_prod(const std::size_t& n) {
+
+    measurement a = (std::rand() % 10000 + 1) * N;
+    measurement b = (std::rand() % 10000 + 1) * N;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_measurement_div(const std::size_t& n) {
+
+    measurement a = (std::rand() % 10000 + 1) * N;
+    measurement b = (std::rand() % 10000 + 1) * N;
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    
+    return times;
+
+}
+
+
+std::vector<double> bench_umeasurement_sum(const std::size_t& n) {
+
+    umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+    umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_umeasurement_prod(const std::size_t& n) {
+
+    umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+    umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    
+    return times;
+
+}
+
+std::vector<double> bench_umeasurement_div(const std::size_t& n) {
+
+    umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+    umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
+
+    std::vector<double> times; 
+    for (double i{2}; i < n; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    
+    return times;
+
+}
+
+
+void bench_sum() {
+
+    std::vector<double> iterations; 
+    for (double i{2}; i < 5e8; i *= 2)
+        iterations.emplace_back(i); 
 
     Gnuplot plt{};
-
-    tools::timer stopwatch;
-
-    double d1{3.1};    
-    double d2{4.5};
-    measurement m1(3.1 * m);    
-    measurement m2(4.5 * m);
-    umeasurement um1(3.1 * m, 0.8 * m);    
-    umeasurement um2(4.5 * m, 0.6 * m);
-
-    time_umeasurement mean_time;
-
-    std::vector<double> iterations;
-    std::vector<double> double_sum_times;
-    std::vector<double> measurement_sum_times;
-    std::vector<double> umeasurement_sum_times;
-    std::vector<double> double_prod_times;
-    std::vector<double> measurement_prod_times;
-    std::vector<double> umeasurement_prod_times;
-    std::vector<double> double_div_times;
-    std::vector<double> measurement_div_times;
-    std::vector<double> umeasurement_div_times;
-
-    std::vector<double> double_sum_times_uncertainty;
-    std::vector<double> measurement_sum_times_uncertainty;
-    std::vector<double> umeasurement_sum_times_uncertainty;
-    std::vector<double> double_prod_times_uncertainty;
-    std::vector<double> measurement_prod_times_uncertainty;
-    std::vector<double> umeasurement_prod_times_uncertainty;
-    std::vector<double> double_div_times_uncertainty;
-    std::vector<double> measurement_div_times_uncertainty;
-    std::vector<double> umeasurement_div_times_uncertainty;
- 
-    std::cout << "Testing the performance of the measurements library\n"; 
-
-    for (double n{1e1}; n < 1e9; n *= 10) {
-
-        iterations.emplace_back(n);
-    
-        // SUM
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = d1 + d2; }, ns);
-        stopwatch.stop();
-        double_sum_times.emplace_back(mean_time.value());
-        double_sum_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = m1 + m2; }, ns);
-        stopwatch.stop();
-        measurement_sum_times.emplace_back(mean_time.value());
-        measurement_sum_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = um1 + um2; }, ns);
-        stopwatch.stop();
-        umeasurement_sum_times.emplace_back(mean_time.value());
-        umeasurement_sum_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        // PRODUCT
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = d1 * d2; }, ns);
-        stopwatch.stop();
-        double_prod_times.emplace_back(mean_time.value());
-        double_prod_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = m1 * m2; }, ns);
-        stopwatch.stop();
-        measurement_prod_times.emplace_back(mean_time.value());
-        measurement_prod_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = um1 * um2; }, ns);
-        stopwatch.stop();
-        umeasurement_prod_times.emplace_back(mean_time.value());
-        umeasurement_prod_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-
-        // DIVISION
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = d1 / d2; }, ns);
-        stopwatch.stop();
-        double_div_times.emplace_back(mean_time.value());
-        double_div_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = m1 / m2; }, ns);
-        stopwatch.stop();
-        measurement_div_times.emplace_back(mean_time.value());
-        measurement_div_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-        stopwatch.start();
-            mean_time = tools::cpu_bench(n, [&]() { auto x = um1 / um2; }, ns);
-        stopwatch.stop();
-        umeasurement_div_times.emplace_back(mean_time.value());
-        umeasurement_div_times_uncertainty.emplace_back(mean_time.uncertainty());
-
-
-    }
-
-    // plt.redirect_to_png("sum.png", "800,600");
-    // plt.set_logscale(Gnuplot::AxisScale::LOGX);
-    // // plt.title("Sum");
-    // plt.set_xlabel("Number of iterations");
-    // plt.set_ylabel("Mean time of execution [ns]");
-    // plt.plot_yerr(iterations, double_sum_times, double_sum_times_uncertainty, "double");
-    // plt.plot_yerr(iterations, measurement_sum_times, measurement_sum_times_uncertainty, "measurement");
-    // plt.plot_yerr(iterations, umeasurement_sum_times, umeasurement_sum_times_uncertainty, "umeasurement");
-    // plt.show();
-
-    // plt.redirect_to_png("product.png", "800,600");
-    // plt.set_logscale(Gnuplot::AxisScale::LOGX);
-    // // plt.title("Product");
-    // plt.set_xlabel("Number of iterations");
-    // plt.set_ylabel("Mean time of execution [ns]");
-    // plt.plot_yerr(iterations, double_prod_times, double_prod_times_uncertainty, "double");
-    // plt.plot_yerr(iterations, measurement_prod_times, measurement_prod_times_uncertainty, "measurement");
-    // plt.plot_yerr(iterations, umeasurement_prod_times, umeasurement_prod_times_uncertainty, "umeasurement");
-    // plt.show(); 
-
     plt.redirect_to_png("bench/sum.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
-    plt.plot(iterations, double_sum_times, "double", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, measurement_sum_times, "measurement", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, umeasurement_sum_times, "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_double_sum(5e8), "double", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_measurement_sum(5e8), "measurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_umeasurement_sum(5e8), "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
     plt.show();
 
-    plt.redirect_to_png("bench/product.png", "800,600");
+}
+
+
+void bench_prod() {
+
+    std::vector<double> iterations; 
+    for (double i{2}; i < 5e8; i *= 2)
+        iterations.emplace_back(i); 
+
+    Gnuplot plt{};
+    plt.redirect_to_png("bench/prod.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
-    plt.plot(iterations, double_prod_times, "double", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, measurement_prod_times, "measurement", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, umeasurement_prod_times, "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_double_prod(5e8), "double", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_measurement_prod(5e8), "measurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_umeasurement_prod(5e8), "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
     plt.show();
 
+}
+
+
+void bench_div() {
+
+    std::vector<double> iterations; 
+    for (double i{2}; i < 5e8; i *= 2)
+        iterations.emplace_back(i); 
+
+    Gnuplot plt{};
     plt.redirect_to_png("bench/div.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
-    plt.plot(iterations, double_div_times, "double", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, measurement_div_times, "measurement", Gnuplot::LineStyle::LINESPOINTS);
-    plt.plot(iterations, umeasurement_div_times, "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_double_div(5e8), "double", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_measurement_div(5e8), "measurement", Gnuplot::LineStyle::LINESPOINTS);
+    plt.plot(iterations, bench_umeasurement_div(5e8), "umeasurement", Gnuplot::LineStyle::LINESPOINTS);
     plt.show();
 
+}
+
+
+int main() {
+
+    std::srand(std::time(NULL));
+
+    std::thread sum(bench_sum); 
+    std::thread prod(bench_prod); 
+    std::thread div(bench_div); 
+
+    sum.join(); 
+    prod.join(); 
+    div.join(); 
 
     return 0; 
 

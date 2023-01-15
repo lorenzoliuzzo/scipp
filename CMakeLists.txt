@@ -35,5 +35,8 @@ set_target_properties(${PROJECT_NAME}
 add_executable(bench ${PROJECT_SOURCE_DIR}/bench/bench.cpp)
 target_link_libraries(bench PRIVATE ${PROJECT_NAME})
 
+add_executable(bench_err ${PROJECT_SOURCE_DIR}/bench/bench2.cpp)
+target_link_libraries(bench_err PRIVATE ${PROJECT_NAME})
+
 add_executable(timer_overhead ${PROJECT_SOURCE_DIR}/bench/timer_overhead.cpp)
 target_link_libraries(timer_overhead PRIVATE ${PROJECT_NAME})

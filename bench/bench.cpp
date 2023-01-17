@@ -22,8 +22,8 @@ std::vector<double> bench_double_sum(const std::size_t& n) {
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }).value_as(ns));
     
     return times;
 
@@ -35,8 +35,8 @@ std::vector<double> bench_double_prod(const std::size_t& n) {
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }).value_as(ns));
     
     return times;
 
@@ -48,8 +48,8 @@ std::vector<double> bench_double_div(const std::size_t& n) {
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }).value_as(ns));
     
     return times;
 
@@ -62,8 +62,8 @@ std::vector<double> bench_measurement_sum(const std::size_t& n) {
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }).value_as(ns));
     
     return times;
 
@@ -75,8 +75,8 @@ std::vector<double> bench_measurement_prod(const std::size_t& n) {
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }).value_as(ns));
     
     return times;
 
@@ -88,8 +88,8 @@ std::vector<double> bench_measurement_div(const std::size_t& n) {
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }).value_as(ns));
     
     return times;
 
@@ -102,8 +102,8 @@ std::vector<double> bench_umeasurement_sum(const std::size_t& n) {
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }).value_as(ns));
     
     return times;
 
@@ -115,8 +115,8 @@ std::vector<double> bench_umeasurement_prod(const std::size_t& n) {
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a * b; }).value_as(ns));
     
     return times;
 
@@ -128,8 +128,8 @@ std::vector<double> bench_umeasurement_div(const std::size_t& n) {
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times; 
-    for (double i{2}; i < n; i *= 2)
-        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }, ns).value());
+    for (double i{64}; i < 1e8; i *= 2)
+        times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a / b; }).value_as(ns));
     
     return times;
 
@@ -139,7 +139,7 @@ std::vector<double> bench_umeasurement_div(const std::size_t& n) {
 void bench_sum() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 5e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
@@ -158,7 +158,7 @@ void bench_sum() {
 void bench_prod() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 5e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
@@ -177,7 +177,7 @@ void bench_prod() {
 void bench_div() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 5e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     Gnuplot plt{};

@@ -24,13 +24,14 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        measurement median(const std::vector<measurement>& vec) {
+        template <unit_base UB>
+        measurement<UB> median(const std::vector<measurement<UB>>& vec) {
 
             std::size_t N{vec.size()}; 
             if (N == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
 
-            std::vector<measurement> copy{vec}; 
+            std::vector<measurement<UB>> copy{vec}; 
             if (!std::is_sorted(copy.begin(), copy.end())) 
                 std::sort(copy.begin(), copy.end());
 
@@ -50,20 +51,21 @@ namespace scipp::math {
          * 
          * @return umeasurement
          */
-        umeasurement mean(const std::vector<measurement>& vec) {
+        template <unit_base UB>
+        constexpr umeasurement<UB> mean(const std::vector<measurement<UB>>& vec) {
 
             std::size_t N{vec.size()}; 
             if (N == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement average = std::accumulate(vec.begin(), vec.end(), measurement(0., vec[0].units())) / N;
+            measurement<UB> average = std::accumulate(vec.begin(), vec.end(), measurement<UB>(0.)) / N;
             
-            measurement sigma_sq(0., vec[0].units().square());
+            measurement<UB.square()> sigma_sq;
 
             for (auto x : vec) 
-                sigma_sq += square(x - average).as_measurement(); 
+                sigma_sq += op::square(x - average).as_measurement(); 
 
-            return umeasurement(average, sqrt(sigma_sq / (N * (N - 1))));                 
+            return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 
 
         }
 
@@ -76,19 +78,20 @@ namespace scipp::math {
          * 
          * @return umeasurement
          */
-        umeasurement mean(const std::vector<umeasurement>& vec) {
+        template <unit_base UB>
+        constexpr umeasurement<UB> mean(const std::vector<umeasurement<UB>>& vec) {
 
             std::size_t N{vec.size()}; 
             if (N == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement average = std::accumulate(vec.begin(), vec.end(), umeasurement(0., 0., vec[0].units())).as_measurement() / N;
-            measurement sigma_sq(0., vec[0].units().square());
+            measurement<UB> average = std::accumulate(vec.begin(), vec.end(), umeasurement<UB>(0.)).as_measurement() / N;
+            measurement<UB.square()> sigma_sq;
 
             for (auto x : vec) 
-                sigma_sq += square(x - average).as_measurement(); 
+                sigma_sq += op::square(x - average).as_measurement(); 
 
-            return umeasurement(average, sqrt(sigma_sq / (N * (N - 1))));                 
+            return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 
 
         }
 
@@ -100,20 +103,21 @@ namespace scipp::math {
          * 
          * @return umeasurement 
          */
-        umeasurement wmean(const std::vector<umeasurement>& vec) {
+        template <unit_base UB>
+        constexpr umeasurement<UB> wmean(const std::vector<umeasurement<UB>>& vec) {
 
             if (vec.size() == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement weighted(0., vec[0].units().inv());
-            measurement weights(0., vec[0].units().inv().square());
+            measurement<UB.inv()> weighted;
+            measurement<UB.square().inv()> weights;
 
-            for (const umeasurement& x : vec) {
+            for (const umeasurement<UB>& x : vec) {
                 weighted += x.as_measurement() * x.weight(); 
                 weights += x.weight();
             }
 
-            return umeasurement(weighted / weights, sqrt(weights.inv()));
+            return { weighted / weights, op::sqrt(weights.inv()) };
 
         }
 
@@ -125,13 +129,14 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        measurement variance(const std::vector<measurement>& vec) {
+        template <unit_base UB>
+        constexpr measurement<UB> variance(const std::vector<measurement<UB>>& vec) {
 
-            measurement average(mean(vec).as_measurement());
-            measurement sigma_sq(0., vec[0].units().square()); 
+            measurement<UB> average = mean(vec).as_measurement();
+            measurement<UB.square()> sigma_sq; 
 
-            for (const measurement& x : vec) 
-                sigma_sq += square(x - average); 
+            for (const measurement<UB>& x : vec) 
+                sigma_sq += op::square(x - average); 
 
             return sigma_sq / vec.size();
 
@@ -145,13 +150,14 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        measurement wvariance(const std::vector<umeasurement>& vec) {
+        template <unit_base UB>
+        constexpr measurement<UB> wvariance(const std::vector<umeasurement<UB>>& vec) {
 
             if (vec.size() == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic funtion on an empty vector"); 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement weights(0., vec[0].units().inv().square());
-            for (const umeasurement& x : vec) 
+            measurement<UB.square().inv()> weights; 
+            for (const umeasurement<UB>& x : vec) 
                 weights += x.weight(); 
             
             return weights.inv(); 
@@ -166,9 +172,10 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement sd(const std::vector<measurement>& vec) { 
+        template <unit_base UB>
+        constexpr measurement<UB> sd(const std::vector<measurement<UB>>& vec) { 
             
-            return sqrt(variance(vec)); 
+            return op::sqrt(variance(vec)); 
         
         }
 
@@ -180,9 +187,10 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement sdom(const std::vector<measurement>& vec) { 
+        template <unit_base UB>
+        constexpr measurement<UB> sdom(const std::vector<measurement<UB>>& vec) { 
             
-            return sqrt(variance(vec) / (vec.size() - 1)); 
+            return op::sqrt(variance(vec) / (vec.size() - 1)); 
         
         }
 
@@ -194,50 +202,51 @@ namespace scipp::math {
          * 
          * @return measurement 
          */
-        inline measurement wsd(const std::vector<umeasurement>& vec) {
+        template <unit_base UB>
+        constexpr measurement<UB> wsd(const std::vector<measurement<UB>>& vec) { 
 
-            return sqrt(wvariance(vec));
+            return op::sqrt(wvariance(vec));
         
         }
 
 
-        measurement chi(const std::vector<measurement>& vec, 
-                        const std::vector<measurement>& expected) {
+        // measurement chi(const std::vector<measurement>& vec, 
+        //                 const std::vector<measurement>& expected) {
 
-            if (vec.size() != expected.size()) 
-                throw std::invalid_argument("Can't operate a chi square funtion on vectors of different size"); 
+        //     if (vec.size() != expected.size()) 
+        //         throw std::invalid_argument("Can't operate a chi square function on vectors of different size"); 
             
-            measurement accu = measurement(0., vec[0].units()); 
-            for (std::size_t i{}; i < vec.size(); ++i) 
-                accu += square((vec[i] - expected[i])) / expected[i]; 
+        //     measurement accu = measurement(0., vec[0].units()); 
+        //     for (std::size_t i{}; i < vec.size(); ++i) 
+        //         accu += square((vec[i] - expected[i])) / expected[i]; 
             
-            return accu; 
+        //     return accu; 
 
-        }         
+        // }         
 
 
-        measurement chi(const std::vector<umeasurement>& vec, 
-                        const std::vector<umeasurement>& expected) {
+        // measurement chi(const std::vector<umeasurement>& vec, 
+        //                 const std::vector<umeasurement>& expected) {
 
-            if (vec.size() != expected.size()) 
-                throw std::invalid_argument("Can't operate a chi square funtion on vectors of different size"); 
+        //     if (vec.size() != expected.size()) 
+        //         throw std::invalid_argument("Can't operate a chi square function on vectors of different size"); 
             
-            measurement accu = measurement(0., vec[0].units()); 
-            for (std::size_t i{}; i < vec.size(); ++i) 
-                accu += (square((vec[i] - expected[i])) / expected[i]).as_measurement(); 
+        //     measurement accu = measurement(0., vec[0].units()); 
+        //     for (std::size_t i{}; i < vec.size(); ++i) 
+        //         accu += (square((vec[i] - expected[i])) / expected[i]).as_measurement(); 
             
-            return accu; 
+        //     return accu; 
 
-        }     
+        // }     
 
 
-        inline measurement chi_r(const std::vector<measurement>& v, 
-                                 const std::vector<measurement>& expected, 
-                                 const int& gdl) {
+        // inline measurement chi_r(const std::vector<measurement>& v, 
+        //                          const std::vector<measurement>& expected, 
+        //                          const int& gdl) {
 
-            return chi(v, expected) / gdl; 
+        //     return chi(v, expected) / gdl; 
 
-        }
+        // }
 
 
     } // namespace statistics

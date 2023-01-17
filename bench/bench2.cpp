@@ -22,10 +22,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_double_sum(const std::
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -38,10 +38,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_double_prod(const std:
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -54,10 +54,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_double_div(const std::
     double b = std::rand() % 10000 + 1;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -71,10 +71,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_measurement_sum(const 
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -87,10 +87,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_measurement_prod(const
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -103,10 +103,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_measurement_div(const 
     measurement b = (std::rand() % 10000 + 1) * N;
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -120,10 +120,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_umeasurement_sum(const
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a + b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -136,10 +136,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_umeasurement_prod(cons
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a * b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -152,10 +152,10 @@ std::pair<std::vector<double>, std::vector<double>> bench_umeasurement_div(const
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
 
     std::vector<double> times_value, times_uncertainty; 
-    for (double i{2}; i < n; i *= 2) {
-        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; }, ns);
-        times_value.emplace_back(mean_time.value()); 
-        times_uncertainty.emplace_back(mean_time.uncertainty());
+    for (double i{64}; i < n; i *= 2) {
+        umeasurement mean_time = tools::cpu_bench(i, [&]() { auto x = a / b; });
+        times_value.emplace_back(mean_time.value_as(ns)); 
+        times_uncertainty.emplace_back(mean_time.uncertainty_as(ns));
     } 
     
     return { times_value, times_uncertainty };
@@ -166,7 +166,7 @@ std::pair<std::vector<double>, std::vector<double>> bench_umeasurement_div(const
 void bench_sum() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 1e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     auto bench_double = bench_double_sum(1e8);
@@ -180,7 +180,7 @@ void bench_sum() {
     plt.set_ylabel("Mean time of execution [ns]");
     plt.plot_yerr(iterations, bench_double.first, bench_double.second, "double");
     plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "measurement");
-    plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "umeasurement");
+    plt.plot_yerr(iterations, bench_umeasurement.first, bench_umeasurement.second, "umeasurement");
     plt.show();
 
 }
@@ -189,7 +189,7 @@ void bench_sum() {
 void bench_prod() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 1e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     auto bench_double = bench_double_prod(1e8); 
@@ -203,7 +203,7 @@ void bench_prod() {
     plt.set_ylabel("Mean time of execution [ns]");
     plt.plot_yerr(iterations, bench_double.first, bench_double.second, "double");
     plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "measurement");
-    plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "umeasurement");
+    plt.plot_yerr(iterations, bench_umeasurement.first, bench_umeasurement.second, "umeasurement");
     plt.show();
 
 }
@@ -212,12 +212,12 @@ void bench_prod() {
 void bench_div() {
 
     std::vector<double> iterations; 
-    for (double i{2}; i < 1e8; i *= 2)
+    for (double i{64}; i < 1e8; i *= 2)
         iterations.emplace_back(i); 
 
     auto bench_double = bench_double_div(1e8); 
-    auto bench_measurement =  bench_measurement_div(1e8); 
-    auto bench_umeasurement =  bench_umeasurement_div(1e8); 
+    auto bench_measurement = bench_measurement_div(1e8); 
+    auto bench_umeasurement = bench_umeasurement_div(1e8); 
 
     Gnuplot plt{};
     plt.redirect_to_png("bench/div_err.png", "800,600");
@@ -226,7 +226,7 @@ void bench_div() {
     plt.set_ylabel("Mean time of execution [ns]");
     plt.plot_yerr(iterations, bench_double.first, bench_double.second, "double");
     plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "measurement");
-    plt.plot_yerr(iterations, bench_measurement.first, bench_measurement.second, "umeasurement");
+    plt.plot_yerr(iterations, bench_umeasurement.first, bench_umeasurement.second, "umeasurement");
     plt.show();
 
 }

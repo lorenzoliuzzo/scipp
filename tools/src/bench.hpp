@@ -22,18 +22,15 @@ namespace scipp::tools {
      * @param n: number of times the operation is repeated
      * @param func: the operation to be benchmarked
      * 
-     * @return umeasurement
+     * @return time_umeasurement
      */
-    umeasurement bench(const std::size_t& n, std::function<void()> func, const unit& time_units = ns) {
+    time_umeasurement bench(const std::size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
 
-        if (time_units.base() != basis::second)
-            throw std::runtime_error("Error: time_units must have basis::second as unit_base");
-
         timer stopwatch;
-        std::vector<measurement> times;
+        std::vector<time_measurement> times;
 
         times.reserve(n); 
 
@@ -42,7 +39,7 @@ namespace scipp::tools {
             stopwatch.start();
             func();
             stopwatch.stop();
-            times.emplace_back(stopwatch.elapsed(time_units));
+            times.emplace_back(stopwatch.elapsed());
 
         }
 
@@ -57,18 +54,15 @@ namespace scipp::tools {
      * @param n: number of times the operation is repeated
      * @param func: the operation to be benchmarked
      * 
-     * @return umeasurement
+     * @return time_umeasurement
      */
-    umeasurement cpu_bench(const std::size_t& n, std::function<void()> func, const unit& time_units = ns) {
+    time_umeasurement cpu_bench(const std::size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
 
-        if (time_units.base() != basis::second)
-            throw std::runtime_error("Error: time_units must have basis::second as unit_base");
-
         cpu_timer stopwatch;
-        std::vector<measurement> times;
+        std::vector<time_measurement> times;
 
         times.reserve(n); 
 
@@ -77,7 +71,7 @@ namespace scipp::tools {
             stopwatch.start();
             func();
             stopwatch.stop();
-            times.emplace_back(stopwatch.elapsed(time_units));
+            times.emplace_back(stopwatch.elapsed());
 
         }
 

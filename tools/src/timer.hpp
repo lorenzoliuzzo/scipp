@@ -53,14 +53,9 @@ namespace scipp::tools {
             }
 
 
-            time_measurement elapsed(const unit& units = s) const {
+            time_measurement elapsed() const {
 
-                if (units.base_ != basis::second) 
-                    throw std::invalid_argument("Wrong unit, the unit_base must be second");
-
-                time_measurement ns_elapsed(std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count(), ns);
-
-                return ns_elapsed.convert_to(units);
+                return std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count() * ns;
             
             }             
 
@@ -121,14 +116,9 @@ namespace scipp::tools {
             }
 
 
-            constexpr time_measurement elapsed(const unit& units = s) const {
+            constexpr time_measurement elapsed() const {
 
-                if (units.base_ != basis::second) 
-                    throw std::invalid_argument("Wrong unit, the unit_base must be second");
-
-                time_measurement s_elapsed = (stop_ - start_) / (1.8 * GHz);
-
-                return s_elapsed.convert_to(units);
+                return (stop_ - start_) / (1.8 * GHz);
             
             }             
 

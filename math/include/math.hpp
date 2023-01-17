@@ -13,4 +13,5 @@
 #include <vector>
 
 #include "constants.hpp"
+#include "op.hpp"
 #include "statistics.hpp"

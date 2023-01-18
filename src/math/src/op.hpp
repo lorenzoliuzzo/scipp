@@ -14,6 +14,115 @@ namespace scipp::math {
     namespace op {
 
 
+        /**
+         * @brief Get the absolute measurement object
+         * 
+         * @param meas: measurement
+         * 
+         * @return constexpr measurement
+         */
+        template <unit_base UB>
+        constexpr measurement<UB> abs(const measurement<UB>& meas) noexcept { 
+            
+            return (meas.value() < 0.0) ? -meas : meas; 
+        
+        }
+
+
+        /**
+         * @brief Get the absolute umeasurement object
+         * 
+         * @param umeas: umeasurement
+         * 
+         * @return constexpr umeasurement
+         */
+        template <unit_base UB>
+        constexpr umeasurement<UB> abs(const umeasurement<UB>& umeas) noexcept { 
+            
+            return (umeas.value() < 0.0) ? -umeas : umeas; 
+        
+        }
+
+
+        /**
+         * @brief Get the sign of a measurement 
+         * 
+         * @param meas: measurement
+         * 
+         * @return constexpr int32_t
+         */
+        template <unit_base UB>
+        constexpr int32_t sign(const measurement<UB>& meas) noexcept { 
+            
+            if (meas.value() == 0.) 
+                return 0; 
+
+            else 
+                return (meas.value() > 0) ? 1 : -1; 
+            
+        }
+
+
+        /**
+         * @brief Get the sign of an umeasurement 
+         * 
+         * @param umeas: umeasurement
+         * 
+         * @return constexpr int32_t
+         */
+        template <unit_base UB>
+        constexpr int32_t sign(const umeasurement<UB>& umeas) noexcept { 
+            
+            if (umeas.value() == 0.) 
+                return 0; 
+
+            else 
+                return (umeas.value() > 0) ? 1 : -1; 
+            
+        }
+
+
+        /**                  
+         * @brief Invert a measurement
+         * 
+         * @param umeas: measurement as l-value const reference
+         * 
+         * @return constexpr measurement 
+         * 
+         * @note Cannot invert an measurement with a zero value
+         * @note The uncertainty is not inverted
+         */
+        template <unit_base UB>
+        constexpr measurement<UB.inv()> inv(const measurement<UB>& umeas) { 
+            
+            if (umeas.value() == 0) 
+                throw std::runtime_error("Cannot invert a measurement with a zero value");
+
+            return { 1 / umeas.value() };
+            
+        } 
+
+
+        /**                  
+         * @brief Invert an umeasurement
+         * 
+         * @param umeas: umeasurement as l-value const reference
+         * 
+         * @return constexpr umeasurement 
+         * 
+         * @note Cannot invert an umeasurement with a zero value
+         * @note The uncertainty is not inverted
+         */
+        template <unit_base UB>
+        constexpr umeasurement<UB.inv()> inv(const umeasurement<UB>& umeas) { 
+            
+            if (umeas.value() == 0) 
+                throw std::runtime_error("Cannot invert an umeasurement with a zero value");
+
+            return { 1 / umeas.value(), umeas.uncertainty_ / std::pow(umeas.value(), 2) };
+            
+        } 
+
 
         /**
          * @brief Take the power of a measurement

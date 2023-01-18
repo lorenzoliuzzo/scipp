@@ -50,4 +50,4 @@ namespace scipp {
     } // namespace physics
 
 
-} // namespace measurements
+} // namespace scipp::measurements

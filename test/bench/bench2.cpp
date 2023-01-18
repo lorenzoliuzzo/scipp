@@ -193,8 +193,8 @@ void bench_prod() {
         iterations.emplace_back(i); 
 
     auto bench_double = bench_double_prod(1e8); 
-    auto bench_measurement =  bench_measurement_prod(1e8); 
-    auto bench_umeasurement =  bench_umeasurement_prod(1e8); 
+    auto bench_measurement = bench_measurement_prod(1e8); 
+    auto bench_umeasurement = bench_umeasurement_prod(1e8); 
 
     Gnuplot plt{};
     plt.redirect_to_png("bench/prod_err.png", "800,600");

@@ -53,7 +53,7 @@ namespace scipp::tools {
             }
 
 
-            time_measurement elapsed() const {
+            time_m elapsed() const {
 
                 return std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count() * ns;
             
@@ -116,7 +116,7 @@ namespace scipp::tools {
             }
 
 
-            constexpr time_measurement elapsed() const {
+            constexpr time_m elapsed() const {
 
                 return (stop_ - start_) / (1.8 * GHz);
             

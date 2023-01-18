@@ -22,15 +22,15 @@ namespace scipp::tools {
      * @param n: number of times the operation is repeated
      * @param func: the operation to be benchmarked
      * 
-     * @return time_umeasurement
+     * @return time_um
      */
-    time_umeasurement bench(const std::size_t& n, std::function<void()> func) {
+    time_um bench(const std::size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
 
         timer stopwatch;
-        std::vector<time_measurement> times;
+        std::vector<time_m> times;
 
         times.reserve(n); 
 
@@ -54,15 +54,15 @@ namespace scipp::tools {
      * @param n: number of times the operation is repeated
      * @param func: the operation to be benchmarked
      * 
-     * @return time_umeasurement
+     * @return time_um
      */
-    time_umeasurement cpu_bench(const std::size_t& n, std::function<void()> func) {
+    time_um cpu_bench(const std::size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
 
         cpu_timer stopwatch;
-        std::vector<time_measurement> times;
+        std::vector<time_m> times;
 
         times.reserve(n); 
 

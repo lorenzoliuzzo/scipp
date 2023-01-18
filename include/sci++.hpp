@@ -17,9 +17,9 @@
         #ifndef SCIPP_MEASUREMENTS_HPP
 
 
-            #include "../measurements/include/measurements.hpp"
+            #include "measurements.hpp"
 
-                using namespace measurements;
+                using namespace scipp::measurements;
 
 
         #endif // SCIPP_MEASUREMENTS_HPP
@@ -28,7 +28,7 @@
         #ifndef SCIPP_MATH_HPP
 
 
-            #include "../math/include/math.hpp"
+            #include "math.hpp"
 
 
         #endif // SCIPP_MATH_HPP
@@ -37,10 +37,19 @@
         #ifndef SCIPP_TOOLS_HPP
 
 
-            #include "../tools/include/tools.hpp"
+            #include "tools.hpp"
 
 
         #endif // SCIPP_TOOLS_HPP
+
+
+        #ifndef SCIPP_GEOMETRY_HPP
+
+
+            #include "geometry.hpp"
+
+
+        #endif // SCIPP_GEOMETRY_HPP
 
 
 #endif

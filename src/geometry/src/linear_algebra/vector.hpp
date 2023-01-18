@@ -23,9 +23,10 @@ namespace scipp {
             /**
              * @brief Class expressing a generic vector of measurements in a n-dimesional system
              * 
+             * @tparam UB: the unit_base of the measurement
              * @tparam DIM: the number of dimensions
              */
-            template <std::size_t DIM> 
+            template <unit_base UB, std::size_t DIM> 
             class vector {
 
 
@@ -40,9 +41,9 @@ namespace scipp {
                      * 
                      * @param unit: unit_base (default = unit_base())
                      */
-                    explicit constexpr vector(const unit_base& base = basis::default_type) noexcept {
+                    explicit constexpr vector() noexcept {
 
-                        data_.fill(measurement(0, unit(base)));
+                        this->data_.fill(measurement<UB>(0.0));
 
                     }
 
@@ -61,7 +62,7 @@ namespace scipp {
                             throw std::invalid_argument("Cannot construct a vector with a number of components different from the dimension of the vector");
 
                         else 
-                            this->data_({measurement(vec)...});
+                            this->data_ = {measurement<UB>(vec)...};
 
                     }
 
@@ -69,9 +70,9 @@ namespace scipp {
                     /**
                      * @brief Construct a new vector from a std::array of measurements
                      * 
-                     * @param data: std::array<measurement, DIM> as l-value const reference
+                     * @param data: std::array<measurement<UB>, DIM> as l-value const reference
                      */
-                    constexpr vector(const std::array<measurement, DIM>& data) noexcept : 
+                    constexpr vector(const std::array<measurement<UB>, DIM>& data) noexcept : 
                         
                         data_(data) {}
 
@@ -79,9 +80,9 @@ namespace scipp {
                     /**
                      * @brief Construct a new vector from an std::array of measurements
                      * 
-                     * @param data: std::array<measurement, DIM> as r-value reference
+                     * @param data: std::array<measurement<UB>, DIM> as r-value reference
                      */
-                    constexpr vector(std::array<measurement, DIM>&& data) noexcept : 
+                    constexpr vector(std::array<measurement<UB>, DIM>&& data) noexcept : 
                         
                         data_(std::move(data)) {}
 
@@ -123,7 +124,7 @@ namespace scipp {
                      * 
                      * @note: index must be in the range [0, DIM)
                      */
-                    constexpr const measurement& operator[](const std::size_t& index) const { 
+                    constexpr const measurement<UB>& operator[](const std::size_t& index) const { 
                         
                         if (index >= DIM) 
                             throw std::out_of_range("Cannot access a vector element with an index out of range");
@@ -142,7 +143,7 @@ namespace scipp {
                      * 
                      * @note: index must be in the range [0, DIM)
                      */
-                    constexpr measurement& operator[](const std::size_t& index) { 
+                    constexpr measurement<UB>& operator[](const std::size_t& index) { 
                         
                         if (index >= DIM) 
                             throw std::out_of_range("Cannot access a vector with an index out of range");
@@ -329,78 +330,79 @@ namespace scipp {
                     }
 
 
-                    /**
-                     * @brief Multiply the current vector by a measurement
-                     * 
-                     * @param meas: measurement to multiply with as l-value const reference
-                     * 
-                     * @return constexpr vector& 
-                     */
-                    constexpr vector& operator*=(const measurement& meas) noexcept {
+                    // /**
+                    //  * @brief Multiply the current vector by a measurement
+                    //  * 
+                    //  * @param meas: measurement to multiply with as l-value const reference
+                    //  * 
+                    //  * @return constexpr vector& 
+                    //  */
+                    // template <unit_base UB2>
+                    // constexpr vector<UB * UB2>& operator*=(const measurement<UB2>& meas) noexcept {
 
-                        for (std::size_t i{}; i < DIM; ++i)  
-                            data_[i] *= meas;
+                    //     for (std::size_t i{}; i < DIM; ++i)  
+                    //         data_[i] *= meas;
 
-                        return *this; 
+                    //     return *this; 
 
-                    }
-
-
-                    /**
-                     * @brief Multiply the current vector by a measurement
-                     * 
-                     * @param meas: measurement to multiply with as r-value reference
-                     * 
-                     * @return constexpr vector&
-                     */
-                    constexpr vector& operator*=(measurement&& meas) noexcept {
-
-                        for (std::size_t i{}; i < DIM; ++i) 
-                            data_[i] *= std::move(meas);
-
-                        return *this; 
-
-                    }
+                    // }
 
 
-                    /**
-                     * @brief Divide the current vector by a measurement
-                     * 
-                     * @param meas: measurement to divide by as l-value const reference
-                     *  
-                     * @return constexpr vector& 
-                     */
-                    constexpr vector& operator/=(const measurement& meas) {
+                    // /**
+                    //  * @brief Multiply the current vector by a measurement
+                    //  * 
+                    //  * @param meas: measurement to multiply with as r-value reference
+                    //  * 
+                    //  * @return constexpr vector&
+                    //  */
+                    // constexpr vector& operator*=(measurement<UB>&& meas) noexcept {
+
+                    //     for (std::size_t i{}; i < DIM; ++i) 
+                    //         data_[i] *= std::move(meas);
+
+                    //     return *this; 
+
+                    // }
+
+
+                    // /**
+                    //  * @brief Divide the current vector by a measurement
+                    //  * 
+                    //  * @param meas: measurement to divide by as l-value const reference
+                    //  *  
+                    //  * @return constexpr vector& 
+                    //  */
+                    // constexpr vector& operator/=(const measurement<UB>& meas) {
                         
-                        if (meas.value() == 0.0) 
-                            throw std::runtime_error("Cannot divide a vector by a zero measurement");
+                    //     if (meas.value() == 0.0) 
+                    //         throw std::runtime_error("Cannot divide a vector by a zero measurement");
 
-                        for (std::size_t i{}; i < DIM; ++i) 
-                            data_[i] /= meas;
+                    //     for (std::size_t i{}; i < DIM; ++i) 
+                    //         data_[i] /= meas;
                         
-                        return *this; 
+                    //     return *this; 
 
-                    }
+                    // }
 
 
-                    /**
-                     * @brief Divide the current vector by a measurement
-                     * 
-                     * @param meas: measurement to divide by as r-value reference
-                     * 
-                     * @return constexpr vector&
-                     */
-                    constexpr vector& operator/=(measurement&& meas) {
+                    // /**
+                    //  * @brief Divide the current vector by a measurement
+                    //  * 
+                    //  * @param meas: measurement to divide by as r-value reference
+                    //  * 
+                    //  * @return constexpr vector&
+                    //  */
+                    // constexpr vector& operator/=(measurement<UB>&& meas) {
 
-                        if (meas.value() == 0.0) 
-                            throw std::runtime_error("Cannot divide a vector by a zero measurement");
+                    //     if (meas.value() == 0.0) 
+                    //         throw std::runtime_error("Cannot divide a vector by a zero measurement");
                         
-                        for (std::size_t i{}; i < DIM; ++i)
-                            data_[i] /= meas;
+                    //     for (std::size_t i{}; i < DIM; ++i)
+                    //         data_[i] /= meas;
 
-                        return *this; 
+                    //     return *this; 
 
-                    }
+                    // }
 
 
                     /**
@@ -411,6 +413,23 @@ namespace scipp {
                      * @return constexpr vector& 
                      */
                     constexpr vector& operator*=(const scalar& scalar) noexcept {
+
+                        for (std::size_t i{}; i < DIM; ++i) 
+                            data_[i] *= scalar;
+
+                        return *this; 
+
+                    }
+
+
+                    /**
+                     * @brief Multiply the current vector by a scalar
+                     * 
+                     * @param scalar: scalar as r-value reference
+                     * 
+                     * @return constexpr vector& 
+                     */
+                    constexpr vector& operator*=(scalar&& scalar) noexcept {
 
                         for (std::size_t i{}; i < DIM; ++i) 
                             data_[i] *= scalar;
@@ -441,13 +460,33 @@ namespace scipp {
 
 
                     /**
+                     * @brief Divide the current vector by a scalar
+                     * 
+                     * @param scalar: scalar as r-value reference
+                     *  
+                     * @return constexpr vector& 
+                     */
+                    constexpr vector& operator/=(scalar&& scalar) {
+
+                        if (scalar == 0.0) 
+                            throw std::runtime_error("Cannot divide a vector by zero");
+
+                        for (std::size_t i{}; i < DIM; ++i)
+                            data_[i] /= scalar;
+                        
+                        return *this; 
+                        
+                    }
+
+
+                    /**
                      * @brief Return the opposite of the current vector
                      * 
                      * @return constexpr vector 
                      */
                     constexpr vector operator-() const noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = -data_[i]; 
                         
@@ -467,7 +506,7 @@ namespace scipp {
                      */
                     constexpr vector operator+(const vector& other) const {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] + other.data_[i]; 
                         
@@ -487,7 +526,7 @@ namespace scipp {
                      */
                     constexpr vector operator-(const vector& other) const {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] - other.data_[i]; 
                         
@@ -503,9 +542,29 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    constexpr vector operator*(const measurement& meas) const noexcept {
+                    template <unit_base UB2>
+                    constexpr vector<UB * UB2, DIM> operator*(const measurement<UB2>& meas) const noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB * UB2>, DIM> result; 
+                        for (std::size_t i{}; i < DIM; ++i)
+                            result[i] = data_[i] * meas; 
+                        
+                        return result;
+
+                    }
+
+
+                    /**
+                     * @brief Multiply the current vector by a measurement
+                     * 
+                     * @param meas: measurement as r-value reference
+                     * 
+                     * @return constexpr vector 
+                     */
+                    template <unit_base UB2>
+                    constexpr vector<UB * UB2, DIM> operator*(measurement<UB2>&& meas) const noexcept {
+
+                        std::array<measurement<UB * UB2>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] * meas; 
                         
@@ -521,12 +580,35 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    constexpr vector operator/(const measurement& meas) const {
+                    template <unit_base UB2>
+                    constexpr vector<UB / UB2, DIM> operator/(const measurement<UB2>& meas) const {
 
                         if (meas.value() == 0.0) 
                             throw std::runtime_error("Cannot divide a vector by a zero measurement");
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB / UB2>, DIM> result; 
+                        for (std::size_t i{}; i < DIM; ++i)
+                            result[i] = data_[i] / meas; 
+                        
+                        return result;
+
+                    }
+
+
+                    /**
+                     * @brief Divide the current vector by a measurement
+                     * 
+                     * @param meas: measurement as r-value reference
+                     * 
+                     * @return constexpr vector 
+                     */
+                    template <unit_base UB2>
+                    constexpr vector<UB / UB2, DIM> operator/(measurement<UB2>&& meas) const {
+
+                        if (meas.value() == 0.0) 
+                            throw std::runtime_error("Cannot divide a vector by a zero measurement");
+
+                        std::array<measurement<UB / UB2>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] / meas; 
                         
@@ -545,7 +627,7 @@ namespace scipp {
                      */
                     constexpr vector operator*(const scalar& scalar) const noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] * scalar; 
                         
@@ -567,7 +649,7 @@ namespace scipp {
                         if (scalar == 0.0) 
                             throw std::runtime_error("Cannot divide a vector by zero");
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] / scalar; 
                         
@@ -585,7 +667,7 @@ namespace scipp {
                      */
                     constexpr vector operator*(const std::array<scalar, DIM>& scalar_arr) const noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i] * scalar_arr[i]; 
                         
@@ -603,7 +685,7 @@ namespace scipp {
                      */
                     constexpr vector operator/(const std::array<scalar, DIM>& scalar_arr) const {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             if (scalar_arr[i] != 0)
                                 result[i] = data_[i] / scalar_arr[i];
@@ -622,9 +704,10 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    friend constexpr vector operator*(const measurement& meas, const vector& vec) noexcept {
+                    template <unit_base UB2>
+                    friend constexpr vector<UB * UB2, DIM> operator*(const measurement<UB>& meas, const vector<UB2, DIM>& vec) noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB * UB2>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = meas * vec.data_[i]; 
                         
@@ -641,9 +724,10 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    friend constexpr vector operator/(const measurement& meas, const vector& other) {
+                    template <unit_base UB2>
+                    friend constexpr vector<UB / UB2, DIM> operator/(const measurement<UB>& meas, const vector<UB2, DIM>& other) {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB / UB2>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = meas / other.data_[i];
                         
@@ -662,7 +746,7 @@ namespace scipp {
                      */
                     friend constexpr vector operator*(const scalar& scalar, const vector& vec) noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = scalar * vec.data_[i]; 
                         
@@ -679,9 +763,9 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */                
-                    friend constexpr vector operator/(const scalar& scalar, const vector& vec) {
+                    friend constexpr vector<UB.inv(), DIM> operator/(const scalar& scalar, const vector& vec) {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB.inv()>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = scalar / vec.data_[i]; 
                         
@@ -698,9 +782,9 @@ namespace scipp {
                      * 
                      * @return constexpr vector
                      */
-                    friend constexpr vector operator*(const std::array<scalar, DIM>& scalar_vec, const vector& other) noexcept {
+                    friend constexpr vector<UB.inv(), DIM> operator*(const std::array<scalar, DIM>& scalar_vec, const vector& other) noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB.inv()>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = scalar_vec[i] * other.data_[i]; 
                         
@@ -717,9 +801,9 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    friend constexpr vector operator/(const std::array<scalar, DIM>& scalar_vec, const vector& other) noexcept {
+                    friend constexpr vector<UB.inv(), DIM> operator/(const std::array<scalar, DIM>& scalar_vec, const vector& other) noexcept {
 
-                        std::array<measurement, DIM> result; 
+                        std::array<measurement<UB.inv()>, DIM> result; 
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = scalar_vec[i] / other.data_[i]; 
                         
@@ -802,7 +886,7 @@ namespace scipp {
                      */
                     constexpr vector inv() const {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = data_[i].inv(); 
                         
@@ -821,7 +905,7 @@ namespace scipp {
                      */
                     friend constexpr vector pow(const vector& vec, const int& power) noexcept {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = pow(vec.data_[i], power);
                         
@@ -839,7 +923,7 @@ namespace scipp {
                     */
                     friend constexpr vector square(const vector& vec) noexcept {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = square(vec.data_[i]);
                         
@@ -857,7 +941,7 @@ namespace scipp {
                      */
                     friend constexpr vector cube(const vector& vec) noexcept {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = cube(vec.data_[i]);
                         
@@ -876,7 +960,7 @@ namespace scipp {
                      */
                     friend constexpr vector root(const vector& vec, const int& power) {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = root(vec.data_[i], power);
                         
@@ -894,7 +978,7 @@ namespace scipp {
                      */
                     friend constexpr vector sqrt(const vector& vec) {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = sqrt(vec.data_[i]);
                         
@@ -912,7 +996,7 @@ namespace scipp {
                      */
                     friend constexpr vector cbrt(const vector& vec) {
 
-                        std::array<measurement, DIM> result;
+                        std::array<measurement<UB>, DIM> result;
                         for (std::size_t i{}; i < DIM; ++i)
                             result[i] = cbrt(vec.data_[i]);
                         
@@ -931,7 +1015,7 @@ namespace scipp {
                      */
                     friend constexpr vector cross(const vector& v1, const vector& v2) {
 
-                        std::array<measurement, DIM> cross_vec;
+                        std::array<measurement<UB>, DIM> cross_vec;
                         for (std::size_t i{}; i < DIM; ++i) 
                             cross_vec[i] = v1[(i + 1) % v1.size()] * v2[(i + 2) % v1.size()] - v1[(i + 2) % v1.size()] * v2[(i + 1) % v1.size()]; 
 
@@ -948,9 +1032,10 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    friend constexpr measurement dot(const vector& v1, const vector& v2) noexcept {
+                    template <unit_base UB1, unit_base UB2>
+                    friend constexpr measurement<UB1 * UB2> dot(const vector<UB1, DIM>& v1, const vector<UB2, DIM>& v2) noexcept {
 
-                        measurement result(0.0, v1[0].units() * v2[0].units());
+                        measurement<UB1 * UB2> result(0.0, v1[0].units() * v2[0].units());
                         for (std::size_t i{}; i < v1.size(); ++i)
                             result += v1[i] * v2[i]; 
                         
@@ -966,11 +1051,7 @@ namespace scipp {
                     /// @brief Check the current vector is a scalar vector
                     constexpr bool is_scalar() const noexcept {
 
-                        for (std::size_t i{}; i < DIM; ++i)
-                            if (data_[i].units() != unit()) 
-                                return false;
-                        
-                        return true; 
+                        return (UB == basis::scalar); 
 
                     }
 
@@ -1058,7 +1139,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement
                      */
-                    constexpr measurement x() const noexcept { 
+                    constexpr measurement<UB> x() const noexcept { 
                         
                         return data_[0]; 
                     
@@ -1072,7 +1153,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement&
                      */
-                    constexpr measurement& x() noexcept { 
+                    constexpr measurement<UB>& x() noexcept { 
                         
                         return data_[0]; 
                     
@@ -1086,7 +1167,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement
                      */
-                    constexpr measurement y() const {
+                    constexpr measurement<UB> y() const {
                         
                         if constexpr (DIM < 2) 
                             throw std::out_of_range("Cannot access the second element of a vector with less than two elements"); 
@@ -1103,7 +1184,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement&
                      */
-                    constexpr measurement& y() {
+                    constexpr measurement<UB>& y() {
                         
                         if constexpr (DIM < 2) 
                             throw std::out_of_range("Cannot access the second element of a vector with less than two elements"); 
@@ -1120,7 +1201,7 @@ namespace scipp {
                      *
                      * @return constexpr measurement
                      */
-                    constexpr measurement z() const {
+                    constexpr measurement<UB> z() const {
                         
                         if constexpr (DIM < 3) 
                             throw std::out_of_range("Cannot access the third element of a vector with less than three elements"); 
@@ -1137,7 +1218,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement&
                      */
-                    constexpr measurement& z() {
+                    constexpr measurement<UB>& z() {
                         
                         if constexpr (DIM < 3) 
                             throw std::out_of_range("Cannot access the third element of a vector with less than three elements"); 
@@ -1154,7 +1235,7 @@ namespace scipp {
                      *
                      * @return constexpr measurement
                      */
-                    constexpr measurement w() const {
+                    constexpr measurement<UB> w() const {
                         
                         if constexpr (DIM < 4) 
                             throw std::out_of_range("Cannot access the fourth element of a vector with less than four elements"); 
@@ -1171,7 +1252,7 @@ namespace scipp {
                      *
                      * @return constexpr measurement&
                      */
-                    constexpr measurement& w() {
+                    constexpr measurement<UB>& w() {
                         
                         if constexpr (DIM < 4) 
                             throw std::out_of_range("Cannot access the fourth element of a vector with less than four elements"); 
@@ -1186,12 +1267,12 @@ namespace scipp {
                      * 
                      * @return constexpr measurement 
                      */
-                    constexpr measurement norm() const noexcept { 
+                    constexpr measurement<UB> norm() const noexcept { 
 
                         if constexpr (DIM == 1) 
                             return data_[0];
 
-                        vector squared = square(*this);
+                        vector<UB, DIM> squared = square(*this);
 
                         return sqrt(std::accumulate(squared.data().begin(), squared.data().end(), measurement(0.0, squared.units())));
 
@@ -1203,12 +1284,12 @@ namespace scipp {
                      * 
                      * @return constexpr measurement 
                      */
-                    constexpr measurement norm2() const noexcept { 
+                    constexpr measurement<UB.square()> norm2() const noexcept { 
 
                         if constexpr (DIM == 1) 
                             return data_[0]; 
 
-                        vector squared(square(*this));
+                        vector<UB.square(), DIM> squared(square(*this));
 
                         return std::accumulate(squared.data().begin(), squared.data().end(), measurement{0.0, squared.units()});
                         
@@ -1220,7 +1301,7 @@ namespace scipp {
                      * 
                      * @return constexpr vector 
                      */
-                    constexpr vector normalize() const {
+                    constexpr vector<basis::scalar, DIM> normalize() const {
 
                         if (this->is_normalized())
                             return *this; 
@@ -1236,7 +1317,8 @@ namespace scipp {
                      * 
                      * @return vector
                      */
-                    constexpr vector projection(const vector<DIM>& vec) const noexcept {
+                    template <unit_base UB2>
+                    constexpr vector<UB * UB2, DIM> projection(const vector<UB2, DIM>& vec) const noexcept {
 
                         return dot(vec, *this) * (*this  / this->norm2()); 
 
@@ -1250,7 +1332,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement
                      */
-                    constexpr measurement phi() const {
+                    constexpr measurement<basis::radian> phi() const {
                         
                         if constexpr (DIM < 2) 
                             throw std::out_of_range("Cannot access the polar angle of a vector with less than two elements"); 
@@ -1267,7 +1349,7 @@ namespace scipp {
                      * 
                      * @return constexpr measurement
                      */
-                    constexpr measurement theta() const {
+                    constexpr measurement<basis::radian> theta() const {
                         
                         if constexpr (DIM < 3) 
                             throw std::out_of_range("Cannot access the azimuthal angle of a vector with less than three elements"); 
@@ -1280,32 +1362,32 @@ namespace scipp {
                     }
                     
 
-                    /**
-                     * @brief Get the unit of the vector
-                     * 
-                     * @return constexpr unit 
-                     */
-                    constexpr unit units() const noexcept { 
+                    // /**
+                    //  * @brief Get the unit of the vector
+                    //  * 
+                    //  * @return constexpr unit 
+                    //  */
+                    // constexpr unit units() const noexcept { 
 
-                        if constexpr (DIM == 1)
-                            return data_.front().units(); 
+                    //     if constexpr (DIM == 1)
+                    //         return data_.front().units(); 
 
-                        bool are_same_unit = true; 
-                        const unit_base first_unit_base = data_.front().units().base(); 
+                    //     bool are_same_unit = true; 
+                    //     const unit_base first_unit_base = data_.front().units().base(); 
 
-                        for (std::size_t i{1}; i < DIM; ++i)
-                            if (data_[i].units().base() != first_unit_base) 
-                                are_same_unit = false; 
+                    //     for (std::size_t i{1}; i < DIM; ++i)
+                    //         if (data_[i].units().base() != first_unit_base) 
+                    //             are_same_unit = false; 
 
-                        if (are_same_unit) 
-                            return unit(first_unit_base); 
+                    //     if (are_same_unit) 
+                    //         return unit(first_unit_base); 
 
-                        else {
-                            std::cerr << "This vector stores different measurements, therefor it is not possible to return the units of the vector\n"; 
-                            return unit();
-                        }
+                    //     else {
+                    //         std::cerr << "This vector stores different measurements, therefor it is not possible to return the units of the vector\n"; 
+                    //         return unit();
+                    //     }
 
-                    }
+                    // }
 
 
                     /**
@@ -1313,7 +1395,7 @@ namespace scipp {
                      * 
                      * @return constexpr std::array<measurement> 
                      */
-                    constexpr std::array<measurement, DIM> data() const noexcept { 
+                    constexpr std::array<measurement<UB>, DIM> data() const noexcept { 
                         
                         return data_; 
                     
@@ -1323,9 +1405,9 @@ namespace scipp {
                     /**
                      * @brief Get the data of the vector
                      * 
-                     * @return constexpr std::array<measurement, DIM>& 
+                     * @return constexpr std::array<measurement<UB>, DIM>& 
                      */
-                    constexpr std::array<measurement, DIM>& data() noexcept { 
+                    constexpr std::array<measurement<UB>, DIM>& data() noexcept { 
                         
                         return data_;
                     
@@ -1377,32 +1459,32 @@ namespace scipp {
                     }   
 
 
-                    /**
-                     * @brief Save the vector to a file
-                     * 
-                     * @param file_name: the name of the file
-                     * @param units: desired units for the output
-                     * 
-                     * @return void
-                     */
-                    void save(const std::string& file_name, const unit& units) const {
+                    // /**
+                    //  * @brief Save the vector to a file
+                    //  * 
+                    //  * @param file_name: the name of the file
+                    //  * @param units: desired units for the output
+                    //  * 
+                    //  * @return void
+                    //  */
+                    // void save(const std::string& file_name, const unit& units) const {
 
-                        std::ofstream file_out(file_name, std::ios::app);
-                        if (file_out.is_open()) 
+                    //     std::ofstream file_out{file_name, std::ios::app};
+                    //     if (file_out.is_open()) 
 
-                            for (std::size_t i{}; i < DIM; ++i) {
+                    //         for (std::size_t i{}; i < DIM; ++i) {
 
-                                file_out << data_[i].value_as(units) << '\t'; 
+                    //             file_out << data_[i].value_as(units) << '\t'; 
 
-                            }
+                    //         }
 
-                        else 
-                            throw std::invalid_argument("Unable to open '" + file_name + "'");
+                    //     else 
+                    //         throw std::invalid_argument("Unable to open '" + file_name + "'");
 
-                        file_out << '\n';
-                        file_out.close();
+                    //     file_out << '\n';
+                    //     file_out.close();
 
-                    }
+                    // }
 
 
                 protected:
@@ -1411,7 +1493,7 @@ namespace scipp {
                 // class members
                 // =============================================
 
-                    std::array<measurement, DIM> data_; ///< array of measurements
+                    std::array<measurement<UB>, DIM> data_; ///< array of measurements
 
                     static_assert(DIM != 0, "The dimesion of the vector cannot be 0."); ///< Check for the dimesion of the vector
 
@@ -1419,14 +1501,14 @@ namespace scipp {
             }; // class vector
 
 
-            /// @brief Template deduction guide for a list of measurements
-            template <typename... meas>
-            vector(const meas&...) -> vector<sizeof...(meas)>;
+            // /// @brief Template deduction guide for a list of measurements 
+            // template <template <unit_base UB> measurement<UB>... meas>
+            // vector(const meas&...) -> vector<UB, sizeof...(meas)>;
 
 
-            /// @brief Template deduction guide for an array of measurements
-            template <class measurement, class... U>
-            vector(const std::array<measurement, sizeof...(U) + 1>&, const U&...) -> vector<sizeof...(U) + 1>;
+            // /// @brief Template deduction guide for an array of measurements
+            // template <template <unit_base> measurement<unit_base>, class... U>
+            // vector(const std::array<measurement<unit_base>, sizeof...(U) + 1>&, const U&...) -> vector<unit_base, sizeof...(U) + 1>;
             
 
             #define vector2 vector<2>

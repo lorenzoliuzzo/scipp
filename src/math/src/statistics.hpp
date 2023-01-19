@@ -62,7 +62,7 @@ namespace scipp::math {
             
             measurement<UB.square()> sigma_sq;
 
-            for (auto x : vec) 
+            for (const measurement<UB>& x : vec) 
                 sigma_sq += op::square(x - average).as_measurement(); 
 
             return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 

@@ -24,8 +24,8 @@ int main() {
         stopwatch2.start();
         stopwatch2.stop();
 
-        std::cout << "timer overhead: \t" << stopwatch.elapsed(ns) << "\n";
-        std::cout << "CPU timer overhead:\t" << stopwatch2.elapsed(ns) << "\n";
+        std::cout << "timer overhead: \t" << stopwatch.elapsed() << "\n";
+        std::cout << "CPU timer overhead:\t" << stopwatch2.elapsed() << "\n";
 
     }
 

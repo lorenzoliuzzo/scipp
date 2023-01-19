@@ -61,9 +61,13 @@ std::vector<double> bench_measurement_sum(const std::size_t& n) {
     measurement a = (std::rand() % 10000 + 1) * N;
     measurement b = (std::rand() % 10000 + 1) * N;
 
+    tools::cpu_timer sw;
     std::vector<double> times; 
-    for (double i{2 * 64}; i < n; i *= 2)
+    for (double i{2 * 64}; i < n; i *= 2) {
+        sw.start();
+        sw.stop();
         times.emplace_back(tools::cpu_bench(i, [&]() { auto x = a + b; }).value_as(ns));
+    }
     
     return times;
 
@@ -182,7 +186,7 @@ void bench_sum() {
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("sum.png", "800,600");
+    plt.redirect_to_png("images/sum.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -201,7 +205,7 @@ void bench_prod() {
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("prod.png", "800,600");
+    plt.redirect_to_png("images/prod.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -220,7 +224,7 @@ void bench_div() {
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("div.png", "800,600");
+    plt.redirect_to_png("images/div.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -239,7 +243,7 @@ void bench_sin() {
         iterations.emplace_back(i); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("sin.png", "800,600");
+    plt.redirect_to_png("images/sin.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -253,17 +257,23 @@ void bench_sin() {
 
 int main() {
 
+    std::cout << "Benchmarking...\n";
+
     std::srand(std::time(NULL));
 
-    // std::thread sum(bench_sum); 
-    // std::thread prod(bench_prod); 
-    // std::thread div(bench_div); 
-    std::thread sin(bench_sin);
+    std::thread sum(bench_sum); 
+    std::thread prod(bench_prod); 
+    std::thread div(bench_div); 
+    // std::thread sin(bench_sin);
 
-    // sum.join(); 
-    // prod.join(); 
-    // div.join(); 
-    sin.join();
+    std::cout << "Ready!\n"; 
+
+    sum.join(); 
+    prod.join(); 
+    div.join(); 
+    // sin.join();
+
+    std::cout << "Done!\n";
 
     return 0; 
 

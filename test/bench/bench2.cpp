@@ -166,15 +166,15 @@ std::pair<std::vector<double>, std::vector<double>> bench_umeasurement_div(const
 void bench_sum() {
 
     std::vector<double> iterations; 
-    for (double i{64}; i < 1e8; i *= 2)
+    for (double i{64}; i < 5e8; i *= 2)
         iterations.emplace_back(i); 
 
-    auto bench_double = bench_double_sum(1e8);
-    auto bench_measurement = bench_measurement_sum(1e8);
-    auto bench_umeasurement = bench_umeasurement_sum(1e8);
+    auto bench_double = bench_double_sum(5e8);
+    auto bench_measurement = bench_measurement_sum(5e8);
+    auto bench_umeasurement = bench_umeasurement_sum(5e8);
 
     Gnuplot plt{};
-    plt.redirect_to_png("bench/sum_err.png", "800,600");
+    plt.redirect_to_png("images/sum_err.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -189,15 +189,15 @@ void bench_sum() {
 void bench_prod() {
 
     std::vector<double> iterations; 
-    for (double i{64}; i < 1e8; i *= 2)
+    for (double i{64}; i < 5e8; i *= 2)
         iterations.emplace_back(i); 
 
-    auto bench_double = bench_double_prod(1e8); 
-    auto bench_measurement = bench_measurement_prod(1e8); 
-    auto bench_umeasurement = bench_umeasurement_prod(1e8); 
+    auto bench_double = bench_double_prod(5e8); 
+    auto bench_measurement = bench_measurement_prod(5e8); 
+    auto bench_umeasurement = bench_umeasurement_prod(5e8); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("bench/prod_err.png", "800,600");
+    plt.redirect_to_png("images/prod_err.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");
@@ -212,15 +212,15 @@ void bench_prod() {
 void bench_div() {
 
     std::vector<double> iterations; 
-    for (double i{64}; i < 1e8; i *= 2)
+    for (double i{64}; i < 5e8; i *= 2)
         iterations.emplace_back(i); 
 
-    auto bench_double = bench_double_div(1e8); 
-    auto bench_measurement = bench_measurement_div(1e8); 
-    auto bench_umeasurement = bench_umeasurement_div(1e8); 
+    auto bench_double = bench_double_div(5e8); 
+    auto bench_measurement = bench_measurement_div(5e8); 
+    auto bench_umeasurement = bench_umeasurement_div(5e8); 
 
     Gnuplot plt{};
-    plt.redirect_to_png("bench/div_err.png", "800,600");
+    plt.redirect_to_png("images/div_err.png", "800,600");
     plt.set_logscale(Gnuplot::AxisScale::LOGX);
     plt.set_xlabel("Number of iterations");
     plt.set_ylabel("Mean time of execution [ns]");

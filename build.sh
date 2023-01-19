@@ -4,3 +4,5 @@ cmake ..
 make 
 cd ..
 doxygen Doxyfile
+open doc/html/index.html
+mkdir images

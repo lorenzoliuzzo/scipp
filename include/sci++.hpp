@@ -52,4 +52,14 @@
         #endif // SCIPP_GEOMETRY_HPP
 
 
+
+        #ifndef SCIPP_PHYSICS_HPP
+
+
+            #include "physics.hpp"
+
+
+        #endif // SCIPP_PHYSICS_HPP
+        
+
 #endif

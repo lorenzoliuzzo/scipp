@@ -53,9 +53,9 @@ namespace scipp::tools {
             }
 
 
-            time_m elapsed() const {
+            inline time_m elapsed() const {
 
-                return std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count() * ns;
+                return static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count()) * ns;
             
             }             
 

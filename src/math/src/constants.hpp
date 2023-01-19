@@ -8,6 +8,9 @@
  */
 
 
+#pragma once
+
+
 namespace scipp::math {
 
 

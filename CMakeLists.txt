@@ -6,11 +6,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_FLAGS "-std=c++2a -O3 -g -Wall --pedantic -pthread")
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/measurements)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/math)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/tools)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/geometry)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/src/physics)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 add_library(${PROJECT_NAME} 
@@ -19,11 +14,7 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} 
     PUBLIC 
-        measurements
-        math 
-        tools 
-        geometry
-        physics)
+        )
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC

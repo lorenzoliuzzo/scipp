@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-12
+ * @date    2023-01-20
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,55 +11,39 @@
 #ifndef SCIPP_LIBRARY
 
 
-    #define SCIPP_LIBRARY
+    #include <cmath>
+    #include <cstdint>
+    #include <fstream>
+    #include <iomanip>
+    #include <iostream>
+    #include <map>
+    #include <numeric>
+    #include <stdexcept>
+    #include <string>
+    #include <vector>
 
 
-        #ifndef SCIPP_MEASUREMENTS_HPP
+    using scalar = double;
 
+    #include "math/constants.hpp"
 
-            #include "measurements.hpp"
+    #include "measurements/units.hpp"
 
-                using namespace scipp::measurements;
+    using namespace scipp::measurements;
 
+    #include "measurements/measurement.hpp"
+    #include "math/measurement_op.hpp"
 
-        #endif // SCIPP_MEASUREMENTS_HPP
+    #include "measurements/umeasurement.hpp"
+    #include "math/umeasurement_op.hpp"
 
+    #include "math/statistics.hpp"
 
-        #ifndef SCIPP_MATH_HPP
+    #include "math/vector.hpp"
+    #include "physics/vector_types.hpp"
 
+    #include "tools/timer.hpp"
+    #include "tools/bench.hpp"
 
-            #include "math.hpp"
-
-
-        #endif // SCIPP_MATH_HPP
-
-
-        #ifndef SCIPP_TOOLS_HPP
-
-
-            #include "tools.hpp"
-
-
-        #endif // SCIPP_TOOLS_HPP
-
-
-        #ifndef SCIPP_GEOMETRY_HPP
-
-
-            #include "geometry.hpp"
-
-
-        #endif // SCIPP_GEOMETRY_HPP
-
-
-
-        #ifndef SCIPP_PHYSICS_HPP
-
-
-            #include "physics.hpp"
-
-
-        #endif // SCIPP_PHYSICS_HPP
-        
 
 #endif

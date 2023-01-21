@@ -14,24 +14,23 @@ namespace scipp::math {
     namespace op {
 
 
-                /**
-                 * @brief Take the square unit_base
-                 * 
-                 * @return consteval unit_base 
-                 */
-                consteval unit_base square(const unit_base& other) noexcept { 
-                    
-                    return unit_base(other.metre_ * 2, 
-                                     other.second_ * 2, 
-                                     other.kilogram_ * 2, 
-                                     other.ampere_ * 2, 
-                                     other.kelvin_ * 2, 
-                                     other.mole_ * 2, 
-                                     other.candela_ * 2,
-                                     other.radian_ * 2);
+        /**
+            * @brief Take the square unit_base
+            * 
+            * @return consteval unit_base 
+            */
+        consteval unit_base square(const unit_base& other) noexcept { 
+            
+            return unit_base(other.metre_ * 2, 
+                                other.second_ * 2, 
+                                other.kilogram_ * 2, 
+                                other.ampere_ * 2, 
+                                other.kelvin_ * 2, 
+                                other.mole_ * 2, 
+                                other.candela_ * 2,
+                                other.radian_ * 2);
 
-                }
-
+        }
 
 
         /**

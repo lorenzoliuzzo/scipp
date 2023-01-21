@@ -43,6 +43,26 @@ namespace scipp::math {
         }
 
 
+
+        /**
+         * @brief Compute the average value of a vector of measurements
+         * 
+         * @param vec: vector of measurements
+         * 
+         * @return umeasurement
+         */
+        template <unit_base UB>
+        constexpr measurement<UB> average(const std::vector<measurement<UB>>& vec) {
+
+            std::size_t N{vec.size()}; 
+            if (N == 0) 
+                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
+            
+            return std::accumulate(vec.begin(), vec.end(), measurement<UB>(0.)) / N;
+
+        }
+
+
         /**
          * @brief Compute the mean value of a vector of measurements
          * @note The uncertainty is computed as the standard deviation of mean (sdom)
@@ -63,7 +83,7 @@ namespace scipp::math {
             measurement<UB.square()> sigma_sq;
 
             for (const measurement<UB>& x : vec) 
-                sigma_sq += op::square(x - average).as_measurement(); 
+                sigma_sq += op::square(x - average); 
 
             return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 
 
@@ -89,7 +109,7 @@ namespace scipp::math {
             measurement<UB.square()> sigma_sq;
 
             for (auto x : vec) 
-                sigma_sq += op::square(x - average).as_measurement(); 
+                sigma_sq += op::square(x - average); 
 
             return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 
 
@@ -117,7 +137,7 @@ namespace scipp::math {
                 weights += x.weight();
             }
 
-            return { weighted / weights, op::sqrt(math::op::inv(weights)) };
+            return { weighted / weights, op::sqrt(op::inv(weights)) };
 
         }
 
@@ -132,7 +152,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr measurement<UB> variance(const std::vector<measurement<UB>>& vec) {
 
-            measurement<UB> average = mean(vec).as_measurement();
+            measurement<UB> average = average(vec);
             measurement<UB.square()> sigma_sq; 
 
             for (const measurement<UB>& x : vec) 
@@ -160,7 +180,7 @@ namespace scipp::math {
             for (const umeasurement<UB>& x : vec) 
                 weights += x.weight(); 
             
-            return math::op::inv(weights); 
+            return op::inv(weights); 
 
         }
 

@@ -264,14 +264,12 @@ int main() {
     std::thread sum(bench_sum); 
     std::thread prod(bench_prod); 
     std::thread div(bench_div); 
-    // std::thread sin(bench_sin);
 
     std::cout << "Ready!\n"; 
 
     sum.join(); 
     prod.join(); 
     div.join(); 
-    // sin.join();
 
     std::cout << "Done!\n";
 

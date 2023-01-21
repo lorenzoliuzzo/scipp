@@ -911,7 +911,7 @@ namespace scipp::geometry {
             template <unit_base UB2>
             friend constexpr measurement<UB * UB2> dot(const vector& v1, const vector<UB2, DIM>& v2) noexcept {
 
-                measurement<UB * UB2> result(0.0, v1[0].units() * v2[0].units());
+                measurement<UB * UB2> result;
                 for (std::size_t i{}; i < v1.size(); ++i)
                     result += v1[i] * v2[i]; 
                 

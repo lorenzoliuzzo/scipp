@@ -1258,29 +1258,29 @@ namespace scipp::measurements {
             constexpr unit<unit_base(1, -2, 1, 0, 0, 0, 0, 0)> newton;
             constexpr unit N = newton;
 
-            // constexpr unit Pa(unit_base(-1, -2, 1, 0, 0, 0, 0, 0));
-            // constexpr unit pascal = Pa;
+            constexpr unit<unit_base(-1, -2, 1, 0, 0, 0, 0, 0)> Pa;
+            constexpr unit pascal = Pa;
 
-            // constexpr unit joule(unit_base(2, -2, 1, 0, 0, 0, 0, 0));
-            // constexpr unit J = joule;
+            constexpr unit<unit_base(2, -2, 1, 0, 0, 0, 0, 0)> joule;
+            constexpr unit J = joule;
 
-            // constexpr unit watt(unit_base(2, -3, 1, 0, 0, 0, 0, 0));
-            // constexpr unit W = watt;
+            constexpr unit<unit_base(2, -3, 1, 0, 0, 0, 0, 0)> watt;
+            constexpr unit W = watt;
 
-            // constexpr unit coulomb(unit_base(0, 1, 0, 1, 0, 0, 0, 0));
-            // constexpr unit C = coulomb;
+            constexpr unit<unit_base(0, 1, 0, 1, 0, 0, 0, 0)> coulomb;
+            constexpr unit C = coulomb;
 
-            // constexpr unit farad(unit_base(-2, 4, -1, 2, 0, 0, 0, 0));
-            // constexpr unit F = farad;
+            constexpr unit<unit_base(-2, 4, -1, 2, 0, 0, 0, 0)> farad;
+            constexpr unit F = farad;
 
-            // constexpr unit weber(unit_base(2, -2, 1, -1, 0, 0, 0, 0));
-            // constexpr unit Wb = weber;
+            constexpr unit<unit_base(2, -2, 1, -1, 0, 0, 0, 0)> weber;
+            constexpr unit Wb = weber;
 
-            // constexpr unit tesla(unit_base(0, -2, 1, -1, 0, 0, 0, 0));
-            // constexpr unit T = tesla;
+            constexpr unit<unit_base(0, -2, 1, -1, 0, 0, 0, 0)> tesla;
+            constexpr unit T = tesla;
 
-            // constexpr unit henry(unit_base(2, -2, 1, -2, 0, 0, 0, 0));                    
-            // constexpr unit H = henry;
+            constexpr unit<unit_base(2, -2, 1, -2, 0, 0, 0, 0)> henry;                    
+            constexpr unit H = henry;
 
 
         }; // namespace types

@@ -24,26 +24,34 @@
 
 
     using scalar = double;
-
+    
     #include "math/constants.hpp"
 
-    #include "measurements/units.hpp"
+    #include "measurements/unit_base.hpp"    
+    #include "math/op/unit_base_op.hpp"
 
-    using namespace scipp::measurements;
+    #include "measurements/unit.hpp"
+    #include "math/op/unit_op.hpp"
+    #include "measurements/units_types.hpp"
 
     #include "measurements/measurement.hpp"
-    #include "math/measurement_op.hpp"
+    #include "math/op/measurement_op.hpp"
+    #include "measurements/measurements_types.hpp"
 
     #include "measurements/umeasurement.hpp"
-    #include "math/umeasurement_op.hpp"
+    #include "math/op/umeasurement_op.hpp"
+    #include "measurements/umeasurements_types.hpp"
+
+
+    #include "geometry/vector.hpp"
+    #include "math/op/vector_op.hpp"
+
+    #include "physics/vector_types.hpp"
+    #include "physics/constants.hpp"
 
     #include "math/statistics.hpp"
 
-    #include "math/vector.hpp"
-    #include "physics/vector_types.hpp"
-
-    #include "physics/constants.hpp"
-    // #include "physics/mass.hpp"
+    // // #include "physics/mass.hpp"
 
 
     #include "tools/timer.hpp"

@@ -41,7 +41,7 @@ namespace scipp::physics {
              */
             explicit constexpr linear_acceleration() noexcept : 
             
-                vector<DIM>(basis::metre / basis::second.square()) {}
+                vector<DIM>(basis::metre / math::op::square(basis::second)) {}
 
 
             /**
@@ -55,7 +55,7 @@ namespace scipp::physics {
             constexpr linear_acceleration(const coord&... coords) requires (sizeof...(coords) == DIM) {
                     
                 for (const measurement& x : {coords...}) 
-                    if (x.units().base() != basis::metre / basis::second.square()) 
+                    if (x.units().base() != basis::metre / math::op::square(basis::second)) 
                         throw std::invalid_argument("Wrong linear_acceleration unit, the unit_base must be metre / second^2"); 
 
                 this->data_ = {coords...};
@@ -94,7 +94,7 @@ namespace scipp::physics {
 
                     for (size_t i{}; i < DIM; ++i) {
 
-                        if (acc[i].units().base() != basis::metre / basis::second.square()) 
+                        if (acc[i].units().base() != basis::metre / math::op::square(basis::second)) 
                             throw std::invalid_argument("Wrong linear_acceleration unit, the unit_base must be metre / second^2");
                     
                     }
@@ -113,7 +113,7 @@ namespace scipp::physics {
 
                     for (size_t i{}; i < DIM; ++i) {
 
-                        if (acc[i].units().base() != basis::metre / basis::second.square()) 
+                        if (acc[i].units().base() != basis::metre / math::op::square(basis::second)) 
                             throw std::invalid_argument("Wrong linear_acceleration unit, the unit_base must be metre / second^2");
                     
                     }

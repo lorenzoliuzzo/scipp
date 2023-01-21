@@ -1,5 +1,5 @@
 /**
- * @file    op.hpp
+ * @file    measurement_op.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-01-20
@@ -12,25 +12,6 @@ namespace scipp::math {
 
 
     namespace op {
-
-
-        /**
-            * @brief Take the square unit_base
-            * 
-            * @return consteval unit_base 
-            */
-        consteval unit_base square(const unit_base& other) noexcept { 
-            
-            return unit_base(other.metre_ * 2, 
-                                other.second_ * 2, 
-                                other.kilogram_ * 2, 
-                                other.ampere_ * 2, 
-                                other.kelvin_ * 2, 
-                                other.mole_ * 2, 
-                                other.candela_ * 2,
-                                other.radian_ * 2);
-
-        }
 
 
         /**
@@ -93,7 +74,7 @@ namespace scipp::math {
          * @note The uncertainty is not inverted
          */
         template <unit_base UB>
-        constexpr measurement<UB.inv()> inv(const measurement<UB>& umeas) { 
+        constexpr measurement<math::op::inv(UB)> inv(const measurement<UB>& umeas) { 
             
             if (umeas.value() == 0) 
                 throw std::runtime_error("Cannot invert a measurement with a zero value");
@@ -114,7 +95,7 @@ namespace scipp::math {
          * @note The uncertainty is not inverted
          */
         template <unit_base UB>
-        constexpr measurement<UB.inv()> inv(measurement<UB>&& umeas) { 
+        constexpr measurement<math::op::inv(UB)> inv(measurement<UB>&& umeas) { 
             
             if (umeas.value() == 0) 
                 throw std::runtime_error("Cannot invert a measurement with a zero value");
@@ -135,7 +116,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto pow(const measurement<UB>& meas, const int& power) noexcept { 
             
-            return measurement<UB.pow(power)>(std::pow(meas.value(), power), unit(UB.pow(power)));
+            return measurement<math::op::pow(UB, power)>(std::pow(meas.value(), power), unit(math::op::pow(UB, power)));
             
         }        
         
@@ -151,7 +132,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto pow(measurement<UB>&& meas, const int& power) noexcept { 
             
-            return measurement<UB.pow(power)>(std::pow(meas.value(), power), unit(UB.pow(power)));
+            return measurement<math::op::pow(UB, power)>(std::pow(meas.value(), power), unit(math::op::pow(UB, power)));
             
         }
 
@@ -164,7 +145,7 @@ namespace scipp::math {
          * @return measurement 
          */
         template <unit_base UB>
-        constexpr measurement<UB.square()> square(const measurement<UB>& meas) noexcept { 
+        constexpr measurement<math::op::square(UB)> square(const measurement<UB>& meas) noexcept { 
             
             return { std::pow(meas.value(), 2) }; 
             
@@ -179,7 +160,7 @@ namespace scipp::math {
          * @return measurement 
          */
         template <unit_base UB>
-        constexpr measurement<UB.square()> square(measurement<UB>&& meas) noexcept { 
+        constexpr measurement<math::op::square(UB)> square(measurement<UB>&& meas) noexcept { 
             
             return { std::pow(meas.value(), 2) }; 
             
@@ -194,7 +175,7 @@ namespace scipp::math {
          * @return measurement 
          */
         template <unit_base UB>
-        constexpr measurement<UB.cube()> cube(const measurement<UB>& meas) noexcept { 
+        constexpr measurement<math::op::cube(UB)> cube(const measurement<UB>& meas) noexcept { 
             
             return { std::pow(meas.value(), 3) }; 
             
@@ -209,7 +190,7 @@ namespace scipp::math {
          * @return measurement 
          */
         template <unit_base UB>
-        constexpr measurement<UB.cube()> cube(measurement<UB>&& meas) noexcept { 
+        constexpr measurement<math::op::cube(UB)> cube(measurement<UB>&& meas) noexcept { 
             
             return { std::pow(meas.value(), 3) }; 
             
@@ -227,7 +208,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto root(const measurement<UB>& meas, const int& power) { 
             
-            return measurement<UB.root(power)>(std::pow(meas.value(), 1.0 / power), unit(UB.root(power))); 
+            return measurement<math::op::root(UB, power)>(std::pow(meas.value(), 1.0 / power), unit(math::op::root(UB, power))); 
             
         }
 
@@ -243,7 +224,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto root(measurement<UB>&& meas, const int& power) { 
             
-            return measurement<UB.root(power)>(std::pow(meas.value(), 1.0 / power), unit(UB.root(power))); 
+            return measurement<math::op::root(UB, power)>(std::pow(meas.value(), 1.0 / power), unit(math::op::root(UB, power))); 
             
         }
 
@@ -256,7 +237,7 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<UB.sqrt()> sqrt(const measurement<UB>& meas) { 
+        constexpr measurement<math::op::sqrt(UB)> sqrt(const measurement<UB>& meas) { 
             
             return { std::sqrt(meas.value()) }; 
             
@@ -271,7 +252,7 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<UB.sqrt()> sqrt(measurement<UB>&& meas) { 
+        constexpr measurement<math::op::sqrt(UB)> sqrt(measurement<UB>&& meas) { 
             
             return { std::sqrt(meas.value()) }; 
             
@@ -286,7 +267,7 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<UB.cbrt()> cbrt(const measurement<UB>& meas) { 
+        constexpr measurement<math::op::cbrt(UB)> cbrt(const measurement<UB>& meas) { 
             
             return { std::cbrt(meas.value()) }; 
             
@@ -301,7 +282,7 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<UB.cbrt()> cbrt(measurement<UB>&& meas) { 
+        constexpr measurement<math::op::cbrt(UB)> cbrt(measurement<UB>&& meas) { 
             
             return { std::cbrt(meas.value()) }; 
             

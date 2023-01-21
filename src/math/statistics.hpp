@@ -80,7 +80,7 @@ namespace scipp::math {
             
             measurement<UB> average = std::accumulate(vec.begin(), vec.end(), measurement<UB>(0.)) / N;
             
-            measurement<UB.square()> sigma_sq;
+            measurement<math::op::square(UB)> sigma_sq;
 
             for (const measurement<UB>& x : vec) 
                 sigma_sq += op::square(x - average); 
@@ -106,7 +106,7 @@ namespace scipp::math {
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
             measurement<UB> average = std::accumulate(vec.begin(), vec.end(), umeasurement<UB>(0.)).as_measurement() / N;
-            measurement<UB.square()> sigma_sq;
+            measurement<math::op::square(UB)> sigma_sq;
 
             for (auto x : vec) 
                 sigma_sq += op::square(x - average); 
@@ -129,8 +129,8 @@ namespace scipp::math {
             if (vec.size() == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement<UB.inv()> weighted;
-            measurement<UB.square().inv()> weights;
+            measurement<math::op::inv(UB)> weighted;
+            measurement<math::op::square(math::op::inv(UB))> weights;
 
             for (const umeasurement<UB>& x : vec) {
                 weighted += x.as_measurement() * x.weight(); 
@@ -153,7 +153,7 @@ namespace scipp::math {
         constexpr measurement<UB> variance(const std::vector<measurement<UB>>& vec) {
 
             measurement<UB> average = average(vec);
-            measurement<UB.square()> sigma_sq; 
+            measurement<math::op::square(UB)> sigma_sq; 
 
             for (const measurement<UB>& x : vec) 
                 sigma_sq += op::square(x - average); 
@@ -176,7 +176,7 @@ namespace scipp::math {
             if (vec.size() == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement<UB.square().inv()> weights; 
+            measurement<math::op::square(math::op::inv(UB))> weights; 
             for (const umeasurement<UB>& x : vec) 
                 weights += x.weight(); 
             

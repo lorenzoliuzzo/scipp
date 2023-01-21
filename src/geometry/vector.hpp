@@ -690,9 +690,9 @@ namespace scipp::geometry {
                 * 
                 * @return constexpr vector 
                 */                
-            friend constexpr vector<UB.inv(), DIM> operator/(const scalar& scalar, const vector& vec) {
+            friend constexpr vector<math::op::inv(UB), DIM> operator/(const scalar& scalar, const vector& vec) {
 
-                std::array<measurement<UB.inv()>, DIM> result; 
+                std::array<measurement<math::op::inv(UB)>, DIM> result; 
                 for (std::size_t i{}; i < DIM; ++i)
                     result[i] = scalar / vec.data_[i]; 
                 
@@ -747,176 +747,6 @@ namespace scipp::geometry {
 
                 return file;
 
-            }
-
-
-        // =============================================
-        // operations
-        // =============================================
-
-            /**
-                * @brief Invert the vector
-                * 
-                * @return constexpr vector 
-                */
-            constexpr vector<UB.inv(), DIM> inv() const {
-
-                std::array<measurement<UB.inv()>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::inv(data_[i]); 
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the power of the vector
-                * 
-                * @param vec: vector as l-value const reference
-                * @param power: int
-                *  
-                * @return constexpr vector 
-                */
-            friend constexpr auto pow(const vector& vec, const int& power) noexcept {
-
-                std::array<measurement<UB.pow(power)>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::pow(vec.data_[i], power);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the square of the vector
-                * 
-                * @param vec: vector as l-value const reference
-
-            * @return constexpr vector 
-            */
-            friend constexpr vector<UB.square(), DIM> square(const vector& vec) noexcept {
-
-                std::array<measurement<UB.square()>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::square(vec.data_[i]);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the cube of the vector
-                * 
-                * @param vec: vector as l-value const reference
-                * 
-                * @return constexpr vector 
-                */
-            friend constexpr vector<UB.cube(), DIM> cube(const vector& vec) noexcept {
-
-                std::array<measurement<UB.cube()>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::cube(vec.data_[i]);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the root of the vector
-                * 
-                * @param vec: vector as l-value const reference
-                * @param power: int
-                * 
-                * @return constexpr vector 
-                */
-            friend constexpr auto root(const vector& vec, const int& power) {
-
-                std::array<measurement<UB.root(power)>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::root(vec.data_[i], power);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the square root of the vector
-                * 
-                * @param vec: vector as l-value const reference
-                * 
-                * @return constexpr vector 
-                */
-            friend constexpr auto sqrt(const vector& vec) {
-
-                std::array<measurement<UB.sqrt()>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::sqrt(vec.data_[i]);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Take the cube root of the vector
-                * 
-                * @param vec: vector as l-value const reference
-                * 
-                * @return constexpr vector 
-                */
-            friend constexpr auto cbrt(const vector& vec) {
-
-                std::array<measurement<UB.cbrt()>, DIM> result;
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = math::op::cbrt(vec.data_[i]);
-                
-                return result;
-
-            }
-
-
-            /**
-                * @brief Compute the cross product between two vectors
-                * 
-                * @param v1: vector as l-value const reference
-                * @param v2: vector as l-value const reference
-                * 
-                * @return constexpr vector 
-                */
-            template <unit_base UB2>
-            friend constexpr vector<UB * UB2, DIM> cross(const vector& v1, const vector<UB2, DIM>& v2) {
-
-                std::array<measurement<UB * UB2>, DIM> cross_vec;
-                for (std::size_t i{}; i < DIM; ++i) 
-                    cross_vec[i] = v1[(i + 1) % v1.size()] * v2[(i + 2) % v1.size()] - v1[(i + 2) % v1.size()] * v2[(i + 1) % v1.size()]; 
-
-                return cross_vec;
-            
-            }
-
-            
-            /**
-                * @brief Compute the dot product between two vectors
-                * 
-                * @param v1: vector as l-value const reference
-                * @param v2: vector as l-value const reference
-                * 
-                * @return constexpr vector 
-                */
-            template <unit_base UB2>
-            friend constexpr measurement<UB * UB2> dot(const vector& v1, const vector<UB2, DIM>& v2) noexcept {
-
-                measurement<UB * UB2> result;
-                for (std::size_t i{}; i < v1.size(); ++i)
-                    result += v1[i] * v2[i]; 
-                
-                return result;
-            
             }
 
 
@@ -1150,9 +980,9 @@ namespace scipp::geometry {
                 if constexpr (DIM == 1) 
                     return other.data_.at(0);
 
-                vector<UB.square(), DIM> squared = square(other);
+                vector<math::op::square(UB), DIM> squared = math::op::square(other);
 
-                return sqrt(std::accumulate(squared.data().begin(), squared.data().end(), measurement<UB.square()>(0.0)));
+                return sqrt(std::accumulate(squared.data().begin(), squared.data().end(), measurement<math::op::square(UB)>(0.0)));
 
             }
 
@@ -1169,9 +999,9 @@ namespace scipp::geometry {
                 if constexpr (DIM == 1) 
                     return other.data_.at(0);
 
-                vector<UB.square(), DIM> squared = square(other);
+                vector<math::op::square(UB), DIM> squared = math::op::square(other);
 
-                return math::op::sqrt(std::accumulate(squared.data().begin(), squared.data().end(), measurement<UB.square()>(0.0)));
+                return math::op::sqrt(std::accumulate(squared.data().begin(), squared.data().end(), measurement<math::op::square(UB)>(0.0)));
 
             }
 
@@ -1181,12 +1011,12 @@ namespace scipp::geometry {
                 * 
                 * @return constexpr measurement 
                 */
-            constexpr measurement<UB.square()> norm2() const noexcept { 
+            constexpr measurement<math::op::square(UB)> norm2() const noexcept { 
 
                 if constexpr (DIM == 1) 
                     return data_[0]; 
 
-                vector<UB.square(), DIM> squared(square(*this));
+                vector<math::op::square(UB), DIM> squared = math::op::square(*this);
 
                 return std::accumulate(squared.data().begin(), squared.data().end(), measurement{0.0, squared.units()});
                 

@@ -1558,16 +1558,5 @@ namespace scipp::measurements {
 
     }; // class umeasurement
     
-    
-    using length_um = umeasurement<basis::metre>; ///< length_um 
-    using time_um = umeasurement<basis::second>; ///< time_um 
-    using mass_um = umeasurement<basis::kilogram>; ///< mass_um 
-    using angle_um = umeasurement<basis::radian>; ///< angle_um 
-
-    using speed_um = umeasurement<basis::metre / basis::second>; ///< speed_um 
-    using acceleration_um = umeasurement<basis::metre / basis::second.square()>; ///< acceleration_um 
-    using force_um = umeasurement<basis::kilogram * basis::metre / basis::second.square()>; ///< force_um 
-    using energy_um = umeasurement<basis::kilogram * basis::metre.square() / basis::second.square()>; ///< energy_um 
-
 
 } // namespace scipp::measurements

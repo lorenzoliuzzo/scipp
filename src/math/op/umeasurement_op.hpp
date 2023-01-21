@@ -74,7 +74,7 @@ namespace scipp::math {
          * @note The uncertainty is not inverted
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.inv()> inv(const umeasurement<UB>& umeas) { 
+        constexpr umeasurement<math::op::inv(UB)> inv(const umeasurement<UB>& umeas) { 
             
             if (umeas.value() == 0) 
                 throw std::runtime_error("Cannot invert an umeasurement with a zero value");
@@ -95,7 +95,7 @@ namespace scipp::math {
          * @note The uncertainty is not inverted
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.inv()> inv(umeasurement<UB>&& umeas) { 
+        constexpr umeasurement<math::op::inv(UB)> inv(umeasurement<UB>&& umeas) { 
             
             if (umeas.value() == 0) 
                 throw std::runtime_error("Cannot invert an umeasurement with a zero value");
@@ -116,7 +116,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto pow(const umeasurement<UB>& umeas, const int& power) noexcept { 
             
-            return umeasurement<UB.pow(power)>(std::pow(umeas.value(), power), std::fabs(power * std::pow(umeas.value(), power - 1)) * umeas.uncertainty(), unit(UB.pow(power)));
+            return umeasurement<math::op::pow(UB, power)>(std::pow(umeas.value(), power), std::fabs(power * std::pow(umeas.value(), power - 1)) * umeas.uncertainty(), unit(math::op::pow(UB, power)));
             
         }        
         
@@ -132,7 +132,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto pow(umeasurement<UB>&& umeas, const int& power) noexcept { 
             
-            return umeasurement<UB.pow(power)>(std::pow(umeas.value(), power), std::fabs(power * std::pow(umeas.value(), power - 1)) * umeas.uncertainty(), unit(UB.pow(power)));
+            return umeasurement<math::op::pow(UB, power)>(std::pow(umeas.value(), power), std::fabs(power * std::pow(umeas.value(), power - 1)) * umeas.uncertainty(), unit(math::op::pow(UB, power)));
             
         }
 
@@ -145,7 +145,7 @@ namespace scipp::math {
          * @return umeasurement 
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.square()> square(const umeasurement<UB>& umeas) noexcept { 
+        constexpr umeasurement<math::op::square(UB)> square(const umeasurement<UB>& umeas) noexcept { 
             
             return { std::pow(umeas.value(), 2), 2. * std::fabs(umeas.value()) * umeas.uncertainty() }; 
             
@@ -160,7 +160,7 @@ namespace scipp::math {
          * @return umeasurement 
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.square()> square(umeasurement<UB>&& umeas) noexcept { 
+        constexpr umeasurement<math::op::square(UB)> square(umeasurement<UB>&& umeas) noexcept { 
             
             return { std::pow(umeas.value(), 2), 2. * std::fabs(umeas.value()) * umeas.uncertainty() }; 
             
@@ -175,7 +175,7 @@ namespace scipp::math {
          * @return umeasurement 
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.cube()> cube(const umeasurement<UB>& umeas) noexcept { 
+        constexpr umeasurement<math::op::cube(UB)> cube(const umeasurement<UB>& umeas) noexcept { 
             
             return { std::pow(umeas.value(), 3), 3. * std::fabs(umeas.value()) * umeas.uncertainty() }; 
             
@@ -190,7 +190,7 @@ namespace scipp::math {
          * @return umeasurement 
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.cube()> cube(umeasurement<UB>&& umeas) noexcept { 
+        constexpr umeasurement<math::op::cube(UB)> cube(umeasurement<UB>&& umeas) noexcept { 
             
             return { std::pow(umeas.value(), 3), 3. * std::fabs(umeas.value()) * umeas.uncertainty() }; 
             
@@ -208,7 +208,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto root(const umeasurement<UB>& umeas, const int& power) { 
             
-            return umeasurement<UB.root(power)>(std::pow(umeas.value(), 1.0 / power), std::fabs(std::pow(umeas.value(), 1.0 / power - 1)) * umeas.uncertainty() / power, unit(UB.root(power))); 
+            return umeasurement<math::op::root(UB, power)>(std::pow(umeas.value(), 1.0 / power), std::fabs(std::pow(umeas.value(), 1.0 / power - 1)) * umeas.uncertainty() / power, unit(math::op::root(UB, power))); 
             
         }
 
@@ -224,7 +224,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr auto root(umeasurement<UB>&& umeas, const int& power) { 
             
-            return umeasurement<UB.root(power)>(std::pow(umeas.value(), 1.0 / power), std::fabs(std::pow(umeas.value(), 1.0 / power - 1)) * umeas.uncertainty() / power, unit(UB.root(power))); 
+            return umeasurement<math::op::root(UB, power)>(std::pow(umeas.value(), 1.0 / power), std::fabs(std::pow(umeas.value(), 1.0 / power - 1)) * umeas.uncertainty() / power, unit(math::op::root(UB, power))); 
             
         }
 
@@ -237,7 +237,7 @@ namespace scipp::math {
          * @return umeasurement
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.sqrt()> sqrt(const umeasurement<UB>& umeas) { 
+        constexpr umeasurement<math::op::sqrt(UB)> sqrt(const umeasurement<UB>& umeas) { 
             
             return { std::sqrt(umeas.value()), umeas.uncertainty() / (2. * std::sqrt(umeas.value())) }; 
             
@@ -252,7 +252,7 @@ namespace scipp::math {
          * @return umeasurement
          */
         template <unit_base UB>
-        constexpr umeasurement<UB.sqrt()> sqrt(umeasurement<UB>&& umeas) { 
+        constexpr umeasurement<math::op::sqrt(UB)> sqrt(umeasurement<UB>&& umeas) { 
             
             return { std::sqrt(umeas.value()), umeas.uncertainty() / (2. * std::sqrt(umeas.value())) }; 
             
@@ -267,7 +267,7 @@ namespace scipp::math {
          * @return umeasurement
          */               
         template <unit_base UB>
-        constexpr umeasurement<UB.cbrt()> cbrt(const umeasurement<UB>& umeas) { 
+        constexpr umeasurement<math::op::cbrt(UB)> cbrt(const umeasurement<UB>& umeas) { 
             
             return { std::cbrt(umeas.value()), std::pow(umeas.value(), - 2. / 3.) * umeas.uncertainty() / 3. };
             
@@ -282,7 +282,7 @@ namespace scipp::math {
          * @return umeasurement
          */               
         template <unit_base UB>
-        constexpr umeasurement<UB.cbrt()> cbrt(umeasurement<UB>&& umeas) { 
+        constexpr umeasurement<math::op::cbrt(UB)> cbrt(umeasurement<UB>&& umeas) { 
             
             return { std::cbrt(umeas.value()), std::pow(umeas.value(), - 2. / 3.) * umeas.uncertainty() / 3. };
             

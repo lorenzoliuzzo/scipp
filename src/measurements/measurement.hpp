@@ -589,7 +589,7 @@ namespace scipp::measurements {
              * 
              * @return constexpr measurement 
              */
-            friend constexpr measurement<UB.inv()> operator/(const scalar& scal, 
+            friend constexpr measurement<math::op::inv(UB)> operator/(const scalar& scal, 
                                                              const measurement& meas) { 
 
                 if (meas.value_ == 0.0) 
@@ -608,7 +608,7 @@ namespace scipp::measurements {
              * 
              * @return constexpr measurement 
              */
-            friend constexpr measurement<UB.inv()> operator/(scalar&& scal, 
+            friend constexpr measurement<math::op::inv(UB)> operator/(scalar&& scal, 
                                                              measurement&& meas) { 
 
                 if (meas.value_ == 0.0) 
@@ -994,22 +994,6 @@ namespace scipp::measurements {
         return { value, units }; 
 
     }
-
-
-    using scalar_m = measurement<basis::scalar>;                                                    ///< scalar_m
-    using length_m = measurement<basis::metre>;                                                     ///< length_m 
-    using time_m = measurement<basis::second>;                                                      ///< time_m 
-    using mass_m = measurement<basis::kilogram>;                                                    ///< mass_m 
-    using angle_m = measurement<basis::radian>;                                                     ///< angle_m 
-    using temperature_m = measurement<basis::Kelvin>;                                               ///< temperature_m
-    using current_m = measurement<basis::Ampere>;                                                   ///< current_m
-    using luminous_intensity_m = measurement<basis::candela>;                                       ///< luminous_intensity_m
-    using mole_m = measurement<basis::mole>;                                                        ///< mole_m
-
-    using speed_m = measurement<basis::metre / basis::second>;                                      ///< speed_m 
-    using acceleration_m = measurement<basis::metre / basis::second.square()>;                      ///< acceleration_m 
-    using force_m = measurement<basis::kilogram * basis::metre / basis::second.square()>;           ///< force_m 
-    using energy_m = measurement<basis::kilogram * basis::metre.square() / basis::second.square()>; ///< energy_m 
 
 
 } // namespace scipp::measurements

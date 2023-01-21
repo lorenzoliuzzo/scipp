@@ -20,8 +20,8 @@ int main() {
     std::cout << "delta: " << x - y << '\n'; 
 
     std::cout << "norm: " << norm(x + y) << '\n';
-    std::cout << "dot: " << dot(x, y) << '\n';
-    std::cout << "cross: " << cross(x, y) << '\n';
+    std::cout << "dot: " << math::op::dot(x, y) << '\n';
+    std::cout << "cross: " << math::op::cross(x, y) << '\n';
 
 
     return 0; 

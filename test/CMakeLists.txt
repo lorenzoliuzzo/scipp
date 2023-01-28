@@ -1,14 +1,3 @@
-add_executable(measurement_test ${CMAKE_CURRENT_SOURCE_DIR}/measurement.cpp)  
-target_link_libraries(measurement_test PRIVATE ${PROJECT_NAME})
 
-add_executable(umeasurement_test ${CMAKE_CURRENT_SOURCE_DIR}/umeasurement.cpp)  
-target_link_libraries(umeasurement_test PRIVATE ${PROJECT_NAME})
-
-add_executable(bench_measurements ${CMAKE_CURRENT_SOURCE_DIR}/bench/bench.cpp)  
-target_link_libraries(bench_measurements PRIVATE ${PROJECT_NAME})
-
-add_executable(sizes ${CMAKE_CURRENT_SOURCE_DIR}/sizes.cpp)  
-target_link_libraries(sizes PRIVATE ${PROJECT_NAME})
-
-add_executable(vector_types ${CMAKE_CURRENT_SOURCE_DIR}/vector_types.cpp)  
-target_link_libraries(vector_types PRIVATE ${PROJECT_NAME})
+add_executable(meta_units_test ${CMAKE_CURRENT_SOURCE_DIR}/meta_units.cpp)  
+target_link_libraries(meta_units_test PRIVATE ${PROJECT_NAME})

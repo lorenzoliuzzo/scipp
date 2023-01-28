@@ -10,8 +10,6 @@
 
 #pragma once
 
-#include <chrono>
-
 
 namespace scipp::tools {
 
@@ -73,6 +71,58 @@ namespace scipp::tools {
 
 
     /// @brief Class for timing the execution of a generic function/process
+    class omp_timer {
+
+        
+        public:
+
+        // =============================================
+        // constructor and destructor
+        // =============================================   
+
+            /// @brief Default destructor
+            ~omp_timer() = default;
+
+        
+        // =============================================
+        // omp_timer methods
+        // =============================================   
+
+
+            inline void start() {
+
+                start_ = omp_get_wtime();
+
+            }
+
+
+            inline void stop() {
+
+                stop_ = omp_get_wtime();
+
+            }
+
+
+            constexpr time_m elapsed() {
+
+                return (stop_ - start_) * s;
+            
+            }             
+
+
+        protected: 
+
+            // =============================================
+            // class members
+            // =============================================     
+
+            double start_, stop_;
+
+
+    }; // class timer
+
+
+    /// @brief Class for timing the execution of a generic function/process
     class cpu_timer {
 
         
@@ -118,7 +168,7 @@ namespace scipp::tools {
 
             constexpr time_m elapsed() const {
 
-                return (stop_ - start_) / (1.8 * GHz);
+                return static_cast<double>(stop_ - start_) / (1.8 * GHz);
             
             }             
 

@@ -4,12 +4,12 @@ project(sci++ VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-std=c++2a -O3 -g -Wall --pedantic -pthread")
+set(CMAKE_CXX_FLAGS "-std=c++2a -O0 -g -Wall --pedantic -pthread -fopenmp -pg")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 add_library(${PROJECT_NAME} 
-    SHARED 
+    STATIC   
         ${PROJECT_SOURCE_DIR}/include/sci++.hpp)
 
 target_link_libraries(${PROJECT_NAME} 

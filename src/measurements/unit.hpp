@@ -372,7 +372,7 @@ namespace scipp::measurements {
                  */
                 constexpr scalar prefix() const noexcept {
 
-                    return prefix_; 
+                    return this->prefix_; 
 
                 }
 
@@ -382,7 +382,7 @@ namespace scipp::measurements {
                  * 
                  * @return consteval unit_base& 
                  */
-                consteval unit_base base() const noexcept {
+                static consteval unit_base base() {
 
                     return UB; 
 

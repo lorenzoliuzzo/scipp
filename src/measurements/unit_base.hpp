@@ -417,46 +417,63 @@ namespace scipp::measurements {
                     
                     std::string unit_base_string;   
                     
-                    if (this->metre_ == 1) 
-                        unit_base_string.append("m");
-                    else if (this->metre_ != 0) 
-                        unit_base_string.append("m^" + std::to_string(metre_)); 
+                    if (this->metre_ != 0) {
+                        if (this->metre_ == 1) 
+                            unit_base_string.append("m");
+                        else 
+                            unit_base_string.append("m^" + std::to_string(metre_)); 
+                    }
 
-                    if (this->second_ == 1) 
-                        unit_base_string.append("s"); 
-                    else if (this->second_ != 0) 
-                        unit_base_string.append("s^" + std::to_string(second_)); 
+                    if (this->second_ != 0) {
+                        if (this->second_ == 1) 
+                            unit_base_string.append("s"); 
+                        else 
+                            unit_base_string.append("s^" + std::to_string(second_)); 
+                    }
 
-                    if (this->kilogram_ == 1) 
-                        unit_base_string.append("kg"); 
-                    else if (this->kilogram_ != 0)    
-                        unit_base_string.append("kg^" + std::to_string(kilogram_)); 
+                    if (this->kilogram_ != 0) { 
+                        if (this->kilogram_ == 1) 
+                            unit_base_string.append("kg"); 
+                        else 
+                            unit_base_string.append("kg^" + std::to_string(kilogram_)); 
+                    }
 
-                    if (this->ampere_ == 1) 
-                        unit_base_string.append("A"); 
-                    else if (this->ampere_ != 0)  
-                        unit_base_string.append("A^" + std::to_string(ampere_)); 
+                    if (this->ampere_ != 0) {
+                        if (this->ampere_ == 1) 
+                            unit_base_string.append("A"); 
+                        else 
+                            unit_base_string.append("A^" + std::to_string(ampere_)); 
+                    }
 
-                    if (this->kelvin_ == 1) 
-                        unit_base_string.append("K");
-                    else if (this->kelvin_ != 0) 
-                        unit_base_string.append("K^" + std::to_string(kelvin_)); 
+                    if (this->kelvin_ != 0) {
+                        if (this->kelvin_ == 1) 
+                            unit_base_string.append("K");
+                        else 
+                            unit_base_string.append("K^" + std::to_string(kelvin_)); 
+                    }
 
-                    if (this->mole_ == 1) 
-                        unit_base_string.append("mol"); 
-                    else if (this->mole_ != 0) 
-                        unit_base_string.append("mol^" + std::to_string(mole_)); 
+                    if (this->mole_ != 0) {
+                        if (this->mole_ == 1) 
+                            unit_base_string.append("mol"); 
+                        else 
+                            unit_base_string.append("mol^" + std::to_string(mole_)); 
+                    }
 
-                    if (this->candela_ == 1) 
-                        unit_base_string.append("cd"); 
-                    else if (this->candela_ != 0) 
-                        unit_base_string.append("cd^" + std::to_string(candela_)); 
+                    if (this->candela_ != 0) {
+                        if (this->candela_ == 1) 
+                            unit_base_string.append("cd"); 
+                        else 
+                            unit_base_string.append("cd^" + std::to_string(candela_)); 
+                    }
 
-                    if (this->radian_ == 1) 
-                        unit_base_string.append("rad"); 
-                    else if (this->radian_ != 0) 
-                        unit_base_string.append("rad^" + std::to_string(radian_)); 
+                    if (this->radian_ != 0) {
+                        if (this->radian_ == 1) 
+                            unit_base_string.append("rad"); 
+                        else 
+                            unit_base_string.append("rad^" + std::to_string(radian_)); 
                     
+                    }
+
                     return unit_base_string; 
                 
                 }
@@ -508,6 +525,28 @@ namespace scipp::measurements {
 
             constexpr unit_base radian(0, 0, 0, 0, 0, 0, 0, 1); //< radian unit_base
         
+
+            constexpr unit_base metre2(2, 0, 0, 0, 0, 0, 0, 0); //< metre2 unit_base
+            
+            constexpr unit_base second2(0, 2, 0, 0, 0, 0, 0, 0); //< second2 unit_base
+            
+            constexpr unit_base kilogram2(0, 0, 2, 0, 0, 0, 0, 0); //< kilogram2 unit_base
+            
+            constexpr unit_base Ampere2(0, 0, 0, 2, 0, 0, 0, 0); //< Ampere2 unit_base
+            
+            constexpr unit_base Kelvin2(0, 0, 0, 0, 2, 0, 0, 0); //< Kelvin2 unit_base
+            
+
+            constexpr unit_base metre3(3, 0, 0, 0, 0, 0, 0, 0); //< metre3 unit_base
+            
+            constexpr unit_base second3(0, 3, 0, 0, 0, 0, 0, 0); //< second3 unit_base
+            
+            constexpr unit_base kilogram3(0, 0, 3, 0, 0, 0, 0, 0); //< kilogram3 unit_base
+            
+            constexpr unit_base Ampere3(0, 0, 0, 3, 0, 0, 0, 0); //< Ampere3 unit_base
+            
+            constexpr unit_base Kelvin3(0, 0, 0, 0, 3, 0, 0, 0); //< Kelvin3 unit_base
+
 
         } // namespace basis
 

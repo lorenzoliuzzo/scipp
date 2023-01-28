@@ -195,7 +195,7 @@ namespace scipp {
                      * 
                      * @return std::size_t 
                      */
-                    constexpr std::size_t dimesions() const noexcept {
+                    static constexpr std::size_t dimesions() {
 
                         return DIM; 
 

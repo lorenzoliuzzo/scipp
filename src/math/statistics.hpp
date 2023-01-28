@@ -20,18 +20,18 @@ namespace scipp::math {
         /**
          * @brief Compute the median of a vector of measurements
          * 
-         * @param vec: vector of measurements
+         * @param other: vector of measurements
          * 
          * @return measurement 
          */
         template <unit_base UB>
-        measurement<UB> median(const std::vector<measurement<UB>>& vec) {
+        measurement<UB> median(const std::vector<measurement<UB>>& other) {
 
-            std::size_t N{vec.size()}; 
+            std::size_t N{other.size()}; 
             if (N == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
 
-            std::vector<measurement<UB>> copy{vec}; 
+            std::vector<measurement<UB>> copy{other}; 
             if (!std::is_sorted(copy.begin(), copy.end())) 
                 std::sort(copy.begin(), copy.end());
 
@@ -47,18 +47,17 @@ namespace scipp::math {
         /**
          * @brief Compute the average value of a vector of measurements
          * 
-         * @param vec: vector of measurements
+         * @param other: vector of measurements
          * 
          * @return umeasurement
          */
         template <unit_base UB>
-        constexpr measurement<UB> average(const std::vector<measurement<UB>>& vec) {
+        constexpr measurement<UB> average(const std::vector<measurement<UB>>& other) {
 
-            std::size_t N{vec.size()}; 
-            if (N == 0) 
+            if (other.size() == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            return std::accumulate(vec.begin(), vec.end(), measurement<UB>(0.)) / N;
+            return std::accumulate(other.begin(), other.end(), measurement<UB>()) / other.size();
 
         }
 
@@ -74,15 +73,18 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr umeasurement<UB> mean(const std::vector<measurement<UB>>& vec) {
 
+            std::cout << "Yes, come on\n"; 
             std::size_t N{vec.size()}; 
             if (N == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
-            measurement<UB> average = std::accumulate(vec.begin(), vec.end(), measurement<UB>(0.)) / N;
-            
+            measurement<UB> average = std::accumulate(vec.begin(), vec.end(), measurement<UB>()) / N;
             measurement<math::op::square(UB)> sigma_sq;
+            
 
+            #pragma omp parallel for
             for (const measurement<UB>& x : vec) 
+                #pragma omp critical
                 sigma_sq += op::square(x - average); 
 
             return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 
@@ -102,13 +104,15 @@ namespace scipp::math {
         constexpr umeasurement<UB> mean(const std::vector<umeasurement<UB>>& vec) {
 
             std::size_t N{vec.size()}; 
-            if (N == 0) 
+            if (N < 2) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
             
             measurement<UB> average = std::accumulate(vec.begin(), vec.end(), umeasurement<UB>(0.)).as_measurement() / N;
             measurement<math::op::square(UB)> sigma_sq;
 
+            #pragma omp parallel for
             for (auto x : vec) 
+                #pragma omp critical
                 sigma_sq += op::square(x - average); 
 
             return { average, op::sqrt(sigma_sq / (N * (N - 1))) };                 

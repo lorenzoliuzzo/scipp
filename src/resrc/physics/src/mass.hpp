@@ -265,7 +265,7 @@ namespace scipp::physics {
              * 
              * @return constexpr size_t 
              */
-            constexpr size_t dim() const noexcept {
+            static constexpr size_t dim() {
 
                 return DIM; 
 

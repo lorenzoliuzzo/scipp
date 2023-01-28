@@ -9,7 +9,7 @@
 
 
 #include "sci++.hpp"
-#include "../plot/gplot++.hpp"
+#include "../../src/tools/gplot++.h"
 #include <thread>
 
 

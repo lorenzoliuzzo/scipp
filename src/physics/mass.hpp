@@ -36,19 +36,36 @@ namespace scipp::physics {
              * @param pos: position<DIM> vector
              * @param vel: lin_velocity vector
              * @param acc: lin_acceleration vector
+             */
+            constexpr mass(const mass_m& mass, 
+                           const position<DIM>& pos = position<DIM>(), 
+                           const lin_velocity<DIM>& vel = lin_velocity<DIM>(), 
+                           const lin_acceleration<DIM>& acc = lin_acceleration<DIM>()) : 
+                           
+                mass_(mass),
+                position_(pos),
+                lin_velocity_(vel),
+                lin_acceleration_(acc) {}
+
+
+            /**
+             * @brief Construct a new mass object
+             * 
+             * @param m: mass_m of mass
+             * @param pos: position<DIM> vector
+             * @param vel: lin_velocity vector
+             * @param acc: lin_acceleration vector
              * 
              */
-            mass(mass_m&& mass_meas, 
+            constexpr mass(mass_m&& mass, 
                            position<DIM>&& pos = position<DIM>(), 
                            lin_velocity<DIM>&& vel = lin_velocity<DIM>(), 
-                           lin_acceleration<DIM>&& acc = lin_acceleration<DIM>()) {
+                           lin_acceleration<DIM>&& acc = lin_acceleration<DIM>()) :
 
-                this->mass_ = std::move(mass_meas);
-                this->position_ = std::move(pos);
-                this->lin_velocity_ = std::move(vel);
-                this->lin_acceleration_ = std::move(acc);
-
-            }
+                mass_(mass),
+                position_(pos),
+                lin_velocity_(vel),
+                lin_acceleration_(acc) {}
 
 
             /**
@@ -169,9 +186,9 @@ namespace scipp::physics {
             /**
              * @brief Get the mass measurement 
              * 
-             * @return constexpr mass_measurement 
+             * @return constexpr mass_m
              */
-            constexpr mass_m as_mass_measurement() const noexcept { 
+            constexpr mass_m as_mass_m() const noexcept { 
                 
                 return mass_; 
                 
@@ -183,7 +200,7 @@ namespace scipp::physics {
              * 
              * @return constexpr measurement& 
              */
-            constexpr mass_m& as_mass_measurement() noexcept {
+            constexpr mass_m& as_mass_m() noexcept {
 
                 return mass_; 
 
@@ -267,7 +284,7 @@ namespace scipp::physics {
              * 
              * @return constexpr size_t 
              */
-            constexpr size_t dim() const noexcept {
+            static constexpr size_t dim() {
 
                 return DIM; 
 
@@ -356,7 +373,7 @@ namespace scipp::physics {
              */
             constexpr energy_m kinetic_energy() const { 
                 
-                return 0.5 * mass_ * lin_velocity_.norm2(); 
+                return 0.5 * mass_ * math::op::norm2(lin_velocity_);
                 
             }
 
@@ -376,9 +393,9 @@ namespace scipp::physics {
             constexpr void print() const noexcept {
 
                 std::cout << "\nmass = " << mass_ << '\n'; 
-                position_.print(); 
-                lin_velocity_.print(); 
-                lin_acceleration_.print();
+                std::cout << "position = " << position_ << '\n'; 
+                std::cout << "lin_velocity = " << lin_velocity_ << '\n';
+                std::cout << "lin_acceleration = " << lin_acceleration_ << "\n\n";
 
             }               
 

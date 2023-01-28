@@ -100,7 +100,7 @@ namespace scipp::measurements {
              * 
              * @param other: measurement as l-value const reference
              */
-            consteval measurement(const measurement& other) noexcept : 
+            constexpr measurement(const measurement& other) noexcept : 
             
                 value_{other.value_} {}
                 
@@ -878,7 +878,7 @@ namespace scipp::measurements {
              * 
              * @return constexpr unit_base&
              */
-            constexpr unit_base base() const noexcept {
+            static constexpr unit_base base() {
 
                 return UB; 
 

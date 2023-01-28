@@ -27,7 +27,7 @@ namespace scipp::physics {
 
         constexpr measurement mu0(1.25663706212e-6, N / math::op::square(A)); ///< magnetic permeability of vacuum
 
-        constexpr measurement eps0 = 1 / (mu0 * math::op::square(c)); ///< electric permittivity of vacuum
+        constexpr measurement eps0 = 1. / (mu0 * math::op::square(c)); ///< electric permittivity of vacuum
 
         constexpr measurement e(1.602176634e-19, C); ///< elementary charge
 

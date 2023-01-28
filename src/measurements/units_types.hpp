@@ -22,7 +22,7 @@ namespace scipp::measurements {
         /// @brief Namespace units type aliases
         namespace types {
 
-
+            
             using scalar_unit = unit<basis::scalar>;
             using length_unit = unit<basis::metre>; 
             using time_unit = unit<basis::second>; 

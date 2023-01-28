@@ -237,9 +237,9 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<math::op::sqrt(UB)> sqrt(const measurement<UB>& meas) { 
+        inline auto sqrt(const measurement<UB>& meas) { 
             
-            return { std::sqrt(meas.value()) }; 
+            return measurement<op::sqrt(UB)>(std::sqrt(meas.value())); 
             
         }
 
@@ -252,9 +252,9 @@ namespace scipp::math {
          * @return measurement
          */
         template <unit_base UB>
-        constexpr measurement<math::op::sqrt(UB)> sqrt(measurement<UB>&& meas) { 
+        constexpr auto sqrt(measurement<UB>&& meas) { 
             
-            return { std::sqrt(meas.value()) }; 
+            return measurement<op::sqrt(UB)>(std::sqrt(meas.value())); 
             
         }
 

@@ -43,7 +43,9 @@
 
     #include "measurements/measurements_types.hpp"
 
-    #include "measurements/meta_units.hpp"
+    #include "meta_measurements/base.hpp"
+    #include "meta_measurements/prefix.hpp"
+    #include "meta_measurements/unit.hpp"
     
 
     #include "geometry/vector.hpp"

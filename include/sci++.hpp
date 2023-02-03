@@ -23,6 +23,7 @@
     #include <omp.h>
     #include <stdexcept>
     #include <string>
+    #include <thread>
     #include <vector>
 
 
@@ -46,6 +47,8 @@
     #include "meta_measurements/base.hpp"
     #include "meta_measurements/prefix.hpp"
     #include "meta_measurements/unit.hpp"
+    #include "meta_measurements/measurement.hpp"
+    #include "meta_measurements/types.hpp"
     
 
     #include "geometry/vector.hpp"

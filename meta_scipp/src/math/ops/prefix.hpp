@@ -2,7 +2,7 @@
  * @file    prefix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-30
+ * @date    2023-01-31
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,34 +11,32 @@
 #pragma once
 
 
-/// @brief measurements namespace contains all the classes and functions of the measurements library
-namespace scipp::measurements {
+namespace scipp::physics {
 
-    
-    /// @brief units namespace contains all the units of the measurements library
-    namespace meta_units {
+
+    namespace units {
 
 
         template <typename ratio1, typename ratio2>
-        struct ratio_product {
+        struct ratio_prod {
 
             using type = std::ratio<ratio1::num * ratio2::num, ratio1::den * ratio2::den>; 
 
         }; 
 
         template <typename ratio1, typename ratio2>
-        using ratio_product_t = typename ratio_product<ratio1, ratio2>::type; 
+        using ratio_prod_t = typename ratio_prod<ratio1, ratio2>::type; 
 
 
         template <typename ratio1, typename ratio2>
-        struct ratio_division {
+        struct ratio_div {
 
             using type = std::ratio<ratio1::num / ratio2::num, ratio1::den / ratio2::den>; 
 
         }; 
 
         template <typename ratio1, typename ratio2>
-        using ratio_division_t = typename ratio_division<ratio1, ratio2>::type; 
+        using ratio_div_t = typename ratio_div<ratio1, ratio2>::type; 
 
 
         template <typename ratio, int power>
@@ -63,7 +61,7 @@ namespace scipp::measurements {
         using ratio_root_t = typename ratio_root<ratio, power>::type;
 
 
-    } // namespace meta_units
+    } // namespace units
 
 
-} // namespace scipp::measurements
+} // namespace scipp::physics

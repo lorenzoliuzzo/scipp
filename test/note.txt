@@ -28,3 +28,6 @@ target_link_libraries(stat_test PRIVATE ${PROJECT_NAME})
 
 add_executable(integral_test ${CMAKE_CURRENT_SOURCE_DIR}/integrals.cpp)  
 target_link_libraries(integral_test PRIVATE ${PROJECT_NAME})
+
+add_executable(bench ${CMAKE_CURRENT_SOURCE_DIR}/bench/bench.cpp)  
+target_link_libraries(bench PRIVATE ${PROJECT_NAME})

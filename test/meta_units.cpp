@@ -12,91 +12,128 @@
 
 
 using namespace scipp::measurements::meta_units;
-using namespace scipp; 
+
+
+void omp_bench() {
+
+
+    scipp::tools::omp_timer timer;
+
+    timer.start();
+    measurement x(3.24, m); 
+    timer.stop();
+    std::cout << "Time 1: " << timer.elapsed() << '\n';
+
+    timer.start();
+    auto y = x * x;
+    timer.stop();
+    std::cout << "Time 2: " << timer.elapsed() << '\n';
+
+    timer.start();
+    std::cout << x << '\n';
+    timer.stop();
+    std::cout << "Time for a stamp: " << timer.elapsed() << '\n';
+
+    std::cout << y << '\n';
+
+    timer.start();
+    meta_measurement<meta_metre> meta_x(3.24, __units::m);
+    timer.stop();
+    std::cout << "Time 1: " << timer.elapsed() << '\n';
+
+    timer.start();
+    auto meta_y = meta_x * meta_x;
+    timer.stop();
+    std::cout << "Time 2: " << timer.elapsed() << '\n';
+
+    timer.start();
+    std::cout << meta_x << '\n'; 
+    timer.stop();
+    std::cout << "Time for a stamp: " << timer.elapsed() << '\n';
+
+    std::cout << meta_y << '\n'; 
+
+}
+
+
+void cpu_bench() {
+
+
+    scipp::tools::cpu_timer timer;
+
+    timer.start();
+    measurement x(3.24, m); 
+    timer.stop();
+    std::cout << "Time 1: " << timer.elapsed() << '\n';
+
+    timer.start();
+    auto y = x * x;
+    timer.stop();
+    std::cout << "Time 2: " << timer.elapsed() << '\n';
+
+    timer.start();
+    std::cout << x << '\n';
+    timer.stop();
+    std::cout << "Time for a stamp: " << timer.elapsed() << '\n';
+
+    std::cout << y << '\n';
+
+    timer.start();
+    meta_measurement<meta_metre> meta_x(3.24, __units::m);
+    timer.stop();
+    std::cout << "Time 1: " << timer.elapsed() << '\n';
+
+    timer.start();
+    auto meta_y = meta_x * meta_x;
+    timer.stop();
+    std::cout << "Time 2: " << timer.elapsed() << '\n';
+
+    timer.start();
+    std::cout << meta_x << '\n'; 
+    timer.stop();
+    std::cout << "Time for a stamp: " << timer.elapsed() << '\n';
+
+    std::cout << meta_y << '\n'; 
+
+}
 
 
 int main() {
 
+    // omp_bench();
 
-    tools::cpu_timer timer_cpu;
-    tools::omp_timer timer_omp;
-
-
-    std::cout << "evaluating the overhead\n";
-    timer_cpu.start();
-    timer_cpu.stop();
-    std::cout << "fucked cpu elapsed: " << timer_cpu.elapsed() << '\n';
-
-    timer_omp.start();
-    timer_omp.stop();
-    std::cout << "fucked omp elapsed: " << timer_omp.elapsed() << "\n\n";
-
-    timer_omp.start(); 
-    meta_base<1, 0, 0, 0, 0, 0, 0, 0> meta_metre2;
-    timer_omp.stop();
-    std::cout << "meta_metre2 elapsed: " << timer_omp.elapsed() << '\n';
-    std::cout << meta_metre2 << '\n';
-
-    timer_omp.start(); 
-    auto meta_metre3 = meta_metre();
-    timer_omp.stop();
-    std::cout << "meta_metre3 elapsed: " << timer_omp.elapsed() << '\n';
-    std::cout << meta_metre3 << '\n';
-
-    timer_omp.start();
-    meta_unit<decltype(meta_metre3), std::milli> meta_millimetre_u1;
-    timer_omp.stop();
-    std::cout << "meta_millimetre_u1 elapsed: " << timer_omp.elapsed() << '\n'; 
-
-    std::cout << meta_millimetre_u1.mult << '\n';
-    std::cout << decltype(meta_millimetre_u1)::mult << '\n';
-    std::cout << meta_millimetre_u1 << '\n';
-
-    timer_omp.start();
-    meta_unit<meta_metre, std::centi> meta_centimetre_u1;
-    timer_omp.stop();
-    std::cout << "meta_centimetre_u1 elapsed: " << timer_omp.elapsed() << '\n'; 
-
-
-    std::cout << "meta_centimetre_u1: " << decltype(meta_centimetre_u1)::mult << meta_centimetre_u1 << '\n';
-
-    // std::cout << "meta_kilometre_u1: " << _kilo_metre::factor() << _kilo_metre::to_string() << '\n';
-
-
-    timer_omp.start();
-    measurement m1(1.0, km);
-    timer_omp.stop();
-    std::cout << "m1 elapsed: " << timer_omp.elapsed() << '\n';
-    timer_omp.start();
-    // meta_measurement m3(1.0, _km);
-    timer_omp.stop();
-    std::cout << "m2 elapsed: " << timer_omp.elapsed() << '\n';
-
-
-    std::cout << ratio_product_t<std::milli, std::milli>::den << '\n'; 
-
-    timer_omp.start();
-    auto x = base_product<meta_metre, meta_second>(); 
-    timer_omp.stop();
-    std::cout << "1 elapsed: " << timer_omp.elapsed() << '\n'; 
-
-    timer_omp.start();
-
-    timer_omp.stop();
-    std::cout << "2 elapsed: " << timer_omp.elapsed() << '\n'; 
-
-
-    std::cout << __units::km << '\n';
-    std::cout << __units::km.mult << '\n';
-
-    std::cout << __units::km * __units::km << '\n';
+    // std::cout << '\n'; 
     
-    // std::cout << decltype(km2)::mult << '\n'; 
-    // std::cout << km2 << '\n'; 
-    std::cout << base::metre * base::second << '\n'; 
+    // cpu_bench(); 
 
 
-    return 0; 
+    meta_measurement x(3.24, (__units::s / __units::m));
+    std::cout << x << '\n';
 
+    meta_measurement y(3.24, __units::m);
+    std::cout << y << '\n';
+
+    meta_measurement z = x / y;
+    std::cout << z << '\n';
+    std::cout << y.to_string(__units::km) << '\n';
+    // static_assert(std::is_same_v<decltype(z), meta_measurement<metre_per_second>()>);
+
+    std::cout << x * y << '\n';
+
+
+
+    std::cout << __units::kg.to_string() << '\n';
+
+    std::cout << sizeof(meta_kilogram) << '\n';
+    std::cout << sizeof(decltype(__units::kg)) << '\n';
+    std::cout << sizeof(decltype(x)) << '\n'; 
+
+
+    std::cout << convert(32.3, __units::m, __units::km) * __units::km << '\n';
+    // std::cout << __units::km.to_base(345) << '\n';
+    
+
+
+    return 0;
 
 }

@@ -73,7 +73,6 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr umeasurement<UB> mean(const std::vector<measurement<UB>>& vec) {
 
-            std::cout << "Yes, come on\n"; 
             std::size_t N{vec.size()}; 
             if (N == 0) 
                 throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 

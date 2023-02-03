@@ -2,15 +2,13 @@
  * @file    bench.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2022-12-11
+ * @date    2023-01-31
  * 
  * @copyright Copyright (c) 2023
  */
 
 
 #pragma once
-
-#include <functional>
 
 
 namespace scipp::tools {

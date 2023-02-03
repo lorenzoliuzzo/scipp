@@ -61,6 +61,18 @@ namespace scipp::physics {
         using ratio_root_t = typename ratio_root<ratio, power>::type;
 
 
+        template <typename ratio>
+        struct ratio_inv {
+
+            using type = std::ratio<ratio::den, ratio::num>; 
+
+        };
+
+
+        template <typename ratio>
+        using ratio_inv_t = typename ratio_inv<ratio>::type;
+        
+
     } // namespace units
 
 

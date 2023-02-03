@@ -65,6 +65,18 @@ namespace scipp::physics {
             using unit_root_t = typename unit_root<units, power>::type;
 
 
+            template <typename units>
+            struct unit_inv {
+
+                using type = unit<base_inv_t<typename units::base>, ratio_inv_t<typename units::prefix>>;
+
+            };
+
+
+            template <typename units>
+            using unit_inv_t = typename unit_inv<units>::type;
+
+
             /// @brief Perform a multiplication between unit 
             template <typename unit1, typename unit2, typename = std::enable_if_t<is_unit_v<unit1> && is_unit_v<unit2>>>
             consteval auto operator*(const unit1& ub1, const unit2& ub2) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {

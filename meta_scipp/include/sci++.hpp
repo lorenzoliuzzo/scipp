@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-31
+ * @date    2023-02-03
  * 
  * @copyright Copyright (c) 2023
  */
@@ -31,22 +31,24 @@
     
     #include "math/constants.hpp"
 
-    #include "physics/units/base.hpp" 
+    #include "physics/measurements/base.hpp" 
+    #include "physics/measurements/prefix.hpp"
+    #include "physics/measurements/unit.hpp"
+
     #include "math/ops/unit_base.hpp"
-
-    #include "physics/units/prefix.hpp"
     #include "math/ops/prefix.hpp"
-
-    #include "physics/units/unit.hpp"
     #include "math/ops/unit.hpp"
-    #include "physics/units/types.hpp"
 
-    #include "physics/measurement.hpp"
+    #include "physics/measurements/measurement.hpp"
+    #include "physics/measurements/types.hpp"
+
     #include "math/ops/measurement.hpp"
-    #include "physics/measurements_types.hpp"
 
+    #include "physics/constants.hpp"
     #include "math/integral.hpp"
 
+
+    #include "geometry/vector.hpp"
 
 
     // #include "math/op/measurement_op.hpp"

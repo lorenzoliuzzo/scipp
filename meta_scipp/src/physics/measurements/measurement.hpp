@@ -19,9 +19,13 @@ namespace scipp::physics {
     struct measurement {
 
 
-        using type = measurement<BASE>;
+        // ==============================================
+        // aliases
+        // ==============================================
 
-        using base = BASE; 
+            using type = measurement<BASE>;
+
+            using base = BASE; 
 
 
         // ==============================================
@@ -71,7 +75,7 @@ namespace scipp::physics {
             /// @brief Add two measurements
             friend inline constexpr measurement operator+(const measurement& meas1, const measurement& meas2) noexcept { 
                 
-                return measurement<BASE>(meas1.value + meas2.value); 
+                return meas1.value + meas2.value; 
                 
             }
 
@@ -79,14 +83,14 @@ namespace scipp::physics {
             /// @brief Subtract two measurements
             friend inline constexpr measurement operator-(const measurement& meas1, const measurement& meas2) noexcept { 
                 
-                return measurement<BASE>(meas1.value - meas2.value); 
+                return meas1.value - meas2.value; 
                 
             }
 
 
             inline constexpr measurement operator-() const noexcept {
 
-                return measurement<BASE>(-this->value); 
+                return -this->value; 
 
             }
 
@@ -133,7 +137,16 @@ namespace scipp::physics {
                 return this->value / UNITS::mult; 
                 
             }
+
             
+            /// @brief Convert a value from one unit to another 
+            template <typename UNITS, typename = std::enable_if_t<units::is_same_base_v<BASE, typename UNITS::base>>>
+            inline constexpr measurement convert(const UNITS&) const noexcept {
+
+                return *this / UNITS::mult; 
+
+            }
+                
             
             inline constexpr void print() const noexcept {
 
@@ -168,9 +181,18 @@ namespace scipp::physics {
     template <typename UNITS, typename = std::enable_if_t<units::is_unit_v<UNITS>>>
     inline constexpr auto operator*(const scalar& val, const UNITS&) noexcept -> measurement<typename UNITS::base> { 
         
-        return measurement<typename UNITS::base>(val * UNITS::mult); 
+        return { val * UNITS::mult }; 
         
     }
+
+
+    // /// @brief Divide a scalar with an unit to get a measurement
+    // template <typename UNITS, typename = std::enable_if_t<units::is_unit_v<UNITS>>>
+    // inline constexpr auto operator/(const scalar& val, const UNITS&) noexcept -> measurement<units::base_inv_t<typename UNITS::base>> { 
+        
+    //     return { val / UNITS::mult }; 
+        
+    // }
 
 
     template <typename T>
@@ -182,6 +204,12 @@ namespace scipp::physics {
     template <typename T>
     inline constexpr bool is_measurement_v = is_measurement<T>::value;
 
+
+    template <typename... Ts>
+    struct are_measurements : std::conjunction<is_measurement<Ts>...> {};
+
+    template <typename... Ts>
+    inline constexpr bool are_measurements_v = are_measurements<Ts...>::value;
 
     // template <typename BASE>
     // struct is_measurement : std::false_type {};

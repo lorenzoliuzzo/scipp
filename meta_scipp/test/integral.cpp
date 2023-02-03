@@ -27,28 +27,28 @@ int main() {
     
     t.start(); 
     
-        std::cout << integral2::midpoint(f, 0.0 * units::m, measurement<units::metre>(2.0 * constants::pi), 10) << '\n'; 
+        std::cout << integral2::midpoint(f, 0.0 * units::m, measurement<units::metre>(2.0 * math::constants::pi), 10) << '\n'; 
 
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
     
-        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * constants::pi), 100) << '\n'; 
+        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 100) << '\n'; 
 
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
     
-        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * constants::pi), 1000) << '\n'; 
+        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 1000) << '\n'; 
 
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
     
-        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * constants::pi), 10000) << '\n'; 
+        std::cout << integral2::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 10000) << '\n'; 
 
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
@@ -56,31 +56,31 @@ int main() {
 
     std::function<scalar_m(angle_m)> g = [](angle_m x) -> scalar_m { return math::op::sin(x); };
 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * constants::pi), 10) << '\n'; 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * constants::pi), 50) << '\n'; 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * constants::pi), 100) << '\n'; 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * constants::pi), 500) << '\n'; 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * constants::pi), 1000) << '\n'; 
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 10) << '\n'; 
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 50) << '\n'; 
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 100) << '\n'; 
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 500) << '\n'; 
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 1000) << '\n'; 
 
 
     t.start(); 
-    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(constants::pi), 10000) << '\n';
+    std::cout << integral2::midpoint(g, angle_m(0.0), angle_m(math::constants::pi), 10000) << '\n';
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
-    std::cout << integral2::midpoint_fixed(g, angle_m(0.0), angle_m(constants::pi), 1.e-6) << '\n'; 
+    std::cout << integral2::midpoint_fixed(g, angle_m(0.0), angle_m(math::constants::pi), 1.e-6) << '\n'; 
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
 
-    std::cout << integral2::midpoint_fixed(g, angle_m(0.0), angle_m(constants::pi), 1.e-6).value - 2.0 << '\n'; 
+    std::cout << integral2::midpoint_fixed(g, angle_m(0.0), angle_m(math::constants::pi), 1.e-6).value - 2.0 << '\n'; 
 
     integral integ; 
 
 
     t.start(); 
-    integ.midpoint_fixed(0.0, constants::pi, [](double x) -> double { return std::sin(x); }, 1.e-6);
+    integ.midpoint_fixed(0.0, math::constants::pi, [](double x) -> double { return std::sin(x); }, 1.e-6);
     t.stop();
     std::cout << "elapsed: " << t.elapsed() << '\n'; 
 

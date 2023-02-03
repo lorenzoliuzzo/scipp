@@ -15,22 +15,7 @@
 namespace scipp::physics {
     
 
-    using scalar_m = measurement<units::unitless>;                    ///< scalar_m
-    using length_m = measurement<units::metre>;                       ///< length_m 
-    using time_m = measurement<units::second>;                        ///< time_m 
-    using mass_m = measurement<units::kilogram>;                      ///< mass_m 
-    using angle_m = measurement<units::radian>;                       ///< angle_m 
-    using temperature_m = measurement<units::kelvin>;                 ///< temperature_m
-    using current_m = measurement<units::ampere>;                     ///< current_m
-    using luminous_intensity_m = measurement<units::candela>;         ///< luminous_intensity_m
-    using mole_m = measurement<units::mole>;                          ///< mole_m
 
-    using speed_m = measurement<units::metre_per_second>;             ///< speed_m 
-    using acceleration_m = measurement<units::metre_per_second2>;     ///< acceleration_m 
-    using force_m = measurement<units::kilogram_metre_per_second2>;   ///< force_m 
-    using energy_m = measurement<units::kilogram_metre2_per_second2>; ///< energy_m 
-
-    
     // using scalar_um = umeasurement<basis::scalar>;                                                                ///< scalar_um
     // using length_um = umeasurement<basis::metre>;                                                                 ///< length_um 
     // using time_um = umeasurement<basis::second>;                                                                  ///< time_um 

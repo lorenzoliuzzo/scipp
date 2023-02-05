@@ -22,7 +22,7 @@ namespace scipp::physics {
 
         inline static constexpr measurement G(6.67430e-23, N * m2 / kg2); ///< gravitational constant
         
-        inline static constexpr speed_m c(299792458, m / s); ///< speed of light in vacuum
+        inline static constexpr velocity_m c(299792458, m / s); ///< speed of light in vacuum
 
         inline static constexpr measurement h(6.62607015e-34, J * s); ///< Planck constant
 

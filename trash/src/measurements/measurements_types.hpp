@@ -25,7 +25,7 @@ namespace scipp::measurements {
     using luminous_intensity_m = measurement<basis::candela>;                                                   ///< luminous_intensity_m
     using mole_m = measurement<basis::mole>;                                                                    ///< mole_m
 
-    using speed_m = measurement<basis::metre / basis::second>;                                                  ///< speed_m 
+    using velocity_m = measurement<basis::metre / basis::second>;                                                  ///< velocity_m 
     using acceleration_m = measurement<basis::metre / math::op::square(basis::second)>;                               ///< acceleration_m 
     using force_m = measurement<basis::kilogram * basis::metre / math::op::square(basis::second)>;                    ///< force_m 
     using energy_m = measurement<basis::kilogram * math::op::square(basis::metre) / math::op::square(basis::second)>; ///< energy_m 
@@ -41,7 +41,7 @@ namespace scipp::measurements {
     using luminous_intensity_um = umeasurement<basis::candela>;                                                   ///< luminous_intensity_um
     using mole_um = umeasurement<basis::mole>;                                                                    ///< mole_um
 
-    using speed_um = umeasurement<basis::metre / basis::second>;                                                  ///< speed_um 
+    using velocity_um = umeasurement<basis::metre / basis::second>;                                                  ///< velocity_um 
     using acceleration_um = umeasurement<basis::metre / math::op::square(basis::second)>;                               ///< acceleration_um 
     using force_um = umeasurement<basis::kilogram * basis::metre / math::op::square(basis::second)>;                    ///< force_um 
     using energy_um = umeasurement<basis::kilogram * math::op::square(basis::metre) / math::op::square(basis::second)>; ///< energy_um 

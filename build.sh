@@ -3,5 +3,5 @@ cd build
 cmake ..
 make 
 cd ..
-doxygen Doxyfile
-open doc/html/index.html
+# doxygen Doxyfile
+# open doc/html/index.html

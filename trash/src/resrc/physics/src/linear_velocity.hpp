@@ -68,7 +68,7 @@ namespace scipp::physics {
              * 
              * @param vel: std::array of speed measurements as l-value const reference
              */
-            constexpr linear_velocity(const std::array<speed_measurement, DIM>& vel) : 
+            constexpr linear_velocity(const std::array<velocity_m, DIM>& vel) : 
                 
                 vector<DIM>(vel) {}
 
@@ -78,7 +78,7 @@ namespace scipp::physics {
              * 
              * @param vel: std::array of speed measurements as r-value reference
              */
-            constexpr linear_velocity(std::array<speed_measurement, DIM>&& vel) :
+            constexpr linear_velocity(std::array<velocity_m, DIM>&& vel) :
                 
                 vector<DIM>(std::move(vel)) {}
 

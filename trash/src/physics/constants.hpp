@@ -19,7 +19,7 @@ namespace scipp::physics {
 
         constexpr measurement G(6.67430e-17, N * math::op::square(km) / math::op::square(kg)); ///< gravitational constant
         
-        constexpr speed_m c(299792458, m / s); ///< speed of light in vacuum
+        constexpr velocity_m c(299792458, m / s); ///< speed of light in vacuum
 
         constexpr measurement h(6.62607015e-34, J * s); ///< Planck constant
 

@@ -97,15 +97,31 @@ namespace scipp::geometry {
 
 
             /// @brief Print the vector components
-            inline void print() const noexcept {
+            inline constexpr void print() const noexcept {
+                
+                std::cout << "( ";
+                for (std::size_t i{}; i < DIM; ++i) {
 
-                for (std::size_t i{}; i < DIM; ++i) 
-                    std::cout << this->data_[i] << ' ';
+                    std::cout << this->data_[i] << ((i < DIM - 1) ? ", " : " )\n"); 
 
-                std::cout << '\n';
+                }
 
             }
 
+
+            template <typename UNITS, typename = std::enable_if_t<physics::units::is_unit_v<UNITS>>>
+            inline constexpr void print(const UNITS& units) const noexcept {
+                
+                std::cout << "( ";
+                for (std::size_t i{}; i < DIM; ++i) {
+
+                    this->data_[i].print(units, false); 
+                    std::cout << ((i < DIM - 1) ? ", " : " )\n"); 
+
+                }
+
+            }
+            
 
         // ===========================================================
         // members

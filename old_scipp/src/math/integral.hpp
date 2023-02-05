@@ -14,6 +14,7 @@
 namespace scipp::math {
 
 
+
     /// @brief Class for evaluating integrals
     class integral2 {
 
@@ -21,81 +22,72 @@ namespace scipp::math {
         public:
 
 
-            // static scalar midpoint(const std::function<scalar(scalar)>& f, 
-            //                                  const scalar& from_a,
-            //                                  const scalar& to_b,
-            //                                  const size_t& steps = 1000) {
+            static scalar midpoint(const std::function<scalar(scalar)>& f, 
+                                             const scalar& from_a,
+                                             const scalar& to_b,
+                                             const size_t& steps = 1000) {
 
-            //     scalar increment = std::fabs(to_b - from_a) / steps;
-            //     scalar total_sum = 0.0;
+                scalar increment = std::fabs(to_b - from_a) / steps;
+                scalar total_sum = 0.0;
 
-            //     #pragma omp parallel for
-            //     for (std::size_t i = 0; i < steps; ++i)
-            //         #pragma omp critical
-            //         total_sum += f(from_a + (i + 0.5) * increment); 
-
-            //     return (from_a < to_b) ? total_sum * increment : -total_sum * increment;
-
-            // }
-
-
-            // , t
-
-            // , typename = std::enable_if_t<physics::is_measurement_v<MEAS1> && physics::is_measurement_v<MEAS2>>>
-            // , typename = std::enable_if_t<physics::is_measurement_v<MEAS1> && physics::is_measurement_v<MEAS2>>>
-
-            template <typename MEAS1, typename MEAS2>
-            static constexpr auto midpoint(std::function<MEAS2(MEAS1)>& f, 
-                                           const MEAS1 from_a,
-                                           const MEAS1 to_b,
-                                           const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
-
-                MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
-                MEAS2 total_sum = f(from_a);
-
-                // #pragma omp parallel for
-                for (std::size_t i = 1; i < steps; ++i)
-                    // #pragma omp critical
+                #pragma omp parallel for
+                for (std::size_t i = 0; i < steps; ++i)
+                    #pragma omp critical
                     total_sum += f(from_a + (i + 0.5) * increment); 
 
-                return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+                return (from_a < to_b) ? total_sum * increment : -total_sum * increment;
 
             }
 
 
-            template <typename MEAS1, typename MEAS2>
-            static constexpr auto midpoint_fixed(std::function<MEAS2(MEAS1)>& f, 
-                                                 const MEAS1 from_a,
-                                                 const MEAS1 to_b,
-                                                 const scalar& prec = 1.e-6) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
-                
-                std::size_t steps = 1;
-                auto integral = midpoint(f, from_a, to_b, steps);
+            template <class measurement_t>
+            static constexpr auto midpoint(const std::function<auto(measurement_t)>& f, 
+                                           const measurement_t& from_a,
+                                           const measurement_t& to_b,
+                                           const size_t& steps = 1000) {
 
-                decltype(integral) old_integral_1, old_integral_2, old_integral_3, error;
-                bool loop = true;
+                measurement_t increment = op::abs(to_b - from_a) / steps;
+                auto total_sum = f(from_a);
+
+                #pragma omp parallel for
+                for (std::size_t i = 1; i < steps; ++i)
+                    #pragma omp critical
+                    total_sum += f(from_a + (i + 0.5) * increment); 
+
+                return (from_a < to_b) ? total_sum * increment : -total_sum * increment;
+
+            }
+
+
+            template <unit_base UB, unit_base UB2>
+            static constexpr measurement<UB * UB2> midpoint_fixed(const std::function<measurement<UB2>(measurement<UB>)>& f, 
+                                                                  const measurement<UB>& from_a,
+                                                                  const measurement<UB>& to_b,
+                                                                  const scalar& prec = 1.e-6) { 
+
+                                                        
+                measurement<UB * UB2> integral, old_integral_1, old_integral_2, old_integral_3, error;
+                std::size_t steps = 1;
 
                 #pragma omp parallel 
                 {
-                    do {
+                    while (true) {
                         
                         #pragma omp single
                         {
-                            steps *= 2; 
                             old_integral_3 = old_integral_2;
                             old_integral_2 = old_integral_1;
                             old_integral_1 = integral;
-                            integral = midpoint(f, from_a, to_b, steps);
+                            integral = midpoint(f, from_a, to_b, steps * 2);
                             error = 64. * math::op::abs(64. * integral - 84. * old_integral_1 + 21. * old_integral_2 - old_integral_3) / 2835.; // errore al sesto ordine
-                            
-                            #pragma omp critical 
-                            {
-                                if (error < prec) 
-                                    loop = false;
-                            }
+                            steps *= 2; 
                         }
 
-                    } while (loop);
+                        #pragma omp barrier
+                        if (error < prec) 
+                            break;
+
+                    }
 
                 }
 
@@ -104,6 +96,10 @@ namespace scipp::math {
                 return (from_a < to_b) ? integral : -integral;
             
             }
+
+
+
+            // }
 
 
     }; // class integral2

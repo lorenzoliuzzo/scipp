@@ -1,31 +1,34 @@
+/**
+ * @file    integral.cpp
+ * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
+ * @brief   
+ * @date    2023-01-31
+ * 
+ * @copyright Copyright (c) 2023
+ */
+
+
 #include "sci++.hpp"
 
+
 using namespace scipp; 
-using namespace scipp::geometry::linear_algebra;
+using namespace physics; 
+using namespace math; 
+using namespace geometry;
 
 
 int main() {
 
 
-    vector<basis::metre, 3> vec1(1 * m, 2 * cm, 3 * mm);
-    vector<basis::metre, 3> vec2(1 * m, 2 * cm, 3 * mm);
+    vector<physics::length_m, 3> v1(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
+    vector<physics::length_m, 3> v2(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
 
-    std::cout << vec1 << '\n'; 
+    v1.print(); 
 
-    std::cout << vec2 << "\n";
+    v1 += v2; 
 
-    vector<basis::metre, 3> vec3(42.2 * m, 56 * mm, 354 * cm); 
-    std::cout << vec3 << '\n'; 
-
-
-    // auto matrix_tuple(std::make_tuple<vector<basis::metre, 3>>(vec1, vec3)); 
-
+    v1.print();
     
-    // std::cout << std::get<0>(matrix_tuple) << '\n'; 
-    // std::cout << std::get<1>(matrix_tuple) << '\n'; 
-
-
-    // matrix2<3, 2, vector<basis::metre, 3>> mat({vec1, vec2}); 
 
     return 0; 
 

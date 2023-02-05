@@ -2,39 +2,45 @@
  * @file    measurement.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-19
+ * @date    2023-01-31
  * 
  * @copyright Copyright (c) 2023
  */
 
 
 #include "sci++.hpp"
+#include <cassert>
 
-
-using namespace scipp;
+using namespace scipp; 
+using namespace physics; 
 
 
 int main() {
 
-    std::cout << math::constants::pi * rad << '\n'; 
 
-    measurement l1 = 1 * m;
+    static_assert(units::is_unit_v<decltype(units::Km)>); 
 
-    std::cout << l1 << '\n'; 
+    std::cout << units::Km.convert(1.0, units::mm) << '\n';
 
-    length_m l2 = 2 * m;
-    std::cout << l2 << '\n'; 
+    measurement x = 3.43 * units::Km; 
+    std::cout << x.convert(units::mm) << '\n';
 
-    auto f = [](length_m x) { return x * x; };
-    std::cout << f(l2) << '\n';
+    measurement y = 4.33 * units::m; 
+    measurement z = x - y; 
 
-    auto g = [](auto x) { return x * x; };
-    std::cout << g(l2) << '\n';
-
-
+    x.print(); 
+    y.print(units::mm); 
+    z.print(units::Km); 
 
 
+    math::op::abs(z).print(units::Km); 
 
-    return 0;
+    std::cout << sizeof(double) << '\n'; 
+    std::cout << sizeof(decltype(x)) << '\n'; 
+
+
+
+
+    return 0; 
 
 }

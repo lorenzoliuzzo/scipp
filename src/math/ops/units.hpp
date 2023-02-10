@@ -1,8 +1,8 @@
 /**
- * @file    unit_base.hpp
+ * @file    units.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-31
+ * @date    2023-02-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -16,6 +16,62 @@ namespace scipp::physics {
 
     namespace units {
 
+
+        template <typename ratio1, typename ratio2>
+        struct ratio_prod {
+
+            using type = std::ratio<ratio1::num * ratio2::num, ratio1::den * ratio2::den>; 
+
+        }; 
+
+        template <typename ratio1, typename ratio2>
+        using ratio_prod_t = typename ratio_prod<ratio1, ratio2>::type; 
+
+
+        template <typename ratio1, typename ratio2>
+        struct ratio_div {
+
+            using type = std::ratio<ratio1::num / ratio2::num, ratio1::den / ratio2::den>; 
+
+        }; 
+
+        template <typename ratio1, typename ratio2>
+        using ratio_div_t = typename ratio_div<ratio1, ratio2>::type; 
+
+
+        template <typename ratio, int power>
+        struct ratio_pow {
+
+            using type = std::ratio<std::pow(ratio::num, power), std::pow(ratio::den, power)>; 
+
+        };
+
+        template <typename ratio, int power>
+        using ratio_pow_t = typename ratio_pow<ratio, power>::type;
+
+
+        template <typename ratio, int power>
+        struct ratio_root {
+
+            using type = std::ratio<std::pow(ratio::num, 1. / power), std::pow(ratio::den, 1. / power)>; 
+
+        };
+
+        template <typename ratio, int power>
+        using ratio_root_t = typename ratio_root<ratio, power>::type;
+
+
+        template <typename ratio>
+        struct ratio_inv {
+
+            using type = std::ratio<ratio::den, ratio::num>; 
+
+        };
+
+
+        template <typename ratio>
+        using ratio_inv_t = typename ratio_inv<ratio>::type;
+        
 
         /// @brief base_prod is a struct to compute the product of two base
         template <typename base1, typename base2, typename = std::enable_if_t<is_base_v<base1> && is_base_v<base2>>>
@@ -182,7 +238,85 @@ namespace scipp::physics {
         using base_inv_t = typename base_inv<base>::type;
 
 
+        // =============================================
+        // ALGEBRIC FUNCTIONS
+        // =============================================
+            
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            struct unit_prod {
+
+                using type = unit<base_prod_t<typename unit1::base, typename unit2::base>, ratio_prod_t<typename unit1::prefix, typename unit2::prefix>>;
+
+            }; 
+
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            using unit_prod_t = typename unit_prod<unit1, unit2>::type; 
+
+
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            struct unit_div {
+
+                using type = unit<base_div_t<typename unit1::base, typename unit2::base>, ratio_div_t<typename unit1::prefix, typename unit2::prefix>>;
+
+            }; 
+
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            using unit_div_t = typename unit_div<unit1, unit2>::type; 
+
+
+            template <typename units, int power>
+            struct unit_pow {
+
+                using type = unit<base_pow_t<typename units::base, power>, ratio_pow_t<typename units::prefix, power>>;
+
+            };
+
+            template <typename units, int power>
+            using unit_pow_t = typename unit_pow<units, power>::type;
+
+
+            template <typename units, int power>
+            struct unit_root {
+
+                using type = unit<base_root_t<typename units::base, power>, ratio_root_t<typename units::prefix, power>>;
+
+            };
+
+            template <typename units, int power>
+            using unit_root_t = typename unit_root<units, power>::type;
+
+
+            template <typename units>
+            struct unit_inv {
+
+                using type = unit<base_inv_t<typename units::base>, ratio_inv_t<typename units::prefix>>;
+
+            };
+
+
+            template <typename units>
+            using unit_inv_t = typename unit_inv<units>::type;
+
+
+            /// @brief Perform a multiplication between unit 
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            constexpr auto operator*(const unit1& ub1, const unit2& ub2) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {
+                
+                return unit_prod_t<typename unit1::type, typename unit2::type>(); 
+                
+            } 
+
+
+            /// @brief Perform a division between unit 
+            template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
+            constexpr auto operator/(const unit1& ub1, const unit2& ub2) noexcept -> unit_div_t<typename unit1::type, typename unit2::type> {
+                
+                return unit_div_t<typename unit1::type, typename unit2::type>(); 
+                
+            } 
+         
+
     } // namespace units
 
-    
-} // namespace scipp::math
+
+} // namespace scipp::physics

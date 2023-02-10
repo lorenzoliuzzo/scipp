@@ -20,6 +20,7 @@ namespace scipp::math {
 
         public:
 
+            // , std::enable_if_t<physics::is_measurement_v<MEAS1> && physics::is_measurement_v<MEAS2>>>
 
             template <typename MEAS1, typename MEAS2>
             static constexpr auto midpoint(std::function<MEAS2(MEAS1)>& f, 
@@ -27,7 +28,7 @@ namespace scipp::math {
                                            const MEAS1 to_b,
                                            const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
 
-                MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
+                const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
                 MEAS2 total_sum = f(from_a);
 
                 for (std::size_t i{1}; i < steps; ++i)
@@ -87,7 +88,7 @@ namespace scipp::math {
                                             const MEAS1 to_b,
                                             const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
 
-                MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
+                const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
                 MEAS2 total_sum = (f(from_a) + f(to_b)) / 2.;
 
                 for (size_t i{1}; i < steps; ++i) 
@@ -105,7 +106,7 @@ namespace scipp::math {
                                           const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
                                                 
                 bool is_even = (steps % 2 == 0);
-                MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
+                const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
                 MEAS2 total_sum = (is_even ? (f(from_a) + f(to_b)) / 3. : 0.0);
 
                 for (size_t i{1}; i < ((is_even) ? steps : steps + 1); ++i) 

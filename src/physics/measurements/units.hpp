@@ -20,7 +20,7 @@ namespace scipp::physics {
 
 
         /** 
-         * @brief base use an array of powers to represent an unit_base for a physical unit
+         * @brief unit_base use an array of powers to represent a base for a physical unit
          *
          * @tparam metre_pow: power of metre
          * @tparam second_pow: power of second
@@ -43,14 +43,18 @@ namespace scipp::physics {
         struct unit_base {
 
 
-            using type = unit_base<metre_pow, 
-                                   second_pow, 
-                                   kilogram_pow, 
-                                   ampere_pow, 
-                                   kelvin_pow, 
-                                   mole_pow, 
-                                   candela_pow, 
-                                   radian_pow>; ///< type of the unit_base
+            // =============================================
+            // aliases
+            // =============================================
+
+                using type = unit_base<metre_pow, 
+                                       second_pow, 
+                                       kilogram_pow, 
+                                       ampere_pow, 
+                                       kelvin_pow, 
+                                       mole_pow, 
+                                       candela_pow, 
+                                       radian_pow>; ///< type of the unit_base
 
 
             // =============================================
@@ -58,11 +62,11 @@ namespace scipp::physics {
             // =============================================
 
                 /**
-                 * @brief Get the unit_base litterals to string
+                 * @brief Get the unit_base string as a concatenation of the base unit symbol with their powers.
                  * 
                  * @return static constexpr std::string 
                  */
-                static constexpr std::string to_string() {
+                static constexpr std::string to_string() noexcept {
                     
                     std::string base_string;   
                     
@@ -172,45 +176,46 @@ namespace scipp::physics {
         // unit_base traits
         // =============================================
 
-            /// @brief is_base is a trait to check if a type is an unit_base
             template <typename T>
             struct is_base : std::false_type {};
 
-            /// @brief is_base is a trait to check if a type is an unit_base
-            template <int metre_pow, 
-                    int second_pow, 
-                    int kilogram_pow, 
-                    int ampere_pow, 
-                    int kelvin_pow, 
-                    int mole_pow, 
-                    int candela_pow, 
-                    int radian_pow>
-            struct is_base<unit_base<metre_pow, 
-                                    second_pow, 
-                                    kilogram_pow, 
-                                    ampere_pow, 
-                                    kelvin_pow, 
-                                    mole_pow, 
-                                    candela_pow, 
-                                    radian_pow>> : std::true_type {};
 
-            /// @brief is_base is a trait to check if a type is an unit_base
             template <int metre_pow, 
-                    int second_pow, 
-                    int kilogram_pow, 
-                    int ampere_pow, 
-                    int kelvin_pow, 
-                    int mole_pow, 
-                    int candela_pow, 
-                    int radian_pow>
+                      int second_pow, 
+                      int kilogram_pow, 
+                      int ampere_pow, 
+                      int kelvin_pow, 
+                      int mole_pow, 
+                      int candela_pow, 
+                      int radian_pow>
+
+            struct is_base<unit_base<metre_pow, 
+                                     second_pow, 
+                                     kilogram_pow, 
+                                     ampere_pow, 
+                                     kelvin_pow, 
+                                     mole_pow, 
+                                     candela_pow, 
+                                     radian_pow>> : std::true_type {};
+
+
+            template <int metre_pow, 
+                      int second_pow, 
+                      int kilogram_pow, 
+                      int ampere_pow, 
+                      int kelvin_pow, 
+                      int mole_pow, 
+                      int candela_pow, 
+                      int radian_pow>
+
             struct is_base<const unit_base<metre_pow, 
-                                        second_pow, 
-                                        kilogram_pow, 
-                                        ampere_pow, 
-                                        kelvin_pow, 
-                                        mole_pow, 
-                                        candela_pow, 
-                                        radian_pow>> : std::true_type {};
+                                           second_pow, 
+                                           kilogram_pow, 
+                                           ampere_pow, 
+                                           kelvin_pow, 
+                                           mole_pow, 
+                                           candela_pow, 
+                                           radian_pow>> : std::true_type {};
 
             /// @brief is_base_v has the value of the is_base trait
             template <typename T>
@@ -240,12 +245,12 @@ namespace scipp::physics {
          * @tparam BASE: meta_base of the unit
          * @tparam PREFIX: std::ratio prefix of the unit
          */
-        template <typename BASE, typename PREFIX = std::ratio<1, 1>, typename = std::enable_if_t<is_base_v<BASE>>>
+        template <typename BASE, typename PREFIX = std::ratio<1, 1>> requires (is_base_v<BASE>)
         struct unit {
 
 
             // =============================================
-            // aliases
+            // type aliases
             // =============================================
 
                 using base = BASE;
@@ -266,9 +271,9 @@ namespace scipp::physics {
             // operators
             // =============================================
 
-                friend inline std::ostream& operator<<(std::ostream& os, const unit& units) noexcept {
+                friend inline constexpr std::ostream& operator<<(std::ostream& os, const unit&) noexcept {
 
-                    return os << units.to_string();
+                    return os << unit::to_string();
 
                 }
 
@@ -313,7 +318,7 @@ namespace scipp::physics {
 
 
                 /// @brief Convert a value from the base unit to another unit 
-                template <typename UNIT, typename = std::enable_if_t<is_same_base_v<BASE, typename UNIT::base>>>
+                template <typename UNIT> requires(is_same_base_v<BASE, typename UNIT::base>)
                 inline static constexpr scalar convert(const scalar val, const UNIT&) noexcept {
 
                     return val * mult / UNIT::mult; 
@@ -325,10 +330,9 @@ namespace scipp::physics {
 
 
         // =============================================
-        // unit traits
+        // unit_base traits
         // =============================================
 
-            /// @brief is_unit is a trait to check if a type is an unit
             template <typename T>
             struct is_unit : std::false_type {};
 
@@ -356,6 +360,7 @@ namespace scipp::physics {
             struct is_unit<const unit<BASE, PREFIX>&&> : std::true_type {};
 
 
+            /// @brief is_unit_v has the value of the is_unit trait
             template <typename T>
             inline constexpr bool is_unit_v = is_unit<T>::value;
         

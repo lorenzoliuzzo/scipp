@@ -32,7 +32,7 @@ namespace scipp::physics {
         // constructors
         // ==============================================
 
-            consteval measurement() noexcept : 
+            constexpr measurement() noexcept : 
                 
                 value{0.0} {}
 

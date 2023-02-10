@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-02-05
+ * @date    2023-02-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -29,13 +29,10 @@
 
     using scalar = double;
     
-    #include "math/constants.hpp"
+    #include "math/constants.hpp" // ok
 
     #include "physics/measurements/units.hpp"
-
-    #include "math/ops/unit_base.hpp"
-    #include "math/ops/prefix.hpp"
-    #include "math/ops/unit.hpp"
+    #include "math/ops/units.hpp"
 
     #include "physics/measurements/measurement.hpp"
     #include "physics/measurements/types.hpp"
@@ -46,7 +43,7 @@
 
 
     #include "geometry/vector.hpp"
-    // #include "math/ops/vector.hpp"
+    // #include "math/ops/vectors.hpp"
     #include "physics/vector_types.hpp"
 
 

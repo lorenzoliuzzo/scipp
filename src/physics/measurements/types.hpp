@@ -231,4 +231,19 @@ namespace scipp::physics {
     // using catalytic_activity_m = measurement<units::katal>;           ///< catalytic_activity_m
 
 
+    /// @brief Measurement litteral for length
+
+    inline constexpr auto operator""m(long double value) noexcept -> length_m {
+
+        return length_m(value);
+
+    }
+
+    inline constexpr auto operator""Km(long double value) noexcept -> length_m {
+
+        return length_m(value, units::Km);
+
+    }
+
+
 } // namespace scipp::physics

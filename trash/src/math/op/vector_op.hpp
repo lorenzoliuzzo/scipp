@@ -17,7 +17,7 @@ namespace scipp::math {
         /**
          * @brief Invert the geometry::vector
          *
-         * @param other: geometry::vector<UB, DIM> as l-value const reference
+         * @param other: geometry::vector<UB, DIM> as l-val const reference
          *
          * @return constexpr geometry::vector<op::inv(UB), DIM>
          */
@@ -477,7 +477,25 @@ namespace scipp::math {
 
         }     
         
-        
+
+
+        /**
+         * @brief Get the angle between two geometry::vectors
+         * 
+         * @param v1: geometry::vector<UB1, DIM> as l-value const reference
+         * @param v2: geometry::vector<UB2, DIM> as l-value const reference
+         * 
+         * @return constexpr measurement<basis::angle>
+         */
+        template <unit_base UB1, unit_base UB2, std::size_t DIM>
+        constexpr physics::angle_m angle(const geometry::vector<UB1, DIM>& v1, 
+                                         const geometry::vector<UB2, DIM>& v2) {
+
+            return op::acos(op::dot(v1, v2) / (op::norm(v1) * op::norm(v2)));
+
+        }
+
+
     } // namespace op
 
 

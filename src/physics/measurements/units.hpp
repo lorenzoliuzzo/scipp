@@ -1,8 +1,9 @@
 /**
- * @file    unit.hpp
+ * @file    physics/measurements/unit.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-02-05
+ * @brief   This file contains the implementations of the structs unit_base and unit, their callable functions and type traits.
+ * @note    The aim is to work with unit_base on the backend and unit on the frontend. So, the user should not use unit_base directly.
+ * @date    2023-02-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -39,7 +40,7 @@ namespace scipp::physics {
                   int mole_pow, 
                   int candela_pow, 
                   int radian_pow>
-                  
+
         struct unit_base {
 
 
@@ -54,18 +55,15 @@ namespace scipp::physics {
                                        kelvin_pow, 
                                        mole_pow, 
                                        candela_pow, 
-                                       radian_pow>; ///< type of the unit_base
+                                       radian_pow>; /// type of the unit_base
 
 
             // =============================================
             // methods
             // =============================================
 
-                /**
-                 * @brief Get the unit_base string as a concatenation of the base unit symbol with their powers.
-                 * 
-                 * @return static constexpr std::string 
-                 */
+                /// @brief  Get the unit_base string as a concatenation of the base unit symbol with their powers.
+                /// @return static constexpr std::string 
                 static constexpr std::string to_string() noexcept {
                     
                     std::string base_string;   
@@ -152,21 +150,21 @@ namespace scipp::physics {
             // static members
             // ============================================= 
 
-                inline static constexpr int metre = metre_pow; ///< power of metre
+                inline static constexpr int metre = metre_pow;       /// power of metre
                 
-                inline static constexpr int second = second_pow; ///< power of second
+                inline static constexpr int second = second_pow;     /// power of second
                 
-                inline static constexpr int kilogram = kilogram_pow; ///< power of kilogram
+                inline static constexpr int kilogram = kilogram_pow; /// power of kilogram
                 
-                inline static constexpr int ampere = ampere_pow; ///< power of ampere
+                inline static constexpr int ampere = ampere_pow;     /// power of ampere
                 
-                inline static constexpr int kelvin = kelvin_pow; ///< power of kelvin
+                inline static constexpr int kelvin = kelvin_pow;     /// power of kelvin
                 
-                inline static constexpr int mole = mole_pow; ///< power of mole
+                inline static constexpr int mole = mole_pow;         /// power of mole
                 
-                inline static constexpr int candela = candela_pow; ///< power of candela
+                inline static constexpr int candela = candela_pow;   /// power of candela
                 
-                inline static constexpr int radian = radian_pow; ///< power of radian
+                inline static constexpr int radian = radian_pow;     /// power of radian
 
 
         }; // struct base
@@ -220,7 +218,15 @@ namespace scipp::physics {
             /// @brief is_base_v has the value of the is_base trait
             template <typename T>
             inline constexpr bool is_base_v = is_base<T>::value;
-            
+
+
+            /// @tparam ...BASES: list of unit_bases
+            template <typename... BASES>
+            struct are_base : std::conjunction<is_base<BASES>...> {};
+
+            template <typename... BASES>
+            inline constexpr bool are_base_v = are_base<BASES...>::value;
+
 
             /// @brief is_same_base is a trait to check if two unit_base are the same
             template <typename base1, typename base2, typename = std::enable_if_t<is_base_v<base1> && is_base_v<base2>>>

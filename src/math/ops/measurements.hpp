@@ -88,8 +88,11 @@ namespace scipp::math {
             
             /// @brief Get the inverse of a measurement
             template <typename MEAS, typename = std::enable_if_t<physics::is_measurement_v<MEAS>>>
-            inline constexpr auto inv(const MEAS& meas) noexcept -> physics::measurement<physics::units::base_inv_t<typename MEAS::base>> { 
-                
+            inline constexpr auto invert(const MEAS& meas) -> physics::measurement<physics::units::base_inv_t<typename MEAS::base>> { 
+
+                if (meas.value == 0.0) 
+                    throw std::runtime_error("Cannot invert a zero measurement");
+
                 return 1.0 / meas.value; 
             
             }
@@ -134,6 +137,22 @@ namespace scipp::math {
         // ====================================================================================================
         // Arithmetic operations
         // ====================================================================================================
+
+            // /// @brief Get the power of a measurement
+            // template <typename MEAS, typename = std::enable_if_t<physics::is_measurement_v<MEAS>>>
+            // inline constexpr auto pow(const MEAS& meas, const scalar& val) -> physics::measurement<physics::units::base_pow_t<typename MEAS::base>> { 
+                
+            //   
+            //     return std::pow(meas.value, val); 
+            
+            // }            // /// @brief Get the power of a measurement
+            // template <typename MEAS, typename = std::enable_if_t<physics::is_measurement_v<MEAS>>>
+            // inline constexpr auto pow(const MEAS& meas, const scalar& val) -> physics::measurement<physics::units::base_pow_t<typename MEAS::base>> { 
+                
+            //     return std::pow(meas.value, val); 
+            
+            // }
+
 
             /// @brief Get the square of a measurement
             template <typename MEAS, typename = std::enable_if_t<physics::is_measurement_v<MEAS>>>

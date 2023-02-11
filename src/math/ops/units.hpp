@@ -300,7 +300,7 @@ namespace scipp::physics {
 
             /// @brief Perform a multiplication between unit 
             template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
-            constexpr auto operator*(const unit1& ub1, const unit2& ub2) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {
+            constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {
                 
                 return unit_prod_t<typename unit1::type, typename unit2::type>(); 
                 
@@ -309,7 +309,7 @@ namespace scipp::physics {
 
             /// @brief Perform a division between unit 
             template <typename unit1, typename unit2> requires (is_unit_v<unit1> && is_unit_v<unit2>)
-            constexpr auto operator/(const unit1& ub1, const unit2& ub2) noexcept -> unit_div_t<typename unit1::type, typename unit2::type> {
+            constexpr auto operator/(const unit1&, const unit2&) noexcept -> unit_div_t<typename unit1::type, typename unit2::type> {
                 
                 return unit_div_t<typename unit1::type, typename unit2::type>(); 
                 

@@ -17,15 +17,12 @@ using namespace physics;
 int main() {
 
 
-    using hallah = units::base_prod<units::metre, length_m::base>::type;
-
     tools::omp_timer time; 
 
     time.start(); 
     time.stop(); 
     std::cout << "empty?: " << time.elapsed() << '\n';
 
-    constexpr length_m l1 = 1.0;
     constexpr length_m l2(1.0, units::mm);
     constexpr length_m l3(1.0, units::Km);
 

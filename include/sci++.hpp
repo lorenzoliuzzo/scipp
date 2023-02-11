@@ -36,20 +36,20 @@
 
     #include "physics/measurements/measurement.hpp"
     #include "physics/measurements/types.hpp"
+    #include "math/ops/measurements.hpp"
 
-    #include "math/ops/measurement.hpp"
+    #include "geometry/vector.hpp"
+    #include "math/ops/vectors.hpp"
+    #include "physics/vector_types.hpp"
+
+    #include "geometry/matrix.hpp"
+    
+
+    #include "math/integral.hpp"    
 
     #include "physics/constants.hpp"
 
-
-    #include "geometry/vector.hpp"
-    // #include "math/ops/vectors.hpp"
-    #include "physics/vector_types.hpp"
-
-
-    #include "math/integral.hpp"    
     // #include "math/statistics.hpp"
-
 
     // #include "math/equations.hpp"
 
@@ -58,7 +58,6 @@
 
     // #include "tools/plotter.hpp"
     // #include "tools/bench.hpp"
-
 
     #include "tools/timer.hpp"
 

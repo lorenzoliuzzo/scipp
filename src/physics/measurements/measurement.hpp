@@ -15,7 +15,7 @@
 namespace scipp::physics {
 
 
-    template <typename BASE, typename = std::enable_if_t<units::is_base_v<BASE>>>
+    template <typename BASE> requires (units::is_base_v<BASE>)
     struct measurement {
 
 
@@ -42,8 +42,8 @@ namespace scipp::physics {
                 value{val} {}
 
 
-            template <typename UNITS, typename = std::enable_if_t<units::is_same_base_v<BASE, typename UNITS::base>>>
-            constexpr measurement(const scalar& val, const UNITS& unit) noexcept :
+            template <typename UNITS> requires (units::is_same_base_v<BASE, typename UNITS::base>)
+            constexpr measurement(const scalar& val, const UNITS&) noexcept :
             
                 value{val * UNITS::mult} {}
 
@@ -144,7 +144,7 @@ namespace scipp::physics {
             
 
             /// @brief Print a measurement to an output stream
-            friend inline std::ostream& operator<<(std::ostream& os, const measurement& meas) noexcept { 
+            friend inline constexpr std::ostream& operator<<(std::ostream& os, const measurement& meas) noexcept { 
                 
                 return os << meas.value << ' ' << BASE::to_string();
                 
@@ -155,7 +155,11 @@ namespace scipp::physics {
         // methods
         // ==============================================
 
-            template <typename UNITS, typename = std::enable_if_t<units::is_same_base_v<BASE, typename UNITS::base>>>
+            /// @brief  Get the value of the measurement in the specified unit
+            /// @param  UNITS: The unit in which the value is returned
+            /// @note   The unit must be of the same base of the measurement
+            /// @return scalar 
+            template <typename UNITS> requires (units::is_same_base_v<BASE, typename UNITS::base>)
             inline constexpr scalar value_as(const UNITS&) const noexcept { 
                 
                 return this->value / UNITS::mult; 
@@ -163,15 +167,17 @@ namespace scipp::physics {
             }
 
             
-            /// @brief Convert a value from one unit to another 
-            template <typename UNITS, typename = std::enable_if_t<units::is_same_base_v<BASE, typename UNITS::base>>>
-            inline constexpr measurement convert(const UNITS&) const noexcept {
+            // /// @brief Convert a value from one unit to another 
+            // template <typename UNITS> requires (units::is_same_base_v<BASE, typename UNITS::base>)
+            // inline constexpr measurement convert(const UNITS&) const noexcept {
 
-                return *this / UNITS::mult; 
+            //     return *this / UNITS::mult; 
 
-            }
+            // }
                 
             
+            /// @brief Print the measurement to the standard output
+            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             inline constexpr void print(const bool& newline = true) const noexcept {
 
                 std::cout << this->value << ' ' << BASE::to_string() << (newline ? '\n' : ' '); 
@@ -179,11 +185,14 @@ namespace scipp::physics {
             }
             
 
-            template <typename UNITS, typename = std::enable_if_t<units::is_unit_v<UNITS>>>
+            /// @brief Print the measurement to the standard output
+            /// @param units: The unit in which the value is printed
+            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
+            /// @note The unit must be of the same base of the measurement
+            template <typename UNITS> requires (units::is_unit_v<UNITS> && units::is_same_base_v<BASE, typename UNITS::base>)
             inline constexpr void print(const UNITS& units, const bool& newline = true) const noexcept {
 
-                std::cout << this->value_as(units) << ' ' << UNITS::to_string(); 
-                if (newline) std::cout << '\n'; 
+                std::cout << this->value_as(units) << ' ' << UNITS::to_string() << (newline ? '\n' : ' '); 
 
             }
             
@@ -198,13 +207,13 @@ namespace scipp::physics {
     }; // struct measurement
 
 
-    template <typename UNITS, typename = std::enable_if_t<units::is_unit_v<UNITS>>>
+    template <typename UNITS> requires (units::is_unit_v<UNITS>)
     measurement(const scalar&, const UNITS&) -> measurement<typename UNITS::base>;
 
 
     /// @brief Multiply a scalar with an unit to get a measurement
-    template <typename UNITS, typename = std::enable_if_t<units::is_unit_v<UNITS>>>
-    inline constexpr auto operator*(const scalar& val, const UNITS&) noexcept -> measurement<typename UNITS::base> { 
+    template <typename UNITS> requires (units::is_unit_v<UNITS>)
+    inline constexpr measurement<typename UNITS::base> operator*(const scalar& val, const UNITS&) noexcept { 
         
         return val * UNITS::mult; 
         

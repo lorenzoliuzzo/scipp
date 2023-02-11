@@ -1,8 +1,8 @@
 /**
- * @file vector.hpp
- * @author Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief 
- * @date 2023-02-10
+ * @file    geometry/vector.hpp
+ * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
+ * @brief   
+ * @date    2023-02-11
  * 
  * @copyright Copyright (c) 2023
  */
@@ -216,253 +216,14 @@ namespace scipp::geometry {
             }
 
 
-            /**
-             * @brief Add two vectors
-             * 
-             * @param vec: vector to add
-             * 
-             * @return vector&: reference to the vector
-             */
-            constexpr vector& operator+=(const vector& vec) noexcept {
-
-                for (std::size_t i{}; i < DIM; ++i) 
-                    this->data_[i] += vec.data_[i];
-
-                return *this;
-
-            }
-
-
-            /**
-             * @brief Subtract two vectors
-             * 
-             * @param vec: vector to subtract
-             * 
-             * @return vector&: reference to the vector
-             */
-            constexpr vector& operator-=(const vector& vec) noexcept {
-
-                for (std::size_t i{}; i < DIM; ++i) 
-                    this->data_[i] -= vec.data_[i];
-
-                return *this;
-
-            }
-
-            /**
-             * @brief Multiply the current vector by a scalar
-             * 
-             * @param scal: scalar as l-value const reference
-             * 
-             * @return constexpr vector& 
-             */
-            constexpr vector& operator*=(const scalar& scal) noexcept {
-
-                for (std::size_t i{}; i < DIM; ++i) 
-                    this->data_[i] *= scal;
-
-                return *this; 
-
-            }
-
-
-            /**
-             * @brief Multiply the current vector by a scalar
-             * 
-             * @param scal: scalar as r-value reference
-             * 
-             * @return constexpr vector& 
-             */
-            constexpr vector& operator*=(scalar&& scal) noexcept {
-
-                for (std::size_t i{}; i < DIM; ++i) 
-                    this->data_[i] *= scal;
-
-                return *this; 
-
-            }
-
-
-            /**
-             * @brief Divide the current vector by a scalar
-             * 
-             * @param scal: scalar as l-value const reference
-             *  
-             * @return constexpr vector& 
-             */
-            constexpr vector& operator/=(const scalar& scal) {
-
-                if (scal == 0.0) 
-                    throw std::runtime_error("Cannot divide a vector by zero");
-
-                for (std::size_t i{}; i < DIM; ++i)
-                    this->data_[i] /= scal;
-                
-                return *this; 
-                
-            }
-
-
-            /**
-             * @brief Divide the current vector by a scalar
-             * 
-             * @param scal: scalar as r-value reference
-             *  
-             * @return constexpr vector& 
-             */
-            constexpr vector& operator/=(scalar&& scal) {
-
-                if (scal == 0.0) 
-                    throw std::runtime_error("Cannot divide a vector by zero");
-
-                for (std::size_t i{}; i < DIM; ++i)
-                    this->data_[i] /= scal;
-                
-                return *this; 
-                
-            }
-
-
-            /**
-             * @brief Return the opposite of the current vector
-             * 
-             * @return constexpr vector 
-             */
-            constexpr vector operator-() const noexcept {
-
-                std::array<value_type, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = -data_[i]; 
-                
-                return result;
-
-            }
-
-
-            /**
-             * @brief Sum the current vector and another vector
-             * 
-             * @param other: vector to add as l-value const reference
-             * 
-             * @return constexpr vector 
-             * 
-             * @note: the two vectors must have the same unit of measurement and the same size
-             */
-            constexpr vector operator+(const vector& other) const {
-
-                std::array<value_type, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] + other.data_[i]; 
-                
-                return result;
-
-            }
-
-
-            /**
-             * @brief Subtract the current vector and another vector
-             * 
-             * @param other: vector to subtract as l-value const reference
-             * 
-             * @return constexpr vector 
-             * 
-             * @note: the two vectors must have the same unit of measurement and the same size
-             */
-            constexpr vector operator-(const vector& other) const {
-
-                std::array<value_type, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] - other.data_[i]; 
-                
-                return result;
-
-            }
-
-
-            /**
-             * @brief Multiply the current vector by a measurement
-             * 
-             * @param meas: measurement as l-value const reference
-             * 
-             * @return constexpr vector 
-             */
-            template <typename MEAS>
-            constexpr auto operator*(const MEAS& meas) const noexcept -> vector<physics::units::base_prod_t<BASE, typename MEAS::base>, DIM> {
-
-                std::array<physics::units::base_prod_t<BASE, typename MEAS::base>, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] * meas; 
-                
-                return result;
-            
-            }
-
-
-            /**
-             * @brief Multiply the current vector by a measurement
-             * 
-             * @param meas: measurement as r-value reference
-             * 
-             * @return constexpr vector 
-             */
-            template <typename MEAS>
-            constexpr auto operator*(MEAS&& meas) const noexcept -> vector<physics::units::base_prod_t<BASE, typename MEAS::base>, DIM> {
-
-                std::array<physics::units::base_prod_t<BASE, typename MEAS::base>, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] * meas; 
-                
-                return result;
-            
-            }
-
-
-            /**
-             * @brief Multiply the current vector by a measurement
-             * 
-             * @param meas: measurement as l-value const reference
-             * 
-             * @return constexpr vector 
-             */
-            template <typename MEAS>
-            constexpr vector<physics::units::base_div_t<BASE, typename MEAS::base>, DIM> operator/(const MEAS& meas) const noexcept {
-
-                std::array<physics::measurement<physics::units::base_div_t<BASE, typename MEAS::base>>, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] / meas; 
-                
-                return result;
-            
-            }
-
-
-            /**
-             * @brief Multiply the current vector by a measurement
-             * 
-             * @param meas: measurement as r-value reference
-             * 
-             * @return constexpr vector 
-             */
-            template <typename MEAS>
-            constexpr auto operator/(MEAS&& meas) const noexcept -> vector<physics::units::base_div_t<BASE, typename MEAS::base>, DIM> {
-
-                std::array<physics::measurement<physics::units::base_div_t<BASE, typename MEAS::base>>, DIM> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result[i] = this->data_[i] / meas; 
-                
-                return result;
-            
-            }
-
-
             /// @brief Print the vector to an output stream
-            friend std::ostream& operator<<(std::ostream& os, const vector& vec) {
+            friend std::ostream& operator<<(std::ostream& os, const vector& vec) noexcept {
 
                 os << "( ";
                 for (std::size_t i{}; i < DIM; ++i) {
 
                     vec.data_[i].print(false); 
-                    os << ((i < DIM - 1) ? ", " : " )\n"); 
+                    os << ((i < DIM - 1) ? ", " : ")\n"); 
 
                 }
 
@@ -475,30 +236,38 @@ namespace scipp::geometry {
         // methods
         // ===========================================================
 
-            /**
-             * @brief Get the vector magnitude
-             * 
-             * @return constexpr value_type 
-             */
-            inline constexpr value_type magnitude() const noexcept {
+            /// @brief Get the begin() const iterator
+            /// @return constexpr value_type& const 
+            inline constexpr value_type& begin() const noexcept {
 
-                physics::measurement<physics::units::base_square_t<BASE>> result; 
-                for (std::size_t i{}; i < DIM; ++i)
-                    result += math::op::square(this->data_[i]); 
-
-                return math::op::sqrt(result);
+                return this->data_.begin();
 
             }
 
 
-            /**
-             * @brief Get the normal vector 
-             * 
-             * @return constexpr vector<units::unitless> 
-             */
-            inline constexpr vector<physics::units::unitless, DIM> normalize() const noexcept {
+            /// @brief Get the begin() iterator
+            /// @return constexpr value_type&
+            inline constexpr value_type& begin() noexcept {
 
-                return *this / this->magnitude();
+                return this->data_.begin();
+
+            }
+
+
+            /// @brief Get the end() iterator
+            /// @return constexpr value_type&
+            inline constexpr value_type& end() const noexcept {
+
+                return this->data_.end();
+
+            }
+
+
+            /// @brief Get the end() iterator
+            /// @return constexpr value_type&
+            inline constexpr value_type& end() noexcept {
+
+                return this->data_.end();
 
             }
 
@@ -528,7 +297,7 @@ namespace scipp::geometry {
 
 
             /// @brief Print the vector components
-            inline constexpr void print() const noexcept {
+            constexpr void print() const noexcept {
                 
                 std::cout << "( ";
                 for (std::size_t i{}; i < DIM; ++i) 
@@ -538,7 +307,7 @@ namespace scipp::geometry {
 
 
             template <typename UNITS, typename = std::enable_if_t<physics::units::is_unit_v<UNITS>>>
-            inline constexpr void print(const UNITS& units) const noexcept {
+            constexpr void print(const UNITS& units) const noexcept {
                 
                 std::cout << "( ";
                 for (std::size_t i{}; i < DIM; ++i) {
@@ -570,8 +339,25 @@ namespace scipp::geometry {
     vector(MEAS&&... measurements) -> vector<T, sizeof...(measurements)>; 
 
 
-    // template <template <unit_base UB> class... measurements_type, unit_base UB>
-    // vector(measurements_type<UB>&&... measurements) -> vector<UB, sizeof...(measurements)>; 
+    template <typename T>
+    struct is_vector : std::false_type {};
+
+    template <typename BASE, std::size_t DIM> requires (physics::units::is_base_v<BASE> && (DIM > 0))
+    struct is_vector<vector<BASE, DIM>> : std::true_type {};
+
+    template <typename T>
+    inline constexpr bool is_vector_v = is_vector<T>::value;
+
+
+    template <typename... Ts>
+    struct are_vectors : std::false_type {};
+
+    template <typename... BASES, size_t DIM>
+    struct are_vectors<vector<BASES, DIM>...> : std::true_type {};
+
+    template <typename... Ts>
+    inline constexpr bool are_vectors_v = are_vectors<Ts...>::value;
+
 
 
 } // namespace scipp::geometry

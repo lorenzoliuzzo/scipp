@@ -4,7 +4,7 @@ project(sci++ VERSION 2.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-std=c++2a -O3 -g -Wall --pedantic -pthread -fopenmp -pg")
+set(CMAKE_CXX_FLAGS "-std=c++2a -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fopenmp -pg")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 

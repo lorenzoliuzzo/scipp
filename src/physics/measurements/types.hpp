@@ -165,6 +165,9 @@ namespace scipp::physics {
         static constexpr unit<radian> rad; ///< rad unit
 
 
+        static constexpr unit<metre_per_second> m_s; ///< m_s unit
+
+
         static constexpr unit<metre, std::kilo> Km; ///< Km unit
         static constexpr unit<metre, std::milli> mm; ///< mm unit
         static constexpr unit<metre, std::micro> um; ///< um unit

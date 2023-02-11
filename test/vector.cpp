@@ -20,38 +20,58 @@ using namespace geometry;
 int main() {
 
 
-    vector<physics::units::metre, 3> v1(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
-    position3 v2(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
+    vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
+    position3 v2(0.0m, 1.0m, 0.0m);
 
-    std::cout << v2.normalize() << '\n';
+    auto m1 = make_matrix<3, 3, position3, position3, lin_velocity3>(position3(1.0m, 0.0m, 0.0m),
+                          position3(0.0m, 1.0m, 0.0m),
+                          lin_velocity3(0.0 * units::m_s, 0.0 * units::m_s, 1.0 * units::m_s)); 
+
+    m1.print(); 
+
+    std::cout << op::angle(v1, v2) << '\n';
+    std::cout << op::cross(v1, v2) << '\n';
+
+    std::cout << op::square(v2) << '\n';
+
+    v1 += v2;
+
+    std::cout << v1 << '\n';
+    std::cout << op::normalize(v2) << '\n';
+    std::cout << op::dot(v1, v2) << '\n';
+    std::cout << op::dot(v2, v2) << '\n';
+    std::cout << op::norm(v2) << '\n'; 
 
 
-    constexpr auto x = 0.23Km;
-    auto y = 35.23m;
+
+
+    // constexpr auto x = 0.23Km;
+    // auto y = 35.23m;
     
-    std::cout << x << '\n';
-    std::cout << y << '\n';
+    // std::cout << x << '\n';
+    // std::cout << y << '\n';
 
-    length_m l1 = x + y / 3.;
-    std::cout << l1 << '\n'; 
+    // length_m l1 = x + y / 3.;
+    // std::cout << l1 << '\n'; 
 
-    v1.print(); 
+    // v1.print(); 
 
-    v1 += v2; 
+    // v1 += v2; 
 
-    v1.print();
-    v1.print(units::Km);
-
-
-    constexpr position3 p1(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
-    constexpr position3 p2(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
-
-    constexpr auto p3 = p1 + p2;
-    p3.print();
+    // v1.print();
+    // v1.print(units::Km);
 
 
-    std::cout << p3[2] << '\n'; 
-    std::cout << p3[1] << '\n'; 
+    // constexpr position3 p1(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
+    // constexpr position3 p2(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
+
+    // constexpr auto p3 = p1 + p2;
+    // p3.print();
+
+
+    // std::cout << p3[2] << '\n'; 
+    // std::cout << p3[1] << '\n'; 
+
 
     return 0; 
 

@@ -166,6 +166,7 @@ namespace scipp::physics {
 
 
         static constexpr unit<metre_per_second> m_s; ///< m_s unit
+        static constexpr unit<metre_per_second2> m_ss; ///< m_s unit
 
 
         static constexpr unit<metre, std::kilo> Km; ///< Km unit

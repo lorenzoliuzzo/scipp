@@ -35,11 +35,11 @@ namespace scipp::physics {
     // using ang_velocity3 = ang_velocity<3>;
 
 
-    // template <std::size_t DIM> 
-    // using lin_acceleration = geometry::vector<acceleration_m, DIM>; 
+    template <std::size_t DIM> 
+    using lin_acceleration = geometry::vector<units::metre_per_second2, DIM>; 
 
-    // using lin_acceleration2 = lin_acceleration<2>;
-    // using lin_acceleration3 = lin_acceleration<3>;
+    using lin_acceleration2 = lin_acceleration<2>;
+    using lin_acceleration3 = lin_acceleration<3>;
 
 
     // template <std::size_t DIM> 

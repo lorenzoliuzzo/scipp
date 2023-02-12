@@ -23,11 +23,6 @@ int main() {
     vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
     position3 v2(0.0m, 1.0m, 0.0m);
 
-    auto m1 = make_matrix<3, 3, position3, position3, lin_velocity3>(position3(1.0m, 0.0m, 0.0m),
-                          position3(0.0m, 1.0m, 0.0m),
-                          lin_velocity3(0.0 * units::m_s, 0.0 * units::m_s, 1.0 * units::m_s)); 
-
-    m1.print(); 
 
     std::cout << op::angle(v1, v2) << '\n';
     std::cout << op::cross(v1, v2) << '\n';

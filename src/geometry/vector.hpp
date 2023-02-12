@@ -34,12 +34,8 @@ namespace scipp::geometry {
         // ===========================================================
 
             /// @brief Construct a default vector 
-            inline constexpr vector() noexcept {
-
-                this->data_.fill(value_type());
-
-            }
-
+            inline constexpr vector() noexcept = default;
+            
 
             /**
              * @brief Construct a new vector from a pack of measurements
@@ -357,6 +353,27 @@ namespace scipp::geometry {
 
     template <typename... Ts>
     inline constexpr bool are_vectors_v = are_vectors<Ts...>::value;
+
+
+    template <typename... VECTORS>
+    struct common_dimention;
+
+    template <typename VECTOR>
+    struct common_dimention<VECTOR> {
+        static constexpr size_t value = VECTOR::dimension;
+    };
+
+    template <typename VECTOR, typename... VECTORS>
+    struct common_dimention<VECTOR, VECTORS...> {
+
+        static_assert(are_vectors_v<VECTOR, VECTORS...>, "All types must be vectors");
+
+        static constexpr size_t value = std::min({VECTOR::dimension, common_dimention<VECTORS...>::value});
+    
+    };
+
+    template <typename... VECTORS>
+    inline constexpr size_t common_dimention_v = common_dimention<VECTORS...>::value;
 
 
 

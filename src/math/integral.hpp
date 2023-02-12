@@ -20,9 +20,8 @@ namespace scipp::math {
 
         public:
 
-            // , std::enable_if_t<physics::is_measurement_v<MEAS1> && physics::is_measurement_v<MEAS2>>>
 
-            template <typename MEAS1, typename MEAS2>
+            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto midpoint(std::function<MEAS2(MEAS1)>& f, 
                                            const MEAS1 from_a,
                                            const MEAS1 to_b,
@@ -39,7 +38,7 @@ namespace scipp::math {
             }
 
 
-            template <typename MEAS1, typename MEAS2>
+            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto midpoint_fixed(std::function<MEAS2(MEAS1)>& f, 
                                                  const MEAS1 from_a,
                                                  const MEAS1 to_b,
@@ -82,7 +81,7 @@ namespace scipp::math {
             }
 
 
-            template <typename MEAS1, typename MEAS2>
+            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto trapexoid(std::function<MEAS2(MEAS1)>& f, 
                                             const MEAS1 from_a,
                                             const MEAS1 to_b,
@@ -99,7 +98,7 @@ namespace scipp::math {
             } 
 
 
-            template <typename MEAS1, typename MEAS2>
+            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto simpson(std::function<MEAS2(MEAS1)>& f, 
                                           const MEAS1 from_a,
                                           const MEAS1 to_b,

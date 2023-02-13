@@ -17,7 +17,7 @@ using namespace math;
 using namespace geometry;
 
 
-int main() {
+int main() {    
 
 
     vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
@@ -39,33 +39,44 @@ int main() {
 
 
 
+    vector2 v3 = make_vector2<2, length_m>(1.0m, 0.0m);
+    vector2 v4(0.0m, 1.0m);
 
-    // constexpr auto x = 0.23Km;
-    // auto y = 35.23m;
-    
-    // std::cout << x << '\n';
-    // std::cout << y << '\n';
+    vector2 v5(1.0m, 1.0 * units::s);
 
-    // length_m l1 = x + y / 3.;
-    // std::cout << l1 << '\n'; 
+    v3.print(); 
+    v4.print();
+    v5.print();
 
-    // v1.print(); 
+    // v4 += v3;
+    // v4.print();
 
-    // v1 += v2; 
+    v5.get<0>() = 2.0m;
+    v5.get<1>() = 2.0 * units::s;
 
-    // v1.print();
-    // v1.print(units::Km);
-
-
-    // constexpr position3 p1(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
-    // constexpr position3 p2(1.0 * units::m, 2.0 * units::m, 3.0 * units::m);
-
-    // constexpr auto p3 = p1 + p2;
-    // p3.print();
+    v5.get<0>() = 3;
 
 
-    // std::cout << p3[2] << '\n'; 
-    // std::cout << p3[1] << '\n'; 
+    (v5.get<0>() + 3.4m).print(); 
+    v5.print();
+
+    v5.x().print();
+    v5.y().print();
+
+    std::cout << sizeof(v5) << '\n';
+    std::cout << sizeof(v5.x()) << '\n';
+
+
+    static_assert(have_same_base_v<decltype(v5.y()), time_m>);
+    static_assert(are_measurements_v<time_m>); 
+    static_assert(are_measurements_v<length_m, time_m>); 
+
+    static_assert(is_omogeneous_v<decltype(v4)>);
+
+    // vector2 v6(std::array<length_m, 2>{1.0m, 2.0m});
+    // v6.print();
+
+    vector2 v6 = make_vector2<length_m>(1.0m, 0.0m);
 
 
     return 0; 

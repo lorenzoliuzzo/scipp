@@ -14,8 +14,57 @@
 namespace scipp::physics {
 
 
+
+    /// @brief Add a measurement to the current measurement
+    template <typename MEAS_TYPE> requires (is_measurement_v<MEAS_TYPE>)
+    inline constexpr MEAS_TYPE& operator+=(MEAS_TYPE& lhs, const MEAS_TYPE& rhs) noexcept { 
+        
+        lhs.value += rhs.value;
+
+        return lhs;  
+        
+    }
+
+
+    /// @brief Subtract a measurement to the current measurement
+    template <typename MEAS_TYPE> requires (is_measurement_v<MEAS_TYPE>)
+    inline constexpr MEAS_TYPE& operator-=(MEAS_TYPE& lhs, const MEAS_TYPE& rhs) noexcept { 
+        
+        lhs.value -= rhs.value;
+
+        return lhs;  
+
+    }
+
+    
+    /// @brief Add two measurements
+    template <typename MEAS_TYPE> requires (is_measurement_v<MEAS_TYPE>)
+    inline constexpr MEAS_TYPE operator+(const MEAS_TYPE& lhs, const MEAS_TYPE& rhs) noexcept { 
+        
+        return lhs.value + rhs.value; 
+        
+    }
+
+
+    /// @brief Subtract two measurements
+    template <typename MEAS_TYPE> requires (is_measurement_v<MEAS_TYPE>)
+    inline constexpr MEAS_TYPE operator-(const MEAS_TYPE& lhs, const MEAS_TYPE& rhs) noexcept { 
+        
+        return lhs.value - rhs.value; 
+        
+    }
+
+
+    template <typename MEAS_TYPE> requires (is_measurement_v<MEAS_TYPE>)
+    inline constexpr MEAS_TYPE operator-(const MEAS_TYPE& other) noexcept { 
+
+        return -other.value; 
+
+    }
+
+
     /// @brief Multiply two measurements
-    template <typename MEAS1, typename MEAS2, typename = std::enable_if_t<is_measurement_v<MEAS1> && is_measurement_v<MEAS2>>>
+    template <typename MEAS1, typename MEAS2> requires (are_measurements_v<MEAS1, MEAS2>)
     inline constexpr auto operator*(const MEAS1& meas1, const MEAS2& meas2) noexcept -> measurement<units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> { 
         
         return meas1.value * meas2.value; 
@@ -24,7 +73,7 @@ namespace scipp::physics {
 
 
     /// @brief Divide two measurements
-    template <typename MEAS1, typename MEAS2, typename = std::enable_if_t<is_measurement_v<MEAS1> && is_measurement_v<MEAS2>>>
+    template <typename MEAS1, typename MEAS2> requires (are_measurements_v<MEAS1, MEAS2>)
     inline constexpr auto operator/(const MEAS1& meas1, const MEAS2& meas2) -> measurement<units::base_div_t<typename MEAS1::base, typename MEAS2::base>> { 
 
         if (meas2.value == 0.0) 
@@ -35,7 +84,7 @@ namespace scipp::physics {
     }
    
 
-    template <typename MEAS, typename = std::enable_if_t<is_measurement_v<MEAS>>>
+    template <typename MEAS> requires (is_measurement_v<MEAS>)
     inline constexpr auto operator*(const MEAS& meas, const scalar& val) noexcept -> MEAS {
 
         return meas.value * val; 
@@ -43,7 +92,7 @@ namespace scipp::physics {
     }
 
 
-    template <typename MEAS, typename = std::enable_if_t<is_measurement_v<MEAS>>>
+    template <typename MEAS> requires (is_measurement_v<MEAS>)
     inline constexpr auto operator*(const scalar& val, const MEAS& meas) noexcept -> MEAS {
 
         return val * meas.value; 
@@ -51,7 +100,7 @@ namespace scipp::physics {
     }
 
 
-    template <typename MEAS, typename = std::enable_if_t<is_measurement_v<MEAS>>>
+    template <typename MEAS> requires (is_measurement_v<MEAS>)
     inline constexpr auto operator/(const MEAS& meas, const scalar& val) -> MEAS {
 
         if (val == 0.0) 
@@ -62,7 +111,7 @@ namespace scipp::physics {
     }
 
 
-    template <typename MEAS, typename = std::enable_if_t<is_measurement_v<MEAS>>>
+    template <typename MEAS> requires (is_measurement_v<MEAS>)
     inline constexpr auto operator/(const scalar& val, const MEAS& meas) -> measurement<units::base_inv_t<typename MEAS::base>> {
 
         if (val == 0.0) 

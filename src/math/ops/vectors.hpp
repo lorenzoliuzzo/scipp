@@ -14,6 +14,18 @@
 namespace scipp::geometry {
 
 
+    // template <typename VECTOR_TYPE> requires (is_vector2_v<VECTOR_TYPE> && is_omogeneous_v<VECTOR_TYPE>)
+    // constexpr VECTOR_TYPE operator+=(VECTOR_TYPE& lhs, const VECTOR_TYPE& rhs) noexcept {
+
+    //     for (auto&& index : std::make_index_sequence<VECTOR_TYPE::dimension>()) 
+    //         lhs.get<index>() += rhs.get<index>();
+            
+    //     return lhs;
+
+    // }
+
+
+
     /// @brief Add two vectors
     /// @tparam BASE: physics::units::unit_base
     /// @tparam DIM: size_t

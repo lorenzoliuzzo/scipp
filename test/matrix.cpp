@@ -50,11 +50,20 @@ int main() {
 
     m5.print();
 
+    // static_assert(m5.get_column<2>() == m5[2]);
 
     auto m6 = m5; 
 
     std::cout << '\n';
     m6.print();
+
+
+    vector2<3, length_m, time_m, time_m> v1(1.0m, 2.0 * units::s, 3.0 * units::s);
+    v1.print();
+
+
+    // auto mat2 = make_matrix(v1, v1, v1);
+    // mat2.print();
 
 
     // auto m7 = m6.augment(position3()); 

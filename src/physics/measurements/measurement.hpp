@@ -15,6 +15,9 @@
 namespace scipp::physics {
 
 
+    /// @brief        The measurement class is a template class that represents a measurement of a physical quantity
+    /// @tparam BASE: The base of the measurement
+    /// @see          units::unit_base 
     template <typename BASE> requires (units::is_base_v<BASE>)
     struct measurement {
 
@@ -23,77 +26,65 @@ namespace scipp::physics {
         // aliases
         // ==============================================
 
-            using type = measurement<BASE>;
+            using type = measurement<BASE>; ///< The type of the measurement
 
-            using base = BASE; 
+            using base = BASE; ///< The base of the measurement
+
+
+        // ==============================================
+        // members
+        // ==============================================
+
+            scalar value; ///< The value of the measurement
 
 
         // ==============================================
         // constructors
         // ==============================================
 
+            /// @brief Default constructor
             constexpr measurement() noexcept : 
                 
                 value{0.0} {}
 
 
+            /// @brief Construct a measurement from a scalar value
+            /// @param val: The value of the measurement
             constexpr measurement(const scalar& val) noexcept : 
                 
                 value{val} {}
 
 
+            /// @brief Construct a measurement from a scalar value
+            /// @param val: The value of the measurement
+            constexpr measurement(scalar&& val) noexcept : 
+                
+                value{std::move(val)} {}
+
+
+            /// @brief Construct a measurement from a scalar value and an unit
+            /// @param val: The value of the measurement
+            /// @param UNITS: The unit of the measurement
+            /// @note The unit must be of the same base of the measurement
             template <typename UNITS> requires (units::is_same_base_v<BASE, typename UNITS::base>)
             constexpr measurement(const scalar& val, const UNITS&) noexcept :
             
                 value{val * UNITS::mult} {}
 
 
+            /// @brief Construct a measurement from a scalar value and an unit
+            /// @param val: The value of the measurement
+            /// @param UNITS: The unit of the measurement
+            /// @note The unit must be of the same base of the measurement
+            template <typename UNITS> requires (units::is_same_base_v<BASE, typename UNITS::base>)
+            constexpr measurement(scalar&& val, const UNITS&) noexcept :
+            
+                value{std::move(val * UNITS::mult)} {}
+
+
         // ==============================================
         // operators
         // ==============================================
-
-            /// @brief Add a measurement to the current measurement
-            inline constexpr measurement& operator+=(const measurement& meas) noexcept { 
-                
-                this->value += meas.value;
-
-                return *this;  
-                
-            }
-
-
-            /// @brief Subtract a measurement to the current measurement
-            inline constexpr measurement& operator-=(const measurement& meas) noexcept { 
-                
-                this->value -= meas.value;
-
-                return *this;  
-
-            }
-
-            
-            /// @brief Add two measurements
-            inline constexpr measurement operator+(const measurement& meas) const noexcept { 
-                
-                return this->value + meas.value; 
-                
-            }
-
-
-            /// @brief Subtract two measurements
-            inline constexpr measurement operator-(const measurement& meas) const noexcept { 
-                
-                return this->value - meas.value; 
-                
-            }
-
-
-            /// @brief Get the inverse of a measurement
-            inline constexpr measurement operator-() const noexcept {
-
-                return -this->value; 
-
-            }
 
 
             /// @brief Check if this measurement is equal to another measurement
@@ -126,6 +117,7 @@ namespace scipp::physics {
                 return this->value < meas.value; 
 
             }
+
 
             /// @brief Check if this measurement is greater or equal to another measurement
             inline constexpr bool operator>=(const measurement& meas) const noexcept {
@@ -197,13 +189,6 @@ namespace scipp::physics {
             }
             
 
-        // ==============================================
-        // members
-        // ==============================================
-
-            scalar value; 
-
-
     }; // struct measurement
 
 
@@ -236,17 +221,55 @@ namespace scipp::physics {
         template <typename... Ts>
         inline constexpr bool are_measurements_v = are_measurements<Ts...>::value;
 
-        // template <typename BASE>
-        // struct is_measurement : std::false_type {};
 
-        // template <typename BASE>
-        // struct is_measurement<measurement<BASE>> : std::true_type {};
+        template <typename T, typename... Ts> requires (are_measurements_v<T, Ts...>)
+        struct have_same_base : std::conjunction<units::is_same_base<typename T::base, typename Ts::base>...> {};
 
-        // template <typename BASE>
-        // struct is_measurement<const measurement<BASE>> : std::true_type {};
+        template <typename... Ts>
+        inline constexpr bool have_same_base_v = have_same_base<Ts...>::value;
 
-        // template <typename BASE>
-        // inline constexpr bool is_measurement_v = is_measurement<BASE>::value;
+
+        // /// @brief Obtain the base of a list of same measurements
+        // template <typename... Ts> requires (are_measurements_v<Ts...> && have_same_base_v<Ts...>)
+        // struct common_base {
+
+        //     using type = typename Ts...::base;
+
+        // };
+
+
+        // /// @brief Obtain the base of a list of same measurements
+        // template <typename... Ts> requires (are_measurements_v<Ts...> && have_same_base_v<Ts...>)
+        // using common_base_t = typename common_base<Ts...>::type;
+
+
+        template <typename T, typename... Ts>
+        struct common_base;
+
+        template <typename T>
+        struct common_base<T> {
+
+            using type = typename T::base;
+
+        };      
+
+        template <typename T, typename U, typename... Ts>
+        struct common_base<T, U, Ts...> {
+
+            using type = std::conditional_t<units::is_same_base_v<typename T::base, typename U::base>, typename T::base, void>;
+        
+        };
+
+        template <typename T, typename U>
+        struct common_base<T, U> {
+
+            using type = std::conditional_t<units::is_same_base_v<typename T::base, typename U::base>, typename T::base, void>;
+        
+        };
+
+        template <typename... Ts>
+        using common_base_t = typename common_base<Ts...>::type;
+
 
 
 } // namespace scipp::physics

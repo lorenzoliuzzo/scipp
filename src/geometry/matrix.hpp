@@ -27,8 +27,11 @@ namespace scipp::geometry {
 
 
         // ===========================================================
-        // static members
+        // members
         // ===========================================================
+
+            std::tuple<TYPES...> data_; ///< The matrix data
+
 
             static inline constexpr std::size_t rows = common_dimention_v<TYPES...>;
 
@@ -87,6 +90,45 @@ namespace scipp::geometry {
             }
 
 
+            template <std::size_t index>
+            inline constexpr auto get_row() noexcept -> decltype(std::get<index>(data_))& {
+                
+                static_assert(index < COLUMNS, "Index out of bounds");
+                return std::get<index>(data_);
+
+            }
+
+
+            template <std::size_t index>
+            inline constexpr auto get_column() noexcept -> decltype(std::get<index>(data_))& {
+                
+                static_assert(index < COLUMNS, "Index out of bounds");
+                return std::get<index>(data_);
+
+            }
+
+
+            template <std::size_t index>
+            inline constexpr auto get_column() const noexcept -> const decltype(std::get<index>(data_))& {
+                
+                static_assert(index < COLUMNS, "Index out of bounds");
+                return std::get<index>(data_);
+
+            }
+
+
+
+        // ===========================================================
+        // operators
+        // ===========================================================
+
+            /// @brief Access the i-th row
+            inline constexpr auto& operator[](size_t i) noexcept {
+
+                return this->get_column<i>();
+
+            }
+
         // ===========================================================
         // methods
         // ===========================================================
@@ -107,7 +149,7 @@ namespace scipp::geometry {
             // }
 
 
-            // /// @brief Augment the matrix with a vector
+            /// @brief Augment the matrix with a vector
             // template <typename VECTOR> requires (is_vector_v<VECTOR>)
             // inline constexpr auto augment(const VECTOR& vector) const noexcept {
 
@@ -115,13 +157,13 @@ namespace scipp::geometry {
 
             //     matrix<COLUMNS + 1, TYPES..., VECTOR> result;
 
-            //     for (size_t i{}; i < this->columns; i++) 
-            //         result[i] = (*this)[i];
+            //     for (size_t i{}; i < this->columns; ++i) 
+            //         result.get_column<i>() = (*this).get_column<i>();
 
-            //     result[this->columns] = vector;
+            //     result.get_column<this->columns>() = vector;
 
             //     return result;
-
+ 
             // }
 
 
@@ -131,13 +173,6 @@ namespace scipp::geometry {
                 std::apply([](const auto&... args) { ((std::cout << args), ...); }, this->data_);
 
             }
-
-
-        // ===========================================================
-        // members
-        // ===========================================================
-
-            std::tuple<TYPES...> data_; ///< The matrix data
 
     
     }; // struct matrix
@@ -182,7 +217,7 @@ namespace scipp::geometry {
     matrix(VECTORS&&... vectors) -> matrix<sizeof...(VECTORS), VECTORS...>;
 
 
-    template <typename... VECTORS>
+    template <typename... VECTORS> requires (are_vectors_v<VECTORS...>)
     inline constexpr auto make_matrix(VECTORS&&... vectors) noexcept -> matrix<sizeof...(VECTORS), VECTORS...> {
         
         return {std::forward<VECTORS>(vectors)...};

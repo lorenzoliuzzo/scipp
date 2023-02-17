@@ -27,7 +27,7 @@ namespace scipp::geometry {
         // ===========================================================
 
             using type = vector2<DIM, MEAS_TYPES...>; ///< The type of the vector
-
+            
 
         // ===========================================================
         // members
@@ -36,7 +36,7 @@ namespace scipp::geometry {
             std::tuple<MEAS_TYPES...> data_; ///< The data of the vector
 
 
-            inline static constexpr std::size_t dimension = DIM; ///< The dimension of the vector
+            inline static constexpr std::size_t dim = DIM; ///< The dimension of the vector
 
 
         // ===========================================================
@@ -44,7 +44,7 @@ namespace scipp::geometry {
         // ===========================================================
 
             /// @brief Construct a default vector 
-            inline constexpr vector2() noexcept = default;
+            constexpr vector2() noexcept = default;
             
 
             /// @brief Construct a new vector from a pack of measurements
@@ -56,26 +56,10 @@ namespace scipp::geometry {
                 data_{std::forward<MEAS_TYPES>(measurements)...} {}
 
 
-            /// @brief Construct a new vector from a std::tuple of measurements
-            /// @param measurements: std::tuple<MEAS_TYPES...> as l-value const reference
-            /// @note The number of components must be the same as the dimesion of the vector
-            constexpr vector2(const std::tuple<MEAS_TYPES...>& measurements) noexcept requires (std::tuple_size<std::tuple<MEAS_TYPES...>>() == DIM) : 
-                
-                data_{measurements} {}
-
-
-            /// @brief Construct a new vector from a std::tuple of measurements
-            /// @param measurements: std::tuple<MEAS_TYPES...> as r-value reference
-            /// @note The number of components must be the same as the dimesion of the vector
-            constexpr vector2(std::tuple<MEAS_TYPES...>&& measurements) noexcept requires (std::tuple_size<std::tuple<MEAS_TYPES...>>() == DIM) : 
-                
-                data_{std::move(measurements)} {}
-
-
             /// @brief Construct a new vector from a std::array of measurements
             /// @param measurements: std::array<MEAS_TYPES, DIM> as l-value const reference
             /// @note The number of components must be the same as the dimesion of the vector
-            constexpr vector2(const std::array<physics::common_base_t<MEAS_TYPES...>, DIM>& measurements) noexcept requires (physics::have_same_base_v<MEAS_TYPES...>) : 
+            constexpr vector2(const std::array<physics::common_base_t<MEAS_TYPES...>, DIM>& measurements) noexcept requires (physics::units::are_same_base_v<MEAS_TYPES::base...>) :
                 
                 data_{measurements} {}
 
@@ -178,27 +162,9 @@ namespace scipp::geometry {
             }
 
 
-            /// @brief Get the vector components
-            /// @return const std::tuple<MEAS_TYPES...>&
-            inline constexpr const std::tuple<MEAS_TYPES...>& data() const noexcept {
-
-                return this->data_;
-
-            }
-
-
-            /// @brief Get the vector components
-            /// @return std::tuple<MEAS_TYPES...>&
-            inline constexpr std::tuple<MEAS_TYPES...>& data() noexcept {
-
-                return this->data_;
-
-            }
-
-
             /// @brief Get the first element of the vector
             /// @return const std::tuple_element_t<0, std::tuple<MEAS_TYPES...>>&
-            inline constexpr auto x() const noexcept -> const std::tuple_element_t<0, std::tuple<MEAS_TYPES...>>& {
+            inline constexpr auto x() const noexcept {
 
                 return std::get<0>(this->data_);
 
@@ -207,7 +173,7 @@ namespace scipp::geometry {
 
             /// @brief Get the first element of the vector
             /// @return std::tuple_element_t<0, std::tuple<MEAS_TYPES...>>&
-            inline constexpr auto x() noexcept -> std::tuple_element_t<0, std::tuple<MEAS_TYPES...>>& {
+            inline constexpr auto x() noexcept {
 
                 return std::get<0>(this->data_);
 
@@ -264,6 +230,24 @@ namespace scipp::geometry {
             inline constexpr auto w() noexcept requires (DIM >= 3) {
 
                 return std::get<3>(this->data_);
+
+            }
+
+
+            /// @brief Get the vector components
+            /// @return const std::tuple<MEAS_TYPES...>&
+            inline constexpr const std::tuple<MEAS_TYPES...>& data() const noexcept {
+
+                return this->data_;
+
+            }
+
+
+            /// @brief Get the vector components
+            /// @return std::tuple<MEAS_TYPES...>&
+            inline constexpr std::tuple<MEAS_TYPES...>& data() noexcept {
+
+                return this->data_;
 
             }
 
@@ -356,14 +340,14 @@ namespace scipp::geometry {
     // inline constexpr bool are_same_vectors2_v = are_same_vectors2<Ts...>::value;
 
 
-    template <typename... VECTORS>
-    struct is_omogeneous : std::false_type {};
+    // template <typename... VECTORS>
+    // struct is_omogeneous : std::false_type {};
 
-    template <std::size_t DIM, typename... MEAS_TYPES> requires (physics::are_measurements_v<MEAS_TYPES...>)
-    struct is_omogeneous<vector2<DIM, MEAS_TYPES...>> : physics::have_same_base<MEAS_TYPES...> {};
+    // template <std::size_t DIM, typename... MEAS_TYPES> requires (physics::are_measurements_v<MEAS_TYPES...>)
+    // struct is_omogeneous<vector2<DIM, MEAS_TYPES...>> : physics::have_same_base<MEAS_TYPES...> {};
 
-    template <typename... VECTORS>
-    inline constexpr bool is_omogeneous_v = is_omogeneous<VECTORS...>::value;
+    // template <typename... VECTORS>
+    // inline constexpr bool is_omogeneous_v = is_omogeneous<VECTORS...>::value;
 
 
     template <typename BASE, std::size_t DIM>

@@ -17,68 +17,99 @@ using namespace math;
 using namespace geometry;
 
 
-int main() {    
+int main() {
 
 
-    vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
-    position3 v2(0.0m, 1.0m, 0.0m);
+    // vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
+    // position3 v2(0.0m, 1.0m, 0.0m);
 
 
-    std::cout << op::angle(v1, v2) << '\n';
-    std::cout << op::cross(v1, v2) << '\n';
+    // std::cout << op::angle(v1, v2) << '\n';
+    // std::cout << op::cross(v1, v2) << '\n';
 
-    std::cout << op::square(v2) << '\n';
+    // std::cout << op::square(v2) << '\n';
 
-    v1 += v2;
+    // v1 += v2;
 
-    std::cout << v1 << '\n';
-    std::cout << op::normalize(v2) << '\n';
-    std::cout << op::dot(v1, v2) << '\n';
-    std::cout << op::dot(v2, v2) << '\n';
-    std::cout << op::norm(v2) << '\n'; 
+    // std::cout << v1 << '\n';
+    // std::cout << op::normalize(v2) << '\n';
+    // std::cout << op::dot(v1, v2) << '\n';
+    // std::cout << op::dot(v2, v2) << '\n';
+    // std::cout << op::norm(v2) << '\n'; 
 
 
 
-    vector2 v3 = make_vector2<2, length_m>(1.0m, 0.0m);
-    vector2 v4(0.0m, 1.0m);
+    // vector2 v3 = make_vector2<2, length_m>(1.0m, 0.0m);
+    // vector2 v4(0.0m, 1.0m);
 
-    vector2 v5(1.0m, 1.0 * units::s);
+    // vector2 v5(1.0m, 1.0 * units::s);
 
-    v3.print(); 
-    v4.print();
-    v5.print();
-
-    // v4 += v3;
+    // v3.print(); 
     // v4.print();
+    // v5.print();
 
-    v5.get<0>() = 2.0m;
-    v5.get<1>() = 2.0 * units::s;
+    // // v4 += v3;
+    // // v4.print();
 
-    v5.get<0>() = 3;
+    // v5.get<0>() = 2.0m;
+    // v5.get<1>() = 2.0 * units::s;
 
-
-    (v5.get<0>() + 3.4m).print(); 
-    v5.print();
-
-    v5.x().print();
-    v5.y().print();
-
-    std::cout << sizeof(v5) << '\n';
-    std::cout << sizeof(v5.x()) << '\n';
+    // v5.get<0>() = 3;
 
 
-    static_assert(have_same_base_v<decltype(v5.y()), time_m>);
-    static_assert(are_measurements_v<time_m>); 
-    static_assert(are_measurements_v<length_m, time_m>); 
+    // (v5.get<0>() + 3.4m).print(); 
+    // v5.print();
 
-    static_assert(is_omogeneous_v<decltype(v4)>);
+    // v5.x().print();
+    // v5.y().print();
+
+    // std::cout << sizeof(v5) << '\n';
+    // std::cout << sizeof(v5.x()) << '\n';
+
+    // static_assert(have_same_base_v<decltype(v5.y()), time_m>);
+    // static_assert(are_measurements_v<time_m>); 
+    // static_assert(are_measurements_v<length_m, time_m>); 
+
+    // static_assert(is_omogeneous_v<decltype(v4)>);
+    // static_assert(!is_omogeneous_v<decltype(v5)>);
 
     // vector2 v6(std::array<length_m, 2>{1.0m, 2.0m});
     // v6.print();
 
-    vector2 v6 = make_vector2<length_m>(1.0m, 0.0m);
+    tools::omp_timer timer; 
+    // timer.start();
+    // timer.stop();
+    // std::cout << timer.elapsed() << '\n';
 
 
-    return 0; 
+    // timer.start();
+    vector2 v6(1.0m, 0.0m);
+    vector2 v7(1.0m, -3.40m);
+    v6 += v7;
+    v6.print();
+    // timer.stop();
+
+    // std::cout << timer.elapsed() << '\n';
+
+    // timer.start();
+    vector<units::metre, 2> p1(1.0m, 0.0m);
+    vector<units::metre, 2> p2(1.0m, -3.40m);
+    p1 += p2;
+    p1.print();
+    // timer.stop();
+
+    // std::cout << timer.elapsed() << '\n';
+
+
+    std::cout << v6 + v7 << '\n'; 
+
+
+    vector2<2, length_m, time_m> v8(1.m, 1. * units::s);
+    std::cout << v8 << '\n';
+
+    // static_assert(physics::measurement_prod_t<length_m, time_m>::base == physics::units::base_prod_t<length_m::base, time_m::base>);
+
+    return 0;   
+
 
 }

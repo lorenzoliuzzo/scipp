@@ -32,19 +32,17 @@
     #include "math/constants.hpp" // ok
 
     #include "physics/measurements/units.hpp"
-    #include "math/ops/units.hpp"
-
     #include "physics/measurements/measurement.hpp"
     #include "physics/measurements/types.hpp"
-    #include "math/ops/measurements.hpp"
 
     #include "geometry/vector.hpp"
-    #include "math/ops/vectors.hpp"
     #include "physics/vector_types.hpp"
+
+    #include "math/ops/measurements.hpp"
+    #include "math/ops/vectors.hpp"
 
     #include "geometry/matrix.hpp"
     
-
     #include "math/integral.hpp"    
 
     #include "physics/constants.hpp"

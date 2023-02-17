@@ -14,16 +14,236 @@
 namespace scipp::geometry {
 
 
-    // template <typename VECTOR_TYPE> requires (is_vector2_v<VECTOR_TYPE> && is_omogeneous_v<VECTOR_TYPE>)
-    // constexpr VECTOR_TYPE operator+=(VECTOR_TYPE& lhs, const VECTOR_TYPE& rhs) noexcept {
+    /// @brief Add two vectors
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
 
-    //     for (auto&& index : std::make_index_sequence<VECTOR_TYPE::dimension>()) 
-    //         lhs.get<index>() += rhs.get<index>();
-            
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr 
+    vector2<DIM, MEAS_TYPES...>& operator+=(vector2<DIM, MEAS_TYPES...>& lhs, 
+                                            const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
+
+        std::apply([&](auto&... lhs_components) { 
+
+            std::apply([&](auto&... rhs_components) { 
+
+                ((lhs_components += rhs_components), ...);
+
+            }, rhs.data());
+
+        }, lhs.data());
+
+        return lhs;
+
+    }
+
+
+    /// @brief Subtract two vectors
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr 
+    vector2<DIM, MEAS_TYPES...>& operator-=(vector2<DIM, MEAS_TYPES...>& lhs, 
+                                            const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
+
+        std::apply([&](auto&... lhs_components) { 
+
+            std::apply([&](auto&... rhs_components) { 
+
+                ((lhs_components -= rhs_components), ...);
+
+            }, rhs.data());
+
+        }, lhs.data());
+
+        return lhs;
+
+    }
+
+
+    /// @brief Multiply a vector by a scalar
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: scalar as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...>& operator*=(vector2<DIM, MEAS_TYPES...>& lhs, 
+                                            const scalar& rhs) noexcept {
+
+        std::apply([&](auto&... lhs_components) { 
+
+            ((lhs_components *= rhs), ...);
+
+        }, lhs.data());
+
+        return lhs;
+
+    }
+
+
+    /// @brief Divide a vector by a scalar
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: scalar as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...>& operator/=(vector2<DIM, MEAS_TYPES...>& lhs, 
+                                            const scalar& rhs) noexcept {
+
+        std::apply([&](auto&... lhs_components) { 
+
+            ((lhs_components /= rhs), ...);
+
+        }, lhs.data());
+
+        return lhs;
+
+    }
+
+
+    /// @brief Add two vectors
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
+    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...> operator+(const vector2<DIM, MEAS_TYPES...>& lhs, 
+                                          const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
+
+        vector2<DIM, MEAS_TYPES...> result(lhs);
+        result += rhs;
+
+        return result;
+    
+    }
+
+
+    /// @brief Subtract two vectors
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...> operator-(const vector2<DIM, MEAS_TYPES...>& lhs, 
+                                          const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
+
+        vector2<DIM, MEAS_TYPES...> result(lhs);
+        result -= rhs;
+
+        return result;
+    
+    }
+
+
+    /// @brief Multiply a vector by a scalar
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: scalar as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...> operator*(const vector2<DIM, MEAS_TYPES...>& lhs, 
+                                          const scalar& rhs) noexcept {
+
+        vector2<DIM, MEAS_TYPES...> result(lhs);
+        result *= rhs;
+
+        return result;
+    
+    }
+
+
+    /// @brief Divide a vector by a scalar
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @param rhs: scalar as l-value const reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...> operator/(const vector2<DIM, MEAS_TYPES...>& lhs, 
+                                          const scalar& rhs) noexcept {
+
+        vector2<DIM, MEAS_TYPES...> result(lhs);
+        result /= rhs;
+
+        return result;
+    
+    }
+
+
+    /// @brief Multiply a scalar by a vector
+    /// @tparam DIM: size_t
+    /// @tparam MEAS_TYPES: list of physics::measurement types
+    /// @param lhs: scalar as l-value const reference
+    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    template <std::size_t DIM, typename... MEAS_TYPES> 
+        requires (physics::are_measurements_v<MEAS_TYPES...>)
+    inline constexpr
+    vector2<DIM, MEAS_TYPES...> operator*(const scalar& lhs, 
+                                          const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
+
+        return rhs * lhs;
+    
+    }
+
+
+    // /// @brief Divide a scalar by a vector
+    // /// @tparam DIM: size_t
+    // /// @tparam MEAS_TYPES: list of physics::measurement types
+    // /// @param lhs: scalar as l-value const reference
+    // /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    // /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    // template <std::size_t DIM, typename... MEAS_TYPES> 
+    //     requires (physics::are_measurements_v<MEAS_TYPES...>)
+    // inline constexpr
+    
+
+    // /// @brief Multiply a vector by a measurement
+    // /// @tparam DIM: size_t
+    // /// @tparam MEAS_TYPES: list of physics::measurement types
+    // /// @tparam MEAS_TYPE: physics::measurement type
+    // /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
+    // /// @param rhs: MEAS_TYPE as l-value const reference
+    // /// @return geometry::vector2<DIM, MEAS_TYPES...>&
+    // template <std::size_t DIM, typename... MEAS_TYPES, typename MEAS_TYPE> 
+    //     requires (physics::are_measurements_v<MEAS_TYPES...> && physics::is_measurement_v<MEAS_TYPE>)
+    // inline constexpr
+    // vector2<DIM, physics::measurement_prod_t<MEAS_TYPES..., MEAS_TYPE>> operator*(const vector2<DIM, MEAS_TYPES...>& lhs, 
+    //                                                                               const MEAS_TYPE& rhs) noexcept {
+
+    //     vector2<DIM, physics::measurement_prod_t<MEAS_TYPES..., MEAS_TYPE>> result;
+        
+    //     [...]
+
     //     return lhs;
 
     // }
-
 
 
     /// @brief Add two vectors
@@ -372,11 +592,11 @@ namespace scipp::math {
         /// @tparam BASE: physics::units::unit_base
         /// @tparam DIM: size_t
         /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
-        /// @return constexpr geometry::vector<units::base_square_t<BASE>  , DIM>
+        /// @return constexpr geometry::vector<units::base_pow_t<BASE, 2>, DIM>
         template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        constexpr vector<units::base_square_t<BASE>, DIM> square(const vector<BASE, DIM>& vec) noexcept {
+        constexpr vector<units::base_pow_t<BASE, 2>, DIM> square(const vector<BASE, DIM>& vec) noexcept {
 
-            vector<units::base_square_t<BASE>, DIM> result;
+            vector<units::base_pow_t<BASE, 2>, DIM> result;
 
             for (std::size_t i{}; i < DIM; ++i) 
                 result[i] = op::square(vec[i]);
@@ -390,11 +610,11 @@ namespace scipp::math {
         /// @tparam BASE: physics::units::unit_base
         /// @tparam DIM: size_t
         /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
-        /// @return constexpr geometry::vector<units::base_cube_t<BASE>, DIM>
+        /// @return constexpr geometry::vector<units::base_pow_t<BASE, 3>, DIM>
         template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        constexpr vector<units::base_cube_t<BASE>, DIM> cube(const vector<BASE, DIM>& vec) noexcept {
+        constexpr vector<units::base_pow_t<BASE, 3>, DIM> cube(const vector<BASE, DIM>& vec) noexcept {
 
-            vector<units::base_cube_t<BASE>, DIM> result;
+            vector<units::base_pow_t<BASE, 3>, DIM> result;
 
             for (std::size_t i{}; i < DIM; ++i) 
                 result[i] = op::cube(vec[i]);
@@ -408,11 +628,11 @@ namespace scipp::math {
         /// @tparam BASE: physics::units::unit_base
         /// @tparam DIM: size_t
         /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
-        /// @return constexpr geometry::vector<units::base_sqrt_t<BASE>, DIM>
+        /// @return constexpr geometry::vector<units::base_root_t<BASE, 2>, DIM>
         template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        constexpr vector<units::base_sqrt_t<BASE>, DIM> sqrt(const vector<BASE, DIM>& vec) {
+        constexpr vector<units::base_root_t<BASE, 2>, DIM> sqrt(const vector<BASE, DIM>& vec) {
 
-            vector<units::base_sqrt_t<BASE>, DIM> result;
+            vector<units::base_root_t<BASE, 2>, DIM> result;
 
             for (std::size_t i{}; i < DIM; ++i) 
                 result[i] = op::sqrt(vec[i]);
@@ -426,11 +646,11 @@ namespace scipp::math {
         /// @tparam BASE: physics::units::unit_base
         /// @tparam DIM: size_t
         /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
-        /// @return constexpr geometry::vector<units::base_cbrt_t<BASE>, DIM>
+        /// @return constexpr geometry::vector<units::base_root_t<BASE, 3>, DIM>
         template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        constexpr vector<units::base_cbrt_t<BASE>, DIM> cbrt(const vector<BASE, DIM>& vec) noexcept {
+        constexpr vector<units::base_root_t<BASE, 3>, DIM> cbrt(const vector<BASE, DIM>& vec) noexcept {
 
-            vector<units::base_cbrt_t<BASE>, DIM> result;
+            vector<units::base_root_t<BASE, 3>, DIM> result;
 
             for (std::size_t i{}; i < DIM; ++i) 
                 result[i] = op::cbrt(vec[i]);

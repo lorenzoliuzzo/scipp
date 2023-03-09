@@ -20,6 +20,19 @@ using namespace geometry;
 int main() {
 
 
+    base_quantity<0, 1, 0, 0, 0, 0, 0, 0> time_;
+    base_quantity<1, 0, 0, 0, 0, 0, 0, 0> length_;
+
+    std::cout << length_.to_string() << '\n';
+    std::cout << time_.to_string() << '\n';
+
+    base_quantity<1, -1, 0, 0, 0, 0, 0, 0> speed_;
+    std::cout << speed_.to_string() << '\n';
+
+    static_assert(is_same_base_v<base_quantity<1, -1, 0, 0, 0, 0, 0, 0>, base_div_t<decltype(length_), decltype(time_)>>);
+    static_assert(has_valid_root_v<base_quantity<2, -4, 0, 0, 0, 0, 0, 0>, 2>);
+
+
     // vector<physics::units::metre, 3> v1(1.0m, 0.0m, 0.0m);
     // position3 v2(0.0m, 1.0m, 0.0m);
 
@@ -104,8 +117,11 @@ int main() {
     std::cout << v6 + v7 << '\n'; 
 
 
-    vector2<2, length_m, time_m> v8(1.m, 1. * units::s);
-    std::cout << v8 << '\n';
+    vector2<2, length_m, time_m> v8(1.35m, 1. * units::s);
+    // std::cout << v8 * 3.246m << '\n';
+
+    
+    // std::cout << v8 * 3.53m << '\n';
 
     // static_assert(physics::measurement_prod_t<length_m, time_m>::base == physics::units::base_prod_t<length_m::base, time_m::base>);
 

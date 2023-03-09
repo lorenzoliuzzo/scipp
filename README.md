@@ -7,11 +7,10 @@ It is designed to be used in scientific computing and data analysis.
 * [namespace scipp](#namespace-scipp)
 
     * [namespace physics](#namespace-physics)
-        * [namespace measurements](#namespace-measurements)
-            * [namespace units](#namespace-units)
-                * [struct unit_base](#struct-unit-base)
-                * [struct unit](#struct-unit)
-            * [struct measurement](#struct-measurement)
+        * [namespace units](#namespace-units)
+            * [struct unit_base](#struct-unit-base)
+            * [struct unit](#struct-unit)
+        * [struct measurement](#struct-measurement)
         * [namespace constants](#namespace-constants)
         
     * [namespace math](#namespace-math)
@@ -22,6 +21,7 @@ It is designed to be used in scientific computing and data analysis.
 
     * [namespace geometry](#namespace-geometry)
         * [vector](#vector)
+        * [matrix](#matrix)
 
     * [namespace tools](#namespace-tools)
     

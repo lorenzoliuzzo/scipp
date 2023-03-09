@@ -77,4 +77,25 @@ namespace scipp::physics {
     // using torque3 = torque<3>;
 
 
+// 1) Displacement
+// 2) Velocity
+// 3) Acceleration
+// 4) Force
+// 5) Torque
+// 6) Electric field
+// 7) Magnetic field
+// 8) Angular velocity
+// 9) Linear Momentum
+// 10) Dipole moment
+// 11) Vector potential
+// 12) Angular momentum
+// 13) Weight
+// 14) Current density
+// 15) Thrust
+// 16) Magnetic dipole moment
+// 17) Magnetisation
+// 18) Polarization
+// 19) Electric Displacement
+// 20) Poynting Vector.
+
 } // namespace scipp::physics

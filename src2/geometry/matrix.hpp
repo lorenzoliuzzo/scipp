@@ -15,7 +15,8 @@
 namespace scipp::geometry {
 
 
-    template <size_t COLUMNS, typename... TYPES> requires (are_vectors_v<TYPES...>)
+    template <size_t COLUMNS, typename... TYPES> 
+        requires (are_vectors_v<TYPES...>)
     struct matrix {
 
 
@@ -149,7 +150,7 @@ namespace scipp::geometry {
             // }
 
 
-            /// @brief Augment the matrix with a vector
+            // /// @brief Augment the matrix with a vector
             // template <typename VECTOR> requires (is_vector_v<VECTOR>)
             // inline constexpr auto augment(const VECTOR& vector) const noexcept {
 

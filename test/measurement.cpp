@@ -23,8 +23,8 @@ int main() {
     time.stop(); 
     std::cout << "empty?: " << time.elapsed() << '\n';
 
-    constexpr length_m l2(1.0, units::mm);
-    constexpr length_m l3(1.0, units::Km);
+    constexpr length_m l2(1.0m);
+    constexpr length_m l3(1.0m);
 
     time.start();
     constexpr length_m l4 = l2 + l3;
@@ -37,6 +37,9 @@ int main() {
     auto x = (3.36 * units::mm) * l4;
     time.stop();
     std::cout << "auto?: " << time.elapsed() << '\n';
+
+
+    std::cout << sizeof(l4) << '\n';
 
 
 

@@ -306,7 +306,9 @@ namespace scipp::physics {
         /// @brief unit is an union of an unit_base and an std::ratio prefix
         /// @tparam BASE: meta_base of the unit
         /// @tparam PREFIX: std::ratio prefix of the unit
-        template <typename BASE, typename PREFIX = std::ratio<1, 1>> requires (is_base_v<BASE>)
+        template <typename BASE, typename PREFIX = std::ratio<1>> 
+            requires (is_base_v<BASE>)
+            
         struct unit {
 
 
@@ -371,7 +373,7 @@ namespace scipp::physics {
 
 
                 /// @brief to_string returns a string representation of the unit
-                inline static constexpr std::string to_string() noexcept {
+                static constexpr std::string to_string() noexcept {
 
                     return prefix_symbol() + BASE::to_string(); 
 
@@ -380,7 +382,7 @@ namespace scipp::physics {
 
                 /// @brief Convert a value from the base unit to another unit 
                 template <typename UNIT> requires(is_same_base_v<BASE, typename UNIT::base>)
-                inline static constexpr scalar convert(const scalar val, const UNIT&) noexcept {
+                static constexpr scalar convert(const scalar val, const UNIT&) noexcept {
 
                     return val * mult / UNIT::mult; 
 

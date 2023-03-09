@@ -14,62 +14,6 @@
 namespace scipp::geometry {
 
 
-    /// @brief Add two vectors
-    /// @tparam DIM: size_t
-    /// @tparam MEAS_TYPES: list of physics::measurement types
-    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
-    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
-    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
-
-    template <std::size_t DIM, typename... MEAS_TYPES> 
-        requires (physics::are_measurements_v<MEAS_TYPES...>)
-    inline constexpr 
-    vector2<DIM, MEAS_TYPES...>& operator+=(vector2<DIM, MEAS_TYPES...>& lhs, 
-                                            const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
-
-        std::apply([&](auto&... lhs_components) { 
-
-            std::apply([&](auto&... rhs_components) { 
-
-                ((lhs_components += rhs_components), ...);
-
-            }, rhs.data());
-
-        }, lhs.data());
-
-        return lhs;
-
-    }
-
-
-    /// @brief Subtract two vectors
-    /// @tparam DIM: size_t
-    /// @tparam MEAS_TYPES: list of physics::measurement types
-    /// @param lhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value reference
-    /// @param rhs: geometry::vector2<DIM, MEAS_TYPES...> as l-value const reference
-    /// @return geometry::vector2<DIM, MEAS_TYPES...>&
-
-    template <std::size_t DIM, typename... MEAS_TYPES> 
-        requires (physics::are_measurements_v<MEAS_TYPES...>)
-    inline constexpr 
-    vector2<DIM, MEAS_TYPES...>& operator-=(vector2<DIM, MEAS_TYPES...>& lhs, 
-                                            const vector2<DIM, MEAS_TYPES...>& rhs) noexcept {
-
-        std::apply([&](auto&... lhs_components) { 
-
-            std::apply([&](auto&... rhs_components) { 
-
-                ((lhs_components -= rhs_components), ...);
-
-            }, rhs.data());
-
-        }, lhs.data());
-
-        return lhs;
-
-    }
-
-
     /// @brief Multiply a vector by a scalar
     /// @tparam DIM: size_t
     /// @tparam MEAS_TYPES: list of physics::measurement types

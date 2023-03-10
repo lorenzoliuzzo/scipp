@@ -17,15 +17,15 @@ namespace scipp::math {
     namespace constants {
 
 
-        constexpr scalar nan = std::numeric_limits<scalar>::signaling_NaN(); /// scalar Not a Number
+        constexpr physics::scalar_m nan = std::numeric_limits<double>::signaling_NaN(); /// double Not a Number
 
-        constexpr scalar zero = 0.0; /// scalar Zero
+        constexpr physics::scalar_m zero = 0.0; /// double Zero
 
-        constexpr scalar infinity = std::numeric_limits<scalar>::infinity(); /// scalar Infinity
+        constexpr physics::scalar_m infinity = std::numeric_limits<double>::infinity(); /// double Infinity
         
-        constexpr scalar pi = 3.14159265358979323846; /// scalar Pi
+        constexpr physics::scalar_m pi = 3.14159265358979323846; /// double Pi
         
-        constexpr scalar e = 2.7182818284590452353603; /// scalar Euler's number
+        constexpr physics::scalar_m e = 2.7182818284590452353603; /// double Euler's number
         
 
     } // namespace constants

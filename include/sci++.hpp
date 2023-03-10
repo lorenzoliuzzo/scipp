@@ -24,26 +24,28 @@
     #include <stdexcept>
     #include <string>
     #include <thread>
+    #include <variant>
     #include <vector>
 
 
     using scalar = double;
     
-    #include "math/constants.hpp" // ok
 
-    #include "physics/base_quantity.hpp" // ok
-    #include "physics/unit.hpp" // ok
-    #include "physics/units.hpp" // ok
+    #include "physics/base_quantity.hpp"
+    #include "physics/unit.hpp"
+    #include "physics/units.hpp"
 
-    #include "physics/measurement.hpp" // ok
-    #include "math/ops/measurement.hpp" // ok
+    #include "physics/measurement.hpp"
 
-    #include "physics/umeasurement.hpp" // ok
-    #include "math/ops/umeasurement.hpp" // ok
+    #include "physics/umeasurement.hpp"
+    #include "math/ops/measurement.hpp"
+    // #include "math/ops/umeasurement.hpp"
 
-    #include "physics/measurements.hpp" // ok
+    #include "physics/measurements.hpp"
+    #include "math/constants.hpp"
 
-    #include "geometry/vector.hpp" // ok
+    #include "geometry/vector.hpp"
+    #include "geometry/matrix.hpp"
 
 
     // #include "geometry/vector.hpp"
@@ -57,8 +59,6 @@
     // #include "math/integral.hpp"    
 
     // #include "physics/constants.hpp"
-
-    // #include "physics/base_quantity.hpp"
 
     // #include "math/statistics.hpp"
 

@@ -21,11 +21,12 @@ namespace scipp::math {
         public:
 
 
-            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
+            template <typename MEAS1, typename MEAS2> 
+                requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto midpoint(std::function<MEAS2(MEAS1)>& f, 
                                            const MEAS1 from_a,
                                            const MEAS1 to_b,
-                                           const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
+                                           const size_t& steps = 1000) noexcept -> physics::measurement<physics::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
 
                 const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
                 MEAS2 total_sum = f(from_a);
@@ -38,11 +39,12 @@ namespace scipp::math {
             }
 
 
-            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
+            template <typename MEAS1, typename MEAS2> 
+                requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto midpoint_fixed(std::function<MEAS2(MEAS1)>& f, 
                                                  const MEAS1 from_a,
                                                  const MEAS1 to_b,
-                                                 const scalar& prec = 1.e-6) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
+                                                 const scalar& prec = 1.e-6) noexcept -> physics::measurement<physics::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
                 
                 std::size_t steps = 1;
                 auto integral = midpoint(f, from_a, to_b, steps);
@@ -81,11 +83,12 @@ namespace scipp::math {
             }
 
 
-            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
+            template <typename MEAS1, typename MEAS2> 
+                requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto trapexoid(std::function<MEAS2(MEAS1)>& f, 
                                             const MEAS1 from_a,
                                             const MEAS1 to_b,
-                                            const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
+                                            const size_t& steps = 1000) noexcept -> physics::measurement<physics::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
 
                 const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
                 MEAS2 total_sum = (f(from_a) + f(to_b)) / 2.;
@@ -98,11 +101,12 @@ namespace scipp::math {
             } 
 
 
-            template <typename MEAS1, typename MEAS2> requires (physics::are_measurements_v<MEAS1, MEAS2>)
+            template <typename MEAS1, typename MEAS2> 
+                requires (physics::are_measurements_v<MEAS1, MEAS2>)
             static constexpr auto simpson(std::function<MEAS2(MEAS1)>& f, 
                                           const MEAS1 from_a,
                                           const MEAS1 to_b,
-                                          const size_t& steps = 1000) noexcept -> physics::measurement<physics::units::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
+                                          const size_t& steps = 1000) noexcept -> physics::measurement<physics::base_prod_t<typename MEAS1::base, typename MEAS2::base>> {
                                                 
                 bool is_even = (steps % 2 == 0);
                 const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);

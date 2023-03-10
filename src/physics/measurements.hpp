@@ -10,10 +10,6 @@
 
 #pragma once
 
-#include "units.hpp"
-#include "measurement.hpp"
-#include "umeasurement.hpp"
-
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {

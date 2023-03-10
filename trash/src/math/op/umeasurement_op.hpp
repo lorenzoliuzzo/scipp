@@ -147,7 +147,7 @@ namespace scipp::math {
         template <unit_base UB>
         constexpr umeasurement<math::op::square(UB)> square(const umeasurement<UB>& umeas) noexcept { 
             
-            return { std::pow(umeas.value(), 2), 2. * std::fabs(umeas.value()) * umeas.uncertainty() }; 
+            return { std::pow(umeas.value(), 2),  
             
         }
 

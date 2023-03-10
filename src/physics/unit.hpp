@@ -11,10 +11,6 @@
 
 #pragma once
 
-#include <ratio>
-#include <ostream>
-#include "base_quantity.hpp"
-
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {

@@ -38,9 +38,9 @@ namespace scipp::physics {
         // members
         // ==============================================
 
-            measurement<BASE> value; ///< The value of the measurement
+            double value; ///< The value of the measurement
 
-            measurement<BASE> uncertainty; ///< The uncertainty of the measurement
+            double uncertainty; ///< The uncertainty of the measurement
 
 
         // ==============================================
@@ -157,8 +157,8 @@ namespace scipp::physics {
 
                 else {
 
-                    this->value = val; 
-                    this->uncertainty = unc; 
+                    this->value = val.value; 
+                    this->uncertainty = unc.value; 
                 
                 }
 
@@ -178,8 +178,8 @@ namespace scipp::physics {
 
                 else {
 
-                    this->value = std::move(val); 
-                    this->uncertainty = std::move(unc); 
+                    this->value = std::move(val.value); 
+                    this->uncertainty = std::move(unc.value); 
                 
                 }
 
@@ -282,7 +282,7 @@ namespace scipp::physics {
             /// @param other: umeasurement as a l-value const reference
             constexpr umeasurement operator+(const umeasurement& other) const noexcept {
                 
-                return { this->value + other.value, math::op::sqrt(math::op::square(this->uncertainty) + math::op::square(other.uncertainty)) };
+                return { this->value + other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
             
             }
 
@@ -291,7 +291,7 @@ namespace scipp::physics {
             /// @param other: umeasurement as a l-value const reference
             constexpr umeasurement operator-(const umeasurement& other) const noexcept {
                 
-                return { this->value - other.value, math::op::sqrt(math::op::square(this->uncertainty) + math::op::square(other.uncertainty)) };
+                return { this->value - other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
             
             }
 
@@ -302,12 +302,12 @@ namespace scipp::physics {
             constexpr auto operator*(const umeasurement<BASE2>& other) const noexcept 
                 -> umeasurement<base_prod_t<BASE, BASE2>> { 
                 
-                auto tval1 = this->uncertainty / this->value;
-                auto tval2 = other.uncertainty / other.value;
-                auto nunc = math::op::sqrt(math::op::square(tval1) + math::op::square(tval2));
-                auto nval = this->value * other.value;
+                double tval1 = this->uncertainty / this->value;
+                double tval2 = other.uncertainty / other.value;
+                double nunc = std::sqrt(std::pow(tval1, 2) + std::pow(tval2, 2));
+                double nval = this->value * other.value;
 
-                return { nval, math::op::abs(nval) * nunc };
+                return { nval, std::fabs(nval) * nunc };
                 
             }
 
@@ -321,12 +321,12 @@ namespace scipp::physics {
                 if (other.value == 0.0) 
                     throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
 
-                auto tval1 = this->uncertainty / this->value;
-                auto tval2 = other.uncertainty / other.value;
-                auto nunc = math::op::sqrt(math::op::square(tval1) + math::op::square(tval2));
-                auto nval = this->value / other.value;
+                double tval1 = this->uncertainty / this->value;
+                double tval2 = other.uncertainty / other.value;
+                double nunc = std::sqrt(std::pow(tval1, 2) + std::pow(tval2, 2));
+                double nval = this->value / other.value;
 
-                return { nval, math::op::abs(nval) * nunc };
+                return { nval, std::fabs(nval) * nunc };
                 
             }
 
@@ -393,7 +393,7 @@ namespace scipp::physics {
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             constexpr void print(const bool& newline = true) const noexcept {
 
-                std::cout << this->value << " ± " << this->uncertainty << (newline ? '\n' : ' ');
+                std::cout << this->value << " ± " << this->uncertainty << ' ' << BASE::to_string() << (newline ? '\n' : ' ');
 
             }
 
@@ -406,7 +406,7 @@ namespace scipp::physics {
                 requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
             constexpr void print(const UNITS& units, const bool& newline = true) const noexcept {
 
-                std::cout << this->value.value_as(units) << " ± " << this->uncertainty.value_as(units) << (newline ? '\n' : ' '); 
+                std::cout << this->value / UNITS::mult << " ± " << this->uncertainty / UNITS::mult << (newline ? '\n' : ' '); 
 
             }
 
@@ -416,7 +416,7 @@ namespace scipp::physics {
 
     template <typename BASE> 
         requires (is_base_v<BASE>)
-    struct is_measurement<umeasurement<BASE>> : std::true_type {};
+    struct is_measurement<umeasurement<BASE>> : std::false_type {};
 
 
     template <typename T>
@@ -426,26 +426,34 @@ namespace scipp::physics {
         requires (is_base_v<BASE>)
     struct is_umeasurement<umeasurement<BASE>> : std::true_type {};
 
-
     template <typename BASE> 
         requires (is_base_v<BASE>)
     struct is_umeasurement<measurement<BASE>> : std::false_type {};
+
+    template <typename T>
+    constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
+
   
     template <typename... Ts>
     struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...> {};
 
     template <typename... Ts>
-    constexpr 
-    bool are_umeasurements_v = are_umeasurements<Ts...>::value;
+    constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
 
 
     template <typename BASE>
+        requires (is_base_v<BASE>)
     struct are_same_measurements<umeasurement<BASE>> : std::true_type {};
 
     
     template <typename BASE1, typename BASE2>
         requires (are_same_base_v<BASE1, BASE2>)
     struct are_same_measurements<umeasurement<BASE1>, umeasurement<BASE2>> : std::true_type {};
+
+
+    template <typename BASE, typename... Ts>
+        requires (are_same_base_v<BASE, typename Ts::base> && ...)
+    struct are_same_measurements<umeasurement<BASE>, Ts...> : are_same_measurements<Ts...> {};
 
 
 } // namespace physics

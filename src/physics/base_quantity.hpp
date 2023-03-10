@@ -409,8 +409,20 @@ namespace scipp::physics {
         template <typename BASE, int POWER> 
         using base_pow_t = typename base_pow<BASE, POWER>::type;
 
+        template <typename BASE>    
+        using base_square_t = typename base_pow<BASE, 2>::type;
+
+        template <typename BASE>
+        using base_cube_t = typename base_pow<BASE, 3>::type;
+
         template <typename BASE, int POWER> 
         using base_root_t = typename base_root<BASE, POWER>::type;
+
+        template <typename BASE>
+        using base_sqrt_t = typename base_root<BASE, 2>::type;
+
+        template <typename BASE>
+        using base_cbrt_t = typename base_root<BASE, 3>::type;
 
         template <typename BASE> 
         using base_inv_t = typename base_inv<BASE>::type;

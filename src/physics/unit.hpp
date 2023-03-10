@@ -119,7 +119,6 @@ namespace scipp::physics {
         inline constexpr bool is_prefix_v = is_prefix<T>::value;
 
 
-
         template <typename T>
         struct is_unit : std::false_type {};
 

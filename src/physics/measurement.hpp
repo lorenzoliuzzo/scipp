@@ -236,24 +236,46 @@ namespace scipp::physics {
             }
         
 
-            constexpr measurement operator*(const scalar& val) const noexcept {
+            constexpr measurement& operator*=(const measurement<units::scalar>& val) noexcept {
 
-                return this->value * val; 
+                this->value *= val.value; 
+
+                return *this; 
 
             }
 
 
-            constexpr measurement operator/(const scalar& val) const {
+            constexpr measurement operator*(const measurement<units::scalar>& val) const noexcept {
+
+                return this->value * val.value; 
+
+            }
+
+
+            constexpr measurement& operator/=(const measurement<units::scalar>& val) {
+
 
                 if (val == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");
 
-                return this->value / val; 
+                this->value /= val.value; 
+
+                return *this; 
 
             }
 
 
-            friend constexpr measurement operator*(const scalar& val, const measurement& meas) noexcept {
+            constexpr measurement operator/(const measurement<units::scalar>& val) const {
+
+                if (val == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                return this->value / val.value; 
+
+            }
+
+
+            friend constexpr measurement operator*(const double& val, const measurement& meas) noexcept {
 
                 return val * meas.value; 
                 
@@ -328,19 +350,19 @@ namespace scipp::physics {
 
     template <typename UNITS> 
         requires (is_unit_v<UNITS>)
-    measurement(const scalar&, const UNITS&) 
+    measurement(const double&, const UNITS&) 
         -> measurement<typename UNITS::base>;
 
     template <typename UNITS> 
         requires (is_unit_v<UNITS>)
-    measurement(scalar&&, const UNITS&) 
+    measurement(double&&, const UNITS&) 
         -> measurement<typename UNITS::base>;
 
 
     /// @brief Multiply a scalar with an unit to get a measurement
     template <typename UNITS> 
         requires (is_unit_v<UNITS>)
-    constexpr auto operator*(const scalar& val, const UNITS&) noexcept
+    constexpr auto operator*(const double& val, const UNITS&) noexcept
         -> measurement<typename UNITS::base> { 
         
         return val * UNITS::mult; 
@@ -350,7 +372,7 @@ namespace scipp::physics {
     /// @brief Divide a scalar with an unit to get a measurement
     template <typename UNITS> 
         requires (is_unit_v<UNITS>)
-    constexpr auto operator/(const scalar& val, const UNITS&) noexcept
+    constexpr auto operator/(const double& val, const UNITS&) noexcept
         -> measurement<base_inv_t<typename UNITS::base>> { 
         
         return val / UNITS::mult; 
@@ -426,6 +448,19 @@ namespace scipp::physics {
 
     template <typename... Ts>
     using measurement_inv_t = typename measurement_inv<Ts...>::type;
+
+
+    template <typename T>
+    struct is_scalar : std::false_type {};
+
+    template <>
+    struct is_scalar<double> : std::true_type {};
+
+    template <>
+    struct is_scalar<measurement<units::scalar>> : std::true_type {};
+
+    template <typename T>
+    constexpr bool is_scalar_v = is_scalar<T>::value;
 
 
 } // namespace physics

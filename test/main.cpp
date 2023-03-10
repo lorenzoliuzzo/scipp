@@ -10,18 +10,22 @@ int main() {
 
     std::cout << "Hello World!" << '\n';
 
-    std::cout << 3.5 / m << '\n';
+    std::cout << 3.5m * 2. << '\n';
+    std::cout << 2. * 3.5m << '\n'; 
 
     measurement x1(434.5 * Km); 
     x1.print(); 
     x1.print_as(Km); 
 
-    umeasurement x(13.5 * m, 0.2 * m); 
-    umeasurement y(-2.3 * m, 0.3 * m);
+    umeasurement x(13.436432 * m, 1434. * nm); 
+    umeasurement y(-2.3 * m, 0.05 * m);
 
 
-    math::op::square(x1).print();
-    math::op::square(y).print();
+    std::cout << "x = " << x << '\n';
+    std::cout << "y = " << y << '\n';
+
+    std::cout << math::op::square(x1) << '\n';
+    std::cout << math::op::cube(y) << '\n';
 
     y.print(); 
 

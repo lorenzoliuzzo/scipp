@@ -101,8 +101,8 @@ namespace scipp::math {
                 requires (physics::is_measurement_v<MEAS> || physics::is_umeasurement_v<MEAS>)
             inline constexpr auto square(const MEAS& meas) noexcept 
                 -> std::conditional_t<physics::is_umeasurement_v<MEAS>, 
-                    physics::umeasurement<physics::base_pow_t<typename MEAS::base, 2>>, 
-                    physics::measurement<physics::base_pow_t<typename MEAS::base, 2>>> {
+                    physics::umeasurement<physics::base_square_t<typename MEAS::base>>, 
+                    physics::measurement<physics::base_square_t<typename MEAS::base>>> {
 
                 if constexpr (physics::is_umeasurement_v<MEAS>)
                     return { std::pow(meas.value, 2), 2.0 * std::fabs(meas.value) * meas.uncertainty }; 
@@ -111,21 +111,18 @@ namespace scipp::math {
             
             }
 
-            // /// @brief Get the square of a measurement
-            // template <typename MEAS>
-            //     requires (physics::is_umeasurement_v<MEAS>)
-            // inline constexpr auto square(const MEAS& meas) noexcept 
-            //     -> physics::umeasurement<physics::base_pow_t<typename MEAS::base, 2>> {
-
-            //     return { std::pow(meas.value, 2), 2.0 * std::fabs(meas.value) * meas.uncertainty }; 
-
-            // }
 
             /// @brief Get the cube of a measurement
             template <typename MEAS>
-                requires (physics::is_measurement_v<MEAS>)
-            inline constexpr auto cube(const MEAS& meas) noexcept -> physics::measurement<physics::base_pow_t<typename MEAS::base, 3>> { 
+                requires (physics::is_measurement_v<MEAS> || physics::is_umeasurement_v<MEAS>)
+            inline constexpr auto cube(const MEAS& meas) noexcept 
+                -> std::conditional_t<physics::is_umeasurement_v<MEAS>, 
+                    physics::umeasurement<physics::base_cube_t<typename MEAS::base>>, 
+                    physics::measurement<physics::base_cube_t<typename MEAS::base>>> {
                 
+                if constexpr (physics::is_umeasurement_v<MEAS>)
+                    return { std::pow(meas.value, 3), 3. * std::fabs(meas.value) * meas.uncertainty }; 
+
                 return std::pow(meas.value, 3); 
             
             }
@@ -133,19 +130,31 @@ namespace scipp::math {
 
             /// @brief Get the square root of a measurement
             template <typename MEAS>
-                requires (physics::is_measurement_v<MEAS>)
-            inline constexpr auto sqrt(const MEAS& meas) noexcept -> physics::measurement<physics::base_root_t<typename MEAS::base, 2>> { 
+                requires (physics::is_measurement_v<MEAS> || physics::is_umeasurement_v<MEAS>)
+            inline constexpr auto sqrt(const MEAS& meas) noexcept 
+                -> std::conditional_t<physics::is_umeasurement_v<MEAS>, 
+                    physics::umeasurement<physics::base_sqrt_t<typename MEAS::base>>, 
+                    physics::measurement<physics::base_sqrt_t<typename MEAS::base>>> {
                 
+                if constexpr (physics::is_umeasurement_v<MEAS>)
+                    return { std::sqrt(meas.value), 0.5 * meas.uncertainty / std::sqrt(meas.value) };
+
                 return std::sqrt(meas.value); 
             
             }
 
 
-            /// @brief Get the cubic root of a measurement
+            /// @brief Get the square root of a measurement
             template <typename MEAS>
-                requires (physics::is_measurement_v<MEAS>)
-            inline constexpr auto cbrt(const MEAS& meas) noexcept -> physics::measurement<physics::base_root_t<typename MEAS::base, 3>> { 
+                requires (physics::is_measurement_v<MEAS> || physics::is_umeasurement_v<MEAS>)
+            inline constexpr auto cbrt(const MEAS& meas) noexcept 
+                -> std::conditional_t<physics::is_umeasurement_v<MEAS>, 
+                    physics::umeasurement<physics::base_cbrt_t<typename MEAS::base>>, 
+                    physics::measurement<physics::base_cbrt_t<typename MEAS::base>>> {
                 
+                if constexpr (physics::is_umeasurement_v<MEAS>)
+                    return { std::cbrt(meas.value), std::pow(meas.value, - 2. / 3.) * meas.uncertainty / 3. };
+
                 return std::cbrt(meas.value); 
             
             }
@@ -153,7 +162,7 @@ namespace scipp::math {
 
             /// @brief Get the exponential of a measurement
             template <typename MEAS>
-                requires (physics::is_measurement_v<MEAS> && physics::is_same_base_v<physics::units::scalar, typename MEAS::base>)
+                requires (physics::is_measurement_v<MEAS> && physics::is_scalar_v<MEAS>)
             inline constexpr auto exp(const MEAS& meas) noexcept -> MEAS { 
                 
                 return std::exp(meas.value); 

@@ -74,7 +74,8 @@ namespace scipp::math {
          * @note The uncertainty is not inverted
          */
         template <unit_base UB>
-        constexpr umeasurement<math::op::inv(UB)> inv(const umeasurement<UB>& umeas) { 
+        constexpr auto inv(const umeasurement<UB>& umeas) 
+            -> umeasurement<math::op::inv(UB)> { 
             
             if (umeas.value() == 0) 
                 throw std::runtime_error("Cannot invert an umeasurement with a zero value");

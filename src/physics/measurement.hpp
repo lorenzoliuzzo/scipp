@@ -286,10 +286,10 @@ namespace scipp::physics {
             /// @param val: The scalar value as lvalue const reference
             /// @param meas: The measurement as lvalue const reference
             /// @return measurement<base_inv_t<BASE>>
-            friend constexpr auto operator/(const scalar& val, const measurement& meas)
+            friend constexpr auto operator/(const double& val, const measurement& meas)
                 -> measurement<base_inv_t<BASE>> {
 
-                if (val == 0.0) 
+                if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot divide a scalar by a zero measurement");
 
                 return val / meas.value; 
@@ -312,10 +312,9 @@ namespace scipp::physics {
             /// @brief  Get the value of the measurement in the specified unit
             /// @param  UNITS: The unit in which the value is returned
             /// @note   The unit must be of the same base of the measurement
-            /// @return scalar 
             template <typename UNITS> 
                 requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr scalar value_as(const UNITS&) const noexcept { 
+            constexpr double value_as(const UNITS&) const noexcept { 
                 
                 return this->value / UNITS::mult; 
                 
@@ -420,47 +419,84 @@ namespace scipp::physics {
 
 
     template <typename T, typename... Ts>
-    struct measurement_prod { using type = T; };
+    struct measurements_prod { 
+        
+        using type = T; 
+    
+    };
+
+    template <typename BASE>
+        requires (is_base_v<BASE>)
+    struct measurements_prod<measurement<BASE>> { 
+        
+        using type = measurement<BASE>; 
+    
+    };
     
     template <typename BASE1, typename BASE2>
         requires (are_base_v<BASE1, BASE2>)
-    struct measurement_prod<measurement<BASE1>, measurement<BASE2>> { using type = measurement<base_prod_t<BASE1, BASE2>>; };
+    struct measurements_prod<measurement<BASE1>, measurement<BASE2>> { 
+        
+        using type = measurement<base_prod_t<BASE1, BASE2>>; 
+    
+    };
+
+    template <typename... Ts>
+    using measurements_prod_t = typename measurements_prod<Ts...>::type;
 
 
     template <typename MEAS1, typename MEAS2>
         requires (are_measurements_v<MEAS1, MEAS2>)
-    struct measurement_div { using type = measurement<base_div_t<typename MEAS1::base, typename MEAS2::base>>; };
+    struct measurements_div { 
+        
+        using type = measurement<base_div_t<typename MEAS1::base, typename MEAS2::base>>; 
+        
+    };
+
+    template <typename T1, typename T2>
+    using measurements_div_t = typename measurements_div<T1, T2>::type;
 
 
     template <typename T>
-    struct measurement_inv { using type = T; }; 
+    using measurement_square_t = measurements_prod_t<T, T>;
+
+    template <typename T>
+    using measurement_cube_t = measurements_prod_t<measurement_square_t<T>, T>;
+
+
+    template <typename T>
+    struct measurements_inv { 
+        
+        using type = T; 
+
+    }; 
 
     template <typename BASE>
         requires (is_base_v<BASE>)
-    struct measurement_inv<measurement<BASE>> { using type = measurement<base_inv_t<BASE>>; };
+    struct measurements_inv<measurement<BASE>> { 
+        
+        using type = measurement<base_inv_t<BASE>>; 
 
-
-    template <typename... Ts>
-    using measurement_prod_t = typename measurement_prod<Ts...>::type;
-
-    template <typename T1, typename T2>
-    using measurement_div_t = typename measurement_div<T1, T2>::type;
+    };
 
     template <typename... Ts>
-    using measurement_inv_t = typename measurement_inv<Ts...>::type;
+    using measurements_inv_t = typename measurements_inv<Ts...>::type;
 
 
-    template <typename T>
-    struct is_scalar : std::false_type {};
+    template <typename T, int>
+    struct measurement_pow { 
+        
+        using type = T; 
 
-    template <>
-    struct is_scalar<double> : std::true_type {};
+    }; 
 
-    template <>
-    struct is_scalar<measurement<units::scalar>> : std::true_type {};
+    template <typename BASE_TYPE, int POWER>
+        requires (is_base_v<BASE_TYPE>)
+    struct measurement_pow<measurement<BASE_TYPE>, POWER> { 
+        
+        using type = measurement<base_pow_t<BASE_TYPE, POWER>>; 
 
-    template <typename T>
-    constexpr bool is_scalar_v = is_scalar<T>::value;
+    };
 
 
 } // namespace physics

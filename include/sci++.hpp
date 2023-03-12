@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-09
+ * @date    2023-03-12
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,39 +12,37 @@
 
 
     #include <cmath>
-    #include <cstdint>
-    #include <chrono>
+    #include <concepts>
+    // #include <cstdint>
+    // #include <chrono>
     #include <fstream>
     #include <functional>
     #include <iomanip>
     #include <iostream>
-    #include <map>
-    #include <numeric>
-    #include <omp.h>
-    #include <stdexcept>
+    // #include <map>
+    // #include <numeric>
+    // #include <omp.h>
+    #include <ratio>
+    // #include <stdexcept>
     #include <string>
-    #include <thread>
-    #include <variant>
+    // #include <thread>
     #include <vector>
-
-
-    using scalar = double;
-    
+  
 
     #include "physics/base_quantity.hpp"
     #include "physics/unit.hpp"
     #include "physics/units.hpp"
 
     #include "physics/measurement.hpp"
-
     #include "physics/umeasurement.hpp"
-    #include "math/ops/measurement.hpp"
-    // #include "math/ops/umeasurement.hpp"
+    #include "physics/measurements_types.hpp"
+    #include "math/ops/measurements.hpp"
 
-    #include "physics/measurements.hpp"
     #include "math/constants.hpp"
 
     #include "geometry/vector.hpp"
+    #include "math/ops/vectors.hpp"
+    
     #include "geometry/matrix.hpp"
 
 

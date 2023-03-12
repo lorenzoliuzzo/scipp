@@ -40,7 +40,7 @@ namespace scipp::physics {
         // static members
         // =============================================
 
-            inline static constexpr scalar mult = static_cast<scalar>(PREFIX::num) / static_cast<scalar>(PREFIX::den);
+            inline static constexpr double mult = static_cast<double>(PREFIX::num) / static_cast<double>(PREFIX::den);
 
 
         // =============================================
@@ -59,9 +59,9 @@ namespace scipp::physics {
         // =============================================
 
             /// @brief prefix_symbol returns a char representation of the prefix
-            inline static consteval char prefix_symbol() noexcept {
+            inline static constexpr char prefix_symbol() noexcept {
 
-                if constexpr (mult == 1.e-24)      return 'y'; //< yocto prefix
+                if      constexpr (mult == 1.e-24) return 'y'; //< yocto prefix
                 else if constexpr (mult == 1.e-21) return 'z'; //< zepto prefix
                 else if constexpr (mult == 1.e-18) return 'a'; //< atto prefix
                 else if constexpr (mult == 1.e-15) return 'f'; //< femto prefix
@@ -80,7 +80,7 @@ namespace scipp::physics {
                 else if constexpr (mult == 1.e18)  return 'E'; //< exa prefix
                 else if constexpr (mult == 1.e21)  return 'Z'; //< zetta prefix
                 else if constexpr (mult == 1.e24)  return 'Y'; //< yotta prefix
-                else return ' ';
+                else                               return ' ';
 
             }
 
@@ -95,7 +95,7 @@ namespace scipp::physics {
 
             /// @brief Convert a value from the base unit to another unit 
             template <typename UNIT> requires(is_same_base_v<BASE, typename UNIT::base>)
-            static constexpr scalar convert(const scalar val, const UNIT&) noexcept {
+            static constexpr double convert(const double val, const UNIT&) noexcept {
 
                 return val * mult / UNIT::mult; 
 

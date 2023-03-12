@@ -32,6 +32,47 @@ namespace scipp::physics {
     using force_m = measurement<units::kilogram_metre_per_second2>;    ///< force_m 
     using energy_m = measurement<units::kilogram_metre2_per_second2>;  ///< energy_m 
 
+
+    using scalar_um = umeasurement<units::scalar>;                       ///< scalar_m
+    using length_um = umeasurement<units::metre>;                        ///< length_m 
+    using time_um = umeasurement<units::second>;                         ///< time_m 
+    using mass_um = umeasurement<units::kilogram>;                       ///< mass_m 
+    using angle_um = umeasurement<units::radian>;                        ///< angle_m 
+    using temperature_um = umeasurement<units::kelvin>;                  ///< temperature_m
+    using current_um = umeasurement<units::ampere>;                      ///< current_m
+    using luminous_intensity_um = umeasurement<units::candela>;          ///< luminous_intensity_m
+    using mole_um = umeasurement<units::mole>;                           ///< mole_m
+
+    using velocity_um = umeasurement<units::metre_per_second>;           ///< velocity_m 
+    using ang_velocity_um = umeasurement<units::radian_per_second>;      ///< ang_velocity_m
+    using acceleration_um = umeasurement<units::metre_per_second2>;      ///< acceleration_m 
+    using ang_acceleration_um = umeasurement<units::radian_per_second2>; ///< ang_acceleration_m
+    using force_um = umeasurement<units::kilogram_metre_per_second2>;    ///< force_m 
+    using energy_um = umeasurement<units::kilogram_metre2_per_second2>;  ///< energy_m 
+
+
+    template <typename T>
+    struct is_scalar : std::false_type {};
+
+    template <>
+    struct is_scalar<double> : std::true_type {};
+
+    template <>
+    struct is_scalar<measurement<units::scalar>> : std::true_type {};
+
+    template <typename T>
+    constexpr bool is_scalar_v = is_scalar<T>::value;
+
+
+    template <typename T>
+    struct is_angle : std::false_type {};
+
+    template <>
+    struct is_angle<measurement<units::radian>> : std::true_type {};
+
+    template <typename T>
+    constexpr bool is_angle_v = is_angle<T>::value;
+
     
     // using frequency_m = measurement<units::hertz>;                    ///< frequency_m
     // using power_m = measurement<units::watt>;                         ///< power_m

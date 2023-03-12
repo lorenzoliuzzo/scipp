@@ -71,6 +71,12 @@ int main() {
 
     std::cout << norm(make_vector(x, y)) << '\n';
 
+    std::cout << position3() << '\n';
+    std::cout << uposition2() << '\n';
+    std::cout << uposition2().y() << '\n';
+
+    static_assert(are_same_measurements_v<decltype(x), decltype(y), decltype(z)>);
+    std::cout << uposition3(x, y, z) << '\n';    
 
     return 0;
 

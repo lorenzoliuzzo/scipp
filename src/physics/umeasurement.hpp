@@ -432,7 +432,7 @@ namespace scipp::physics {
                     os << meas.as_measurement(); 
                 
                 // check if scientific notation is needed
-                if (scientific_notation_needed) {
+                else if (scientific_notation_needed) {
 
                     os << std::scientific; 
                     os << std::setprecision(prec - 1) << meas.value << " ± "; 
@@ -514,7 +514,6 @@ namespace scipp::physics {
             /// @param units: The unit in which the value is printed
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             /// @note The unit must be of the same base of the measurement
-
             template <typename UNITS> 
                 requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
             constexpr void print_as(const UNITS&, const bool& newline = true) const noexcept {
@@ -569,7 +568,7 @@ namespace scipp::physics {
     struct are_same_measurements<umeasurement<BASE>, Ts...> : are_same_measurements<Ts...> {};
 
 
-    /// @brief Type trait to check if a type is a measurement or an uncertainty measurement
+    /// @brief Type trait to check if a type is a measurement or an umeasurement
     template <typename T>
     struct is_generic_measurement : std::false_type {};
 
@@ -583,36 +582,7 @@ namespace scipp::physics {
     constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
 
 
-    /// @brief Type trait to get the result type of a measurement or umeasurement check
-    template <typename T>
-        requires (is_generic_measurement_v<T>)
-    struct generic_measurement_result {
-
-        using type = T;
-
-    };
-
-    template <typename BASE_TYPE>
-    struct generic_measurement_result<measurement<BASE_TYPE>> {
-
-        using type = measurement<BASE_TYPE>; 
-        using base = BASE_TYPE;
-
-    };
-
-    template <typename BASE_TYPE>
-    struct generic_measurement_result<umeasurement<BASE_TYPE>> {
-
-        using type = umeasurement<BASE_TYPE>; 
-        using base = BASE_TYPE;
-
-    };
-
-    template <typename T>
-        requires (is_generic_measurement_v<T>)
-    using generic_measurement_result_t = typename generic_measurement_result<T>::type;
-
-
+    /// @brief Type trait to check if some types are measurements or umeasurements
     template <typename... T>
     struct are_generic_measurements : std::false_type {};
 
@@ -624,7 +594,6 @@ namespace scipp::physics {
 
     template <typename... T>
     constexpr bool are_generic_measurements_v = are_generic_measurements<T...>::value;
-
 
 
 } // namespace physics

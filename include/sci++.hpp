@@ -42,25 +42,16 @@
     #include "math/ops/measurements.hpp"
 
     #include "math/constants.hpp"
+    // #include "physics/constants.hpp"
 
     #include "geometry/vector.hpp"
     #include "math/ops/vectors.hpp"
-    
+    #include "physics/vector_types.hpp"
+
     #include "geometry/matrix.hpp"
     // #include "math/ops/matrices.hpp"
 
-
-    // #include "geometry/vector.hpp"
-    // #include "physics/vector_types.hpp"
-
-    // #include "math/ops/measurements.hpp"
-    // #include "math/ops/vectors.hpp"
-
-    // #include "geometry/matrix.hpp"
-    
     // #include "math/integral.hpp"    
-
-    // #include "physics/constants.hpp"
 
     // #include "math/statistics.hpp"
 

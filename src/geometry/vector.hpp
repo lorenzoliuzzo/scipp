@@ -467,7 +467,7 @@ namespace scipp::geometry {
             
 
             /// @brief Get the azimuthal angle
-            /// @note the vector must have at least two elements
+            /// @note the vector must have at least three elements
             constexpr auto azimuthal_angle() const 
                 -> std::conditional_t<physics::is_umeasurement_v<measurement_type>, 
                                       physics::umeasurement<physics::units::radian>,
@@ -600,9 +600,13 @@ namespace scipp::geometry {
 
     template <typename... MEAS>
         requires (physics::are_same_measurements_v<MEAS...>)
-    vector(MEAS&... measurements) 
+    vector(const MEAS&... measurements) 
         -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)>;
 
+    template <typename... MEAS>
+        requires (physics::are_same_measurements_v<MEAS...>)
+    vector(MEAS&... measurements) 
+        -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)>;
 
     template <typename... MEAS>
         requires (physics::are_same_measurements_v<MEAS...>)
@@ -615,17 +619,16 @@ namespace scipp::geometry {
     inline constexpr auto make_vector(MEAS&... measurements) noexcept 
         -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)> {
         
-        return {std::forward<std::common_type_t<MEAS...>>(measurements)...};
+        return { std::forward<std::common_type_t<MEAS...>>(measurements)... };
 
     }
-
 
     template <typename... MEAS> 
         requires (physics::are_same_measurements_v<MEAS...>)
     inline constexpr auto make_vector(MEAS&&... measurements) noexcept 
         -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)> {
         
-        return {std::forward<std::common_type_t<MEAS...>>(measurements)...};
+        return { std::forward<std::common_type_t<MEAS...>>(measurements)... };
 
     }
 
@@ -650,14 +653,64 @@ namespace scipp::geometry {
 
     template <typename VECTOR_TYPE, typename... VECTORS>
         requires (are_vectors_v<VECTOR_TYPE, VECTORS...>)
-    struct have_same_dimension : std::conjunction<std::bool_constant<VECTOR_TYPE::dim == VECTORS::dim>...> {};
+    struct are_same_vectors : std::conjunction<std::bool_constant<VECTOR_TYPE::dim == VECTORS::dim>..., 
+                                               std::bool_constant<physics::are_same_measurements_v<typename VECTOR_TYPE::measurement_type, 
+                                                                                                   typename VECTORS::measurement_type>>...> {};
 
-    // template <typename VECTOR_TYPE>
-    //     requires (is_vector_v<VECTOR_TYPE>)
-    // struct have_same_dimension<VECTOR_TYPE> : std::true_type {};
+    template <typename... VECTORS>  
+    constexpr bool are_same_vectors_v = are_same_vectors<VECTORS...>::value;
+
+
+    template <typename VECTOR_TYPE, typename... VECTORS>
+        requires (are_vectors_v<VECTOR_TYPE, VECTORS...>)
+    struct have_same_dimension : std::conjunction<std::bool_constant<VECTOR_TYPE::dim == VECTORS::dim>...> {};
 
     template <typename... VECTORS>
     constexpr bool have_same_dimension_v = have_same_dimension<VECTORS...>::value;
+
+
+template <typename T, typename... Us>
+struct has_same_vector;
+
+template <typename T>
+struct has_same_vector<T> : std::false_type {};
+
+template <typename T, typename... Us>
+struct has_same_vector<T, T, Us...> : std::true_type {};
+
+template <typename T, typename U, typename... Us>
+struct has_same_vector<T, U, Us...> : has_same_vector<T, Us...> {};
+
+template <typename T, typename... Us>
+struct have_same_vectors : std::conjunction<has_same_vector<T, Us>..., has_same_vector<Us, T>...> {};
+
+template <typename T>
+struct have_same_vectors<T> : std::true_type {};
+
+template <typename... VECTORS>
+constexpr bool have_same_vectors_v = have_same_vectors<VECTORS...>::value;
+
+
+    template <typename... VECTORS>
+    struct common_vector;
+
+    template <typename VECTOR>
+    struct common_vector<VECTOR> {
+
+        using type = VECTOR;
+
+    };
+
+    template <typename VECTOR, typename... VECTORS>
+        requires (are_vectors_v<VECTOR, VECTORS...>)
+    struct common_vector<VECTOR, VECTORS...> {
+
+        using type = std::common_type_t<VECTOR, typename common_vector<VECTORS...>::type>;
+    
+    };
+
+
+
 
 
     template <typename... VECTORS>

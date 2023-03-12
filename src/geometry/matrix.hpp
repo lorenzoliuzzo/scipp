@@ -16,7 +16,7 @@ namespace scipp::geometry {
 
 
     template <size_t COLUMNS, typename... VECTOR_TYPES> 
-        requires (are_vectors_v<VECTOR_TYPES...> && (have_same_dimension_v<VECTOR_TYPES...>))
+        requires (are_vectors_v<VECTOR_TYPES...> && have_same_dimension_v<VECTOR_TYPES...>)
     struct matrix {
 
 
@@ -31,44 +31,52 @@ namespace scipp::geometry {
         // members
         // ===========================================================
 
-            std::tuple<VECTOR_TYPES...> data_; ///< The matrix data
+            std::tuple<VECTOR_TYPES...> data; ///< The matrix data
 
 
-            static inline constexpr std::size_t rows = std::tuple_size_v<decltype(data_)>;
+            static inline constexpr std::size_t rows = std::tuple_size_v<std::tuple<VECTOR_TYPES...>>;
 
             static inline constexpr std::size_t columns = COLUMNS;
 
-            static inline constexpr std::size_t size = rows * columns;
+            // static inline constexpr std::size_t size = rows * columns;
 
 
         // ===========================================================
         // constructors
         // ===========================================================
 
+
+            // /// @brief Construct a matrix from a single VECTOR_TYPE
+            // template <typename VECTOR_TYPE2>    
+            //     requires (is_vector_v<VECTOR_TYPE2> && are_same_vectors_v<VECTOR_TYPE2, VECTOR_TYPES...>)
+            // constexpr matrix(std::initializer_list<VECTOR_TYPE2> list) noexcept :
+
+            //     data{
+
             /// @brief Constructor from a list of vectors
             constexpr matrix(VECTOR_TYPES&... vectors) noexcept 
                 requires (sizeof...(vectors) == columns) : 
 
-                data_{std::forward<VECTOR_TYPES>(vectors)...} {}
+                data{std::forward<VECTOR_TYPES>(vectors)...} {}
 
 
             /// @brief Constructor from a list of vectors
             constexpr matrix(VECTOR_TYPES&&... vectors) noexcept 
                 requires (sizeof...(vectors) == columns) : 
 
-                data_{std::forward<VECTOR_TYPES>(vectors)...} {}
+                data{std::forward<VECTOR_TYPES>(vectors)...} {}
 
             
             /// @brief Copy constructor
             constexpr matrix(const matrix& other) noexcept :
 
-                data_{other.data_} {}
+                data{other.data} {}
 
 
             /// @brief Move constructor
             constexpr matrix(matrix&& other) noexcept :
 
-                data_{std::move(other.data_)} {}
+                data{std::move(other.data)} {}
 
 
         // ===========================================================
@@ -78,7 +86,7 @@ namespace scipp::geometry {
             /// @brief Copy assignment operator
             constexpr matrix& operator=(const matrix& other) noexcept {
 
-                data_ = other.data_;
+                data = other.data;
                 return *this;
 
             }
@@ -87,35 +95,35 @@ namespace scipp::geometry {
             /// @brief Move assignment operator
             constexpr matrix& operator=(matrix&& other) noexcept {
 
-                data_ = std::move(other.data_);
+                data = std::move(other.data);
                 return *this;
 
             }
 
 
             template <std::size_t index>
-            inline constexpr auto get_row() noexcept -> decltype(std::get<index>(data_))& {
+            inline constexpr auto get_row() noexcept -> decltype(std::get<index>(data))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
-                return std::get<index>(data_);
+                return std::get<index>(data);
 
             }
 
 
             template <std::size_t index>
-            inline constexpr auto get_column() noexcept -> decltype(std::get<index>(data_))& {
+            inline constexpr auto get_column() noexcept -> decltype(std::get<index>(data))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
-                return std::get<index>(data_);
+                return std::get<index>(data);
 
             }
 
 
             template <std::size_t index>
-            inline constexpr auto get_column() const noexcept -> const decltype(std::get<index>(data_))& {
+            inline constexpr auto get_column() const noexcept -> const decltype(std::get<index>(data))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
-                return std::get<index>(data_);
+                return std::get<index>(data);
 
             }
 
@@ -173,7 +181,7 @@ namespace scipp::geometry {
             /// @brief Print the matrix
             inline constexpr void print() const noexcept {
 
-                std::apply([](const auto&... args) { ((std::cout << args << '\n'), ...); }, this->data_);
+                std::apply([](const auto&... args) { ((std::cout << args << '\n'), ...); }, this->data);
 
             }
 
@@ -192,15 +200,29 @@ namespace scipp::geometry {
     matrix(VECTORS&&... vectors) 
         -> matrix<sizeof...(VECTORS), VECTORS...>;
 
+    template <typename VECTOR_TYPE>  
+        requires (is_vector_v<VECTOR_TYPE>)
+    matrix(std::initializer_list<VECTOR_TYPE> vectors) 
+        -> matrix<sizeof(vectors), VECTOR_TYPE>;
+
 
     template <typename... VECTORS>  
         requires (are_vectors_v<VECTORS...> && have_same_dimension_v<VECTORS...>)
-    inline constexpr auto make_matrix(VECTORS&&... vectors) noexcept 
-        -> matrix<sizeof...(VECTORS), VECTORS...> {
+    inline constexpr auto make_matrix(VECTORS&... vectors) noexcept 
+        -> matrix<sizeof...(vectors), VECTORS...> {
         
         return {std::forward<VECTORS>(vectors)...};
 
     }
 
+    template <typename... VECTORS>  
+        requires (are_vectors_v<VECTORS...> && have_same_dimension_v<VECTORS...>)
+    inline constexpr auto make_matrix(VECTORS&&... vectors) noexcept 
+        -> matrix<sizeof...(vectors), VECTORS...> {
+        
+        return matrix<sizeof...(vectors), VECTORS...>(std::forward<VECTORS>(vectors)...);
 
+    }
+    
+    
 } // namespace scipp::geometry

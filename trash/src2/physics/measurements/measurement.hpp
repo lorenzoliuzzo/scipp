@@ -222,7 +222,7 @@ namespace scipp::physics {
             constexpr 
                 auto operator*(const measurement<BASE2>& other) 
             const noexcept 
-                -> measurement<units::base_prod_t<BASE, BASE2>>
+                -> measurement<units::base_product_t<BASE, BASE2>>
             { 
                 
                 return this->value * other.value; 
@@ -236,7 +236,7 @@ namespace scipp::physics {
             constexpr 
                 auto operator/(const measurement<BASE2>& other) 
             const 
-                -> measurement<units::base_div_t<BASE, BASE2>> 
+                -> measurement<units::base_division_t<BASE, BASE2>> 
             { 
 
                 if (other.value == 0.0) 
@@ -283,11 +283,11 @@ namespace scipp::physics {
             /// @brief Divide a scalar by a measurement
             /// @param val: The scalar value as lvalue const reference
             /// @param meas: The measurement as lvalue const reference
-            /// @return measurement<units::base_inv_t<BASE>>
+            /// @return measurement<units::base_invert_t<BASE>>
             friend 
             constexpr 
                 auto operator/(const scalar& val, const measurement& meas)
-                -> measurement<units::base_inv_t<BASE>>
+                -> measurement<units::base_invert_t<BASE>>
             {
 
                 if (val == 0.0) 
@@ -488,7 +488,7 @@ namespace scipp::physics {
 
     // template <typename MEAS1, typename MEAS2> 
     //     requires (are_measurements_v<MEAS1, MEAS2>)
-    // struct measurement_div : measurement<units::base_div_t<typename MEAS1::base, typename MEAS2::base>> {};
+    // struct measurement_div : measurement<units::base_division_t<typename MEAS1::base, typename MEAS2::base>> {};
 
 
     // template <typename... MEAS_LIST>
@@ -496,7 +496,7 @@ namespace scipp::physics {
     // struct measurement_div {
     //     template <typename MEAS1, typename MEAS2>
     //         requires (are_measurements_v<MEAS1, MEAS2>)
-    //     using type = measurement<units::base_div_t<typename MEAS1::base, typename MEAS2::base>>;
+    //     using type = measurement<units::base_division_t<typename MEAS1::base, typename MEAS2::base>>;
     // };
 
 
@@ -508,7 +508,7 @@ namespace scipp::physics {
     // struct measurement_div {
     //     template <typename MEAS1, typename MEAS2>
     //         requires (are_measurements_v<MEAS1, MEAS2>)
-    //     using type = measurement<units::base_div_t<typename MEAS1::base, typename MEAS2::base>>;
+    //     using type = measurement<units::base_division_t<typename MEAS1::base, typename MEAS2::base>>;
     // };
 
 
@@ -536,13 +536,13 @@ namespace scipp::physics {
     // /// @brief measurement_prod is a type alias for the product of two measurements
     // template <typename MEAS1, typename MEAS2> 
     //     requires (are_measurements_v<MEAS1, MEAS2>)
-    // using measurement_prod = measurement<units::base_prod_t<typename MEAS1::base, typename MEAS2::base>>;
+    // using measurement_prod = measurement<units::base_product_t<typename MEAS1::base, typename MEAS2::base>>;
 
 
     // /// @brief measurement_div is a type alias for the division of two measurements
     // template <typename MEAS1, typename MEAS2> 
     //     requires (are_measurements_v<MEAS1, MEAS2>)
-    // using measurement_div = measurement<units::base_div_t<typename MEAS1::base, typename MEAS2::base>>;
+    // using measurement_div = measurement<units::base_division_t<typename MEAS1::base, typename MEAS2::base>>;
 
 
     /// @brief multiply a measurement list with a measurement

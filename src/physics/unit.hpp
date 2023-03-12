@@ -20,8 +20,7 @@ namespace scipp::physics {
     /// @tparam BASE: meta_base of the unit
     /// @tparam PREFIX: std::ratio prefix of the unit
     template <typename BASE, typename PREFIX = std::ratio<1>> 
-        requires (is_base_v<BASE>)
-        
+        requires (is_base_v<BASE>)  
     struct unit {
 
 
@@ -210,89 +209,22 @@ namespace scipp::physics {
     // ALGEBRIC FUNCTIONS
     // =============================================
 
-        template <typename RATIO, int POWER>
-        struct ratio_pow : public std::ratio<std::pow(RATIO::num, POWER), std::pow(RATIO::den, POWER)> {};
-
-        template <typename RATIO, int POWER>
-        using ratio_pow_t = typename ratio_pow<RATIO, POWER>::type;
-
-
-        template <typename RATIO, int POWER>
-        struct ratio_root : public std::ratio<std::pow(RATIO::num, 1. / POWER), std::pow(RATIO::den, 1. / POWER)> {};
-
-        template <typename RATIO, int POWER>
-        using ratio_root_t = typename ratio_root<RATIO, POWER>::type;
-
-
-        template <typename RATIO>
-        struct ratio_inv : public std::ratio<RATIO::den, RATIO::num> {}; 
-
-        template <typename RATIO>
-        using ratio_inv_t = typename ratio_inv<RATIO>::type;
-    
-
-        template <typename UNIT1, typename UNIT2> 
-            requires (are_units_v<UNIT1, UNIT2>)
-        struct unit_prod : public unit<base_prod_t<typename UNIT1::base, typename UNIT2::base>, 
-                                       std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>> {};
-
-        template <typename UNIT1, typename UNIT2> 
-            requires (are_units_v<UNIT1, UNIT2>)
-        using unit_prod_t = typename unit_prod<UNIT1, UNIT2>::type; 
-
-
-        template <typename UNIT1, typename UNIT2> 
-            requires (are_units_v<UNIT1, UNIT2>)
-        struct unit_div : public unit<base_div_t<typename UNIT1::base, typename UNIT2::base>, 
-                                      std::ratio_divide<typename UNIT1::prefix, typename UNIT2::prefix>> {};
-
-
-        template <typename UNIT1, typename UNIT2> 
-            requires (are_units_v<UNIT1, UNIT2>)
-        using unit_div_t = typename unit_div<UNIT1, UNIT2>::type; 
-
-
-        template <typename UNIT, int POWER>
-        struct unit_pow : public unit<base_pow_t<typename UNIT::base, POWER>, 
-                                        ratio_pow_t<typename UNIT::prefix, POWER>> {};
-
-        template <typename UNIT, int POWER>
-        using unit_pow_t = typename unit_pow<UNIT, POWER>::type;
-
-
-        template <typename UNIT, int POWER>
-        struct unit_root : public unit<base_root_t<typename UNIT::base, POWER>, 
-                                        ratio_root_t<typename UNIT::prefix, POWER>> {};
-
-
-        template <typename UNIT, int POWER>
-        using unit_root_t = typename unit_root<UNIT, POWER>::type;
-
-
-        template <typename UNIT>
-        struct unit_inv : public unit<base_inv_t<typename UNIT::base>,  
-                                        ratio_inv_t<typename UNIT::prefix>> {}; 
-
-        template <typename UNIT>
-        using unit_inv_t = typename unit_inv<UNIT>::type;
-
-
-        /// @brief Perform a multiplication between unit 
-        template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
-        constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {
+        // /// @brief Perform a multiplication between unit 
+        // template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
+        // constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_product_t<typename unit1::type, typename unit2::type> {
             
-            return unit_prod_t<typename unit1::type, typename unit2::type>(); 
+        //     return unit_product_t<typename unit1::type, typename unit2::type>(); 
             
-        } 
+        // } 
 
 
-        /// @brief Perform a division between unit 
-        template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
-        constexpr auto operator/(const unit1&, const unit2&) noexcept -> unit_div_t<typename unit1::type, typename unit2::type> {
+        // /// @brief Perform a division between unit 
+        // template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
+        // constexpr auto operator/(const unit1&, const unit2&) noexcept -> unit_division_t<typename unit1::type, typename unit2::type> {
             
-            return unit_div_t<typename unit1::type, typename unit2::type>(); 
+        //     return unit_division_t<typename unit1::type, typename unit2::type>(); 
             
-        } 
+        // } 
 
 
 } // namespace scipp::physics 

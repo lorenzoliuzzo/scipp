@@ -51,6 +51,7 @@ namespace scipp::physics {
     using energy_um = umeasurement<units::kilogram_metre2_per_second2>;  ///< energy_m 
 
 
+
     template <typename T>
     struct is_scalar : std::false_type {};
 
@@ -69,6 +70,9 @@ namespace scipp::physics {
 
     template <>
     struct is_angle<measurement<units::radian>> : std::true_type {};
+
+    template <>
+    struct is_angle<umeasurement<units::radian>> : std::true_type {};
 
     template <typename T>
     constexpr bool is_angle_v = is_angle<T>::value;

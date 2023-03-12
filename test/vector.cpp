@@ -29,7 +29,7 @@ int main() {
     base_quantity<1, -1, 0, 0, 0, 0, 0, 0> speed_;
     std::cout << speed_.to_string() << '\n';
 
-    static_assert(is_same_base_v<base_quantity<1, -1, 0, 0, 0, 0, 0, 0>, base_div_t<decltype(length_), decltype(time_)>>);
+    static_assert(is_same_base_v<base_quantity<1, -1, 0, 0, 0, 0, 0, 0>, base_division_t<decltype(length_), decltype(time_)>>);
     static_assert(has_valid_root_v<base_quantity<2, -4, 0, 0, 0, 0, 0, 0>, 2>);
 
 
@@ -123,7 +123,7 @@ int main() {
     
     // std::cout << v8 * 3.53m << '\n';
 
-    // static_assert(physics::measurement_prod_t<length_m, time_m>::base == physics::units::base_prod_t<length_m::base, time_m::base>);
+    // static_assert(physics::measurement_prod_t<length_m, time_m>::base == physics::units::base_product_t<length_m::base, time_m::base>);
 
     return 0;   
 

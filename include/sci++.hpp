@@ -30,7 +30,10 @@
   
 
     #include "physics/base_quantity.hpp"
+    #include "math/ops/basis.hpp"
+
     #include "physics/unit.hpp"
+    #include "math/ops/units.hpp"
     #include "physics/units.hpp"
 
     #include "physics/measurement.hpp"
@@ -44,6 +47,7 @@
     #include "math/ops/vectors.hpp"
     
     #include "geometry/matrix.hpp"
+    // #include "math/ops/matrices.hpp"
 
 
     // #include "geometry/vector.hpp"

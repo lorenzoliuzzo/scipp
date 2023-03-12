@@ -228,9 +228,9 @@ namespace scipp::physics {
         // unit_base operations
         // =============================================
 
-            /// @brief base_prod is a struct to compute the product of two base
+            /// @brief base_product is a struct to compute the product of two base
             template <typename BASE1, typename BASE2> requires (are_base_v<BASE1, BASE2>)
-            struct base_prod : public unit_base <BASE1::metre + BASE2::metre, 
+            struct base_product : public unit_base <BASE1::metre + BASE2::metre, 
                                                  BASE1::second + BASE2::second,
                                                  BASE1::kilogram + BASE2::kilogram,
                                                  BASE1::ampere + BASE2::ampere,
@@ -240,12 +240,12 @@ namespace scipp::physics {
                                                  BASE1::radian + BASE2::radian> {}; 
 
             template <typename BASE1, typename BASE2> requires (are_base_v<BASE1, BASE2>)
-            using base_prod_t = typename base_prod<BASE1, BASE2>::type; 
+            using base_product_t = typename base_product<BASE1, BASE2>::type; 
 
 
-            /// @brief base_div is a struct to compute the division of two base
+            /// @brief base_division is a struct to compute the division of two base
             template <typename BASE1, typename BASE2> requires (are_base_v<BASE1, BASE2>)
-            struct base_div : public unit_base <BASE1::metre - BASE2::metre, 
+            struct base_division : public unit_base <BASE1::metre - BASE2::metre, 
                                                 BASE1::second - BASE2::second,
                                                 BASE1::kilogram - BASE2::kilogram,
                                                 BASE1::ampere - BASE2::ampere,
@@ -255,7 +255,7 @@ namespace scipp::physics {
                                                 BASE1::radian - BASE2::radian> {}; 
 
             template <typename BASE1, typename BASE2> requires (are_base_v<BASE1, BASE2>)
-            using base_div_t = typename base_div<BASE1, BASE2>::type; 
+            using base_division_t = typename base_division<BASE1, BASE2>::type; 
 
 
             /// @brief base_pow is a struct to compute the power of a base
@@ -288,9 +288,9 @@ namespace scipp::physics {
             using base_root_t = typename base_root<BASE, POWER>::type;
 
 
-            /// @brief base_inv is a struct to compute the inverse of a base
+            /// @brief base_invert is a struct to compute the inverse of a base
             template <typename BASE> requires (is_base_v<BASE>)
-            struct base_inv : public unit_base<-BASE::metre, 
+            struct base_invert : public unit_base<-BASE::metre, 
                                                -BASE::second,
                                                -BASE::kilogram,
                                                -BASE::ampere,
@@ -300,7 +300,7 @@ namespace scipp::physics {
                                                -BASE::radian> {};
 
             template <typename base, typename = std::enable_if_t<is_base_v<base>>>
-            using base_inv_t = typename base_inv<base>::type;
+            using base_invert_t = typename base_invert<base>::type;
 
 
         /// @brief unit is an union of an unit_base and an std::ratio prefix
@@ -500,15 +500,15 @@ namespace scipp::physics {
         
 
             template <typename UNIT1, typename UNIT2> requires (are_units_v<UNIT1, UNIT2>)
-            struct unit_prod : public unit<base_prod_t<typename UNIT1::base, typename UNIT2::base>, 
+            struct unit_product : public unit<base_product_t<typename UNIT1::base, typename UNIT2::base>, 
                                            std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>> {};
 
             template <typename UNIT1, typename UNIT2> requires (are_units_v<UNIT1, UNIT2>)
-            using unit_prod_t = typename unit_prod<UNIT1, UNIT2>::type; 
+            using unit_product_t = typename unit_product<UNIT1, UNIT2>::type; 
 
 
             template <typename UNIT1, typename UNIT2> requires (are_units_v<UNIT1, UNIT2>)
-            struct unit_div : public unit<base_div_t<typename UNIT1::base, typename UNIT2::base>, 
+            struct unit_div : public unit<base_division_t<typename UNIT1::base, typename UNIT2::base>, 
                                           std::ratio_divide<typename UNIT1::prefix, typename UNIT2::prefix>> {};
 
 
@@ -534,7 +534,7 @@ namespace scipp::physics {
 
 
             template <typename UNIT>
-            struct unit_inv : public unit<base_inv_t<typename UNIT::base>,  
+            struct unit_inv : public unit<base_invert_t<typename UNIT::base>,  
                                           ratio_inv_t<typename UNIT::prefix>> {}; 
 
             template <typename UNIT>
@@ -543,9 +543,9 @@ namespace scipp::physics {
 
             /// @brief Perform a multiplication between unit 
             template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
-            constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_prod_t<typename unit1::type, typename unit2::type> {
+            constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_product_t<typename unit1::type, typename unit2::type> {
                 
-                return unit_prod_t<typename unit1::type, typename unit2::type>(); 
+                return unit_product_t<typename unit1::type, typename unit2::type>(); 
                 
             } 
 

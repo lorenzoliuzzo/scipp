@@ -369,11 +369,11 @@ namespace scipp::geometry {
     /// @tparam DIM: size_t
     /// @param lhs: scalar as l-value const reference
     /// @param rhs: geometry::vector<BASE, DIM> as l-value const reference
-    /// @return constexpr geometry::vector<physics::units::base_inv_t<BASE>, DIM>&
+    /// @return constexpr geometry::vector<physics::units::base_invert_t<BASE>, DIM>&
     template <typename BASE, size_t DIM> requires (physics::units::is_base_v<BASE>)
-    constexpr vector<physics::units::base_inv_t<BASE>, DIM>& operator/(const scalar& lhs, const vector<BASE, DIM>& rhs) noexcept {
+    constexpr vector<physics::units::base_invert_t<BASE>, DIM>& operator/(const scalar& lhs, const vector<BASE, DIM>& rhs) noexcept {
 
-        vector<physics::units::base_inv_t<BASE>, DIM> result;
+        vector<physics::units::base_invert_t<BASE>, DIM> result;
 
         for (std::size_t i{}; i < DIM; ++i) 
             result[i] = lhs / rhs[i];
@@ -389,11 +389,11 @@ namespace scipp::geometry {
     /// @tparam DIM: size_t
     /// @param lhs: geometry::vector<BASE1, DIM> as l-value const reference
     /// @param rhs: physics::measurement<BASE2> as l-value const reference
-    /// @return constexpr geometry::vector<physics::units::base_prod_t<BASE1, BASE2>, DIM>&
+    /// @return constexpr geometry::vector<physics::units::base_product_t<BASE1, BASE2>, DIM>&
     template <typename BASE1, typename BASE2, size_t DIM> requires (physics::units::are_base_v<BASE1, BASE2>)
-    constexpr vector<physics::units::base_prod_t<BASE1, BASE2>, DIM> operator*(const vector<BASE1, DIM>& lhs, const physics::measurement<BASE2>& rhs) noexcept {
+    constexpr vector<physics::units::base_product_t<BASE1, BASE2>, DIM> operator*(const vector<BASE1, DIM>& lhs, const physics::measurement<BASE2>& rhs) noexcept {
 
-        vector<physics::units::base_prod_t<BASE1, BASE2>, DIM> result;
+        vector<physics::units::base_product_t<BASE1, BASE2>, DIM> result;
 
         for (std::size_t i{}; i < DIM; ++i) 
             result[i] = lhs[i] * rhs;
@@ -409,11 +409,11 @@ namespace scipp::geometry {
     /// @tparam DIM: size_t
     /// @param lhs: physics::measurement<BASE1> as l-value const reference
     /// @param rhs: geometry::vector<BASE2, DIM> as l-value const reference
-    /// @return constexpr geometry::vector<physics::units::base_prod_t<BASE1, BASE2>, DIM>&
+    /// @return constexpr geometry::vector<physics::units::base_product_t<BASE1, BASE2>, DIM>&
     template <typename BASE1, typename BASE2, size_t DIM> requires (physics::units::are_base_v<BASE1, BASE2>)
-    constexpr vector<physics::units::base_prod_t<BASE1, BASE2>, DIM> operator*(const physics::measurement<BASE1>& lhs, const vector<BASE2, DIM>& rhs) noexcept {
+    constexpr vector<physics::units::base_product_t<BASE1, BASE2>, DIM> operator*(const physics::measurement<BASE1>& lhs, const vector<BASE2, DIM>& rhs) noexcept {
 
-        vector<physics::units::base_prod_t<BASE1, BASE2>, DIM> result;
+        vector<physics::units::base_product_t<BASE1, BASE2>, DIM> result;
 
         for (std::size_t i{}; i < DIM; ++i) 
             result[i] = lhs * rhs[i];
@@ -429,11 +429,11 @@ namespace scipp::geometry {
     /// @tparam DIM: size_t
     /// @param lhs: geometry::vector<BASE1, DIM> as l-value const reference
     /// @param rhs: physics::measurement<BASE2> as l-value const reference
-    /// @return constexpr geometry::vector<physics::units::base_div_t<BASE1, BASE2>, DIM>&
+    /// @return constexpr geometry::vector<physics::units::base_division_t<BASE1, BASE2>, DIM>&
     template <typename BASE1, typename BASE2, size_t DIM> requires (physics::units::are_base_v<BASE1, BASE2>)
-    constexpr vector<physics::units::base_div_t<BASE1, BASE2>, DIM> operator/(const vector<BASE1, DIM>& lhs, const physics::measurement<BASE2>& rhs) noexcept {
+    constexpr vector<physics::units::base_division_t<BASE1, BASE2>, DIM> operator/(const vector<BASE1, DIM>& lhs, const physics::measurement<BASE2>& rhs) noexcept {
 
-        vector<physics::units::base_div_t<BASE1, BASE2>, DIM> result;
+        vector<physics::units::base_division_t<BASE1, BASE2>, DIM> result;
 
         for (std::size_t i{}; i < DIM; ++i) 
             result[i] = lhs[i] / rhs;
@@ -449,11 +449,11 @@ namespace scipp::geometry {
     /// @tparam DIM: size_t
     /// @param lhs: physics::measurement<BASE1> as l-value const reference
     /// @param rhs: geometry::vector<BASE2, DIM> as l-value const reference
-    /// @return constexpr geometry::vector<physics::units::base_div_t<BASE1, BASE2>, DIM>&
+    /// @return constexpr geometry::vector<physics::units::base_division_t<BASE1, BASE2>, DIM>&
     template <typename BASE1, typename BASE2, size_t DIM> requires (physics::units::are_base_v<BASE1, BASE2>)
-    constexpr vector<physics::units::base_div_t<BASE1, BASE2>, DIM> operator/(const physics::measurement<BASE1>& lhs, const vector<BASE2, DIM>& rhs) noexcept {
+    constexpr vector<physics::units::base_division_t<BASE1, BASE2>, DIM> operator/(const physics::measurement<BASE1>& lhs, const vector<BASE2, DIM>& rhs) noexcept {
 
-        vector<physics::units::base_div_t<BASE1, BASE2>, DIM> result;
+        vector<physics::units::base_division_t<BASE1, BASE2>, DIM> result;
 
         for (std::size_t i{}; i < DIM; ++i) 
             result[i] = lhs / rhs[i];

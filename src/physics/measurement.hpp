@@ -215,7 +215,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator*(const measurement<BASE2>& other) const noexcept 
-                -> measurement<base_prod_t<BASE, BASE2>> { 
+                -> measurement<math::op::base_product_t<BASE, BASE2>> { 
                 
                 return this->value * other.value; 
                 
@@ -226,7 +226,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator/(const measurement<BASE2>& other) const 
-                -> measurement<base_div_t<BASE, BASE2>> {
+                -> measurement<math::op::base_division_t<BASE, BASE2>> {
 
                 if (other.value == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by a zero measurement");
@@ -285,9 +285,8 @@ namespace scipp::physics {
             /// @brief Divide a scalar by a measurement
             /// @param val: The scalar value as lvalue const reference
             /// @param meas: The measurement as lvalue const reference
-            /// @return measurement<base_inv_t<BASE>>
             friend constexpr auto operator/(const double& val, const measurement& meas)
-                -> measurement<base_inv_t<BASE>> {
+                -> measurement<math::op::base_invert_t<BASE>> {
 
                 if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot divide a scalar by a zero measurement");
@@ -372,7 +371,7 @@ namespace scipp::physics {
     template <typename UNITS> 
         requires (is_unit_v<UNITS>)
     constexpr auto operator/(const double& val, const UNITS&) noexcept
-        -> measurement<base_inv_t<typename UNITS::base>> { 
+        -> measurement<math::op::base_invert_t<typename UNITS::base>> { 
         
         return val / UNITS::mult; 
         
@@ -437,7 +436,7 @@ namespace scipp::physics {
         requires (are_base_v<BASE1, BASE2>)
     struct measurements_prod<measurement<BASE1>, measurement<BASE2>> { 
         
-        using type = measurement<base_prod_t<BASE1, BASE2>>; 
+        using type = measurement<math::op::base_product_t<BASE1, BASE2>>; 
     
     };
 
@@ -449,7 +448,7 @@ namespace scipp::physics {
         requires (are_measurements_v<MEAS1, MEAS2>)
     struct measurements_div { 
         
-        using type = measurement<base_div_t<typename MEAS1::base, typename MEAS2::base>>; 
+        using type = measurement<math::op::base_division_t<typename MEAS1::base, typename MEAS2::base>>; 
         
     };
 
@@ -475,7 +474,7 @@ namespace scipp::physics {
         requires (is_base_v<BASE>)
     struct measurements_inv<measurement<BASE>> { 
         
-        using type = measurement<base_inv_t<BASE>>; 
+        using type = measurement<math::op::base_invert_t<BASE>>; 
 
     };
 
@@ -494,7 +493,7 @@ namespace scipp::physics {
         requires (is_base_v<BASE_TYPE>)
     struct measurement_pow<measurement<BASE_TYPE>, POWER> { 
         
-        using type = measurement<base_pow_t<BASE_TYPE, POWER>>; 
+        using type = measurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
 
     };
 

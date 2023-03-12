@@ -305,7 +305,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator*=(const umeasurement<BASE2>& other) noexcept 
-                -> umeasurement<base_prod_t<BASE, BASE2>>& { 
+                -> umeasurement<math::op::base_product_t<BASE, BASE2>>& { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -326,7 +326,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator*(const umeasurement<BASE2>& other) const noexcept 
-                -> umeasurement<base_prod_t<BASE, BASE2>> { 
+                -> umeasurement<math::op::base_product_t<BASE, BASE2>> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -344,7 +344,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator/=(const umeasurement<BASE2>& other) noexcept 
-                -> umeasurement<base_prod_t<BASE, BASE2>>& { 
+                -> umeasurement<math::op::base_product_t<BASE, BASE2>>& { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -365,7 +365,7 @@ namespace scipp::physics {
             template <typename BASE2> 
                 requires (is_base_v<BASE2>)
             constexpr auto operator/(const umeasurement<BASE2>& other) const 
-                -> umeasurement<base_div_t<BASE, BASE2>> {
+                -> umeasurement<math::op::base_division_t<BASE, BASE2>> {
 
                 if (other.value == 0.0) 
                     throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
@@ -390,9 +390,9 @@ namespace scipp::physics {
             /// @brief Divide a scalar by a umeasurement
             /// @param val: The scalar value as lvalue const reference
             /// @param meas: The umeasurement as lvalue const reference
-            /// @return umeasurement<base_inv_t<BASE>>
+            /// @return umeasurement<math::op::base_invert_t<BASE>>
             friend constexpr auto operator/(const double& val, const umeasurement& meas)
-                -> umeasurement<base_inv_t<BASE>> {
+                -> umeasurement<math::op::base_invert_t<BASE>> {
 
                 if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot divide a scalar by a zero umeasurement");
@@ -407,49 +407,47 @@ namespace scipp::physics {
             /// @param umeas: umeasurement as l-value const reference
             /// @note if the precision of the umeasurement is 0, the uncertainty is not printed
             /// @note scientific notation is used if the value is greater than 1e4 or less than 1e-4
-            friend std::ostream& operator<<(std::ostream& os, const umeasurement& umeas) noexcept { 
+            friend std::ostream& operator<<(std::ostream& os, const umeasurement& meas) noexcept { 
 
-                auto abs_value = std::fabs(umeas.value);
+                double abs_value = std::fabs(meas.value);
                 
                 // first significative digit positions
-                int32_t n_val = ((umeas.uncertainty >= 1) ? 
+                int n_val = ((meas.uncertainty >= 1) ? 
                                     std::ceil(std::log10(abs_value)) : 
                                     ((abs_value >= 1) ? 
                                         std::ceil(std::log10(abs_value)) : 
                                         std::floor(std::log10(abs_value)))); 
 
-                int32_t n_unc = ((umeas.uncertainty >= 1) ? 
-                                    std::ceil(std::log10(umeas.uncertainty)) : 
-                                    std::floor(std::log10(umeas.uncertainty))); 
+                int n_unc = ((meas.uncertainty >= 1) ? 
+                                    std::ceil(std::log10(meas.uncertainty)) : 
+                                    std::floor(std::log10(meas.uncertainty))); 
 
-                int32_t prec = (n_unc > n_val) ? 0 : n_val - n_unc; 
+                int prec = (n_unc > n_val) ? 0 : n_val - n_unc; 
 
-                bool scientific_notation_needed = (abs_value >= 1e4) || 
-                                                    (abs_value <= 1e-4) || 
-                                                    (umeas.uncertainty >= 1e4) || 
-                                                    (umeas.uncertainty <= 1e-4);
+                bool scientific_notation_needed = abs_value >= 1e4 || abs_value <= 1e-4 || 
+                                                  meas.uncertainty >= 1e4 || meas.uncertainty <= 1e-4;
 
                 // check if the uncertainty needs to be printed
-                if (umeas.uncertainty == 0.0) 
-                    os << umeas.as_measurement(); 
+                if (meas.uncertainty == 0.0) 
+                    os << meas.as_measurement(); 
                 
                 // check if scientific notation is needed
                 if (scientific_notation_needed) {
 
                     os << std::scientific; 
-                    os << std::setprecision(prec) << umeas.value << " ± "; 
-                    os << std::setprecision(0) << umeas.uncertainty << ' ' << BASE::to_string();
+                    os << std::setprecision(prec - 1) << meas.value << " ± "; 
+                    os << std::setprecision(0) << meas.uncertainty << ' ' << BASE::to_string();
 
                 } else {
 
                     os << std::fixed; 
 
-                    if (umeas.uncertainty >= 1.) 
+                    if (meas.uncertainty >= 1.) 
                         os << std::setprecision(0); 
                     else 
                         os << std::setprecision(std::fabs(n_unc)); 
                         
-                    os << umeas.value << " ± " << umeas.uncertainty << ' ' << BASE::to_string();
+                    os << meas.value << " ± " << meas.uncertainty << ' ' << BASE::to_string();
 
                 }
 
@@ -570,46 +568,62 @@ namespace scipp::physics {
         requires (are_same_base_v<BASE, typename Ts::base> && ...)
     struct are_same_measurements<umeasurement<BASE>, Ts...> : are_same_measurements<Ts...> {};
 
-    
-    template <typename BASE1, typename BASE2>
-        requires (are_base_v<BASE1, BASE2>)
-    struct measurements_prod<umeasurement<BASE1>, umeasurement<BASE2>> { 
-        
-        using type = umeasurement<base_prod_t<BASE1, BASE2>>; 
-    
-    };
 
-    template <typename BASE1, typename BASE2>
-        requires (are_base_v<BASE1, BASE2>)
-    struct measurements_div<umeasurement<BASE1>, umeasurement<BASE2>> { 
-        
-        using type = umeasurement<base_div_t<BASE1, BASE2>>; 
-    
-    };
+    /// @brief Type trait to check if a type is a measurement or an uncertainty measurement
+    template <typename T>
+    struct is_generic_measurement : std::false_type {};
+
+    template <typename T>
+    struct is_generic_measurement<measurement<T>> : std::true_type {};
+
+    template <typename T>
+    struct is_generic_measurement<umeasurement<T>> : std::true_type {};
+
+    template <typename T>
+    constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
 
 
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct measurements_inv<umeasurement<BASE>> { 
-        
-        using type = umeasurement<base_inv_t<BASE>>; 
+    /// @brief Type trait to get the result type of a measurement or umeasurement check
+    template <typename T>
+        requires (is_generic_measurement_v<T>)
+    struct generic_measurement_result {
+
+        using type = T;
 
     };
 
+    template <typename BASE_TYPE>
+    struct generic_measurement_result<measurement<BASE_TYPE>> {
 
-    template <typename BASE_TYPE, int POWER>
-        requires (is_base_v<BASE_TYPE>)
-    struct measurement_pow<umeasurement<BASE_TYPE>, POWER> { 
-        
-        using type = umeasurement<base_pow_t<BASE_TYPE, POWER>>; 
+        using type = measurement<BASE_TYPE>; 
+        using base = BASE_TYPE;
 
     };
 
+    template <typename BASE_TYPE>
+    struct generic_measurement_result<umeasurement<BASE_TYPE>> {
 
-    template <typename MEAS_TYPE, int POWER>
-        requires (is_measurement_v<MEAS_TYPE> || is_umeasurement_v<MEAS_TYPE>)
-    using measurement_pow_t = typename measurement_pow<typename MEAS_TYPE::base, POWER>::type; 
+        using type = umeasurement<BASE_TYPE>; 
+        using base = BASE_TYPE;
 
+    };
+
+    template <typename T>
+        requires (is_generic_measurement_v<T>)
+    using generic_measurement_result_t = typename generic_measurement_result<T>::type;
+
+
+    template <typename... T>
+    struct are_generic_measurements : std::false_type {};
+
+    template <typename T>
+    struct are_generic_measurements<T> : is_generic_measurement<T> {};
+
+    template <typename T, typename... Ts>
+    struct are_generic_measurements<T, Ts...> : std::conjunction<is_generic_measurement<T>, are_generic_measurements<Ts...>> {};
+
+    template <typename... T>
+    constexpr bool are_generic_measurements_v = are_generic_measurements<T...>::value;
 
 
 

@@ -42,7 +42,7 @@ namespace scipp::physics {
 
         inline static constexpr measurement k_B(1.380649e-23, J / K); ///< Boltzmann constant
 
-        inline static constexpr measurement<base_inv_t<units::mole>> N_A(6.02214076e23); ///< Avogadro constant
+        inline static constexpr measurement<base_invert_t<units::mole>> N_A(6.02214076e23); ///< Avogadro constant
 
         inline static constexpr measurement R = N_A * k_B; ///< ideal gas constant
 

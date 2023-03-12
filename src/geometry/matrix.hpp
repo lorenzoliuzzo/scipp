@@ -16,7 +16,7 @@ namespace scipp::geometry {
 
 
     template <size_t COLUMNS, typename... VECTOR_TYPES> 
-        requires (are_vectors_v<VECTOR_TYPES...>)
+        requires (are_vectors_v<VECTOR_TYPES...> && (have_same_dimension_v<VECTOR_TYPES...>))
     struct matrix {
 
 
@@ -173,8 +173,7 @@ namespace scipp::geometry {
             /// @brief Print the matrix
             inline constexpr void print() const noexcept {
 
-                std::apply([](const auto&... args) { ((std::cout << args), ...); }, this->data_);
-                std::cout << '\n'; 
+                std::apply([](const auto&... args) { ((std::cout << args << '\n'), ...); }, this->data_);
 
             }
 
@@ -195,7 +194,7 @@ namespace scipp::geometry {
 
 
     template <typename... VECTORS>  
-        // requires (are_vectors_v<VECTORS...>)
+        requires (are_vectors_v<VECTORS...> && have_same_dimension_v<VECTORS...>)
     inline constexpr auto make_matrix(VECTORS&&... vectors) noexcept 
         -> matrix<sizeof...(VECTORS), VECTORS...> {
         

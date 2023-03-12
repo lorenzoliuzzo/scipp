@@ -20,13 +20,13 @@ namespace scipp::math {
         /// @brief Invert a vector
         template <typename VECTOR_TYPE> 
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        constexpr auto inv(const VECTOR_TYPE& vec)
+        constexpr auto invert(const VECTOR_TYPE& vec)
             -> geometry::vector<physics::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
 
             geometry::vector<physics::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
 
             for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
-                result.data[i] = op::inv(vec.data[i]);
+                result.data[i] = op::invert(vec.data[i]);
 
             return result;
 
@@ -49,33 +49,33 @@ namespace scipp::math {
         }
 
 
-        /// @brief Take the power of a vector
-        template <int POWER, typename VECTOR_TYPE>
-            requires (geometry::is_vector_v<VECTOR_TYPE>)
-        constexpr auto pow(const VECTOR_TYPE& vec) noexcept
-            -> std::conditional_t<physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_type>, 
-                geometry::vector<physics::umeasurement<physics::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>,
-                geometry::vector<physics::measurement<physics::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>> {
+        // /// @brief Take the power of a vector
+        // template <int POWER, typename VECTOR_TYPE>
+        //     requires (geometry::is_vector_v<VECTOR_TYPE>)
+        // constexpr auto pow(const VECTOR_TYPE& vec) noexcept
+        //     -> std::conditional_t<physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_type>, 
+        //         geometry::vector<physics::umeasurement<op::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>,
+        //         geometry::vector<physics::measurement<op::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>> {
 
-            geometry::vector<auto, VECTOR_TYPE::dim> result;
+        //     geometry::vector<auto, VECTOR_TYPE::dim> result;
 
-            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
-                result.data[i] = op::pow<POWER>(vec.data[i]);
+        //     for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+        //         result.data[i] = op::pow<POWER>(vec.data[i]);
 
-            return result;
+        //     return result;
 
-        }
+        // }
         
 
         // /// @brief Take the absolute value of a vector
         // /// @tparam BASE: physics::units::unit_base
         // /// @tparam DIM: size_t
         // /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
-        // /// @return constexpr geometry::vector<units::base_inv_t<BASE>, DIM>
+        // /// @return constexpr geometry::vector<units::base_invert_t<BASE>, DIM>
         // template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        // constexpr vector<units::base_inv_t<BASE>, DIM> abs(const vector<BASE, DIM>& vec) noexcept {
+        // constexpr vector<units::base_invert_t<BASE>, DIM> abs(const vector<BASE, DIM>& vec) noexcept {
 
-        //     vector<units::base_inv_t<BASE>, DIM> result;
+        //     vector<units::base_invert_t<BASE>, DIM> result;
 
         //     for (std::size_t i{}; i < DIM; ++i) 
         //         result[i] = op::abs(vec[i]);

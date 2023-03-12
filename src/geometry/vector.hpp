@@ -520,7 +520,7 @@ namespace scipp::geometry {
                 if constexpr (DIM == 1) 
                     return other[0];
 
-                measurement_type result;
+                math::op::measurements_square_t<measurement_type> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result += math::op::square(other.data[i]);
@@ -531,12 +531,13 @@ namespace scipp::geometry {
 
 
             /// @brief Get the norm squared of the vector
-            friend constexpr physics::measurement_square_t<measurement_type> norm2(const vector& other) noexcept { 
+            friend constexpr auto norm2(const vector& other) noexcept 
+                -> math::op::measurements_square_t<measurement_type> { 
 
                 if constexpr (DIM == 1) 
                     return math::op::square(other[0]);
 
-                physics::measurement_square_t<measurement_type> result;
+                math::op::measurements_square_t<measurement_type> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result += math::op::square(other.data[i]);
@@ -579,7 +580,8 @@ namespace scipp::geometry {
 
 
             /// @brief Print the vector components in a specific unit of measurement
-            template <typename UNITS, typename = std::enable_if_t<physics::is_unit_v<UNITS>>>
+            template <typename UNITS>
+                requires (physics::is_unit_v<UNITS>)
             constexpr void print_as(const UNITS& units) const noexcept {
                 
                 std::cout << "( ";

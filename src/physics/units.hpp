@@ -19,6 +19,29 @@
 namespace scipp::physics {
     
 
+
+    /// @brief Perform a multiplication between unit 
+    template <typename unit1, typename unit2> 
+        requires (physics::are_units_v<unit1, unit2>)
+    constexpr auto operator*(const unit1&, const unit2&) noexcept 
+        -> math::op::unit_product_t<typename unit1::type, typename unit2::type> {
+        
+        return math::op::unit_product_t<typename unit1::type, typename unit2::type>(); 
+        
+    } 
+
+
+    /// @brief Perform a division between unit 
+    template <typename unit1, typename unit2> 
+        requires (physics::are_units_v<unit1, unit2>)
+    constexpr auto operator/(const unit1&, const unit2&) noexcept 
+        -> math::op::unit_division_t<typename unit1::type, typename unit2::type> {
+        
+        return math::op::unit_division_t<typename unit1::type, typename unit2::type>(); 
+        
+    } 
+
+
     /// @brief units namespace contains the implementation of units of measurements
     namespace units {
 
@@ -27,20 +50,19 @@ namespace scipp::physics {
 
         using metre = base_quantity<1, 0, 0, 0, 0, 0, 0, 0>; ///< metre base_quantity 
         
-        using second = base_quantity<0, 1, 0, 0, 0, 0, 0, 0>; ///< second base_quantity 
-        
-        using kilogram = base_quantity<0, 0, 1, 0, 0, 0, 0, 0>; ///< kilogram base_quantity 
-        
-        using ampere = base_quantity<0, 0, 0, 1, 0, 0, 0, 0>; ///< ampere base_quantity 
-        
-        using kelvin = base_quantity<0, 0, 0, 0, 1, 0, 0, 0>; ///< kelvin base_quantity 
-        
-        using mole = base_quantity<0, 0, 0, 0, 0, 1, 0, 0>; ///< mole base_quantity 
-        
-        using candela = base_quantity<0, 0, 0, 0, 0, 0, 1, 0>; ///< candela base_quantity 
-        
-        using radian = base_quantity<0, 0, 0, 0, 0, 0, 0, 1>; ///< radian base_quantity 
+        using second = base_quantity<0, 1, 0, 0, 0, 0, 0, 0>; ///< second base_quantity
 
+        using kilogram = base_quantity<0, 0, 1, 0, 0, 0, 0, 0>; ///< kilogram base_quantity
+
+        using ampere = base_quantity<0, 0, 0, 1, 0, 0, 0, 0>; ///< ampere base_quantity
+
+        using kelvin = base_quantity<0, 0, 0, 0, 1, 0, 0, 0>; ///< kelvin base_quantity
+
+        using mole = base_quantity<0, 0, 0, 0, 0, 1, 0, 0>; ///< mole base_quantity
+
+        using candela = base_quantity<0, 0, 0, 0, 0, 0, 1, 0>; ///< candela base_quantity
+
+        using radian = base_quantity<0, 0, 0, 0, 0, 0, 0, 1>; ///< radian base_quantity
 
         using metre2 = base_quantity<2, 0, 0, 0, 0, 0, 0, 0>; ///< metre2 base_quantity 
 

@@ -14,14 +14,14 @@
     #include <cmath>
     #include <concepts>
     // #include <cstdint>
-    // #include <chrono>
+    #include <chrono>
     #include <fstream>
     #include <functional>
     #include <iomanip>
     #include <iostream>
     // #include <map>
-    // #include <numeric>
-    // #include <omp.h>
+    #include <numeric>
+    #include <omp.h>
     #include <ratio>
     // #include <stdexcept>
     #include <string>
@@ -51,7 +51,7 @@
     #include "geometry/matrix.hpp"
     // #include "math/ops/matrices.hpp"
 
-    // #include "math/integral.hpp"    
+    #include "math/integral.hpp"    
 
     // #include "math/statistics.hpp"
 
@@ -63,7 +63,7 @@
     // #include "tools/plotter.hpp"
     // #include "tools/bench.hpp"
 
-    // #include "tools/timer.hpp"
+    #include "physics/timer.hpp"
 
 
 #endif

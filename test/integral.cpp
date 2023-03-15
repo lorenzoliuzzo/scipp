@@ -13,40 +13,41 @@
 
 using namespace scipp; 
 using namespace physics; 
+using namespace physics::units; 
 using namespace math; 
 
 
 int main() {
 
 
-    tools::omp_timer t; 
+    omp_timer t; 
     t.start(); 
     t.stop(); 
 
-    std::function<measurement<units::metre2>(measurement<units::metre>)> f = [](measurement<units::metre> x) -> measurement<units::metre2> { return x * x; }; 
+    std::function<measurement<metre2>(length_m)> f = [](length_m x) -> measurement<metre2> { return x * x; }; 
 
-    // std::cout << f(1. * units::m) << '\n'; 
+    // std::cout << f(1. * m) << '\n'; 
 
-    measurement<units::metre3> result_mid, result_trap, result_simp;
+    measurement<metre3> result_mid, result_trap, result_simp;
 
     
     t.start(); 
     
-        result_mid = integral::midpoint(f, 0.0 * units::m, measurement<units::metre>(2.0 * math::constants::pi), 100000000); 
+        result_mid = integral::midpoint(f, 0.0 * m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
     std::cout << result_mid << "\nelapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
     
-        result_trap = integral::trapexoid(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 100000000); 
+        result_trap = integral::trapexoid(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
     std::cout << result_trap << "\nelapsed: " << t.elapsed() << '\n'; 
 
     t.start(); 
     
-        result_simp = integral::simpson(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 100000000); 
+        result_simp = integral::simpson(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
     std::cout << result_simp << "\nelapsed: " << t.elapsed() << '\n'; 
@@ -62,14 +63,14 @@ int main() {
 
     // t.start(); 
     
-    //     std::cout << integral::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 1000) << '\n'; 
+    //     std::cout << integral::midpoint(f, 0.0m, 2.0m * math::constants::pi), 1000) << '\n'; 
 
     // t.stop();
     // std::cout << "elapsed: " << t.elapsed() << '\n'; 
 
     // t.start(); 
     
-    //     std::cout << integral::midpoint(f, measurement<units::metre>(0.0), measurement<units::metre>(2.0 * math::constants::pi), 10000) << '\n'; 
+    //     std::cout << integral::midpoint(f, 0.0m, 2.0m * math::constants::pi), 10000) << '\n'; 
 
     // t.stop();
     // std::cout << "elapsed: " << t.elapsed() << '\n'; 

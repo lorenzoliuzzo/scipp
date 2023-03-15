@@ -44,7 +44,7 @@ namespace scipp::math {
             static constexpr auto midpoint_fixed(std::function<MEAS2(MEAS1)>& f, 
                                                  const MEAS1 from_a,
                                                  const MEAS1 to_b,
-                                                 const scalar& prec = 1.e-6) noexcept -> physics::measurement<op::base_product_t<typename MEAS1::base, typename MEAS2::base>> {
+                                                 const MEAS2& prec = MEAS2(1.e-6)) noexcept -> physics::measurement<op::base_product_t<typename MEAS1::base, typename MEAS2::base>> {
                 
                 std::size_t steps = 1;
                 auto integral = midpoint(f, from_a, to_b, steps);
@@ -120,12 +120,12 @@ namespace scipp::math {
             }
 
 
-            // void trapexoid_fixed(const scalar& a, 
-            //                         const scalar& b, 
-            //                         const std::function<scalar(scalar)>& f, 
-            //                         const scalar& prec = 1.e-6) {
+            // void trapexoid_fixed(const double& a, 
+            //                         const double& b, 
+            //                         const std::function<double(double)>& f, 
+            //                         const MEAS2& prec = MEAS2(1.e-6)) {
 
-            //     scalar old_integral_2{}, old_integral_3{};
+            //     double old_integral_2{}, old_integral_3{};
 
             //     begin_integration(a, b, 2, f(a) + f(b) / 2. + f((a + b) / 2.)); 
             //     while (true) {
@@ -147,12 +147,12 @@ namespace scipp::math {
             // }
 
 
-            // void simpson_fixed(const scalar& a, 
-            //                     const scalar& b, 
-            //                     const std::function<scalar(scalar)>& f, 
-            //                     const scalar& prec = 1.e-6) {
+            // void simpson_fixed(const double& a, 
+            //                     const double& b, 
+            //                     const std::function<double(double)>& f, 
+            //                     const MEAS2& prec = MEAS2(1.e-6)) {
 
-            //     scalar old_integral_2{}, old_integral_3{};
+            //     double old_integral_2{}, old_integral_3{};
                 
             //     begin_integration(a, b, 2, (f(a) + f(b)) / 3.); 
             //     while (true) {

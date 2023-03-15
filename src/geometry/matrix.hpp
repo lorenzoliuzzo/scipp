@@ -2,7 +2,7 @@
  * @file    geometry/matrix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-10
+ * @date    2023-03-13
  * 
  * @copyright Copyright (c) 2023
  */
@@ -34,9 +34,18 @@ namespace scipp::geometry {
             std::tuple<VECTOR_TYPES...> data; ///< The matrix data
 
 
-            static inline constexpr std::size_t rows = std::tuple_size_v<std::tuple<VECTOR_TYPES...>>;
+            inline static constexpr std::size_t rows = std::tuple_size_v<std::tuple<VECTOR_TYPES...>>;
 
-            static inline constexpr std::size_t columns = COLUMNS;
+            inline static constexpr std::size_t columns = COLUMNS;
+
+            inline static constexpr matrix zero = { VECTOR_TYPES::zero... };
+
+
+            // static constexpr matrix identity() 
+            //     requires (rows == columns) {
+
+            // }
+
 
             // static inline constexpr std::size_t size = rows * columns;
 
@@ -45,13 +54,9 @@ namespace scipp::geometry {
         // constructors
         // ===========================================================
 
+            /// @brief Default constructor 
+            constexpr matrix() noexcept = default; 
 
-            // /// @brief Construct a matrix from a single VECTOR_TYPE
-            // template <typename VECTOR_TYPE2>    
-            //     requires (is_vector_v<VECTOR_TYPE2> && are_same_vectors_v<VECTOR_TYPE2, VECTOR_TYPES...>)
-            // constexpr matrix(std::initializer_list<VECTOR_TYPE2> list) noexcept :
-
-            //     data{
 
             /// @brief Constructor from a list of vectors
             constexpr matrix(VECTOR_TYPES&... vectors) noexcept 
@@ -79,6 +84,18 @@ namespace scipp::geometry {
                 data{std::move(other.data)} {}
 
 
+            /// @brief Constructor from an std::tuple of vectors
+            constexpr matrix(const std::tuple<VECTOR_TYPES...>& tuple) noexcept :
+
+                data{tuple} {}
+
+            
+            /// @brief Constructor from an std::tuple of vectors
+            constexpr matrix(std::tuple<VECTOR_TYPES...>&& tuple) noexcept :
+
+                data{std::move(tuple)} {}
+
+
         // ===========================================================
         // operators
         // ===========================================================
@@ -102,43 +119,64 @@ namespace scipp::geometry {
 
 
             template <std::size_t index>
-            inline constexpr auto get_row() noexcept -> decltype(std::get<index>(data))& {
+            constexpr auto& row() {
                 
-                static_assert(index < COLUMNS, "Index out of bounds");
+                if (index >= rows)   
+                    throw std::out_of_range("Cannot access column " + std::to_string(index) + " of a matrix with " + std::to_string(rows) + " rows");                
+                
+                return std::get<index>(data);
+
+            }
+
+            template <std::size_t index>
+            constexpr auto& row() const {
+                
+                if (index >= rows)   
+                    throw std::out_of_range("Cannot access column " + std::to_string(index) + " of a matrix with " + std::to_string(rows) + " rows");                
+                
                 return std::get<index>(data);
 
             }
 
 
             template <std::size_t index>
-            inline constexpr auto get_column() noexcept -> decltype(std::get<index>(data))& {
+            constexpr auto& column() {
                 
-                static_assert(index < COLUMNS, "Index out of bounds");
+                if (index >= columns)                 
+                    throw std::out_of_range("Cannot access column " + std::to_string(index) + " of a matrix with " + std::to_string(columns) + " columns");                
+                    
                 return std::get<index>(data);
 
             }
-
 
             template <std::size_t index>
-            inline constexpr auto get_column() const noexcept -> const decltype(std::get<index>(data))& {
+            constexpr auto& column() const {
+
+                if (index >= columns) 
+                    throw std::out_of_range("Cannot access column " + std::to_string(index) + " of a matrix with " + std::to_string(columns) + " columns");
                 
-                static_assert(index < COLUMNS, "Index out of bounds");
                 return std::get<index>(data);
 
             }
 
+
+            template <std::size_t row_i, std::size_t col_j>
+            constexpr auto& element() {
+
+                if (row_i >= rows) 
+                    throw std::out_of_range("Cannot access element at row " + std::to_string(row_i) + " of a matrix with " + std::to_string(rows) + " rows");
+                
+                if (col_j >= columns)
+                    throw std::out_of_range("Cannot access element at column " + std::to_string(col_j) + " of a matrix with " + std::to_string(columns) + " columns");
+
+                return std::get<row_i>(data).data[col_j];
+
+            }
 
 
         // ===========================================================
         // operators
         // ===========================================================
-
-            /// @brief Access the i-th row
-            inline constexpr auto& operator[](size_t i) noexcept {
-
-                return this->get_column<i>();
-
-            }
 
         // ===========================================================
         // methods
@@ -160,32 +198,52 @@ namespace scipp::geometry {
             // }
 
 
-            // /// @brief Augment the matrix with a vector
-            // template <typename VECTOR> requires (is_vector_v<VECTOR>)
-            // inline constexpr auto augment(const VECTOR& vector) const noexcept {
+            /// @brief Augment the matrix with a vector
+            template <typename VECTOR> 
+                requires (is_vector_v<VECTOR> && have_same_dimension_v<VECTOR, VECTOR_TYPES...>)
+            inline constexpr auto augment(const VECTOR& vector) const noexcept 
+                -> matrix<COLUMNS + 1, VECTOR_TYPES..., VECTOR> {
 
-            //     static_assert(VECTOR::dimension == this->rows, "The vector must have the same dimension of the matrix");
+                return matrix<COLUMNS + 1, VECTOR_TYPES..., VECTOR>(std::apply([&vector](const auto&... args) { return std::tuple_cat(std::forward_as_tuple(args...), std::forward_as_tuple(vector)); }, this->data));
 
-            //     matrix<COLUMNS + 1, TYPES..., VECTOR> result;
-
-            //     for (size_t i{}; i < this->columns; ++i) 
-            //         result.get_column<i>() = (*this).get_column<i>();
-
-            //     result.get_column<this->columns>() = vector;
-
-            //     return result;
- 
-            // }
+            }
 
 
             /// @brief Print the matrix
-            inline constexpr void print() const noexcept {
+            constexpr void print() const noexcept {
 
                 std::apply([](const auto&... args) { ((std::cout << args << '\n'), ...); }, this->data);
 
             }
 
-    
+
+        // ===========================================================
+        // static methods
+        // ===========================================================
+
+            // /// @brief Create a matrix from a list of vectors
+            // static inline constexpr auto identity() noexcept {
+
+            //     matrix result;
+
+            //     std::apply([&result](auto i) {
+
+            //         std::apply([&result, &i])(auto j) {
+
+            //             if (i != j)
+            //                 result.row<i>()[j] = 0.0;
+            //             else 
+            //                 result.row<i>()[j] = 1.0;
+
+            //         }, std::make_index_sequence<columns>();
+
+            //     }, std::make_index_sequence<rows>());
+
+            //     return result; 
+
+            // }
+
+
     }; // struct matrix
 
 
@@ -200,10 +258,34 @@ namespace scipp::geometry {
     matrix(VECTORS&&... vectors) 
         -> matrix<sizeof...(VECTORS), VECTORS...>;
 
-    template <typename VECTOR_TYPE>  
-        requires (is_vector_v<VECTOR_TYPE>)
-    matrix(std::initializer_list<VECTOR_TYPE> vectors) 
-        -> matrix<sizeof(vectors), VECTOR_TYPE>;
+
+    template <int COLUMNS, typename... VECTORS>
+        requires (are_vectors_v<VECTORS...> && have_same_dimension_v<VECTORS...> && sizeof...(VECTORS) <= COLUMNS)
+    inline constexpr auto make_matrix() noexcept 
+        -> matrix<COLUMNS, VECTORS...> {
+        
+        return matrix<COLUMNS, VECTORS...>();
+
+    }
+
+
+    template <int COLUMNS, typename VECTOR_TYPE, typename... VECTORS>  
+        requires (are_same_vectors_v<VECTOR_TYPE, VECTORS...> && sizeof...(VECTORS) <= COLUMNS)
+    inline constexpr auto make_matrix(VECTORS&... vectors) noexcept 
+        -> matrix<COLUMNS, VECTORS...> {
+        
+        return {std::forward<VECTORS>(vectors)...};
+
+    }
+
+    template <int COLUMNS, typename VECTOR_TYPE, typename... VECTORS>  
+        requires (are_same_vectors_v<VECTOR_TYPE, VECTORS...> && sizeof...(VECTORS) <= COLUMNS)
+    inline constexpr auto make_matrix(VECTORS&&... vectors) noexcept 
+        -> matrix<COLUMNS, VECTORS...> {
+        
+        return {std::forward<VECTORS>(vectors)...};
+
+    }
 
 
     template <typename... VECTORS>  

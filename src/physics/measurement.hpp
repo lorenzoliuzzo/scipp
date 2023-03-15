@@ -31,6 +31,10 @@ namespace scipp::physics {
 
             using base = BASE; ///< The base of the measurement
 
+            inline static constexpr measurement zero = measurement{0.0}; ///< The zero measurement
+
+            inline static constexpr measurement one = measurement{1.0}; ///< The one measurement
+
 
         // ==============================================
         // members

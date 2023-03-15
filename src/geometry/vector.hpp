@@ -38,13 +38,19 @@ namespace scipp::geometry {
 
             std::array<measurement_type, DIM> data;
 
+            inline static constexpr vector zero = vector(); 
+
+            inline static constexpr vector one = vector(std::array<measurement_type, DIM>{measurement_type::one});
+
 
         // ===========================================================
         // constructors
         // ===========================================================
 
             /// @brief Default constructor 
-            constexpr vector() noexcept = default;
+            constexpr vector() noexcept : 
+
+                data{} {}
             
 
             /// @brief Construct a new vector from a pack of measurements
@@ -67,6 +73,18 @@ namespace scipp::geometry {
                 data{std::forward<measurement_type>(std::move(measurements))...} {}
 
 
+            /// @brief Copy constructor from an std::array
+            constexpr vector(const std::array<measurement_type, DIM>& other) noexcept : 
+                
+                data(other.data) {}
+
+
+            /// @brief Move constructor
+            constexpr vector(std::array<measurement_type, DIM>&& other) noexcept : 
+                
+                data(std::move(other)) {}
+
+
             /// @brief Copy constructor
             constexpr vector(const vector& other) noexcept : 
                 
@@ -78,6 +96,10 @@ namespace scipp::geometry {
                 
                 data(std::move(other.data)) {}
 
+            
+            /// @brief Destructor
+            ~vector() noexcept = default;
+            
 
         // ===========================================================
         // operators

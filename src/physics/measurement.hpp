@@ -2,7 +2,7 @@
  * @file    measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-08-10
+ * @date    2023-03-17
  * 
  * @copyright Copyright (c) 2023
  */
@@ -15,11 +15,11 @@
 namespace scipp::physics {
 
 
-    /// @brief        The measurement class is a template class that represents a measurement of a physical quantity
-    /// @tparam BASE: The base of the measurement
-    /// @see          units::unit_base 
-    template <typename BASE> 
-        requires (is_base_v<BASE>)
+    /// @brief The measurement class is a template class that represents a measurement of a physical quantity
+    /// @tparam BASE_TYPE : The base of the measurement
+    /// @see base_quantity, unit
+    template <typename BASE_TYPE> 
+        requires (is_base_v<BASE_TYPE>)
     struct measurement {
 
 
@@ -27,13 +27,9 @@ namespace scipp::physics {
         // aliases
         // ==============================================
 
-            using type = measurement<BASE>; ///< The type of the measurement
+            using type = measurement<BASE_TYPE>; ///< The type of the measurement
 
-            using base = BASE; ///< The base of the measurement
-
-            inline static constexpr measurement zero = measurement{0.0}; ///< The zero measurement
-
-            inline static constexpr measurement one = measurement{1.0}; ///< The one measurement
+            using base = BASE_TYPE; ///< The base of the measurement
 
 
         // ==============================================
@@ -41,6 +37,15 @@ namespace scipp::physics {
         // ==============================================
 
             double value; ///< The value of the measurement
+
+
+        // ==============================================
+        // static members
+        // ==============================================
+
+            inline static constexpr measurement zero = measurement{0.0}; ///< The zero measurement
+
+            inline static constexpr measurement one = measurement{1.0}; ///< The one measurement
 
 
         // ==============================================
@@ -69,38 +74,38 @@ namespace scipp::physics {
 
             /// @brief Construct a measurement from a scalar value and an unit
             /// @param val: The value of the measurement
-            /// @param UNITS: The unit of the measurement
+            /// @param UNIT_TYPE: The unit of the measurement
             /// @note The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr measurement(const double& val, const UNITS&) noexcept :
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr measurement(const double& val, const UNIT_TYPE&) noexcept :
 
-                value{val * UNITS::mult} {}
+                value{val * UNIT_TYPE::mult} {}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
             /// @param val: The value of the measurement
-            /// @param UNITS: The unit of the measurement
+            /// @param UNIT_TYPE: The unit of the measurement
             /// @note The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr measurement(double&& val, const UNITS&) noexcept :
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr measurement(double&& val, const UNIT_TYPE&) noexcept :
 
-                value{std::move(val * UNITS::mult)} {}
+                value{std::move(val * UNIT_TYPE::mult)} {}
 
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to copy
-            constexpr measurement(const measurement& meas) noexcept :
+            constexpr measurement(const measurement& other) noexcept :
 
-                value{meas.value} {}
+                value{other.value} {}
 
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to move
-            constexpr measurement(measurement&& meas) noexcept :
+            constexpr measurement(measurement&& other) noexcept :
 
-                value{std::move(meas.value)} {}
+                value{std::move(other.value)} {}
 
 
         // ==============================================
@@ -108,101 +113,53 @@ namespace scipp::physics {
         // ==============================================
 
             /// @brief Copy assignment operator
-            constexpr measurement& operator=(const measurement& meas) noexcept {
+            constexpr measurement& operator=(const measurement& other) noexcept {
 
-                this->value = meas.value;
+                this->value = other.value;
                 return *this;
 
             }
 
 
             /// @brief Move assignment operator
-            constexpr measurement& operator=(measurement&& meas) noexcept {
+            constexpr measurement& operator=(measurement&& other) noexcept {
 
-                this->value = std::move(meas.value);
+                this->value = std::move(other.value);
                 return *this;
 
             }
-            
 
-            /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator==(const measurement& meas) const noexcept {
-
-                return this->value == meas.value; 
-
-            }
-            
-            
-            /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator!=(const measurement& meas) const noexcept {
-
-                return this->value != meas.value; 
-
-            }
-
-
-            /// @brief Check if this measurement is greater than another measurement
-            constexpr bool operator>(const measurement& meas) const noexcept {
-
-                return this->value > meas.value; 
-
-            }
-
-
-            /// @brief Check if this measurement is less than another measurement
-            constexpr bool operator<(const measurement& meas) const noexcept {
-
-                return this->value < meas.value; 
-
-            }
-
-
-            /// @brief Check if this measurement is greater or equal to another measurement
-            constexpr bool operator>=(const measurement& meas) const noexcept {
-
-                return this->value >= meas.value; 
-
-            }
-
-
-            /// @brief Check if this measurement is less or equal to another measurement
-            constexpr bool operator<=(const measurement& meas) const noexcept {
-
-                return this->value <= meas.value; 
-
-            }
-            
 
             /// @brief Add a measurement to the current measurement
-            constexpr measurement& operator+=(const measurement& rhs) noexcept { 
+            constexpr measurement& operator+=(const measurement& other) noexcept { 
                 
-                this->value += rhs.value;
+                this->value += other.value;
                 return *this;  
                 
             }
 
 
             /// @brief Subtract a measurement to the current measurement
-            constexpr measurement& operator-=(const measurement& rhs) noexcept { 
+            constexpr measurement& operator-=(const measurement& other) noexcept { 
                 
-                this->value -= rhs.value;
+                this->value -= other.value;
                 return *this;  
 
             }
 
             
             /// @brief Add two measurements
-            constexpr measurement operator+(const measurement& rhs) const noexcept { 
+            constexpr measurement operator+(const measurement& other) const noexcept { 
                 
-                return this->value + rhs.value; 
+                return this->value + other.value; 
                 
             }
 
 
             /// @brief Subtract two measurements
-            constexpr measurement operator-(const measurement& rhs) const noexcept { 
+            constexpr measurement operator-(const measurement& other) const noexcept { 
                 
-                return this->value - rhs.value; 
+                return this->value - other.value; 
                 
             }
 
@@ -216,10 +173,10 @@ namespace scipp::physics {
 
 
             /// @brief Multiply two measurements
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator*(const measurement<BASE2>& other) const noexcept 
-                -> measurement<math::op::base_product_t<BASE, BASE2>> { 
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator*(const measurement<OTHER_BASE_TYPE>& other) const noexcept 
+                -> measurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>> { 
                 
                 return this->value * other.value; 
                 
@@ -227,10 +184,10 @@ namespace scipp::physics {
 
 
             /// @brief Divide two measurements
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator/(const measurement<BASE2>& other) const 
-                -> measurement<math::op::base_division_t<BASE, BASE2>> {
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator/(const measurement<OTHER_BASE_TYPE>& other) const 
+                -> measurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>> {
 
                 if (other.value == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by a zero measurement");
@@ -240,70 +197,122 @@ namespace scipp::physics {
             }
         
 
-            constexpr measurement& operator*=(const measurement<units::scalar>& val) noexcept {
+            constexpr measurement& operator*=(const measurement<units::scalar>& other) noexcept {
 
-                this->value *= val.value; 
-
-                return *this; 
-
-            }
-
-
-            constexpr measurement operator*(const measurement<units::scalar>& val) const noexcept {
-
-                return this->value * val.value; 
-
-            }
-
-
-            constexpr measurement& operator/=(const measurement<units::scalar>& val) {
-
-
-                if (val == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                this->value /= val.value; 
+                this->value *= other.value; 
 
                 return *this; 
 
             }
 
 
-            constexpr measurement operator/(const measurement<units::scalar>& val) const {
+            constexpr measurement operator*(const measurement<units::scalar>& other) const noexcept {
 
-                if (val == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                return this->value / val.value; 
+                return this->value * other.value; 
 
             }
 
 
-            friend constexpr measurement operator*(const double& val, const measurement& meas) noexcept {
+            constexpr measurement& operator/=(const measurement<units::scalar>& other) {
 
-                return val * meas.value; 
+
+                if (other.value == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                this->value /= other.value; 
+
+                return *this; 
+
+            }
+
+
+            constexpr measurement operator/(const measurement<units::scalar>& other) const {
+
+                if (other.value == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                return this->value / other.value; 
+
+            }
+
+
+            /// @brief Check if this measurement is equal to another measurement
+            constexpr bool operator==(const measurement& other) const noexcept {
+
+                return this->value == other.value; 
+
+            }
+            
+            
+            /// @brief Check if this measurement is equal to another measurement
+            constexpr bool operator!=(const measurement& other) const noexcept {
+
+                return this->value != other.value; 
+
+            }
+
+
+            /// @brief Check if this measurement is greater than another measurement
+            constexpr bool operator>(const measurement& other) const noexcept {
+
+                return this->value > other.value; 
+
+            }
+
+
+            /// @brief Check if this measurement is less than another measurement
+            constexpr bool operator<(const measurement& other) const noexcept {
+
+                return this->value < other.value; 
+
+            }
+
+
+            /// @brief Check if this measurement is greater or equal to another measurement
+            constexpr bool operator>=(const measurement& other) const noexcept {
+
+                return this->value >= other.value; 
+
+            }
+
+
+            /// @brief Check if this measurement is less or equal to another measurement
+            constexpr bool operator<=(const measurement& other) const noexcept {
+
+                return this->value <= other.value; 
+
+            }
+            
+
+        // ==============================================
+        // friend operators
+        // ==============================================
+
+            friend constexpr measurement operator*(const double& scalar, const measurement& meas) noexcept {
+
+                return scalar * meas.value; 
                 
             }
 
 
             /// @brief Divide a scalar by a measurement
-            /// @param val: The scalar value as lvalue const reference
+            /// @param scalar: The scalar value as lvalue const reference
             /// @param meas: The measurement as lvalue const reference
-            friend constexpr auto operator/(const double& val, const measurement& meas)
-                -> measurement<math::op::base_invert_t<BASE>> {
+            friend constexpr auto operator/(const double& scalar, const measurement& meas)
+                -> measurement<math::op::base_invert_t<BASE_TYPE>> {
 
                 if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot divide a scalar by a zero measurement");
 
-                return val / meas.value; 
+                return scalar / meas.value; 
                 
             }
 
 
             /// @brief Print a measurement to an output stream
-            friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& meas) noexcept { 
+            friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
                 
-                return os << meas.value << ' ' << BASE::to_string();
+                return os << other.value << ' ' << BASE_TYPE::to_string();
                 
             }
             
@@ -313,13 +322,13 @@ namespace scipp::physics {
         // ==============================================
 
             /// @brief  Get the value of the measurement in the specified unit
-            /// @param  UNITS: The unit in which the value is returned
+            /// @param  UNIT_TYPE: The unit in which the value is returned
             /// @note   The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr double value_as(const UNITS&) const noexcept { 
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr double value_as(const UNIT_TYPE&) const noexcept { 
                 
-                return this->value / UNITS::mult; 
+                return this->value / UNIT_TYPE::mult; 
                 
             }
                         
@@ -328,7 +337,7 @@ namespace scipp::physics {
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             constexpr void print(const bool& newline = true) const noexcept {
 
-                std::cout << this->value << ' ' << BASE::to_string() << (newline ? '\n' : ' '); 
+                std::cout << this->value << ' ' << BASE_TYPE::to_string() << (newline ? '\n' : ' '); 
 
             }
             
@@ -338,11 +347,11 @@ namespace scipp::physics {
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             /// @note The unit must be of the same base of the measurement
 
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr void print_as(const UNITS& units, const bool& newline = true) const noexcept {
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr void print_as(const UNIT_TYPE& units, const bool& newline = true) const noexcept {
 
-                std::cout << this->value_as(units) << ' ' << UNITS::to_string() << (newline ? '\n' : ' '); 
+                std::cout << this->value_as(units) << ' ' << UNIT_TYPE::to_string() << (newline ? '\n' : ' '); 
 
             }
             
@@ -350,156 +359,174 @@ namespace scipp::physics {
     }; // struct measurement
 
 
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    measurement(const double&, const UNITS&) 
-        -> measurement<typename UNITS::base>;
-
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    measurement(double&&, const UNITS&) 
-        -> measurement<typename UNITS::base>;
-
-
-    /// @brief Multiply a scalar with an unit to get a measurement
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    constexpr auto operator*(const double& val, const UNITS&) noexcept
-        -> measurement<typename UNITS::base> { 
+    // =============================================
+    // measurement template guidelines
+    // =============================================
         
-        return val * UNITS::mult; 
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        measurement(const double&, const UNIT_TYPE&) 
+            -> measurement<typename UNIT_TYPE::base>;
+
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        measurement(double&&, const UNIT_TYPE&) 
+            -> measurement<typename UNIT_TYPE::base>;
+
+
+    // =================================================================
+    // measurement construction from operations with double and units 
+    // =================================================================
+
+        /// @brief Multiply a double with an unit to get a measurement
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        constexpr auto operator*(const double& val, const UNIT_TYPE&) noexcept
+            -> measurement<typename UNIT_TYPE::base> { 
+            
+            return val * UNIT_TYPE::mult; 
+            
+        }
         
-    }
+        /// @brief Multiply a double with an unit to get a measurement
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        constexpr auto operator*(double&& val, const UNIT_TYPE&) noexcept
+            -> measurement<typename UNIT_TYPE::base> { 
+            
+            return val * UNIT_TYPE::mult; 
+            
+        }
+        
+        /// @brief Divide a double with an unit to get a measurement
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        constexpr auto operator/(const double& val, const UNIT_TYPE&) noexcept
+            -> measurement<math::op::base_invert_t<typename UNIT_TYPE::base>> { 
+            
+            return val / UNIT_TYPE::mult; 
+            
+        }
     
-    /// @brief Divide a scalar with an unit to get a measurement
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    constexpr auto operator/(const double& val, const UNITS&) noexcept
-        -> measurement<math::op::base_invert_t<typename UNITS::base>> { 
+        /// @brief Divide a double with an unit to get a measurement
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        constexpr auto operator/(double&& val, const UNIT_TYPE&) noexcept
+            -> measurement<math::op::base_invert_t<typename UNIT_TYPE::base>> { 
+            
+            return val / UNIT_TYPE::mult; 
+            
+        }
+
+
+    // =============================================
+    // measurement type traits
+    // =============================================
         
-        return val / UNITS::mult; 
+        template <typename T>
+        struct is_measurement : std::false_type {};
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct is_measurement<measurement<BASE_TYPE>> : std::true_type {};
+
+        template <typename MEAS_TYPE>
+        constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
+
+
+        template <typename... MEAS_TYPES>
+        struct are_measurements : std::conjunction<is_measurement<MEAS_TYPES>...> {};
+
+        template <typename... MEAS_TYPES>
+        constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;
+
+
+
+
+    // =============================================
+    // measurement type operations
+    // =============================================
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPES>
+        struct measurements_prod { 
+            
+            using type = MEAS_TYPE; 
         
-    }
-    
+        };
 
-    template <typename T>
-    struct is_measurement : std::false_type {};
-
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct is_measurement<measurement<BASE>> : std::true_type {};
-
-    template <typename T>
-    constexpr 
-    bool is_measurement_v = is_measurement<T>::value;
-
-
-    template <typename... Ts>
-    struct are_measurements : std::conjunction<is_measurement<Ts>...> {};
-
-    template <typename... Ts>
-    constexpr 
-    bool are_measurements_v = are_measurements<Ts...>::value;
-
-
-    template <typename T, typename... Ts>
-    struct are_same_measurements : std::false_type {};
-
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct are_same_measurements<measurement<BASE>> : std::true_type {};
-
-    template <typename BASE1, typename BASE2>
-        requires (are_same_base_v<BASE1, BASE2>)
-    struct are_same_measurements<measurement<BASE1>, measurement<BASE2>> : std::true_type {};
-
-    template <typename BASE, typename... Ts>
-        requires (are_same_base_v<BASE, typename Ts::base> && ...)
-    struct are_same_measurements<measurement<BASE>, Ts...> : are_same_measurements<Ts...> {};
-
-    template <typename T, typename... Ts>
-    constexpr bool are_same_measurements_v = are_same_measurements<T, Ts...>::value;
-
-
-    template <typename T, typename... Ts>
-    struct measurements_prod { 
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct measurements_prod<measurement<BASE_TYPE>> { 
+            
+            using type = measurement<BASE_TYPE>; 
         
-        using type = T; 
-    
-    };
+        };
 
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct measurements_prod<measurement<BASE>> { 
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPES>
+            requires (are_measurements_v<MEAS_TYPE, MEAS_TYPES...>)
+        struct measurements_prod<MEAS_TYPE, MEAS_TYPES...> {
+            
+            using type = measurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>;
         
-        using type = measurement<BASE>; 
-    
-    };
-    
-    template <typename BASE1, typename BASE2>
-        requires (are_base_v<BASE1, BASE2>)
-    struct measurements_prod<measurement<BASE1>, measurement<BASE2>> { 
-        
-        using type = measurement<math::op::base_product_t<BASE1, BASE2>>; 
-    
-    };
+        }; 
 
-    template <typename... Ts>
-    using measurements_prod_t = typename measurements_prod<Ts...>::type;
+        template <typename... Ts>
+        using measurements_prod_t = typename measurements_prod<Ts...>::type;
 
 
-    template <typename MEAS1, typename MEAS2>
-        requires (are_measurements_v<MEAS1, MEAS2>)
-    struct measurements_div { 
-        
-        using type = measurement<math::op::base_division_t<typename MEAS1::base, typename MEAS2::base>>; 
-        
-    };
+        template <typename MEAS1, typename MEAS2>
+            requires (are_measurements_v<MEAS1, MEAS2>)
+        struct measurements_div { 
+            
+            using type = measurement<math::op::base_division_t<typename MEAS1::base, typename MEAS2::base>>; 
+            
+        };
 
-    template <typename T1, typename T2>
-    using measurements_div_t = typename measurements_div<T1, T2>::type;
-
-
-    template <typename T>
-    using measurement_square_t = measurements_prod_t<T, T>;
-
-    template <typename T>
-    using measurement_cube_t = measurements_prod_t<measurement_square_t<T>, T>;
+        template <typename T1, typename T2>
+        using measurements_div_t = typename measurements_div<T1, T2>::type;
 
 
-    template <typename T>
-    struct measurements_inv { 
-        
-        using type = T; 
+        template <typename T>
+        using measurement_square_t = measurements_prod_t<T, T>;
 
-    }; 
-
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct measurements_inv<measurement<BASE>> { 
-        
-        using type = measurement<math::op::base_invert_t<BASE>>; 
-
-    };
-
-    template <typename... Ts>
-    using measurements_inv_t = typename measurements_inv<Ts...>::type;
+        template <typename T>
+        using measurement_cube_t = measurements_prod_t<measurement_square_t<T>, T>;
 
 
-    template <typename T, int>
-    struct measurement_pow { 
-        
-        using type = T; 
+        template <typename T>
+        struct measurements_inv { 
+            
+            using type = T; 
 
-    }; 
+        }; 
 
-    template <typename BASE_TYPE, int POWER>
-        requires (is_base_v<BASE_TYPE>)
-    struct measurement_pow<measurement<BASE_TYPE>, POWER> { 
-        
-        using type = measurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
+        template <typename BASE>
+            requires (is_base_v<BASE>)
+        struct measurements_inv<measurement<BASE>> { 
+            
+            using type = measurement<math::op::base_invert_t<BASE>>; 
 
-    };
+        };
+
+        template <typename... Ts>
+        using measurements_inv_t = typename measurements_inv<Ts...>::type;
+
+
+        template <typename T, int>
+        struct measurement_pow { 
+            
+            using type = T; 
+
+        }; 
+
+        template <typename BASE_TYPE, int POWER>
+            requires (is_base_v<BASE_TYPE>)
+        struct measurement_pow<measurement<BASE_TYPE>, POWER> { 
+            
+            using type = measurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
+
+        };
 
 
 } // namespace physics

@@ -2,7 +2,7 @@
  * @file    umeasurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-10
+ * @date    2023-03-17
  * 
  * @copyright Copyright (c) 2023
  */
@@ -19,8 +19,8 @@ namespace scipp::physics {
     /// @tparam BASE: The base of the measurement
     /// @see          base_quantity struct 
     /// @see          measurement struct
-    template <typename BASE>
-        requires (is_base_v<BASE>)
+    template <typename BASE_TYPE>
+        requires (is_base_v<BASE_TYPE>)
     struct umeasurement {
 
 
@@ -28,9 +28,9 @@ namespace scipp::physics {
         // aliases
         // ==============================================
 
-            using type = measurement<BASE>; ///< The type of the measurement
+            using type = measurement<BASE_TYPE>; ///< The type of the measurement
 
-            using base = BASE; ///< The base of the measurement
+            using base = BASE_TYPE; ///< The base of the measurement
 
 
         // ==============================================
@@ -93,15 +93,15 @@ namespace scipp::physics {
             /// @note The uncertainty must be positive
             /// @note The unit must be of the same base of the measurement
             /// @note The value and the uncertainty must be expressed in the same unit
-            template <typename UNITS> 
-                requires (is_same_base_v<BASE, typename UNITS::base>)
-            constexpr umeasurement(const double& val, const double& unc, const UNITS&) {
+            template <typename UNIT_TYPE> 
+                requires (is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr umeasurement(const double& val, const double& unc, const UNIT_TYPE&) {
 
                 if (unc < 0.0) 
                     throw std::invalid_argument("Cannot instantiate an umeasurement with a negative uncertainty");
 
-                this->value = val * UNITS::mult; 
-                this->uncertainty = unc * UNITS::mult; 
+                this->value = val * UNIT_TYPE::mult; 
+                this->uncertainty = unc * UNIT_TYPE::mult; 
 
             }
 
@@ -113,15 +113,15 @@ namespace scipp::physics {
             /// @note The uncertainty must be positive
             /// @note The unit must be of the same base of the measurement
             /// @note The value and the uncertainty must be expressed in the same unit
-            template <typename UNITS> 
-                requires (is_same_base_v<BASE, typename UNITS::base>)
-            constexpr umeasurement(double&& val, double&& unc, const UNITS&) {
+            template <typename UNIT_TYPE> 
+                requires (is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr umeasurement(double&& val, double&& unc, const UNIT_TYPE&) {
 
                 if (unc < 0.0) 
                     throw std::invalid_argument("Cannot instantiate an umeasurement with a negative uncertainty");
                 
-                this->value = std::move(val * UNITS::mult); 
-                this->uncertainty = std::move(unc * UNITS::mult); 
+                this->value = std::move(val * UNIT_TYPE::mult); 
+                this->uncertainty = std::move(unc * UNIT_TYPE::mult); 
 
             }
 
@@ -132,7 +132,7 @@ namespace scipp::physics {
             /// @note The measurements must be expressed in the same unit
             /// @note The unit prefix that will be inherited is the value's unit prefix
             /// @note The uncertainty measurement is set to 0.0 by default
-            constexpr umeasurement(const measurement<BASE>& val, const measurement<BASE>& unc = 0.0) {
+            constexpr umeasurement(const measurement<BASE_TYPE>& val, const measurement<BASE_TYPE>& unc = 0.0) {
                         
                 if (unc.value < 0.0) 
                     throw std::invalid_argument("Cannot instantiate an umeasurement with a negative uncertainty");
@@ -149,7 +149,7 @@ namespace scipp::physics {
             /// @note The measurements must be expressed in the same unit
             /// @note The unit prefix that will be inherited is the value's unit prefix
             /// @note The uncertainty measurement is set to 0.0 by default
-            constexpr umeasurement(measurement<BASE>&& val, measurement<BASE>&& unc = 0.0) {
+            constexpr umeasurement(measurement<BASE_TYPE>&& val, measurement<BASE_TYPE>&& unc = 0.0) {
                         
                 if (unc.value < 0.0) 
                     throw std::invalid_argument("Cannot instantiate an umeasurement with a negative uncertainty");
@@ -200,7 +200,7 @@ namespace scipp::physics {
 
 
             /// @brief Copy assign an umeasurement from another umeasurement
-            constexpr umeasurement& operator=(const measurement<BASE>& other) noexcept {
+            constexpr umeasurement& operator=(const measurement<BASE_TYPE>& other) noexcept {
                 
                 this->value = other.value;
                 this->uncertainty = 0.0; 
@@ -211,7 +211,7 @@ namespace scipp::physics {
 
 
             /// @brief Move assign an umeasurement from another umeasurement
-            constexpr umeasurement& operator=(measurement<BASE>&& other) noexcept {
+            constexpr umeasurement& operator=(measurement<BASE_TYPE>&& other) noexcept {
                 
                 this->value = std::move(other.value);
                 this->uncertainty = 0.0; 
@@ -238,7 +238,7 @@ namespace scipp::physics {
 
 
             /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator==(const measurement<BASE>& other) const noexcept {
+            constexpr bool operator==(const measurement<BASE_TYPE>& other) const noexcept {
 
                 return this->value == other.value; 
 
@@ -246,7 +246,7 @@ namespace scipp::physics {
             
             
             /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator!=(const measurement<BASE>& other) const noexcept {
+            constexpr bool operator!=(const measurement<BASE_TYPE>& other) const noexcept {
 
                 return this->value != other.value; 
 
@@ -302,10 +302,10 @@ namespace scipp::physics {
             /// @brief Multiply two umeasurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator*=(const umeasurement<BASE2>& other) noexcept 
-                -> umeasurement<math::op::base_product_t<BASE, BASE2>>& { 
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator*=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
+                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -323,10 +323,10 @@ namespace scipp::physics {
             /// @brief Multiply two measurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator*(const umeasurement<BASE2>& other) const noexcept 
-                -> umeasurement<math::op::base_product_t<BASE, BASE2>> { 
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator*(const umeasurement<OTHER_BASE_TYPE>& other) const noexcept 
+                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -341,10 +341,10 @@ namespace scipp::physics {
             /// @brief Divide two umeasurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator/=(const umeasurement<BASE2>& other) noexcept 
-                -> umeasurement<math::op::base_product_t<BASE, BASE2>>& { 
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator/=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
+                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -362,10 +362,10 @@ namespace scipp::physics {
             /// @brief Divide two measurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename BASE2> 
-                requires (is_base_v<BASE2>)
-            constexpr auto operator/(const umeasurement<BASE2>& other) const 
-                -> umeasurement<math::op::base_division_t<BASE, BASE2>> {
+            template <typename OTHER_BASE_TYPE> 
+                requires (is_base_v<OTHER_BASE_TYPE>)
+            constexpr auto operator/(const umeasurement<OTHER_BASE_TYPE>& other) const 
+                -> umeasurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>> {
 
                 if (other.value == 0.0) 
                     throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
@@ -390,9 +390,9 @@ namespace scipp::physics {
             /// @brief Divide a scalar by a umeasurement
             /// @param val: The scalar value as lvalue const reference
             /// @param meas: The umeasurement as lvalue const reference
-            /// @return umeasurement<math::op::base_invert_t<BASE>>
+            /// @return umeasurement<math::op::base_invert_t<BASE_TYPE>>
             friend constexpr auto operator/(const double& val, const umeasurement& meas)
-                -> umeasurement<math::op::base_invert_t<BASE>> {
+                -> umeasurement<math::op::base_invert_t<BASE_TYPE>> {
 
                 if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot divide a scalar by a zero umeasurement");
@@ -436,7 +436,7 @@ namespace scipp::physics {
 
                     os << std::scientific; 
                     os << std::setprecision(prec - 1) << meas.value << " ± "; 
-                    os << std::setprecision(0) << meas.uncertainty << ' ' << BASE::to_string();
+                    os << std::setprecision(0) << meas.uncertainty << ' ' << BASE_TYPE::to_string();
 
                 } else {
 
@@ -447,7 +447,7 @@ namespace scipp::physics {
                     else 
                         os << std::setprecision(std::fabs(n_unc)); 
                         
-                    os << meas.value << " ± " << meas.uncertainty << ' ' << BASE::to_string();
+                    os << meas.value << " ± " << meas.uncertainty << ' ' << BASE_TYPE::to_string();
 
                 }
 
@@ -465,11 +465,11 @@ namespace scipp::physics {
             /// @brief  Get the value of the measurement in the specified unit
             /// @param  UNITS: The unit in which the value is returned
             /// @note   The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr double value_as(const UNITS&) const noexcept { 
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr double value_as(const UNIT_TYPE&) const noexcept { 
                 
-                return this->value / UNITS::mult; 
+                return this->value / UNIT_TYPE::mult; 
                 
             }
 
@@ -477,17 +477,17 @@ namespace scipp::physics {
             /// @brief  Get the uncertainty of the measurement in the specified unit
             /// @param  UNITS: The unit in which the uncertainty is returned
             /// @note   The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr double uncertainty_as(const UNITS&) const noexcept { 
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr double uncertainty_as(const UNIT_TYPE&) const noexcept { 
                 
-                return this->uncertainty / UNITS::mult; 
+                return this->uncertainty / UNIT_TYPE::mult; 
                 
             }
 
 
             /// @brief Get the value as measurement 
-            constexpr measurement<BASE> as_measurement() const noexcept {
+            constexpr measurement<BASE_TYPE> as_measurement() const noexcept {
 
                 return { this->value }; 
 
@@ -495,7 +495,7 @@ namespace scipp::physics {
 
 
             /// @brief Get the uncertainty as measurement 
-            constexpr measurement<BASE> uncertainty_as_measurement() const noexcept {
+            constexpr measurement<BASE_TYPE> uncertainty_as_measurement() const noexcept {
 
                 return { this->uncertainty }; 
 
@@ -514,11 +514,11 @@ namespace scipp::physics {
             /// @param units: The unit in which the value is printed
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             /// @note The unit must be of the same base of the measurement
-            template <typename UNITS> 
-                requires (is_unit_v<UNITS> && is_same_base_v<BASE, typename UNITS::base>)
-            constexpr void print_as(const UNITS&, const bool& newline = true) const noexcept {
+            template <typename UNIT_TYPE> 
+                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
+            constexpr void print_as(const UNIT_TYPE&, const bool& newline = true) const noexcept {
 
-                std::cout << this->value / UNITS::mult << " ± " << this->uncertainty / UNITS::mult << (newline ? '\n' : ' '); 
+                std::cout << this->value / UNIT_TYPE::mult << " ± " << this->uncertainty / UNIT_TYPE::mult << (newline ? '\n' : ' '); 
 
             }
 
@@ -526,74 +526,93 @@ namespace scipp::physics {
     }; // struct umeasurement
 
 
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    umeasurement(const double&, const double&, const UNITS&) 
-        -> umeasurement<typename UNITS::base>;
+    // =============================================
+    // measurement template guidelines
+    // =============================================
 
-    template <typename UNITS> 
-        requires (is_unit_v<UNITS>)
-    umeasurement(double&&, double&&, const UNITS&) 
-        -> umeasurement<typename UNITS::base>;
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        umeasurement(const double&, const double&, const UNIT_TYPE&) 
+            -> umeasurement<typename UNIT_TYPE::base>;
 
-
-    template <typename T>
-    struct is_umeasurement : std::false_type {}; 
-
-    template <typename BASE> 
-        requires (is_base_v<BASE>)
-    struct is_umeasurement<umeasurement<BASE>> : std::true_type {};
-
-    template <typename T>
-    constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
-
-  
-    template <typename... Ts>
-    struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...> {};
-
-    template <typename... Ts>
-    constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
+        template <typename UNIT_TYPE> 
+            requires (is_unit_v<UNIT_TYPE>)
+        umeasurement(double&&, double&&, const UNIT_TYPE&) 
+            -> umeasurement<typename UNIT_TYPE::base>;
 
 
-    template <typename BASE>
-        requires (is_base_v<BASE>)
-    struct are_same_measurements<umeasurement<BASE>> : std::true_type {};
+    // =============================================
+    // umeasurement type traits
+    // =============================================
+
+        template <typename T>
+        struct is_umeasurement : std::false_type {}; 
+
+        template <typename BASE_TYPE> 
+            requires (is_base_v<BASE_TYPE>)
+        struct is_umeasurement<umeasurement<BASE_TYPE>> : std::true_type {};
+
+        template <typename T>
+        constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
+
     
-    template <typename BASE1, typename BASE2>
-        requires (are_same_base_v<BASE1, BASE2>)
-    struct are_same_measurements<umeasurement<BASE1>, umeasurement<BASE2>> : std::true_type {};
+        template <typename... Ts>
+        struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...> {};
 
-    template <typename BASE, typename... Ts>
-        requires (are_same_base_v<BASE, typename Ts::base> && ...)
-    struct are_same_measurements<umeasurement<BASE>, Ts...> : are_same_measurements<Ts...> {};
+        template <typename... Ts>
+        constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
 
 
-    /// @brief Type trait to check if a type is a measurement or an umeasurement
-    template <typename T>
-    struct is_generic_measurement : std::false_type {};
+    // =============================================
+    // measurements type traits
+    // =============================================
 
-    template <typename T>
-    struct is_generic_measurement<measurement<T>> : std::true_type {};
+        /// @brief Type trait to check if a type is a measurement or an umeasurement
+        template <typename T>
+        struct is_generic_measurement : std::false_type {};
 
-    template <typename T>
-    struct is_generic_measurement<umeasurement<T>> : std::true_type {};
+        template <typename BASE_TYPE>
+        struct is_generic_measurement<measurement<BASE_TYPE>> : std::true_type {};
 
-    template <typename T>
-    constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
+        template <typename BASE_TYPE>
+        struct is_generic_measurement<umeasurement<BASE_TYPE>> : std::true_type {};
+
+        template <typename MEAS_TYPE>
+        constexpr bool is_generic_measurement_v = is_generic_measurement<MEAS_TYPE>::value;
 
 
-    /// @brief Type trait to check if some types are measurements or umeasurements
-    template <typename... T>
-    struct are_generic_measurements : std::false_type {};
+        /// @brief Type trait to check if some types are measurements or umeasurements
+        template <typename... Ts>
+        struct are_generic_measurements : std::false_type {};
 
-    template <typename T>
-    struct are_generic_measurements<T> : is_generic_measurement<T> {};
+        template <typename MEAS_TYPE>
+        struct are_generic_measurements<MEAS_TYPE> : is_generic_measurement<MEAS_TYPE> {};
 
-    template <typename T, typename... Ts>
-    struct are_generic_measurements<T, Ts...> : std::conjunction<is_generic_measurement<T>, are_generic_measurements<Ts...>> {};
+        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
+        struct are_generic_measurements<MEAS_TYPE, MEAS_TYPEs...> : std::conjunction<is_generic_measurement<MEAS_TYPE>, are_generic_measurements<MEAS_TYPEs...>> {};
 
-    template <typename... T>
-    constexpr bool are_generic_measurements_v = are_generic_measurements<T...>::value;
+        template <typename... MEAS_TYPEs>
+        constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
+
+
+        /// @brief Check if all the measurements are of the same base
+        template <typename T, typename... Ts>
+        struct are_same_measurements : std::false_type {};
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<measurement<BASE_TYPE>> : std::true_type {};
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<umeasurement<BASE_TYPE>> : std::true_type {};
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
+            requires (are_generic_measurements_v<MEAS_TYPE, MEAS_TYPEs...>)
+        struct are_same_measurements<MEAS_TYPE, MEAS_TYPE, MEAS_TYPEs...> : are_same_measurements<MEAS_TYPE, MEAS_TYPEs...> {};
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
+        constexpr bool are_same_measurements_v = are_same_measurements<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 
 } // namespace physics

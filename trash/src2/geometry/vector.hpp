@@ -14,7 +14,7 @@
 namespace scipp::geometry {
 
 
-    /// @brief The vector class is a template class that represents a vector in a n-dimensional space
+    /// @brief The vector class is a template class that represents a column vector in a n-dimensional space
     /// @tparam DIM: The dimension of the vector
     /// @tparam MEAS_TYPES: The types of the measurements of the vector components
     /// @see physics::measurement

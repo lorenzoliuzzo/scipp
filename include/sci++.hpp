@@ -26,6 +26,7 @@
     // #include <stdexcept>
     #include <string>
     // #include <thread>
+    #include <variant>
     #include <vector>
   
 
@@ -47,6 +48,8 @@
     #include "geometry/vector.hpp"
     #include "math/ops/vectors.hpp"
     #include "physics/vector_types.hpp"
+
+    #include "geometry/row_vector.hpp"
 
     #include "geometry/matrix.hpp"
     // #include "math/ops/matrices.hpp"

@@ -235,9 +235,9 @@ namespace scipp::geometry {
             
 
             /// @brief Multiplicate by a scalar
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator*=(const SCALAR_TYPE& scalar) noexcept {
+            // template <typename physics::scalar_m>
+            //     requires (physics::is_scalar_v<physics::scalar_m>)
+            constexpr vector& operator*=(const physics::scalar_m& scalar) noexcept {
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     this->data[i] *= scalar;
@@ -248,9 +248,9 @@ namespace scipp::geometry {
 
 
             /// @brief Divide by a scalar
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator/=(const SCALAR_TYPE& scalar) {
+            // template <typename physics::scalar_m>
+            //     requires (physics::is_scalar_v<physics::scalar_m>)
+            constexpr vector& operator/=(const physics::scalar_m& scalar) {
 
                 if (scalar == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
@@ -264,9 +264,9 @@ namespace scipp::geometry {
 
 
             /// @brief Multiplicate by a scalar
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator*(const SCALAR_TYPE& scalar) const noexcept {
+            // template <typename physics::scalar_m>
+            //     requires (physics::is_scalar_v<physics::scalar_m>)
+            constexpr vector operator*(const physics::scalar_m& scalar) const noexcept {
 
                 vector result{*this};
 
@@ -279,9 +279,9 @@ namespace scipp::geometry {
 
 
             /// @brief Divide by a scalar
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator/(const SCALAR_TYPE& scalar) const {
+            // template <typename physics::scalar_m>
+            //     requires (physics::is_scalar_v<physics::scalar_m>)
+            constexpr vector operator/(const physics::scalar_m& scalar) const {
 
                 if (scalar == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
@@ -691,70 +691,83 @@ namespace scipp::geometry {
     constexpr bool have_same_dimension_v = have_same_dimension<VECTORS...>::value;
 
 
-template <typename T, typename... Us>
-struct has_same_vector;
+    template <typename... Ts>
+    struct common_dimension : std::integral_constant<std::size_t, 0> {};
 
-template <typename T>
-struct has_same_vector<T> : std::false_type {};
+    template <typename VECTOR_TYPE>
+        requires (is_vector_v<VECTOR_TYPE>)
+    struct common_dimension<VECTOR_TYPE> : std::integral_constant<std::size_t, VECTOR_TYPE::dim> {};
 
-template <typename T, typename... Us>
-struct has_same_vector<T, T, Us...> : std::true_type {};
-
-template <typename T, typename U, typename... Us>
-struct has_same_vector<T, U, Us...> : has_same_vector<T, Us...> {};
-
-template <typename T, typename... Us>
-struct have_same_vectors : std::conjunction<has_same_vector<T, Us>..., has_same_vector<Us, T>...> {};
-
-template <typename T>
-struct have_same_vectors<T> : std::true_type {};
-
-template <typename... VECTORS>
-constexpr bool have_same_vectors_v = have_same_vectors<VECTORS...>::value;
-
+    template <typename VECTOR_TYPE, typename... VECTORS>
+        requires (have_same_dimension_v<VECTOR_TYPE, VECTORS...>)
+    struct common_dimension<VECTOR_TYPE, VECTORS...> : std::integral_constant<std::size_t, VECTOR_TYPE::dim> {};
 
     template <typename... VECTORS>
-    struct common_vector;
+    constexpr std::size_t common_dimension_v = common_dimension<VECTORS...>::value;
 
-    template <typename VECTOR>
-    struct common_vector<VECTOR> {
 
-        using type = VECTOR;
+    template <typename T, typename... Us>
+    struct has_same_vector;
 
-    };
+    template <typename T>
+    struct has_same_vector<T> : std::false_type {};
 
-    template <typename VECTOR, typename... VECTORS>
-        requires (are_vectors_v<VECTOR, VECTORS...>)
-    struct common_vector<VECTOR, VECTORS...> {
+    template <typename T, typename... Us>
+    struct has_same_vector<T, T, Us...> : std::true_type {};
 
-        using type = std::common_type_t<VECTOR, typename common_vector<VECTORS...>::type>;
+    template <typename T, typename U, typename... Us>
+    struct has_same_vector<T, U, Us...> : has_same_vector<T, Us...> {};
+
+
+    template <typename T, typename... Us>
+    struct have_same_vectors : std::conjunction<has_same_vector<T, Us>..., has_same_vector<Us, T>...> {};
+
+    template <typename T>
+    struct have_same_vectors<T> : std::true_type {};
+
+    template <typename... VECTORS>
+    constexpr bool have_same_vectors_v = have_same_vectors<VECTORS...>::value;
+
+
+    // template <typename... VECTORS>
+    // struct common_vector;
+
+    // template <typename VECTOR>
+    // struct common_vector<VECTOR> {
+
+    //     using type = VECTOR;
+
+    // };
+
+    // template <typename VECTOR, typename... VECTORS>
+    //     requires (are_vectors_v<VECTOR, VECTORS...>)
+    // struct common_vector<VECTOR, VECTORS...> {
+
+    //     using type = std::common_type_t<VECTOR, typename common_vector<VECTORS...>::type>;
     
-    };
+    // };
 
 
+    // template <typename... VECTORS>
+    // struct common_base;
 
+    // template <typename VECTOR>
+    // struct common_base<VECTOR> {
 
+    //     using type = typename VECTOR::base;
 
-    template <typename... VECTORS>
-    struct common_base;
+    // };
 
-    template <typename VECTOR>
-    struct common_base<VECTOR> {
+    // template <typename VECTOR, typename... VECTORS>
+    //     requires (are_vectors_v<VECTOR, VECTORS...>)
+    // struct common_base<VECTOR, VECTORS...> {
 
-        using type = typename VECTOR::base;
-
-    };
-
-    template <typename VECTOR, typename... VECTORS>
-        requires (are_vectors_v<VECTOR, VECTORS...>)
-    struct common_base<VECTOR, VECTORS...> {
-
-        using type = std::common_type_t<typename VECTOR::base, typename common_base<VECTORS...>::type>;
+    //     using type = std::common_type_t<typename VECTOR::base, typename common_base<VECTORS...>::type>;
     
-    };
+    // };
 
-    template <typename... VECTORS>
-    using common_base_t = typename common_base<VECTORS...>::type;
+    // template <typename... VECTORS>
+    // using common_base_t = typename common_base<VECTORS...>::type;
 
 
 } // namespace scipp::geometry

@@ -1,9 +1,9 @@
 /**
  * @file    physics/base_quantity.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementations of the base_quantity struct, its operations and type traits.
+ * @brief   This file contains the implementations of the base_quantity struct and type traits.
  * @note    
- * @date    2023-03-08
+ * @date    2023-03-17
  * 
  * @copyright Copyright (c) 2023
  */
@@ -167,113 +167,113 @@ namespace scipp::physics {
             }
 
 
-            static constexpr std::string_view to_string2() noexcept {
+            // static constexpr std::string_view to_string2() noexcept {
 
-                constexpr char unit_str[] = {
-                    (LENGTH != 0 ? 'm' : '\0'), (LENGTH != 1 ? '^' : '\0'), (LENGTH != 1 ? ('0' + LENGTH) : '\0'),
-                    (TIME != 0 ? 's' : '\0'), (TIME != 1 ? '^' : '\0'), (TIME != 1 ? ('0' + TIME) : '\0'),
-                    (MASS != 0 ? 'k' : '\0'), (MASS != 1 ? 'g' : '\0'), (MASS != 1 ? '^' : '\0'), (MASS != 1 ? ('0' + MASS) : '\0'),
-                    (ELETTRIC_CURRENT != 0 ? 'A' : '\0'), (ELETTRIC_CURRENT != 1 ? '^' : '\0'), (ELETTRIC_CURRENT != 1 ? ('0' + ELETTRIC_CURRENT) : '\0'),
-                    (TEMPERATURE != 0 ? 'K' : '\0'), (TEMPERATURE != 1 ? '^' : '\0'), (TEMPERATURE != 1 ? ('0' + TEMPERATURE) : '\0'),
-                    (SUBSTANCE_AMOUNT != 0 ? 'm' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'o' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'l' : '\0'), (SUBSTANCE_AMOUNT != 1 ? '^' : '\0'), (SUBSTANCE_AMOUNT != 1 ? ('0' + SUBSTANCE_AMOUNT) : '\0'),
-                    (LUMINOUS_INTENSITY != 0 ? 'c' : '\0'), (LUMINOUS_INTENSITY != 1 ? 'd' : '\0'), (LUMINOUS_INTENSITY != 1 ? '^' : '\0'), (LUMINOUS_INTENSITY != 1 ? ('0' + LUMINOUS_INTENSITY) : '\0'),
-                    (ANGLE != 0 ? ' ' : '\0'), (ANGLE == 1 ? 'r' : '\0'), (ANGLE == 1 ? 'a' : '\0'), (ANGLE == 1 ? 'd' : '\0'),
-                    (ANGLE == 2 ? ' ' : '\0'), (ANGLE == 2 ? 's' : '\0'), (ANGLE == 2 ? 'r' : '\0'),
-                    (ANGLE > 2 ? 'r' : '\0'), (ANGLE > 2 ? 'a' : '\0'), (ANGLE > 2 ? 'd' : '\0'), (ANGLE > 2 ? '^' : '\0'), (ANGLE > 2 ? ('0' + ANGLE) : '\0'),
-                    '\0'
-                };
-                return std::string_view(unit_str, sizeof(unit_str) - 1);
+            //     constexpr char unit_str[] = {
+            //         (LENGTH != 0 ? 'm' : '\0'), (LENGTH != 1 ? '^' : '\0'), (LENGTH != 1 ? ('0' + LENGTH) : '\0'),
+            //         (TIME != 0 ? 's' : '\0'), (TIME != 1 ? '^' : '\0'), (TIME != 1 ? ('0' + TIME) : '\0'),
+            //         (MASS != 0 ? 'k' : '\0'), (MASS != 1 ? 'g' : '\0'), (MASS != 1 ? '^' : '\0'), (MASS != 1 ? ('0' + MASS) : '\0'),
+            //         (ELETTRIC_CURRENT != 0 ? 'A' : '\0'), (ELETTRIC_CURRENT != 1 ? '^' : '\0'), (ELETTRIC_CURRENT != 1 ? ('0' + ELETTRIC_CURRENT) : '\0'),
+            //         (TEMPERATURE != 0 ? 'K' : '\0'), (TEMPERATURE != 1 ? '^' : '\0'), (TEMPERATURE != 1 ? ('0' + TEMPERATURE) : '\0'),
+            //         (SUBSTANCE_AMOUNT != 0 ? 'm' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'o' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'l' : '\0'), (SUBSTANCE_AMOUNT != 1 ? '^' : '\0'), (SUBSTANCE_AMOUNT != 1 ? ('0' + SUBSTANCE_AMOUNT) : '\0'),
+            //         (LUMINOUS_INTENSITY != 0 ? 'c' : '\0'), (LUMINOUS_INTENSITY != 1 ? 'd' : '\0'), (LUMINOUS_INTENSITY != 1 ? '^' : '\0'), (LUMINOUS_INTENSITY != 1 ? ('0' + LUMINOUS_INTENSITY) : '\0'),
+            //         (ANGLE != 0 ? ' ' : '\0'), (ANGLE == 1 ? 'r' : '\0'), (ANGLE == 1 ? 'a' : '\0'), (ANGLE == 1 ? 'd' : '\0'),
+            //         (ANGLE == 2 ? ' ' : '\0'), (ANGLE == 2 ? 's' : '\0'), (ANGLE == 2 ? 'r' : '\0'),
+            //         (ANGLE > 2 ? 'r' : '\0'), (ANGLE > 2 ? 'a' : '\0'), (ANGLE > 2 ? 'd' : '\0'), (ANGLE > 2 ? '^' : '\0'), (ANGLE > 2 ? ('0' + ANGLE) : '\0'),
+            //         '\0'
+            //     };
+            //     return std::string_view(unit_str, sizeof(unit_str) - 1);
 
-            }
-
-
-            static constexpr std::string_view unit_string() noexcept {
-                constexpr int buffer_size = 32; // adjust size as needed
-                std::array<char, buffer_size> buffer{};
-                int pos = 0;
-
-                if constexpr (LENGTH != 0) {
-                    buffer[pos++] = 'm';
-                    if constexpr (LENGTH != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LENGTH);
-                }
-
-                if constexpr (TIME != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "s");
-                    if constexpr (TIME != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TIME);
-                }
+            // }
 
 
-                if constexpr (MASS != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "kg");
-                    if constexpr (MASS != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", MASS);
-                }
+            // static constexpr std::string_view unit_string() noexcept {
+            //     constexpr int buffer_size = 32; // adjust size as needed
+            //     std::array<char, buffer_size> buffer{};
+            //     int pos = 0;
+
+            //     if constexpr (LENGTH != 0) {
+            //         buffer[pos++] = 'm';
+            //         if constexpr (LENGTH != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LENGTH);
+            //     }
+
+            //     if constexpr (TIME != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "s");
+            //         if constexpr (TIME != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TIME);
+            //     }
 
 
-                if constexpr (ELETTRIC_CURRENT != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "A");
-                    if constexpr (ELETTRIC_CURRENT != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", ELETTRIC_CURRENT);
-                }
+            //     if constexpr (MASS != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "kg");
+            //         if constexpr (MASS != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", MASS);
+            //     }
 
 
-                if constexpr (TEMPERATURE != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "K");
-                    if constexpr (TEMPERATURE != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TEMPERATURE);
-                }
+            //     if constexpr (ELETTRIC_CURRENT != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "A");
+            //         if constexpr (ELETTRIC_CURRENT != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", ELETTRIC_CURRENT);
+            //     }
 
 
-                if constexpr (SUBSTANCE_AMOUNT != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "mol");
-                    if constexpr (SUBSTANCE_AMOUNT != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", SUBSTANCE_AMOUNT);
-                }
+            //     if constexpr (TEMPERATURE != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "K");
+            //         if constexpr (TEMPERATURE != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TEMPERATURE);
+            //     }
 
 
-                if constexpr (LUMINOUS_INTENSITY != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "cd");
-                    if constexpr (LUMINOUS_INTENSITY != 1) 
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LUMINOUS_INTENSITY);
-                }
+            //     if constexpr (SUBSTANCE_AMOUNT != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "mol");
+            //         if constexpr (SUBSTANCE_AMOUNT != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", SUBSTANCE_AMOUNT);
+            //     }
 
 
-                if constexpr (ANGLE != 0) {
-                    if (pos != 0) 
-                        buffer[pos++] = ' ';
-                    if constexpr (ANGLE == 1) {
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad");
-                    } else if constexpr (ANGLE == 2) {
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "sr");
-                    } else {
-                        pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad^%d", ANGLE);
-                    }
-                }
+            //     if constexpr (LUMINOUS_INTENSITY != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "cd");
+            //         if constexpr (LUMINOUS_INTENSITY != 1) 
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LUMINOUS_INTENSITY);
+            //     }
 
-                return std::string_view(buffer.data(), pos);
 
-            }
+            //     if constexpr (ANGLE != 0) {
+            //         if (pos != 0) 
+            //             buffer[pos++] = ' ';
+            //         if constexpr (ANGLE == 1) {
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad");
+            //         } else if constexpr (ANGLE == 2) {
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "sr");
+            //         } else {
+            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad^%d", ANGLE);
+            //         }
+            //     }
+
+            //     return std::string_view(buffer.data(), pos);
+
+            // }
 
 
     }; // struct base_quantity
 
 
     // =============================================
-    // type traits
+    // base_quantity type traits
     // =============================================
         
         template <typename T>
@@ -319,13 +319,13 @@ namespace scipp::physics {
         template <typename BASE, int POWER> 
             requires (is_base_v<BASE>)
         struct has_valid_root : public std::bool_constant<BASE::length_power % POWER == 0 && 
-                                                          BASE::time_power % POWER == 0 && 
-                                                          BASE::mass_power % POWER == 0 && 
-                                                          BASE::temperature_power % POWER == 0 && 
-                                                          BASE::substance_amount_power % POWER == 0 && 
-                                                          BASE::elettric_current_power % POWER == 0 && 
-                                                          BASE::luminous_intensity_power % POWER == 0 && 
-                                                          BASE::angle_power % POWER == 0> {};
+                                                            BASE::time_power % POWER == 0 && 
+                                                            BASE::mass_power % POWER == 0 && 
+                                                            BASE::temperature_power % POWER == 0 && 
+                                                            BASE::substance_amount_power % POWER == 0 && 
+                                                            BASE::elettric_current_power % POWER == 0 && 
+                                                            BASE::luminous_intensity_power % POWER == 0 && 
+                                                            BASE::angle_power % POWER == 0> {};
 
         template <typename BASE, int POWER>
         constexpr bool has_valid_root_v = has_valid_root<BASE, POWER>::value;

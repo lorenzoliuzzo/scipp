@@ -34,7 +34,7 @@ namespace scipp::geometry {
             std::tuple<VECTOR_TYPES...> data; ///< The matrix data
 
 
-            inline static constexpr std::size_t rows = std::tuple_size_v<std::tuple<VECTOR_TYPES...>>;
+            inline static constexpr std::size_t rows = common_dimension_v<VECTOR_TYPES...>;
 
             inline static constexpr std::size_t columns = COLUMNS;
 
@@ -173,10 +173,201 @@ namespace scipp::geometry {
 
             }
 
+            template <std::size_t row_i, std::size_t col_j>
+            constexpr auto& element() const {
+
+                if (row_i >= rows) 
+                    throw std::out_of_range("Cannot access element at row " + std::to_string(row_i) + " of a matrix with " + std::to_string(rows) + " rows");
+                
+                if (col_j >= columns)
+                    throw std::out_of_range("Cannot access element at column " + std::to_string(col_j) + " of a matrix with " + std::to_string(columns) + " columns");
+
+                return std::get<row_i>(data).data[col_j];
+
+            }
+            
 
         // ===========================================================
         // operators
         // ===========================================================
+
+            /// @brief Addition operator
+            constexpr matrix& operator+=(const matrix& other) noexcept {
+
+                std::apply(
+                    [&](auto&... lhs_components) {
+                        std::apply(
+                            [&](const auto&... rhs_components) {
+                                ((lhs_components += rhs_components), ...);
+                            }, other.data 
+                        );
+                    }, this->data
+                ); 
+                               
+                return *this;
+
+            }
+
+
+            /// @brief Subtraction operator
+            constexpr matrix& operator-=(const matrix& other) noexcept {
+
+                std::apply(
+                    [&](auto&... lhs_components) {
+                        std::apply(
+                            [&](const auto&... rhs_components) {
+                                ((lhs_components -= rhs_components), ...);
+                            }, other.data 
+                        );
+                    }, this->data
+                ); 
+                               
+                return *this;
+
+            }
+
+
+            /// @brief Addition operator
+            constexpr matrix operator+(const matrix& other) const noexcept {
+
+                matrix result;
+
+                std::apply(
+                    [&](const auto&... lhs_components) {
+                        std::apply(
+                            [&](const auto&... rhs_components) {
+                                result.data = std::make_tuple(lhs_components + rhs_components...);
+                            }, other.data 
+                        );
+                    }, this->data
+                ); 
+                               
+                return result;
+
+            }
+
+
+            /// @brief Subtraction operator
+            constexpr matrix operator-(const matrix& other) const noexcept {
+
+                matrix result;
+
+                std::apply(
+                    [&](const auto&... lhs_components) {
+                        std::apply(
+                            [&](const auto&... rhs_components) {
+                                result.data = std::make_tuple(lhs_components - rhs_components...);
+                            }, other.data 
+                        );
+                    }, this->data
+                ); 
+                               
+                return result;
+
+            }
+
+
+            /// @brief Negate operator
+            constexpr matrix operator-() const noexcept {
+
+                matrix result;
+
+                std::apply(
+                    [&](const auto&... components) {
+                        result.data = std::make_tuple(-components...);
+                    }, this->data
+                ); 
+                               
+                return result;
+
+            }
+
+
+            /// @brief Multiplication operator
+            constexpr matrix& operator*=(const physics::scalar_m& value) noexcept {
+
+                std::apply(
+                    [&](auto&... components) {
+                        ((components *= value), ...);
+                    }, this->data
+                );
+
+                return *this;
+
+            }
+
+
+            /// @brief Division operator
+            constexpr matrix& operator/=(const physics::scalar_m& value) {
+
+                if (value == 0.0) 
+                    throw std::invalid_argument("Cannot divide a matrix by zero");
+
+                std::apply(
+                    [&](auto&... components) {
+                        ((components /= value), ...);
+                    }, this->data
+                );
+
+                return *this;
+
+            }
+
+
+            /// @brief Multiplication operator
+            constexpr matrix operator*(const physics::scalar_m& value) const noexcept {
+
+                matrix result; 
+
+                std::apply(
+                    [&](const auto&... components) {
+                        result.data = std::make_tuple(components * value...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
+
+
+            /// @brief Division operator
+            constexpr matrix operator/(const physics::scalar_m& value) const {
+
+                if (value == 0.0) 
+                    throw std::invalid_argument("Cannot divide a matrix by zero");
+
+                matrix result; 
+
+                std::apply(
+                    [&](const auto&... components) {
+                        result.data = std::make_tuple(components / value...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
+
+
+            /// @brief Multiplication operator
+            // template <typename... OTHER_VECTOR_TYPES>   
+            
+
+
+            
+            // /// @brief Multiplication operator
+            // constexpr auto operator*(const matrix& other) const noexcept {
+
+            //     matrix<VECTOR_TYPES...> result;
+
+            //     for (size_t i = 0; i < rows; i++) 
+            //         for (size_t j = 0; j < columns; j++) 
+            //             result[i][j] = this->row<i>() * other.column<j>();
+
+            //     return result;
+
+            // }
+
 
         // ===========================================================
         // methods
@@ -213,6 +404,7 @@ namespace scipp::geometry {
             constexpr void print() const noexcept {
 
                 std::apply([](const auto&... args) { ((std::cout << args << '\n'), ...); }, this->data);
+                std::cout << '\n'; 
 
             }
 

@@ -2,7 +2,7 @@
  * @file    matrix.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   Example of matrix constructions
- * @date    2023-03-17
+ * @date    2023-03-19
  * 
  * @copyright Copyright (c) 2023
  */
@@ -27,6 +27,10 @@ int main() {
     std::cout << "number of rows: " << matrix<2, position3, position3>::rows << '\n';
     std::cout << "number of columns: " << matrix<2, position3, position3>::columns << '\n';
 
+
+
+    matrix<3, position2> m0;
+    m0.print();
     
     matrix<2, position3, position3> m1(position3(1.0m, 0.0m, 0.0m),
                                        position3(0.0m, 1.0m, 0.0m)); 
@@ -34,7 +38,7 @@ int main() {
 
     matrix m2(position3(1.0m, 0.0m, 0.0m),
               position3(0.0m, 1.0m, 0.0m),
-              position3(0.0m, 0.0m, 1.0m));
+              lin_velocity3(0.0 * m_s, 0.0 * m_s, 1.0 * m_s));
     m2.print();
 
     matrix m3 = make_matrix(position3(1.0m, 0.0m, 0.0m),
@@ -55,15 +59,24 @@ int main() {
     m5.print();
 
 
-    matrix m6 = m4 + m5; 
-    m6.print();
+    // matrix<2, position2> m7 = make_matrix<2, position2>(); 
+    // m7.print(); 
 
-    m6 -= m4;
-    m6.print();
+    // m7.column<0>().print(); 
 
-    (-m6).print();
 
-    (m6 * 23.0).print();
+    // matrix m6 = m4 + m5; 
+    // m6.print();
+
+    // m6 -= m4;
+    // m6.print();
+
+    // (-m6).print();
+
+    // (m6 * 23.0).print();
+
+
+    // matrix<2, position2>().print(); 
 
 
 

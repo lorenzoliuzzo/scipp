@@ -184,6 +184,19 @@ namespace scipp::geometry {
 
             }
             
+
+            /// @brief Print the vector to an output stream
+            /// @param os: std::ostream as l-value reference
+            /// @param vec: vector as l-value const reference
+            friend constexpr std::ofstream& operator<<(std::ofstream& os, const row_vector& vec) noexcept {
+
+                os << "(\t"; 
+                std::apply([&os](const auto&... measurements) { ((os << measurements << "\t"), ...); }, vec.data_);
+                os << ")\n";
+                return os;
+
+            }
+            
         
         // ===========================================================
         // methods

@@ -62,129 +62,143 @@ namespace scipp::physics {
         // methods
         // =============================================
 
-            static constexpr std::string to_string() noexcept {
+            // static constexpr std::string to_string() noexcept {
 
-                std::stringstream ss;
+            //     std::stringstream ss;
 
-                if constexpr (LENGTH != 0) {
+            //     if constexpr (LENGTH != 0) {
 
-                    ss << "m";
-                    if constexpr (LENGTH != 1) 
-                        ss << "^" << LENGTH;
+            //         ss << "m";
+            //         if constexpr (LENGTH != 1) 
+            //             ss << "^" << LENGTH;
 
-                }
+            //     }
 
-                if constexpr (TIME != 0) {
+            //     if constexpr (TIME != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
 
-                    ss << "s";
+            //         ss << "s";
 
-                    if constexpr (TIME != 1) 
-                        ss << "^" << TIME;
+            //         if constexpr (TIME != 1) 
+            //             ss << "^" << TIME;
                     
-                }
+            //     }
 
-                if constexpr (MASS != 0) {
+            //     if constexpr (MASS != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
 
-                    ss << "kg";
+            //         ss << "kg";
 
-                    if constexpr (MASS != 1) 
-                        ss << "^" << MASS;
+            //         if constexpr (MASS != 1) 
+            //             ss << "^" << MASS;
                     
-                }
+            //     }
 
-                if constexpr (ELETTRIC_CURRENT != 0) {
+            //     if constexpr (ELETTRIC_CURRENT != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
                     
-                    ss << "A";
+            //         ss << "A";
                     
-                    if constexpr (ELETTRIC_CURRENT != 1) 
-                        ss << "^" << ELETTRIC_CURRENT;
+            //         if constexpr (ELETTRIC_CURRENT != 1) 
+            //             ss << "^" << ELETTRIC_CURRENT;
                     
-                }
+            //     }
 
-                if constexpr (TEMPERATURE != 0) {
+            //     if constexpr (TEMPERATURE != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
                     
-                    ss << "K";
+            //         ss << "K";
                     
-                    if constexpr (TEMPERATURE != 1) 
-                        ss << "^" << TEMPERATURE;
+            //         if constexpr (TEMPERATURE != 1) 
+            //             ss << "^" << TEMPERATURE;
                     
-                }
+            //     }
 
-                if constexpr (SUBSTANCE_AMOUNT != 0) {
+            //     if constexpr (SUBSTANCE_AMOUNT != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
                     
-                    ss << "mol";
+            //         ss << "mol";
                     
-                    if constexpr (SUBSTANCE_AMOUNT != 1) 
-                        ss << "^" << SUBSTANCE_AMOUNT;
+            //         if constexpr (SUBSTANCE_AMOUNT != 1) 
+            //             ss << "^" << SUBSTANCE_AMOUNT;
                     
-                }
+            //     }
 
-                if constexpr (LUMINOUS_INTENSITY != 0) {
+            //     if constexpr (LUMINOUS_INTENSITY != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
                     
-                    ss << "cd";
+            //         ss << "cd";
                     
-                    if constexpr (LUMINOUS_INTENSITY != 1) 
-                        ss << "^" << LUMINOUS_INTENSITY;
+            //         if constexpr (LUMINOUS_INTENSITY != 1) 
+            //             ss << "^" << LUMINOUS_INTENSITY;
                     
-                }
+            //     }
 
-                if constexpr (ANGLE != 0) {
+            //     if constexpr (ANGLE != 0) {
 
-                    if (ss.str() != "") 
-                        ss << " ";
+            //         if (ss.str() != "") 
+            //             ss << " ";
                     
-                    if constexpr (ANGLE == 1) 
-                        ss << "rad";
+            //         if constexpr (ANGLE == 1) 
+            //             ss << "rad";
 
-                    else if constexpr (ANGLE == 2)
-                        ss << "sr";
+            //         else if constexpr (ANGLE == 2)
+            //             ss << "sr";
                     
-                    else 
-                        ss << "rad^" << ANGLE;
+            //         else 
+            //             ss << "rad^" << ANGLE;
 
-                }
+            //     }
 
-                return ss.str();
-
-            }
-
-
-            // static constexpr std::string_view to_string2() noexcept {
-
-            //     constexpr char unit_str[] = {
-            //         (LENGTH != 0 ? 'm' : '\0'), (LENGTH != 1 ? '^' : '\0'), (LENGTH != 1 ? ('0' + LENGTH) : '\0'),
-            //         (TIME != 0 ? 's' : '\0'), (TIME != 1 ? '^' : '\0'), (TIME != 1 ? ('0' + TIME) : '\0'),
-            //         (MASS != 0 ? 'k' : '\0'), (MASS != 1 ? 'g' : '\0'), (MASS != 1 ? '^' : '\0'), (MASS != 1 ? ('0' + MASS) : '\0'),
-            //         (ELETTRIC_CURRENT != 0 ? 'A' : '\0'), (ELETTRIC_CURRENT != 1 ? '^' : '\0'), (ELETTRIC_CURRENT != 1 ? ('0' + ELETTRIC_CURRENT) : '\0'),
-            //         (TEMPERATURE != 0 ? 'K' : '\0'), (TEMPERATURE != 1 ? '^' : '\0'), (TEMPERATURE != 1 ? ('0' + TEMPERATURE) : '\0'),
-            //         (SUBSTANCE_AMOUNT != 0 ? 'm' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'o' : '\0'), (SUBSTANCE_AMOUNT != 1 ? 'l' : '\0'), (SUBSTANCE_AMOUNT != 1 ? '^' : '\0'), (SUBSTANCE_AMOUNT != 1 ? ('0' + SUBSTANCE_AMOUNT) : '\0'),
-            //         (LUMINOUS_INTENSITY != 0 ? 'c' : '\0'), (LUMINOUS_INTENSITY != 1 ? 'd' : '\0'), (LUMINOUS_INTENSITY != 1 ? '^' : '\0'), (LUMINOUS_INTENSITY != 1 ? ('0' + LUMINOUS_INTENSITY) : '\0'),
-            //         (ANGLE != 0 ? ' ' : '\0'), (ANGLE == 1 ? 'r' : '\0'), (ANGLE == 1 ? 'a' : '\0'), (ANGLE == 1 ? 'd' : '\0'),
-            //         (ANGLE == 2 ? ' ' : '\0'), (ANGLE == 2 ? 's' : '\0'), (ANGLE == 2 ? 'r' : '\0'),
-            //         (ANGLE > 2 ? 'r' : '\0'), (ANGLE > 2 ? 'a' : '\0'), (ANGLE > 2 ? 'd' : '\0'), (ANGLE > 2 ? '^' : '\0'), (ANGLE > 2 ? ('0' + ANGLE) : '\0'),
-            //         '\0'
-            //     };
-            //     return std::string_view(unit_str, sizeof(unit_str) - 1);
+            //     return ss.str();
 
             // }
+
+            static constexpr std::string to_string() noexcept {
+                constexpr std::array<std::string_view, 8> units = {"m", "s", "kg", "A", "K", "mol", "cd", "rad"};
+
+                std::stringstream ss;
+                bool first_unit = true;
+
+                auto print_unit = [&](int power, std::string_view unit) {
+                if (power != 0) {
+                    if (!first_unit)
+                        ss << ' ';
+                    first_unit = false;
+
+                    ss << unit;
+
+                    if (power != 1)
+                        ss << '^' << power;
+                }
+                };
+
+                print_unit(LENGTH, units[0]);
+                print_unit(TIME, units[1]);
+                print_unit(MASS, units[2]);
+                print_unit(ELETTRIC_CURRENT, units[3]);
+                print_unit(TEMPERATURE, units[4]);
+                print_unit(SUBSTANCE_AMOUNT, units[5]);
+                print_unit(LUMINOUS_INTENSITY, units[6]);
+                print_unit(ANGLE == 1 ? 1 : (ANGLE == 2 ? -1 : ANGLE), units[7]);
+
+                return ss.str();
+            }
+
+    }; // struct base_quantity
+
 
 
             // static constexpr std::string_view unit_string() noexcept {
@@ -267,10 +281,6 @@ namespace scipp::physics {
             //     return std::string_view(buffer.data(), pos);
 
             // }
-
-
-    }; // struct base_quantity
-
 
     // =============================================
     // base_quantity type traits

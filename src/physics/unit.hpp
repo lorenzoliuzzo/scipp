@@ -15,12 +15,14 @@
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
 
+
+
     
     /// @brief unit is an union of an base_quantity and an std::ratio prefix
-    /// @tparam BASE: meta_base of the unit
-    /// @tparam PREFIX: std::ratio prefix of the unit
-    template <typename BASE, typename PREFIX = std::ratio<1>> 
-        requires (is_base_v<BASE>)  
+    /// @tparam BASE_TYPE: meta_base of the unit
+    /// @tparam PREFIX_TYPE: std::ratio prefix of the unit
+    template <typename BASE_TYPE, typename PREFIX_TYPE = std::ratio<1>> 
+        requires (is_base_v<BASE_TYPE>)  
     struct unit {
 
 
@@ -28,27 +30,28 @@ namespace scipp::physics {
         // type aliases
         // =============================================
 
-            using base = BASE;
+            using base = BASE_TYPE;
 
-            using prefix = PREFIX;
+            using prefix = PREFIX_TYPE;
 
-            using type = unit<BASE, PREFIX>; 
+            using type = unit<base, prefix>; 
 
 
         // =============================================
         // static members
         // =============================================
 
-            inline static constexpr double mult = static_cast<double>(PREFIX::num) / static_cast<double>(PREFIX::den);
+            inline static constexpr double mult = static_cast<double>(prefix::num) / static_cast<double>(prefix::den);
 
 
         // =============================================
         // operators
         // =============================================
 
-            friend inline constexpr std::ostream& operator<<(std::ostream& os, const unit&) noexcept {
+            friend inline constexpr std::ofstream& operator<<(std::ofstream& os, const unit&) noexcept {
 
-                return os << unit::to_string();
+                os << unit::to_string();
+                return os;
 
             }
 
@@ -58,28 +61,28 @@ namespace scipp::physics {
         // =============================================
 
             /// @brief prefix_symbol returns a char representation of the prefix
-            inline static constexpr char prefix_symbol() noexcept {
+            inline static constexpr auto prefix_symbol() noexcept {
 
-                if      constexpr (mult == 1.e-24) return 'y'; //< yocto prefix
-                else if constexpr (mult == 1.e-21) return 'z'; //< zepto prefix
-                else if constexpr (mult == 1.e-18) return 'a'; //< atto prefix
-                else if constexpr (mult == 1.e-15) return 'f'; //< femto prefix
-                else if constexpr (mult == 1.e-12) return 'p'; //< pico prefix
-                else if constexpr (mult == 1.e-9)  return 'n'; //< nano prefix
-                else if constexpr (mult == 1.e-6)  return 'u'; //< micro prefix
-                else if constexpr (mult == 1.e-3)  return 'm'; //< milli prefix
-                else if constexpr (mult == 1.e-2)  return 'c'; //< centi prefix
-                else if constexpr (mult == 1.e-1)  return 'd'; //< deci prefix
-                else if constexpr (mult == 1.e2)   return 'h'; //< hecto prefix
-                else if constexpr (mult == 1.e3)   return 'K'; //< kilo prefix
-                else if constexpr (mult == 1.e6)   return 'M'; //< mega prefix
-                else if constexpr (mult == 1.e9)   return 'G'; //< giga prefix
-                else if constexpr (mult == 1.e12)  return 'T'; //< tera prefix
-                else if constexpr (mult == 1.e15)  return 'P'; //< peta prefix
-                else if constexpr (mult == 1.e18)  return 'E'; //< exa prefix
-                else if constexpr (mult == 1.e21)  return 'Z'; //< zetta prefix
-                else if constexpr (mult == 1.e24)  return 'Y'; //< yotta prefix
-                else                               return ' ';
+                if      constexpr (mult == 1.e-24) return "[y]"; //< yocto prefix
+                else if constexpr (mult == 1.e-21) return "[z]"; //< zepto prefix
+                else if constexpr (mult == 1.e-18) return "[a]"; //< atto prefix
+                else if constexpr (mult == 1.e-15) return "[f]"; //< femto prefix
+                else if constexpr (mult == 1.e-12) return "[p]"; //< pico prefix
+                else if constexpr (mult == 1.e-9)  return "[n]"; //< nano prefix
+                else if constexpr (mult == 1.e-6)  return "[u]"; //< micro prefix
+                else if constexpr (mult == 1.e-3)  return "[m]"; //< milli prefix
+                else if constexpr (mult == 1.e-2)  return "[c]"; //< centi prefix
+                else if constexpr (mult == 1.e-1)  return "[d]"; //< deci prefix
+                else if constexpr (mult == 1.e2)   return "[h]"; //< hecto prefix
+                else if constexpr (mult == 1.e3)   return "[K]"; //< kilo prefix
+                else if constexpr (mult == 1.e6)   return "[M]"; //< mega prefix
+                else if constexpr (mult == 1.e9)   return "[G]"; //< giga prefix
+                else if constexpr (mult == 1.e12)  return "[T]"; //< tera prefix
+                else if constexpr (mult == 1.e15)  return "[P]"; //< peta prefix
+                else if constexpr (mult == 1.e18)  return "[E]"; //< exa prefix
+                else if constexpr (mult == 1.e21)  return "[Z]"; //< zetta prefix
+                else if constexpr (mult == 1.e24)  return "[Y]"; //< yotta prefix
+                else                               return ;
 
             }
 
@@ -87,16 +90,17 @@ namespace scipp::physics {
             /// @brief to_string returns a string representation of the unit
             static constexpr std::string to_string() noexcept {
 
-                return prefix_symbol() + BASE::to_string(); 
+                return prefix_symbol() + base::to_string(); 
 
             }
 
 
             /// @brief Convert a value from the base unit to another unit 
-            template <typename UNIT> requires(is_same_base_v<BASE, typename UNIT::base>)
-            static constexpr double convert(const double val, const UNIT&) noexcept {
+            template <typename OTHER_UNIT> 
+                requires(is_same_base_v<base, typename OTHER_UNIT::base>)
+            static constexpr double convert(const double val, const OTHER_UNIT&) noexcept {
 
-                return val * mult / UNIT::mult; 
+                return val * mult / OTHER_UNIT::mult; 
 
             }
 
@@ -203,28 +207,6 @@ namespace scipp::physics {
 
         template <typename T>
         inline constexpr bool is_base_unit_v = is_base_unit<T>::value;
-
-
-    // =============================================
-    // ALGEBRIC FUNCTIONS
-    // =============================================
-
-        // /// @brief Perform a multiplication between unit 
-        // template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
-        // constexpr auto operator*(const unit1&, const unit2&) noexcept -> unit_product_t<typename unit1::type, typename unit2::type> {
-            
-        //     return unit_product_t<typename unit1::type, typename unit2::type>(); 
-            
-        // } 
-
-
-        // /// @brief Perform a division between unit 
-        // template <typename unit1, typename unit2> requires (are_units_v<unit1, unit2>)
-        // constexpr auto operator/(const unit1&, const unit2&) noexcept -> unit_division_t<typename unit1::type, typename unit2::type> {
-            
-        //     return unit_division_t<typename unit1::type, typename unit2::type>(); 
-            
-        // } 
 
 
 } // namespace scipp::physics 

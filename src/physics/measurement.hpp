@@ -315,6 +315,33 @@ namespace scipp::physics {
                 return os << other.value << ' ' << BASE_TYPE::to_string();
                 
             }
+
+
+            /// @brief Print a measurement to an output stream
+            friend constexpr std::ofstream& operator<<(std::ofstream& ofs, const measurement& other) noexcept { 
+                
+                ofs << other.value << ' ' << BASE_TYPE::to_string();
+                return ofs; 
+                
+            }
+
+
+            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) noexcept { 
+                
+                is >> other.value; 
+
+                return is; 
+                
+            }
+
+
+            friend constexpr std::ifstream& operator>>(std::ifstream& ifs, measurement& other) noexcept { 
+                
+                ifs >> other.value; 
+
+                return ifs; 
+                
+            }
             
         
         // ==============================================
@@ -347,11 +374,20 @@ namespace scipp::physics {
             /// @param newline: If true (default case), a newline character is printed at the end of the measurement
             /// @note The unit must be of the same base of the measurement
 
-            template <typename UNIT_TYPE> 
+            template <typename UNIT_TYPE>
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
             constexpr void print_as(const UNIT_TYPE& units, const bool& newline = true) const noexcept {
 
                 std::cout << this->value_as(units) << ' ' << UNIT_TYPE::to_string() << (newline ? '\n' : ' '); 
+
+            }
+
+
+            template <typename PREFIX>
+                requires (is_prefix_v<PREFIX>)
+            constexpr void print_as(const bool& newline = true) const noexcept {
+                
+                std::cout << this->value_as(unit<BASE_TYPE, PREFIX>()) << ' ' << unit<BASE_TYPE, PREFIX>::to_string() << (newline ? '\n' : ' '); 
 
             }
             

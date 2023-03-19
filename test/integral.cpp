@@ -36,21 +36,24 @@ int main() {
         result_mid = integral::midpoint(f, 0.0 * m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
-    std::cout << result_mid << "\nelapsed: " << t.elapsed() << '\n'; 
+    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
+    result_mid.print_as<std::nano>();
 
     t.start(); 
     
         result_trap = integral::trapexoid(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
-    std::cout << result_trap << "\nelapsed: " << t.elapsed() << '\n'; 
+    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
+    result_trap.print_as(unit<metre3, std::nano>());
 
     t.start(); 
     
         result_simp = integral::simpson(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
 
     t.stop();
-    std::cout << result_simp << "\nelapsed: " << t.elapsed() << '\n'; 
+    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
+    result_simp.print_as(unit<metre3, std::nano>());
 
 
     std::cout << result_mid - result_trap << '\n'; 

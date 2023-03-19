@@ -104,9 +104,9 @@ namespace scipp::physics {
 
     }
 
-    inline constexpr auto operator""Km(long double value) noexcept -> length_m {
+    inline constexpr auto operator""km(long double value) noexcept -> length_m {
 
-        return length_m(value, units::Km);
+        return length_m(value, units::km);
 
     }
 

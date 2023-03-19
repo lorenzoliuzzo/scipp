@@ -340,6 +340,19 @@ namespace scipp::geometry {
 
             }
             
+
+            /// @brief Print the vector to an output stream
+            friend std::ofstream& operator<<(std::ofstream& os, const vector& vec) noexcept {
+
+                os << "(\t";
+                for (std::size_t i{}; i < DIM; ++i) 
+                    os << vec[i] << "\t\t";
+                os << ')';
+
+                return os;
+
+            }
+            
         
         // ===========================================================
         // methods
@@ -686,6 +699,9 @@ namespace scipp::geometry {
     template <typename VECTOR_TYPE, typename... VECTORS>
         requires (are_vectors_v<VECTOR_TYPE, VECTORS...>)
     struct have_same_dimension : std::conjunction<std::bool_constant<VECTOR_TYPE::dim == VECTORS::dim>...> {};
+
+    // template <>
+    // struct have_same_dimension<> : std::true_type {};
 
     template <typename... VECTORS>
     constexpr bool have_same_dimension_v = have_same_dimension<VECTORS...>::value;

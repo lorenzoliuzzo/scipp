@@ -195,10 +195,18 @@ namespace scipp::physics {
         static constexpr unit<metre_per_second2> m_ss; ///< m_s unit
 
 
-        static constexpr unit<metre, std::kilo> Km; ///< Km unit
-        static constexpr unit<metre, std::milli> mm; ///< mm unit
-        static constexpr unit<metre, std::micro> um; ///< um unit
-        static constexpr unit<metre, std::nano> nm; ///< nm unit
+        using kilometre = unit<metre, std::kilo>; ///< kilometre unit
+        static constexpr kilometre km; ///< Km unit
+
+        using millimetre = unit<metre, std::milli>; ///< millimetre unit
+        static constexpr millimetre mm; ///< mm unit
+
+        using micrometre = unit<metre, std::micro>; ///< micrometre unit
+        static constexpr micrometre um; ///< um unit
+
+        using nanometre = unit<metre, std::nano>; ///< nanometre unit
+        static constexpr nanometre nm; ///< nm unit
+
         static constexpr unit<metre, std::pico> pm; ///< pm unit
 
         static constexpr unit<metre2, std::kilo> Km2; ///< Km2 unit

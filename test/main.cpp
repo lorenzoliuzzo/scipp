@@ -16,9 +16,9 @@ int main() {
     std::cout << 3.5m * 2. << '\n';
     std::cout << 2. * 3.5m << '\n'; 
 
-    measurement x1(434.5 * Km); 
+    measurement x1(434.5 * km); 
     x1.print(); 
-    x1.print_as(Km); 
+    x1.print_as(km); 
 
     umeasurement x(13.436432 * m, 1434. * nm); 
     umeasurement y(-2.3 * m, 0.05 * m);
@@ -77,6 +77,15 @@ int main() {
 
     static_assert(are_same_measurements_v<decltype(x), decltype(y), decltype(z)>);
     std::cout << uposition3(x, y, z) << '\n';    
+    
+
+
+    measurement appo = 3.4 * m; 
+    std::cout << appo << '\n';
+
+    std::cout << op::square(appo) << '\n';
+    op::square(appo).print_as(mm * mm);
+
 
     return 0;
 

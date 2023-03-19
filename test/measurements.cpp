@@ -24,19 +24,29 @@ int main() {
     // static_assert(are_same_measurements_v<length_m, length_m, time_m, time_m>);
 
 
-    measurement x = 3.54 * m; 
-    measurement y = 2.34 * m;
-    measurement z = 1.23 * m;
+    constexpr measurement x = 3.54 * m; 
+    constexpr measurement y = 0.5 * mm;
 
     std::cout << x << '\n';
     std::cout << y << '\n';
 
 
-    std::cout << measurements_prod_t<length_m, length_m>() << '\n';
-    std::cout << measurements_prod_t<length_m, length_m, length_m>() << '\n';
-    std::cout << measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
-    // xy.print(); 
+    // std::cout << measurements_prod_t<length_m, length_m>() << '\n';
+    // std::cout << measurements_prod_t<length_m, length_m, length_m>() << '\n';
+    // std::cout << measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
+    // // xy.print(); 
 
+    umeasurement k(x, y);   
+    std::cout << k << '\n'; 
+
+    std::ofstream of("measurements.out"); 
+    of << measurements_prod_t<length_m, length_m>() << '\n';
+    of << measurements_prod_t<length_m, length_m, length_m>() << '\n';
+    of << measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
+    of << k; 
+    of.close(); 
+
+    
 
 
     return 0; 

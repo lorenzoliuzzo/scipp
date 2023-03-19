@@ -2,7 +2,7 @@
  * @file    geometry/matrix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-13
+ * @date    2023-03-19
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,8 +11,32 @@
 #pragma once
 
 
-
 namespace scipp::geometry {
+    
+
+    template <size_t N, typename... Ts>
+    struct types_tuple {
+
+        using type = std::tuple<Ts...>;
+
+    };
+
+    template <size_t N, typename T>
+    struct types_tuple<N, T> {
+
+        // Create an index sequence for the number of elements we want in the tuple
+        template <std::size_t... Is>
+        static auto create_tuple(std::index_sequence<Is...>) {
+            // Create a tuple with N copies of T
+            return std::make_tuple((static_cast<void>(Is), T{})...);
+        }
+
+        using type = decltype(create_tuple(std::make_index_sequence<N>{}));
+
+    };
+
+    template <size_t N, typename... Ts>
+    using types_tuple_t = typename types_tuple<N, Ts...>::type;
 
 
     template <size_t COLUMNS, typename... VECTOR_TYPES> 
@@ -26,28 +50,25 @@ namespace scipp::geometry {
 
             using type = matrix<COLUMNS, VECTOR_TYPES...>;
 
+            using data_type = types_tuple_t<COLUMNS, VECTOR_TYPES...>;
+
 
         // ===========================================================
         // members
-        // ===========================================================
-
-            std::tuple<VECTOR_TYPES...> data; ///< The matrix data
-
+        // ===========================================================            
 
             inline static constexpr std::size_t rows = common_dimension_v<VECTOR_TYPES...>;
 
             inline static constexpr std::size_t columns = COLUMNS;
 
+            types_tuple_t<columns, VECTOR_TYPES...> data; 
+
+
+        // ===========================================================
+        // static members
+        // ===========================================================            
+
             inline static constexpr matrix zero = { VECTOR_TYPES::zero... };
-
-
-            // static constexpr matrix identity() 
-            //     requires (rows == columns) {
-
-            // }
-
-
-            // static inline constexpr std::size_t size = rows * columns;
 
 
         // ===========================================================
@@ -55,21 +76,21 @@ namespace scipp::geometry {
         // ===========================================================
 
             /// @brief Default constructor 
-            constexpr matrix() noexcept = default; 
+            constexpr matrix() noexcept {}
 
 
             /// @brief Constructor from a list of vectors
-            constexpr matrix(VECTOR_TYPES&... vectors) noexcept 
-                requires (sizeof...(vectors) == columns) : 
+            constexpr matrix(VECTOR_TYPES&... other) noexcept 
+                requires (sizeof...(other) == columns) : 
 
-                data{std::forward<VECTOR_TYPES>(vectors)...} {}
+                data{std::forward_as_tuple(other...)} {}
 
 
             /// @brief Constructor from a list of vectors
-            constexpr matrix(VECTOR_TYPES&&... vectors) noexcept 
-                requires (sizeof...(vectors) == columns) : 
+            constexpr matrix(VECTOR_TYPES&&... other) noexcept 
+                requires (sizeof...(other) == columns) : 
 
-                data{std::forward<VECTOR_TYPES>(vectors)...} {}
+                data{std::forward_as_tuple(std::move(other)...)} {}
 
             
             /// @brief Copy constructor
@@ -85,15 +106,15 @@ namespace scipp::geometry {
 
 
             /// @brief Constructor from an std::tuple of vectors
-            constexpr matrix(const std::tuple<VECTOR_TYPES...>& tuple) noexcept :
+            constexpr matrix(const data_type& other) noexcept :
 
-                data{tuple} {}
+                data{other} {}
 
             
             /// @brief Constructor from an std::tuple of vectors
-            constexpr matrix(std::tuple<VECTOR_TYPES...>&& tuple) noexcept :
+            constexpr matrix(data_type&& other) noexcept :
 
-                data{std::move(tuple)} {}
+                data{std::move(other)} {}
 
 
         // ===========================================================
@@ -113,6 +134,24 @@ namespace scipp::geometry {
             constexpr matrix& operator=(matrix&& other) noexcept {
 
                 data = std::move(other.data);
+                return *this;
+
+            }
+
+
+            /// @brief Copy assignment operator
+            constexpr matrix& operator=(const data_type& other) noexcept {
+
+                data = other;
+                return *this;
+
+            }
+
+
+            /// @brief Move assignment operator
+            constexpr matrix& operator=(data_type&& other) noexcept {
+
+                data = std::move(other);
                 return *this;
 
             }

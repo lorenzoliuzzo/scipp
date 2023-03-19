@@ -409,54 +409,52 @@ namespace scipp::physics {
             /// @note scientific notation is used if the value is greater than 1e4 or less than 1e-4
             friend std::ostream& operator<<(std::ostream& os, const umeasurement& meas) noexcept { 
 
-                double abs_value = std::fabs(meas.value);
-                
-                // first significative digit positions
-                int n_val = ((meas.uncertainty >= 1) ? 
+                const double abs_value = std::fabs(meas.value);
+
+                // determine number of digits before decimal point in value
+                const int n_val = (abs_value >= 1.0) ? 
                                     std::ceil(std::log10(abs_value)) : 
-                                    ((abs_value >= 1) ? 
-                                        std::ceil(std::log10(abs_value)) : 
-                                        std::floor(std::log10(abs_value)))); 
+                                    ((abs_value == 0.0) ? 
+                                        1 : 
+                                        std::floor(std::log10(std::fabs(abs_value))) + 1); 
 
-                int n_unc = ((meas.uncertainty >= 1) ? 
+                // determine number of digits before decimal point in uncertainty
+                const int n_unc = (meas.uncertainty >= 1.0) ? 
                                     std::ceil(std::log10(meas.uncertainty)) : 
-                                    std::floor(std::log10(meas.uncertainty))); 
+                                    ((meas.uncertainty == 0.0) ? 
+                                        1 : 
+                                        std::floor(std::log10(std::fabs(meas.uncertainty))) + 1); 
 
-                int prec = (n_unc > n_val) ? 0 : n_val - n_unc; 
+                // determine the number of decimal places to show in the uncertainty
+                const int prec = (n_unc > n_val) ? 0 : n_val - n_unc; 
 
-                bool scientific_notation_needed = abs_value >= 1e4 || abs_value <= 1e-4 || 
-                                                  meas.uncertainty >= 1e4 || meas.uncertainty <= 1e-4;
+                // determine whether scientific notation is needed
+                const bool scientific_notation_needed = abs_value >= 1e4 || abs_value <= 1e-4 || 
+                                                        meas.uncertainty >= 1e4 || meas.uncertainty <= 1e-4;
 
-                // check if the uncertainty needs to be printed
-                if (meas.uncertainty == 0.0) 
-                    os << meas.as_measurement(); 
-                
-                // check if scientific notation is needed
+                // set the formatting of the output stream
+                if (meas.uncertainty == 0.0) {
+                    os << std::fixed << std::setprecision(n_val) << meas.value << ' ' << BASE_TYPE::to_string();
+                }
                 else if (scientific_notation_needed) {
-
-                    os << std::scientific; 
-                    os << std::setprecision(prec - 1) << meas.value << " ± "; 
+                    os << std::scientific << std::setprecision(prec - 1) << meas.value << " ± ";
                     os << std::setprecision(0) << meas.uncertainty << ' ' << BASE_TYPE::to_string();
-
-                } else {
-
-                    os << std::fixed; 
-
-                    if (meas.uncertainty >= 1.) 
-                        os << std::setprecision(0); 
-                    else 
-                        os << std::setprecision(std::fabs(n_unc)); 
-                        
+                }
+                else {
+                    os << std::fixed;
+                    if (meas.uncertainty >= 1.0) {
+                        os << std::setprecision(0);
+                    }
+                    else {
+                        os << std::setprecision(std::max(0, std::min(6, -n_unc)));
+                    }
                     os << meas.value << " ± " << meas.uncertainty << ' ' << BASE_TYPE::to_string();
-
                 }
 
-                os << std::defaultfloat << std::setprecision(6);
-                
                 return os; 
                 
             }
-
+                            
 
         // ==============================================
         // methods
@@ -539,6 +537,49 @@ namespace scipp::physics {
             requires (is_unit_v<UNIT_TYPE>)
         umeasurement(double&&, double&&, const UNIT_TYPE&) 
             -> umeasurement<typename UNIT_TYPE::base>;
+
+
+        // /**
+        // * Reads a measurement from an input stream and returns it as a umeasurement.
+        // *
+        // * The input format should be "<value> ± <uncertainty> <unit>", where the value
+        // * and uncertainty are floating point numbers, and the unit is a string.
+        // *
+        // * @param is The input stream to read from.
+        // * @return The umeasurement read from the input stream.
+        // * @throws std::invalid_argument if the input format is invalid.
+        // */
+        // auto read_measurement(std::istream& is) {
+
+        //     double value{};
+        //     double uncertainty{};
+        //     std::string unit;
+
+        //     is >> value;
+        //     if (!is) {
+        //         throw std::invalid_argument("Invalid measurement format");
+        //     }
+
+        //     char plusminus = '\0';
+        //     is >> plusminus;
+        //     if (!is || (plusminus != '+' && plusminus != '-')) {
+        //         throw std::invalid_argument("Invalid measurement format");
+        //     }
+
+        //     is >> uncertainty;
+        //     if (!is) {
+        //         throw std::invalid_argument("Invalid measurement format");
+        //     }
+
+        //     is >> unit;
+
+        //     // Truncate the value to the uncertainty's precision
+        //     int precision = std::floor(std::log10(std::fabs(uncertainty)));
+        //     double truncated_value = std::round(value / std::pow(10, precision)) * std::pow(10, precision);
+
+        //     return { truncated_value, uncertainty, unit };
+
+        // }
 
 
     // =============================================

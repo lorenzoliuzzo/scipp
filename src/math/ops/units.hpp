@@ -19,8 +19,12 @@ namespace scipp::math {
 
         template <typename UNIT>
             requires (physics::is_unit_v<UNIT>)
-        struct unit_invert : public physics::unit<base_invert_t<typename UNIT::base>,  
-                                                  ratio_inv_t<typename UNIT::prefix>> {}; 
+        struct unit_invert {
+            
+            using type = physics::unit<base_invert_t<typename UNIT::base>,  
+                                       ratio_inv_t<typename UNIT::prefix>>; 
+        
+        }; 
 
         template <typename UNIT>
         using unit_invert_t = typename unit_invert<UNIT>::type;
@@ -28,8 +32,12 @@ namespace scipp::math {
 
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
-        struct unit_product : public physics::unit<base_product_t<typename UNIT1::base, typename UNIT2::base>, 
-                                                   std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>> {};
+        struct unit_product {
+                
+            using type = physics::unit<base_product_t<typename UNIT1::base, typename UNIT2::base>, 
+                                                   std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>>;
+
+        };
 
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
@@ -38,9 +46,12 @@ namespace scipp::math {
 
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
-        struct unit_division : public physics::unit<base_division_t<typename UNIT1::base, typename UNIT2::base>, 
-                                                    std::ratio_divide<typename UNIT1::prefix, typename UNIT2::prefix>> {};
+        struct unit_division {
+                
+            using type = physics::unit<base_division_t<typename UNIT1::base, typename UNIT2::base>, 
+                                                    std::ratio_divide<typename UNIT1::prefix, typename UNIT2::prefix>>;
 
+        };
 
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
@@ -48,8 +59,12 @@ namespace scipp::math {
 
 
         template <typename UNIT, int POWER>
-        struct unit_pow : public physics::unit<base_pow_t<typename UNIT::base, POWER>, 
-                                               ratio_pow_t<typename UNIT::prefix, POWER>> {};
+        struct unit_pow {
+                
+            using type = physics::unit<base_pow_t<typename UNIT::base, POWER>, 
+                                       ratio_pow_t<typename UNIT::prefix, POWER>>; 
+        
+        };
 
         template <typename UNIT, int POWER>
         using unit_pow_t = typename unit_pow<UNIT, POWER>::type;
@@ -62,8 +77,12 @@ namespace scipp::math {
 
         
         template <typename UNIT, int POWER>
-        struct unit_root : public physics::unit<base_root_t<typename UNIT::base, POWER>, 
-                                                ratio_root_t<typename UNIT::prefix, POWER>> {};
+        struct unit_root {
+            
+            using type = physics::unit<base_root_t<typename UNIT::base, POWER>, 
+                                       ratio_root_t<typename UNIT::prefix, POWER>>;
+
+        };
 
 
         template <typename UNIT, int POWER>

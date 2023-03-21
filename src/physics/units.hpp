@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the aliases and declarations of units
  * @note    
- * @date    2023-03-08
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,12 +12,7 @@
 #pragma once
 
 
-#include "base_quantity.hpp"
-#include "unit.hpp"
-
-
 namespace scipp::physics {
-    
 
 
     /// @brief Perform a multiplication between unit 
@@ -197,6 +192,9 @@ namespace scipp::physics {
 
         using kilometre = unit<metre, std::kilo>; ///< kilometre unit
         static constexpr kilometre km; ///< Km unit
+
+        using centimetre = unit<metre, std::centi>; 
+        static constexpr centimetre cm; ///< cm unit
 
         using millimetre = unit<metre, std::milli>; ///< millimetre unit
         static constexpr millimetre mm; ///< mm unit

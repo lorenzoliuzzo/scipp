@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementations of the base_quantity struct and type traits.
  * @note    
- * @date    2023-03-17
+ * @date    2023-03-20
  * 
  * @copyright Copyright (c) 2023
  */
@@ -58,229 +58,191 @@ namespace scipp::physics {
             inline static constexpr int angle_power = ANGLE; //< power of angle
 
 
+            static constexpr std::array<std::string_view, 8> base_litterals = {"m", "s", "kg", "K", "mol", "A", "cd", "rad"};
+
+
         // =============================================
         // methods
         // =============================================
 
-            // static constexpr std::string to_string() noexcept {
-
-            //     std::stringstream ss;
-
-            //     if constexpr (LENGTH != 0) {
-
-            //         ss << "m";
-            //         if constexpr (LENGTH != 1) 
-            //             ss << "^" << LENGTH;
-
-            //     }
-
-            //     if constexpr (TIME != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-
-            //         ss << "s";
-
-            //         if constexpr (TIME != 1) 
-            //             ss << "^" << TIME;
-                    
-            //     }
-
-            //     if constexpr (MASS != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-
-            //         ss << "kg";
-
-            //         if constexpr (MASS != 1) 
-            //             ss << "^" << MASS;
-                    
-            //     }
-
-            //     if constexpr (ELETTRIC_CURRENT != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-                    
-            //         ss << "A";
-                    
-            //         if constexpr (ELETTRIC_CURRENT != 1) 
-            //             ss << "^" << ELETTRIC_CURRENT;
-                    
-            //     }
-
-            //     if constexpr (TEMPERATURE != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-                    
-            //         ss << "K";
-                    
-            //         if constexpr (TEMPERATURE != 1) 
-            //             ss << "^" << TEMPERATURE;
-                    
-            //     }
-
-            //     if constexpr (SUBSTANCE_AMOUNT != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-                    
-            //         ss << "mol";
-                    
-            //         if constexpr (SUBSTANCE_AMOUNT != 1) 
-            //             ss << "^" << SUBSTANCE_AMOUNT;
-                    
-            //     }
-
-            //     if constexpr (LUMINOUS_INTENSITY != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-                    
-            //         ss << "cd";
-                    
-            //         if constexpr (LUMINOUS_INTENSITY != 1) 
-            //             ss << "^" << LUMINOUS_INTENSITY;
-                    
-            //     }
-
-            //     if constexpr (ANGLE != 0) {
-
-            //         if (ss.str() != "") 
-            //             ss << " ";
-                    
-            //         if constexpr (ANGLE == 1) 
-            //             ss << "rad";
-
-            //         else if constexpr (ANGLE == 2)
-            //             ss << "sr";
-                    
-            //         else 
-            //             ss << "rad^" << ANGLE;
-
-            //     }
-
-            //     return ss.str();
-
-            // }
-
             static constexpr std::string to_string() noexcept {
-                constexpr std::array<std::string_view, 8> units = {"m", "s", "kg", "A", "K", "mol", "cd", "rad"};
 
                 std::stringstream ss;
                 bool first_unit = true;
 
                 auto print_unit = [&](int power, std::string_view unit) {
-                if (power != 0) {
-                    if (!first_unit)
-                        ss << ' ';
-                    first_unit = false;
 
-                    ss << unit;
+                    if (power != 0) {
 
-                    if (power != 1)
-                        ss << '^' << power;
-                }
+                        if (!first_unit)
+                            ss << ' ';
+                        else
+                            first_unit = false;
+
+                        ss << unit;
+
+                        if (power != 1)
+                            ss << '^' << power;
+                    }
+
                 };
 
-                print_unit(LENGTH, units[0]);
-                print_unit(TIME, units[1]);
-                print_unit(MASS, units[2]);
-                print_unit(ELETTRIC_CURRENT, units[3]);
-                print_unit(TEMPERATURE, units[4]);
-                print_unit(SUBSTANCE_AMOUNT, units[5]);
-                print_unit(LUMINOUS_INTENSITY, units[6]);
-                print_unit(ANGLE == 1 ? 1 : (ANGLE == 2 ? -1 : ANGLE), units[7]);
+                print_unit(LENGTH, base_litterals[0]);
+                print_unit(TIME, base_litterals[1]);
+                print_unit(MASS, base_litterals[2]);
+                print_unit(ELETTRIC_CURRENT, base_litterals[3]);
+                print_unit(TEMPERATURE, base_litterals[4]);
+                print_unit(SUBSTANCE_AMOUNT, base_litterals[5]);
+                print_unit(LUMINOUS_INTENSITY, base_litterals[6]);
+                print_unit(ANGLE, base_litterals[7]);
 
                 return ss.str();
+
             }
+
+
+            // static constexpr auto from_string(const std::string_view& other) {
+
+            //     // TODO         
+            //     return base_quantity<0, 0, 0, 0, 0, 0, 0, 0>();
+
+            // }
+
 
     }; // struct base_quantity
 
 
+    // constexpr auto base_quantity_from_string(const std::string& other) {
+        
+    //     int metre_pow = 0;
+    //     int second_pow = 0;
+    //     int kilogram_pow = 0;
+    //     int ampere_pow = 0;
+    //     int kelvin_pow = 0;
+    //     int mole_pow = 0;
+    //     int candela_pow = 0;
+    //     int radian_pow = 0;
 
-            // static constexpr std::string_view unit_string() noexcept {
-            //     constexpr int buffer_size = 32; // adjust size as needed
-            //     std::array<char, buffer_size> buffer{};
-            //     int pos = 0;
-
-            //     if constexpr (LENGTH != 0) {
-            //         buffer[pos++] = 'm';
-            //         if constexpr (LENGTH != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LENGTH);
-            //     }
-
-            //     if constexpr (TIME != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "s");
-            //         if constexpr (TIME != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TIME);
-            //     }
+    //     if (!other.empty()) {
 
 
-            //     if constexpr (MASS != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "kg");
-            //         if constexpr (MASS != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", MASS);
-            //     }
+    //         std::size_t finder = other.find('m');
+    //         if (finder != std::string::npos) {
 
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 metre_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     metre_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     metre_pow = std::stoi(other.substr(finder + 2));
+    //             }
+                
+    //         }
 
-            //     if constexpr (ELETTRIC_CURRENT != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "A");
-            //         if constexpr (ELETTRIC_CURRENT != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", ELETTRIC_CURRENT);
-            //     }
+    //         finder = other.find('s');
+    //         if (finder != std::string::npos) {
 
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 second_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     second_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     second_pow = std::stoi(other.substr(finder + 2));
+    //             }
+                
+    //         }
 
-            //     if constexpr (TEMPERATURE != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "K");
-            //         if constexpr (TEMPERATURE != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", TEMPERATURE);
-            //     }
+    //         finder = other.find("kg");
+    //         if (finder != std::string::npos) {
 
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 kilogram_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     kilogram_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     kilogram_pow = std::stoi(other.substr(finder + 2));
+    //             }
 
-            //     if constexpr (SUBSTANCE_AMOUNT != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "mol");
-            //         if constexpr (SUBSTANCE_AMOUNT != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", SUBSTANCE_AMOUNT);
-            //     }
+    //         }
 
+    //         finder = other.find('A');
+    //         if (finder != std::string::npos) {
 
-            //     if constexpr (LUMINOUS_INTENSITY != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "cd");
-            //         if constexpr (LUMINOUS_INTENSITY != 1) 
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "^%d", LUMINOUS_INTENSITY);
-            //     }
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 ampere_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     ampere_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     ampere_pow = std::stoi(other.substr(finder + 2));
+    //             }                            
+    //         }
 
+    //         finder = other.find('K');
+    //         if (finder != std::string::npos) {
 
-            //     if constexpr (ANGLE != 0) {
-            //         if (pos != 0) 
-            //             buffer[pos++] = ' ';
-            //         if constexpr (ANGLE == 1) {
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad");
-            //         } else if constexpr (ANGLE == 2) {
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "sr");
-            //         } else {
-            //             pos += std::snprintf(buffer.data() + pos, buffer_size - pos, "rad^%d", ANGLE);
-            //         }
-            //     }
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 kelvin_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     kelvin_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     kelvin_pow = std::stoi(other.substr(finder + 2));
+    //             }
 
-            //     return std::string_view(buffer.data(), pos);
+    //         }
 
-            // }
+    //         finder = other.find("mol");
+    //         if (finder != std::string::npos) {
+
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 mole_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     mole_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     mole_pow = std::stoi(other.substr(finder + 2));
+    //             }
+
+    //         }
+
+    //         finder = other.find("cd");
+    //         if (finder != std::string::npos) {
+
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 candela_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     candela_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     candela_pow = std::stoi(other.substr(finder + 2));
+    //             }
+                
+    //         }
+
+    //         finder = other.find("rad");
+    //         if (finder != std::string::npos) {
+
+    //             if (finder == other.size() - 1 || other.at(finder + 1) != '^') 
+    //                 radian_pow = 1; 
+    //             else {
+    //                 if (other.at(finder + 2) == '-') 
+    //                     radian_pow -= std::stoi(other.substr(finder + 3));
+    //                 else 
+    //                     radian_pow = std::stoi(other.substr(finder + 2));
+    //             }
+                
+    //         }
+
+    //     } 
+
+    //     return base_quantity<metre_pow, second_pow, kilogram_pow, ampere_pow, kelvin_pow, mole_pow, candela_pow, radian_pow>();
+
+    // }
+
 
     // =============================================
     // base_quantity type traits

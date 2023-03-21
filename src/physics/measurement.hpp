@@ -2,7 +2,7 @@
  * @file    measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-17
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -317,29 +317,37 @@ namespace scipp::physics {
             }
 
 
-            /// @brief Print a measurement to an output stream
-            friend constexpr std::ofstream& operator<<(std::ofstream& ofs, const measurement& other) noexcept { 
-                
-                ofs << other.value << ' ' << BASE_TYPE::to_string();
-                return ofs; 
-                
-            }
+            /// @brief Read a measurement from an input stream
+            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) { 
 
-
-            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) noexcept { 
+                std::string unit;
+                is >> other.value >> unit;
                 
-                is >> other.value; 
+                // Check if the read unit matches the base unit of the measurement type
+                if (!unit.empty()) {
+
+                    if (unit.find("[") != std::string::npos) {
+                        
+                        double multiplier = 1.0;
+                        std::string prefix = unit.substr(unit.find("["), unit.find("]") + 1);
+                        unit = unit.substr(unit.find("]") + 1);
+
+                        for (const auto& kv : units::prefix_map) 
+                            if (prefix == kv.second) {
+                                multiplier = kv.first;
+                                break;
+                            }
+
+                        other.value *= multiplier;
+
+                    }
+
+                    if (unit != BASE_TYPE::to_string()) 
+                        throw std::runtime_error("Unit mismatch: expected " + BASE_TYPE::to_string() + ", got " + unit);
+
+                }
 
                 return is; 
-                
-            }
-
-
-            friend constexpr std::ifstream& operator>>(std::ifstream& ifs, measurement& other) noexcept { 
-                
-                ifs >> other.value; 
-
-                return ifs; 
                 
             }
             
@@ -384,7 +392,7 @@ namespace scipp::physics {
 
 
             template <typename PREFIX>
-                requires (is_prefix_v<PREFIX>)
+                requires (units::is_prefix_v<PREFIX>)
             constexpr void print_as(const bool& newline = true) const noexcept {
                 
                 std::cout << this->value_as(unit<BASE_TYPE, PREFIX>()) << ' ' << unit<BASE_TYPE, PREFIX>::to_string() << (newline ? '\n' : ' '); 
@@ -475,94 +483,6 @@ namespace scipp::physics {
 
         template <typename... MEAS_TYPES>
         constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;
-
-
-
-
-    // =============================================
-    // measurement type operations
-    // =============================================
-
-        template <typename MEAS_TYPE, typename... MEAS_TYPES>
-        struct measurements_prod { 
-            
-            using type = MEAS_TYPE; 
-        
-        };
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct measurements_prod<measurement<BASE_TYPE>> { 
-            
-            using type = measurement<BASE_TYPE>; 
-        
-        };
-
-
-        template <typename MEAS_TYPE, typename... MEAS_TYPES>
-            requires (are_measurements_v<MEAS_TYPE, MEAS_TYPES...>)
-        struct measurements_prod<MEAS_TYPE, MEAS_TYPES...> {
-            
-            using type = measurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>;
-        
-        }; 
-
-        template <typename... Ts>
-        using measurements_prod_t = typename measurements_prod<Ts...>::type;
-
-
-        template <typename MEAS1, typename MEAS2>
-            requires (are_measurements_v<MEAS1, MEAS2>)
-        struct measurements_div { 
-            
-            using type = measurement<math::op::base_division_t<typename MEAS1::base, typename MEAS2::base>>; 
-            
-        };
-
-        template <typename T1, typename T2>
-        using measurements_div_t = typename measurements_div<T1, T2>::type;
-
-
-        template <typename T>
-        using measurement_square_t = measurements_prod_t<T, T>;
-
-        template <typename T>
-        using measurement_cube_t = measurements_prod_t<measurement_square_t<T>, T>;
-
-
-        template <typename T>
-        struct measurements_inv { 
-            
-            using type = T; 
-
-        }; 
-
-        template <typename BASE>
-            requires (is_base_v<BASE>)
-        struct measurements_inv<measurement<BASE>> { 
-            
-            using type = measurement<math::op::base_invert_t<BASE>>; 
-
-        };
-
-        template <typename... Ts>
-        using measurements_inv_t = typename measurements_inv<Ts...>::type;
-
-
-        template <typename T, int>
-        struct measurement_pow { 
-            
-            using type = T; 
-
-        }; 
-
-        template <typename BASE_TYPE, int POWER>
-            requires (is_base_v<BASE_TYPE>)
-        struct measurement_pow<measurement<BASE_TYPE>, POWER> { 
-            
-            using type = measurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
-
-        };
 
 
 } // namespace physics

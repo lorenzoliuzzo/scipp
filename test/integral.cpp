@@ -37,7 +37,7 @@ int main() {
 
     t.stop();
     std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    result_mid.print_as<std::nano>();
+    result_mid.print();
 
     t.start(); 
     

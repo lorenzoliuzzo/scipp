@@ -300,9 +300,9 @@ namespace scipp::geometry {
             template <typename MEAS2>
                 requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
             constexpr auto operator*(const MEAS2& measurement) const noexcept
-                -> vector<physics::measurements_prod_t<measurement_type, MEAS2>, DIM> {
+                -> vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> {
 
-                vector<physics::measurements_prod_t<measurement_type, MEAS2>, DIM> result;
+                vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result.data[i] = this->data[i] * measurement;
@@ -316,9 +316,9 @@ namespace scipp::geometry {
             template <typename MEAS2>
                 requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
             constexpr auto operator/(const MEAS2& measurement) const noexcept
-                -> vector<physics::measurements_div_t<measurement_type, MEAS2>, DIM> {
+                -> vector<math::op::measurements_div_t<measurement_type, MEAS2>, DIM> {
 
-                vector<physics::measurements_div_t<measurement_type, MEAS2>, DIM> result;
+                vector<math::op::measurements_div_t<measurement_type, MEAS2>, DIM> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result.data[i] = this->data[i] / measurement;
@@ -520,9 +520,9 @@ namespace scipp::geometry {
             template <typename MEAS2>
                 requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
             friend constexpr auto dot(const vector& v1, const vector<MEAS2, DIM>& v2) noexcept 
-                -> physics::measurements_prod_t<MEAS, MEAS2> {
+                -> math::op::measurements_prod_t<MEAS, MEAS2> {
 
-                physics::measurements_prod_t<MEAS, MEAS2> result;
+                math::op::measurements_prod_t<MEAS, MEAS2> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result += v1.data[i] * v2.data[i]; 
@@ -536,9 +536,9 @@ namespace scipp::geometry {
             template <typename MEAS2>
                 requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
             friend constexpr auto cross(const vector& v1, const vector<MEAS2, DIM>& v2) noexcept    
-                -> vector<physics::measurements_prod_t<measurement_type, MEAS2>, DIM> {
+                -> vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> {
 
-                vector<physics::measurements_prod_t<measurement_type, MEAS2>, DIM> result;
+                vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> result;
 
                 for (std::size_t i{}; i < DIM; ++i)
                     result.data[i] = v1[(i + 1) % v1.size()] * v2[(i + 2) % v1.size()] - 

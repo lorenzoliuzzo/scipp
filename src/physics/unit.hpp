@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementations of the unit struct.
  * @note    
- * @date    2023-03-08
+ * @date    2023-03-20
  * 
  * @copyright Copyright (c) 2023
  */
@@ -14,8 +14,6 @@
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
-
-
 
     
     /// @brief unit is an union of an base_quantity and an std::ratio prefix
@@ -48,10 +46,19 @@ namespace scipp::physics {
         // operators
         // =============================================
 
-            friend inline constexpr std::ofstream& operator<<(std::ofstream& os, const unit&) noexcept {
+            friend inline constexpr std::ostream& operator<<(std::ostream& os, const unit&) noexcept {
 
                 os << unit::to_string();
                 return os;
+
+            }
+
+
+            friend inline constexpr std::istream& operator>>(std::istream& is, unit& other) noexcept {
+
+                // TODO 
+
+                return is;
 
             }
 
@@ -60,37 +67,14 @@ namespace scipp::physics {
         // methods
         // =============================================
 
-            /// @brief prefix_symbol returns a char representation of the prefix
-            inline static constexpr auto prefix_symbol() noexcept {
-
-                if      constexpr (mult == 1.e-24) return "[y]"; //< yocto prefix
-                else if constexpr (mult == 1.e-21) return "[z]"; //< zepto prefix
-                else if constexpr (mult == 1.e-18) return "[a]"; //< atto prefix
-                else if constexpr (mult == 1.e-15) return "[f]"; //< femto prefix
-                else if constexpr (mult == 1.e-12) return "[p]"; //< pico prefix
-                else if constexpr (mult == 1.e-9)  return "[n]"; //< nano prefix
-                else if constexpr (mult == 1.e-6)  return "[u]"; //< micro prefix
-                else if constexpr (mult == 1.e-3)  return "[m]"; //< milli prefix
-                else if constexpr (mult == 1.e-2)  return "[c]"; //< centi prefix
-                else if constexpr (mult == 1.e-1)  return "[d]"; //< deci prefix
-                else if constexpr (mult == 1.e2)   return "[h]"; //< hecto prefix
-                else if constexpr (mult == 1.e3)   return "[K]"; //< kilo prefix
-                else if constexpr (mult == 1.e6)   return "[M]"; //< mega prefix
-                else if constexpr (mult == 1.e9)   return "[G]"; //< giga prefix
-                else if constexpr (mult == 1.e12)  return "[T]"; //< tera prefix
-                else if constexpr (mult == 1.e15)  return "[P]"; //< peta prefix
-                else if constexpr (mult == 1.e18)  return "[E]"; //< exa prefix
-                else if constexpr (mult == 1.e21)  return "[Z]"; //< zetta prefix
-                else if constexpr (mult == 1.e24)  return "[Y]"; //< yotta prefix
-                else                               return ;
-
-            }
-
-
             /// @brief to_string returns a string representation of the unit
             static constexpr std::string to_string() noexcept {
 
-                return prefix_symbol() + base::to_string(); 
+                auto prefix = units::prefix_map.find(mult);
+                if (prefix == units::prefix_map.end()) 
+                    return base::to_string();
+                else
+                    return prefix->second + base::to_string(); 
 
             }
 
@@ -113,16 +97,6 @@ namespace scipp::physics {
     // =============================================
 
         template <typename T>
-        struct is_prefix : std::false_type {};
-
-        template <intmax_t N, intmax_t D>
-        struct is_prefix<std::ratio<N, D>> : std::true_type {};
-
-        template <typename T>
-        inline constexpr bool is_prefix_v = is_prefix<T>::value;
-
-
-        template <typename T>
         struct is_unit : std::false_type {};
 
         template <typename BASE>
@@ -130,7 +104,7 @@ namespace scipp::physics {
         struct is_unit<unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX>
-            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
         struct is_unit<unit<BASE, PREFIX>> : std::true_type {};
 
         template <typename T>
@@ -145,11 +119,11 @@ namespace scipp::physics {
         struct is_same_unit<unit<BASE>, unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 
-            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
         struct is_same_unit<unit<BASE>, unit<BASE, PREFIX>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 
-            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
         struct is_same_unit<unit<BASE, PREFIX>, unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 

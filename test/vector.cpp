@@ -40,13 +40,7 @@ int main() {
 
     std::cout << "sizeof a 2D vector: " << sizeof(position2) << '\n';
     std::cout << "sizeof a 3D vector: " << sizeof(position3) << '\n'; 
-    std::cout << "sizeof a 2D row_vector: " << sizeof(row_vector<2, length_m, length_m>) << '\n';
 
-    row_vector<2, length_m, length_m> rv1;
-    std::cout << rv1 << '\n';
-
-    // auto x = transpose(v1);
-    // std::cout << x << '\n';
 
     return 0;   
 

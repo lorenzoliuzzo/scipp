@@ -21,9 +21,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE> 
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         constexpr auto invert(const VECTOR_TYPE& vec)
-            -> geometry::vector<physics::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
+            -> geometry::vector<op::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
 
-            geometry::vector<physics::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
+            geometry::vector<op::measurements_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
 
             for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result.data[i] = op::invert(vec.data[i]);

@@ -2,7 +2,7 @@
  * @file    math/ops/measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-12
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -15,6 +15,119 @@ namespace scipp::math {
     
     
     namespace op {
+
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPES>
+        struct measurements_prod { 
+            
+            using type = MEAS_TYPE; 
+        
+        };
+
+        template <typename BASE_TYPE>
+            requires (physics::is_base_v<BASE_TYPE>)
+        struct measurements_prod<physics::measurement<BASE_TYPE>> { 
+            
+            using type = physics::measurement<BASE_TYPE>; 
+        
+        };
+
+
+        template <typename MEAS_TYPE, typename... MEAS_TYPES>
+            requires (physics::are_measurements_v<MEAS_TYPE, MEAS_TYPES...>)
+        struct measurements_prod<MEAS_TYPE, MEAS_TYPES...> {
+            
+            using type = physics::measurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>;
+        
+        }; 
+
+        template <typename... Ts>
+        using measurements_prod_t = typename measurements_prod<Ts...>::type;
+
+
+        template <typename MEAS1, typename MEAS2>
+            requires (physics::are_measurements_v<MEAS1, MEAS2>)
+        struct measurements_div { 
+            
+            using type = physics::measurement<math::op::base_division_t<typename MEAS1::base, typename MEAS2::base>>; 
+            
+        };
+
+        template <typename T1, typename T2>
+        using measurements_div_t = typename measurements_div<T1, T2>::type;
+
+
+        template <typename T>
+        struct measurements_inv { 
+            
+            using type = T; 
+
+        }; 
+
+        template <typename BASE>
+            requires (physics::is_base_v<BASE>)
+        struct measurements_inv<physics::measurement<BASE>> { 
+            
+            using type = physics::measurement<math::op::base_invert_t<BASE>>; 
+
+        };
+
+        template <typename... Ts>
+        using measurements_inv_t = typename measurements_inv<Ts...>::type;
+
+
+        template <typename T, int>
+        struct measurement_pow { 
+            
+            using type = T; 
+
+        }; 
+
+        template <typename BASE_TYPE, int POWER>
+            requires (physics::is_base_v<BASE_TYPE> && POWER > 0)
+        struct measurement_pow<physics::measurement<BASE_TYPE>, POWER> { 
+            
+            using type = physics::measurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
+
+        };
+
+        template <typename T, int POWER>
+        using measurement_pow_t = typename measurement_pow<T, POWER>::type;
+
+
+        template <typename T>
+        using measurement_square_t = measurement_pow_t<T, 2>;
+
+        template <typename T>
+        using measurement_cube_t = measurement_pow_t<T, 3>;
+
+
+        template <typename T, int>
+        struct measurement_root { 
+            
+            using type = T; 
+
+        }; 
+
+        template <typename BASE_TYPE, int POWER>
+            requires (physics::is_base_v<BASE_TYPE> && POWER > 0)
+        struct measurement_root<physics::measurement<BASE_TYPE>, POWER> { 
+            
+            using type = physics::measurement<math::op::base_root_t<BASE_TYPE, POWER>>; 
+
+        };
+
+
+        template <typename T, int POWER>
+        using measurement_root_t = typename measurement_root<T, POWER>::type;
+
+
+        template <typename T>
+        using measurement_sqrt_t = measurement_root_t<T, 2>;
+
+        template <typename T>
+        using measurement_cbrt_t = measurement_root_t<T, 3>;
+
 
 
         // ====================================================================================================

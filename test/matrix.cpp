@@ -58,6 +58,9 @@ int main() {
 
     m5.print();
 
+    matrix m6 = make_matrix(position2(12.4m, 0.0m), lin_velocity2(0.0 * m_s, 1.0 * m_s)); 
+    m6.print();
+
 
     // matrix<2, position2> m7 = make_matrix<2, position2>(); 
     // m7.print(); 

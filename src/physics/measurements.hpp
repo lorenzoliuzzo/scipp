@@ -1,8 +1,8 @@
 /**
- * @file    units_types.hpp
+ * @file    physics/measurements.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-08
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -94,21 +94,6 @@ namespace scipp::physics {
     // using absorbed_dose_m = measurement<units::gray>;                 ///< absorbed_dose_m
     // using dose_equivalent_m = measurement<units::sievert>;            ///< dose_equivalent_m
     // using catalytic_activity_m = measurement<units::katal>;           ///< catalytic_activity_m
-
-
-    /// @brief Measurement litteral for length
-
-    inline constexpr auto operator""m(long double value) noexcept -> length_m {
-
-        return length_m(value);
-
-    }
-
-    inline constexpr auto operator""km(long double value) noexcept -> length_m {
-
-        return length_m(value, units::km);
-
-    }
 
 
 } // namespace scipp::physics

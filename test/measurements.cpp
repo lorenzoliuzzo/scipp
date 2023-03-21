@@ -13,6 +13,7 @@
 using namespace scipp; 
 using namespace physics; 
 using namespace units;
+using namespace math; 
 
 
 int main() {
@@ -25,28 +26,41 @@ int main() {
 
 
     constexpr measurement x = 3.54 * m; 
-    constexpr measurement y = 0.5 * mm;
+    constexpr measurement y = 1.5 * mm;
+    umeasurement k(x, y);   
 
     std::cout << x << '\n';
     std::cout << y << '\n';
-
-
-    // std::cout << measurements_prod_t<length_m, length_m>() << '\n';
-    // std::cout << measurements_prod_t<length_m, length_m, length_m>() << '\n';
-    // std::cout << measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
-    // // xy.print(); 
-
-    umeasurement k(x, y);   
     std::cout << k << '\n'; 
 
-    std::ofstream of("measurements.out"); 
-    of << measurements_prod_t<length_m, length_m>() << '\n';
-    of << measurements_prod_t<length_m, length_m, length_m>() << '\n';
-    of << measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
-    of << k; 
-    of.close(); 
+    y.print_as(mm); 
 
+    length_um z; 
     
+    std::ifstream file_in("measurements.out");
+    file_in >> z; 
+    
+    if (file_in.fail()) 
+        throw std::runtime_error("Cannot read properly from file."); 
+
+    file_in.close(); 
+
+    std::cout << z << '\n'; 
+
+
+    // std::ofstream of("measurements.out"); 
+    // of << x << '\n'; 
+    // of << y << '\n'; 
+    // of << k << '\n';
+    // of.close(); 
+
+
+
+    std::cout << op::measurements_prod_t<length_m, length_m>() << '\n';
+    std::cout << op::measurements_prod_t<length_m, length_m, length_m>() << '\n';
+    std::cout << op::measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
+
+    // std::cout << op::sin(3.54 * rad) << '\n'; 
 
 
     return 0; 

@@ -2,7 +2,7 @@
  * @file    umeasurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-17
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -407,7 +407,7 @@ namespace scipp::physics {
             /// @param umeas: umeasurement as l-value const reference
             /// @note if the precision of the umeasurement is 0, the uncertainty is not printed
             /// @note scientific notation is used if the value is greater than 1e4 or less than 1e-4
-            friend std::ostream& operator<<(std::ostream& os, const umeasurement& meas) noexcept { 
+            friend constexpr std::ostream& operator<<(std::ostream& os, const umeasurement& meas) noexcept { 
 
                 const double abs_value = std::fabs(meas.value);
 
@@ -419,12 +419,12 @@ namespace scipp::physics {
                                         std::floor(std::log10(std::fabs(abs_value))) + 1); 
 
                 // determine number of digits before decimal point in uncertainty
-                const int n_unc = (meas.uncertainty >= 1.0) ? 
+                int n_unc = (meas.uncertainty >= 1.0) ? 
                                     std::ceil(std::log10(meas.uncertainty)) : 
                                     ((meas.uncertainty == 0.0) ? 
                                         1 : 
                                         std::floor(std::log10(std::fabs(meas.uncertainty))) + 1); 
-
+    
                 // determine the number of decimal places to show in the uncertainty
                 const int prec = (n_unc > n_val) ? 0 : n_val - n_unc; 
 
@@ -433,26 +433,64 @@ namespace scipp::physics {
                                                         meas.uncertainty >= 1e4 || meas.uncertainty <= 1e-4;
 
                 // set the formatting of the output stream
-                if (meas.uncertainty == 0.0) {
+                if (meas.uncertainty == 0.0) 
                     os << std::fixed << std::setprecision(n_val) << meas.value << ' ' << BASE_TYPE::to_string();
-                }
+                
                 else if (scientific_notation_needed) {
                     os << std::scientific << std::setprecision(prec - 1) << meas.value << " ± ";
                     os << std::setprecision(0) << meas.uncertainty << ' ' << BASE_TYPE::to_string();
                 }
                 else {
                     os << std::fixed;
-                    if (meas.uncertainty >= 1.0) {
+                    if (meas.uncertainty >= 1.0) 
                         os << std::setprecision(0);
-                    }
-                    else {
-                        os << std::setprecision(std::max(0, std::min(6, -n_unc)));
-                    }
+                    else 
+                        os << std::setprecision(std::max(0, std::min(6, -n_unc)) + 1);
+                    
                     os << meas.value << " ± " << meas.uncertainty << ' ' << BASE_TYPE::to_string();
                 }
 
                 return os; 
                 
+            }
+
+
+            friend constexpr std::istream& operator>>(std::istream& is, umeasurement& other) {
+
+                std::string unit; 
+                is >> other.value >> other.uncertainty >> unit;
+
+                // Check if the read uncertainty is non-negative
+                if (other.uncertainty < 0.0) 
+                    throw std::runtime_error("Cannot read an umeasurement with a negative uncertainty");
+                
+                // Check if the read unit matches the base unit of the measurement type
+                if (!unit.empty()) {
+
+                    if (unit.find("[") != std::string::npos) {
+
+                        double multiplier = 1.0; 
+                        std::string prefix = unit.substr(unit.find("["), unit.find("]") + 1);
+                        unit = unit.substr(unit.find("]") + 1);
+
+                        for (const auto& kv : units::prefix_map) 
+                            if (prefix == kv.second) {
+                                multiplier = kv.first;
+                                break;
+                            }
+
+                        other.value *= multiplier;
+                        other.uncertainty *= multiplier;
+
+                    }
+
+                    if (unit != base::to_string()) 
+                        throw std::runtime_error("Unit mismatch: expected " + base::to_string() + ", got " + unit);
+
+                }
+
+                return is; 
+
             }
                             
 

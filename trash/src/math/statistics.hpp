@@ -165,7 +165,7 @@ namespace scipp::math {
             for (const umeasurement<UB>& x : vec) 
                 weights += x.weight(); 
             
-            return op::inv(weights); 
+            return op::invert(weights); 
 
         }
 

@@ -1,8 +1,8 @@
 /**
  * @file    math/ops/prefixes.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-03-21
+ * @brief   This file contains all the possible mathematical operations among physics::units::prefix
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,14 +11,17 @@
 #pragma once
 
 
+/// @brief math namespace contains all the classes and functions of the math library
 namespace scipp::math {
+
     
-    
+    /// @brief op namespace contains all the classes and functions for doing mathematical operations
     namespace op {
 
 
-        template <typename RATIO, int POWER>
-            requires (physics::units::is_prefix_v<RATIO> && POWER >= 0)
+        /// @brief Struct to compute the power of an std::ratio
+        template <typename RATIO, std::size_t POWER>
+            requires (physics::is_prefix_v<RATIO>)
         struct ratio_pow {
 
             static constexpr auto value = std::pow(RATIO::num, POWER);
@@ -32,12 +35,13 @@ namespace scipp::math {
 
         };
 
-        template <typename RATIO, int POWER>
+        template <typename RATIO, std::size_t POWER>
         using ratio_pow_t = typename ratio_pow<RATIO, POWER>::type;
 
 
+        /// @brief Struct to compute the root power of an std::ratio
         template <typename RATIO, int POWER>
-            requires (physics::units::is_prefix_v<RATIO> && POWER >= 0)
+            requires (physics::is_prefix_v<RATIO>)
         struct ratio_root {
 
             static constexpr auto num_pow = std::pow(RATIO::num, 1. / POWER);
@@ -55,7 +59,9 @@ namespace scipp::math {
         using ratio_root_t = typename ratio_root<RATIO, POWER>::type;
 
 
+        /// @brief Struct to compute the inverse of an std::ratio
         template <typename RATIO>
+            requires (physics::is_prefix_v<RATIO>)
         struct ratio_inv {
             
             using type = std::ratio<RATIO::den, RATIO::num>; 

@@ -36,6 +36,8 @@ int main() {
                                        position3(0.0m, 1.0m, 0.0m)); 
     m1.print();
 
+    (m1 * 2.0).print(); 
+
     matrix m2(position3(1.0m, 0.0m, 0.0m),
               position3(0.0m, 1.0m, 0.0m),
               lin_velocity3(0.0 * m_s, 0.0 * m_s, 1.0 * m_s));
@@ -60,6 +62,9 @@ int main() {
 
     matrix m6 = make_matrix(position2(12.4m, 0.0m), lin_velocity2(0.0 * m_s, 1.0 * m_s)); 
     m6.print();
+
+    (m6 * 3.5m).print(); 
+    (m6 * m6.element<0, 0>()).print(); 
 
 
     // matrix<2, position2> m7 = make_matrix<2, position2>(); 

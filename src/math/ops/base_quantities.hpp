@@ -1,8 +1,8 @@
 /**
  * @file    math/ops/base_quantities.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-03-21
+ * @brief   This file contains the possible operations on base_quantity types.
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,7 +17,7 @@ namespace scipp::math {
     namespace op {
 
 
-        /// @brief base_invert is a struct to compute the inverse of a base
+        /// @brief Struct to compute the inverse of a base_quantity type
         template <typename BASE> 
             requires (physics::is_base_v<BASE>)
         struct base_invert : public physics::base_quantity<-BASE::length, 
@@ -33,8 +33,7 @@ namespace scipp::math {
         template <typename BASE> 
         using base_invert_t = typename base_invert<BASE>::type;
         
-
-        /// @brief base_product is a struct to compute the product of bases in a parameter pack
+        /// @brief Struct to compute the product of a list of base_quantity types
         template <typename... BASES> 
             requires (physics::are_base_v<BASES...>)
         struct base_product : public physics::base_quantity<(BASES::length + ...), 
@@ -51,7 +50,7 @@ namespace scipp::math {
         using base_product_t = typename base_product<BASES...>::type;
 
 
-        /// @brief base_division is a struct to compute the division of two base
+        /// @brief Struct to compute the division of two base_quantity types
         template <typename BASE1, typename BASE2> 
             requires (physics::are_base_v<BASE1, BASE2>)
         struct base_division : public physics::base_quantity<BASE1::length - BASE2::length, 
@@ -68,7 +67,7 @@ namespace scipp::math {
         using base_division_t = typename base_division<BASE1, BASE2>::type; 
 
 
-        /// @brief base_pow is a struct to compute the power of a base
+        /// @brief Struct to compute the power of a base_quantity type
         template <typename BASE, int POWER> 
             requires (physics::is_base_v<BASE>)
         struct base_pow : public physics::base_quantity<BASE::length * POWER, 
@@ -91,7 +90,7 @@ namespace scipp::math {
         using base_cube_t = typename base_pow<BASE, 3>::type;
 
 
-        /// @brief base_root is a struct to compute the root of a base
+        /// @brief Struct to compute the root power of a base_quantity type
         template <typename BASE, int POWER> 
             requires (physics::has_valid_root_v<BASE, POWER>)
         struct base_root : public physics::base_quantity<BASE::length / POWER, 

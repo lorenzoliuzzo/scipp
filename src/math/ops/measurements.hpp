@@ -2,7 +2,7 @@
  * @file    math/ops/measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-21
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -18,28 +18,24 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE, typename... MEAS_TYPES>
+            requires (physics::are_generic_measurements_v<MEAS_TYPE, MEAS_TYPES...>)
         struct measurements_prod { 
             
-            using type = MEAS_TYPE; 
-        
-        };
-
-        template <typename BASE_TYPE>
-            requires (physics::is_base_v<BASE_TYPE>)
-        struct measurements_prod<physics::measurement<BASE_TYPE>> { 
-            
-            using type = physics::measurement<BASE_TYPE>; 
+            using type = std::conditional_t<physics::are_umeasurements_v<MEAS_TYPE, MEAS_TYPES...>,    
+                                            physics::umeasurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>,
+                                            physics::measurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>>;
         
         };
 
 
-        template <typename MEAS_TYPE, typename... MEAS_TYPES>
-            requires (physics::are_measurements_v<MEAS_TYPE, MEAS_TYPES...>)
-        struct measurements_prod<MEAS_TYPE, MEAS_TYPES...> {
-            
-            using type = physics::measurement<math::op::base_product_t<typename MEAS_TYPE::base, typename measurements_prod<MEAS_TYPES...>::type::base>>;
-        
-        }; 
+        template <typename MEAS_TYPE>
+            requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+        struct measurements_prod<MEAS_TYPE> {
+
+            using type = MEAS_TYPE;
+
+        };
+
 
         template <typename... Ts>
         using measurements_prod_t = typename measurements_prod<Ts...>::type;
@@ -58,7 +54,7 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct measurements_inv { 
+        struct measurement_inv { 
             
             using type = T; 
 
@@ -66,14 +62,22 @@ namespace scipp::math {
 
         template <typename BASE>
             requires (physics::is_base_v<BASE>)
-        struct measurements_inv<physics::measurement<BASE>> { 
+        struct measurement_inv<physics::measurement<BASE>> { 
+            
+            using type = physics::measurement<math::op::base_invert_t<BASE>>; 
+
+        };
+
+        template <typename BASE>
+            requires (physics::is_base_v<BASE>)
+        struct measurement_inv<physics::umeasurement<BASE>> { 
             
             using type = physics::measurement<math::op::base_invert_t<BASE>>; 
 
         };
 
         template <typename... Ts>
-        using measurements_inv_t = typename measurements_inv<Ts...>::type;
+        using measurement_inv_t = typename measurement_inv<Ts...>::type;
 
 
         template <typename T, int>
@@ -146,19 +150,19 @@ namespace scipp::math {
             /// @brief Get the type of the inverse of a measurement
             template <typename MEAS_TYPE> 
                 requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-            struct measurements_invert : public std::conditional_t<physics::is_measurement_v<MEAS_TYPE>, 
+            struct measurement_invert : public std::conditional_t<physics::is_measurement_v<MEAS_TYPE>, 
                                                                    physics::measurement<op::base_invert_t<typename MEAS_TYPE::base>>, 
                                                                    physics::umeasurement<op::base_invert_t<typename MEAS_TYPE::base>>> {};
 
             template <typename MEAS_TYPE>   
-            using measurements_invert_t = typename measurements_invert<MEAS_TYPE>::type;
+            using measurement_invert_t = typename measurement_invert<MEAS_TYPE>::type;
 
 
             /// @brief Get the inverse of a measurement
             template <typename MEAS_TYPE>
                 requires physics::is_generic_measurement_v<MEAS_TYPE>
             constexpr auto invert(const MEAS_TYPE& meas) 
-                -> measurements_invert_t<MEAS_TYPE> {            
+                -> measurement_invert_t<MEAS_TYPE> {            
 
                 if (meas.value == 0.0) 
                     throw std::runtime_error("Cannot invert a zero measurement");

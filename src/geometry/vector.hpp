@@ -25,8 +25,6 @@ namespace scipp::geometry {
             
             using measurement_type = MEAS_TYPE;
 
-            using index_type = typename std::array<measurement_type, DIM>::size_type;
-
             using type = vector<measurement_type, DIM>;
 
 
@@ -127,7 +125,7 @@ namespace scipp::geometry {
 
             /// @brief Access the i-th element of the vector
             /// @note: index must be in the range [0, DIM)
-            constexpr const measurement_type& operator[](const index_type& index) const { 
+            constexpr const measurement_type& operator[](const std::size_t& index) const { 
                 
                 if (index >= DIM) 
                     throw std::out_of_range("Cannot access a vector with an index out of range");
@@ -139,7 +137,7 @@ namespace scipp::geometry {
 
             /// @brief Access the i-th element of the vector
             /// @note: index must be in the range [0, DIM)
-            constexpr measurement_type& operator[](const index_type& index) { 
+            constexpr measurement_type& operator[](const std::size_t& index) { 
                 
                 if (index >= DIM) 
                     throw std::out_of_range("Cannot access a vector with an index out of range");

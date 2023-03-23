@@ -2,7 +2,7 @@
  * @file    geometry/matrix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-19
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -14,6 +14,7 @@
 namespace scipp::geometry {
     
 
+    /// @brief Tuple constructed from a fixed size and a list of types 
     template <size_t N, typename... Ts>
     struct types_tuple {
 
@@ -21,14 +22,17 @@ namespace scipp::geometry {
 
     };
 
+
+    /// @brief Tuple constructed from a fixed size and single type
     template <size_t N, typename T>
     struct types_tuple<N, T> {
 
-        // Create an index sequence for the number of elements we want in the tuple
         template <std::size_t... Is>
         static auto create_tuple(std::index_sequence<Is...>) {
+
             // Create a tuple with N copies of T
             return std::make_tuple((static_cast<void>(Is), T{})...);
+
         }
 
         using type = decltype(create_tuple(std::make_index_sequence<N>{}));
@@ -39,6 +43,11 @@ namespace scipp::geometry {
     using types_tuple_t = typename types_tuple<N, Ts...>::type;
 
 
+    /// @brief Matrix of vectors
+    /// @tparam COLUMNS: Number of columns
+    /// @tparam VECTOR_TYPES: list of vector types
+    /// @note All the vectors must have same dimension
+    /// @note The number of rows is the common dimension of the vectors
     template <size_t COLUMNS, typename... VECTOR_TYPES> 
         requires (are_vectors_v<VECTOR_TYPES...> && have_same_dimension_v<VECTOR_TYPES...>)
     struct matrix {
@@ -157,6 +166,7 @@ namespace scipp::geometry {
             }
 
 
+            /// @brief Get the row at index
             template <std::size_t index>
             constexpr auto& row() {
                 
@@ -167,6 +177,7 @@ namespace scipp::geometry {
 
             }
 
+            /// @brief Get the row at index
             template <std::size_t index>
             constexpr auto& row() const {
                 
@@ -178,6 +189,7 @@ namespace scipp::geometry {
             }
 
 
+            /// @brief Get the column at index
             template <std::size_t index>
             constexpr auto& column() {
                 
@@ -188,6 +200,7 @@ namespace scipp::geometry {
 
             }
 
+            /// @brief Get the column at index
             template <std::size_t index>
             constexpr auto& column() const {
 
@@ -199,6 +212,7 @@ namespace scipp::geometry {
             }
 
 
+            /// @brief Get the element at row and column
             template <std::size_t row_i, std::size_t col_j>
             constexpr auto& element() {
 
@@ -212,6 +226,7 @@ namespace scipp::geometry {
 
             }
 
+            /// @brief Get the element at row and column
             template <std::size_t row_i, std::size_t col_j>
             constexpr auto& element() const {
 
@@ -226,7 +241,7 @@ namespace scipp::geometry {
             }
             
 
-        // ===========================================================
+        // ===================================ì========================
         // operators
         // ===========================================================
 
@@ -360,7 +375,7 @@ namespace scipp::geometry {
 
                 std::apply(
                     [&](const auto&... components) {
-                        result.data = std::make_tuple(components * value...);
+                        result.data = std::make_tuple(components * value ...);
                     }, this->data
                 );
 
@@ -379,7 +394,7 @@ namespace scipp::geometry {
 
                 std::apply(
                     [&](const auto&... components) {
-                        result.data = std::make_tuple(components / value...);
+                        result.data = std::make_tuple(components / value ...);
                     }, this->data
                 );
 
@@ -389,10 +404,114 @@ namespace scipp::geometry {
 
 
             /// @brief Multiplication operator
-            // template <typename... OTHER_VECTOR_TYPES>   
-            
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*(const MEAS_TYPE& other) const noexcept 
+                -> matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> {
+
+                matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(components * other ...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
 
 
+            /// @brief Multiplication operator
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*(MEAS_TYPE&& other) const noexcept 
+                -> matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> {
+
+                matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(components * other ...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
+
+
+
+            /// @brief Multiplication operator
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            constexpr auto operator/(const MEAS_TYPE& other) const 
+                -> matrix<columns, vector<math::op::measurements_div_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> {
+
+                matrix<columns, vector<math::op::measurements_div_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(components / other ...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
+
+
+            /// @brief Multiplication operator
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            constexpr auto operator/(MEAS_TYPE&& other) const 
+                -> matrix<columns, vector<math::op::measurements_div_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> {
+
+                matrix<columns, vector<math::op::measurements_div_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(components / other ...);
+                    }, this->data
+                );
+
+                return result;
+
+            }
+
+
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            friend constexpr auto operator*(const MEAS_TYPE& value, const matrix& mat) noexcept {
+
+                matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(value * components ...);
+                    }, mat.data
+                );
+
+                return result;
+
+            }
+
+
+            template <typename MEAS_TYPE>
+                requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+            friend constexpr auto operator/(const MEAS_TYPE& value, const matrix& mat) noexcept {
+
+                matrix<columns, vector<math::op::measurements_prod_t<typename VECTOR_TYPES::measurement_type, MEAS_TYPE>, rows>...> result; 
+
+                std::apply(
+                    [&](const auto&... components) -> void {
+                        result.data = std::make_tuple(value / components ...);
+                    }, mat.data
+                );
+
+                return result;
+
+            }
             
             // /// @brief Multiplication operator
             // constexpr auto operator*(const matrix& other) const noexcept {

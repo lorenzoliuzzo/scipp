@@ -1,9 +1,8 @@
 /**
  * @file    physics/unit.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementations of the unit struct.
- * @note    
- * @date    2023-03-20
+ * @brief   This file contains the implementation of the unit struct and its type traits.
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -16,9 +15,9 @@
 namespace scipp::physics {
 
     
-    /// @brief unit is an union of an base_quantity and an std::ratio prefix
-    /// @tparam BASE_TYPE: meta_base of the unit
-    /// @tparam PREFIX_TYPE: std::ratio prefix of the unit
+    /// @brief  Struct unit is an union of an base_quantity and an std::ratio prefix
+    /// @tparam BASE_TYPE: base_quantity
+    /// @tparam PREFIX_TYPE: std::ratio
     template <typename BASE_TYPE, typename PREFIX_TYPE = std::ratio<1>> 
         requires (is_base_v<BASE_TYPE>)  
     struct unit {
@@ -46,19 +45,10 @@ namespace scipp::physics {
         // operators
         // =============================================
 
+            /// @brief Print the unit to the standard output
             friend inline constexpr std::ostream& operator<<(std::ostream& os, const unit&) noexcept {
 
-                os << unit::to_string();
-                return os;
-
-            }
-
-
-            friend inline constexpr std::istream& operator>>(std::istream& is, unit& other) noexcept {
-
-                // TODO 
-
-                return is;
+                return os << unit::to_string();
 
             }
 
@@ -70,19 +60,19 @@ namespace scipp::physics {
             /// @brief to_string returns a string representation of the unit
             static constexpr std::string to_string() noexcept {
 
-                auto prefix = units::prefix_map.find(mult);
-                if (prefix == units::prefix_map.end()) 
-                    return base::to_string();
+                auto prefix = prefix_map.find(mult);
+                if (prefix == prefix_map.end()) 
+                    return BASE_TYPE::to_string();
                 else
-                    return prefix->second + base::to_string(); 
+                    return std::string(1, '[') + std::string(1, prefix->second) + std::string(1, ']') + BASE_TYPE::to_string(); 
 
             }
 
 
             /// @brief Convert a value from the base unit to another unit 
             template <typename OTHER_UNIT> 
-                requires(is_same_base_v<base, typename OTHER_UNIT::base>)
-            static constexpr double convert(const double val, const OTHER_UNIT&) noexcept {
+                requires(is_same_base_v<BASE_TYPE, typename OTHER_UNIT::base>)
+            static inline constexpr double convert(const double val, const OTHER_UNIT&) noexcept {
 
                 return val * mult / OTHER_UNIT::mult; 
 
@@ -96,6 +86,7 @@ namespace scipp::physics {
     // unit traits
     // =============================================
 
+        /// @brief Type trait to check if a type is an unit
         template <typename T>
         struct is_unit : std::false_type {};
 
@@ -104,13 +95,14 @@ namespace scipp::physics {
         struct is_unit<unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX>
-            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
         struct is_unit<unit<BASE, PREFIX>> : std::true_type {};
 
         template <typename T>
         inline constexpr bool is_unit_v = is_unit<T>::value;
 
 
+        /// @brief Type trait to check if a type is the same unit as another unit type
         template <typename T1, typename T2>
         struct is_same_unit : std::false_type {};
 
@@ -119,11 +111,11 @@ namespace scipp::physics {
         struct is_same_unit<unit<BASE>, unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 
-            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
         struct is_same_unit<unit<BASE>, unit<BASE, PREFIX>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 
-            requires (is_base_v<BASE> && units::is_prefix_v<PREFIX>)
+            requires (is_base_v<BASE> && is_prefix_v<PREFIX>)
         struct is_same_unit<unit<BASE, PREFIX>, unit<BASE>> : std::true_type {};
 
         template <typename BASE, typename PREFIX> 
@@ -134,6 +126,7 @@ namespace scipp::physics {
         inline constexpr bool is_same_unit_v = is_same_unit<T1, T2>::value;
 
 
+        /// @brief Type trait to check if a list of types are unit types
         template <typename... Ts>
         struct are_units : std::conjunction<is_unit<Ts>...> {};
 
@@ -141,6 +134,7 @@ namespace scipp::physics {
         inline constexpr bool are_units_v = are_units<Ts...>::value;
         
 
+        /// @brief Type trait to check if a list of types are the same unit type
         template <typename... Ts> 
             requires (are_units_v<Ts...>)
         struct are_same_units : std::false_type {};
@@ -160,6 +154,7 @@ namespace scipp::physics {
         inline constexpr bool are_same_units_v = are_same_units<Ts...>::value;
 
 
+        /// @brief Type trait to check if an unit type is prefixed
         template <typename T>
         struct is_prefixed : std::false_type {};
 
@@ -173,6 +168,7 @@ namespace scipp::physics {
         inline constexpr bool is_prefixed_v = is_prefixed<T>::value;
 
 
+        /// @brief Type trait to check if an unit type is a base unit type
         template <typename T>
         struct is_base_unit : std::false_type {};
 

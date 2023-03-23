@@ -1,9 +1,8 @@
 /**
  * @file    physics/base_quantity.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementations of the base_quantity struct and type traits.
- * @note    
- * @date    2023-03-21
+ * @brief   This file contains the implementation of the base_quantity struct and its type traits.
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -50,9 +49,9 @@ namespace scipp::physics {
             
             inline static constexpr int mass = MASS; //< power of mass 
             
-            inline static constexpr int elettric_current = ELETTRIC_CURRENT; //< power of ELETTRIC_current 
-            
             inline static constexpr int temperature = TEMPERATURE; //< power of temperature 
+            
+            inline static constexpr int elettric_current = ELETTRIC_CURRENT; //< power of ELETTRIC_current 
             
             inline static constexpr int substance_amount = SUBSTANCE_AMOUNT; //< power of substance_amount 
 
@@ -63,7 +62,7 @@ namespace scipp::physics {
             inline static constexpr int solid_angle = SOLID_ANGLE; //< power of solid_angle
 
 
-            static constexpr std::array<std::string_view, 9> base_litterals = {"m", "s", "kg", "K", "A", "mol", "cd", "rad", "sr"};
+            inline static constexpr std::array<std::string_view, 9> base_litterals = {"m", "s", "kg", "K", "A", "mol", "cd", "rad", "sr"};
 
 
         // =============================================
@@ -114,6 +113,7 @@ namespace scipp::physics {
     // base_quantity type traits
     // =============================================
         
+        /// @brief Type trait to check if a type is a base_quantity
         template <typename T>
         struct is_base : public std::false_type {};
 
@@ -126,6 +126,7 @@ namespace scipp::physics {
         constexpr bool is_base_v = is_base<T>::value;
 
 
+        /// @brief Type trait to check if a list of types are base_quantities
         template <typename... Ts>
         struct are_base : public std::conjunction<is_base<Ts>...> {};
 
@@ -133,6 +134,7 @@ namespace scipp::physics {
         constexpr bool are_base_v = are_base<Ts...>::value;
 
 
+        /// @brief Type trait to check if two base_quantity types are the same
         template <typename BASE1, typename BASE2> 
             requires (are_base_v<BASE1, BASE2>)
         struct is_same_base : public std::bool_constant<BASE1::length == BASE2::length &&
@@ -149,6 +151,7 @@ namespace scipp::physics {
         constexpr bool is_same_base_v = is_same_base<BASE1, BASE2>::value;
 
 
+        /// @brief Type trait to check if a list of base_quantity types are the same
         template <typename BASE, typename... Ts> 
             requires (are_base_v<BASE, Ts...>)
         struct are_same_base : public std::conjunction<is_same_base<BASE, Ts>...> {};
@@ -157,6 +160,7 @@ namespace scipp::physics {
         constexpr bool are_same_base_v = are_same_base<BASE, Ts...>::value;
 
 
+        /// @brief Type trait to check if a base_quantity type has valid root
         template <typename BASE, int POWER> 
             requires (is_base_v<BASE>)
         struct has_valid_root : public std::bool_constant<BASE::length % POWER == 0 && 

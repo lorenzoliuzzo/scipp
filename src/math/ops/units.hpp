@@ -1,8 +1,8 @@
 /**
  * @file    math/ops/units.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-03-21
+ * @brief   This file contains all the possible mathematical operations among physics::unit
+ * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,12 +11,15 @@
 #pragma once
 
 
+/// @brief math namespace contains all the classes and functions of the math library
 namespace scipp::math {
     
     
+    /// @brief op namespace contains all the classes and functions for doing mathematical operations
     namespace op {
 
 
+        /// @brief Struct to compute the inverse of an unit type
         template <typename UNIT>
             requires (physics::is_unit_v<UNIT>)
         struct unit_invert {
@@ -30,12 +33,13 @@ namespace scipp::math {
         using unit_invert_t = typename unit_invert<UNIT>::type;
 
 
+        /// @brief Struct to compute the product between two unit types
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
         struct unit_product {
                 
             using type = physics::unit<base_product_t<typename UNIT1::base, typename UNIT2::base>, 
-                                                   std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>>;
+                                       std::ratio_multiply<typename UNIT1::prefix, typename UNIT2::prefix>>;
 
         };
 
@@ -44,6 +48,7 @@ namespace scipp::math {
         using unit_product_t = typename unit_product<UNIT1, UNIT2>::type; 
 
 
+        /// @brief Struct to compute the division between two unit types
         template <typename UNIT1, typename UNIT2> 
             requires (physics::are_units_v<UNIT1, UNIT2>)
         struct unit_division {
@@ -58,7 +63,8 @@ namespace scipp::math {
         using unit_division_t = typename unit_division<UNIT1, UNIT2>::type; 
 
 
-        template <typename UNIT, int POWER>
+        /// @brief Struct to compute the power of an unit type
+        template <typename UNIT, std::size_t POWER>
         struct unit_pow {
                 
             using type = physics::unit<base_pow_t<typename UNIT::base, POWER>, 
@@ -66,7 +72,7 @@ namespace scipp::math {
         
         };
 
-        template <typename UNIT, int POWER>
+        template <typename UNIT, std::size_t POWER>
         using unit_pow_t = typename unit_pow<UNIT, POWER>::type;
 
         template <typename UNIT>
@@ -76,7 +82,8 @@ namespace scipp::math {
         using unit_cube_t = unit_pow_t<UNIT, 3>;
 
         
-        template <typename UNIT, int POWER>
+        /// @brief Struct to compute the root power of an unit type
+        template <typename UNIT, std::size_t POWER>
         struct unit_root {
             
             using type = physics::unit<base_root_t<typename UNIT::base, POWER>, 
@@ -85,7 +92,7 @@ namespace scipp::math {
         };
 
 
-        template <typename UNIT, int POWER>
+        template <typename UNIT, std::size_t POWER>
         using unit_root_t = typename unit_root<UNIT, POWER>::type;
 
         template <typename UNIT>
@@ -101,27 +108,28 @@ namespace scipp::math {
 } // namespace scipp::math
 
 
+/// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
 
 
-    /// @brief Perform a multiplication between unit 
-    template <typename unit1, typename unit2> 
-        requires (physics::are_units_v<unit1, unit2>)
-    constexpr auto operator*(const unit1&, const unit2&) noexcept 
-        -> math::op::unit_product_t<typename unit1::type, typename unit2::type> {
+    /// @brief Perform a multiplication between unit objects
+    template <typename UNIT1, typename UNIT2> 
+        requires (are_units_v<UNIT1, UNIT2>)
+    constexpr auto operator*(const UNIT1&, const UNIT2&) noexcept 
+        -> math::op::unit_product_t<typename UNIT1::type, typename UNIT2::type> {
         
-        return math::op::unit_product_t<typename unit1::type, typename unit2::type>(); 
+        return math::op::unit_product_t<typename UNIT1::type, typename UNIT2::type>(); 
         
     } 
 
 
-    /// @brief Perform a division between unit 
-    template <typename unit1, typename unit2> 
-        requires (physics::are_units_v<unit1, unit2>)
-    constexpr auto operator/(const unit1&, const unit2&) noexcept 
-        -> math::op::unit_division_t<typename unit1::type, typename unit2::type> {
+    /// @brief Perform a division between unit objects
+    template <typename UNIT1, typename UNIT2> 
+        requires (are_units_v<UNIT1, UNIT2>)
+    constexpr auto operator/(const UNIT1&, const UNIT2&) noexcept 
+        -> math::op::unit_division_t<typename UNIT1::type, typename UNIT2::type> {
         
-        return math::op::unit_division_t<typename unit1::type, typename unit2::type>(); 
+        return math::op::unit_division_t<typename UNIT1::type, typename UNIT2::type>(); 
         
     } 
 

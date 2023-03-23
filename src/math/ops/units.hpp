@@ -2,7 +2,7 @@
  * @file    math/ops/units.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-12
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -99,3 +99,31 @@ namespace scipp::math {
 
 
 } // namespace scipp::math
+
+
+namespace scipp::physics {
+
+
+    /// @brief Perform a multiplication between unit 
+    template <typename unit1, typename unit2> 
+        requires (physics::are_units_v<unit1, unit2>)
+    constexpr auto operator*(const unit1&, const unit2&) noexcept 
+        -> math::op::unit_product_t<typename unit1::type, typename unit2::type> {
+        
+        return math::op::unit_product_t<typename unit1::type, typename unit2::type>(); 
+        
+    } 
+
+
+    /// @brief Perform a division between unit 
+    template <typename unit1, typename unit2> 
+        requires (physics::are_units_v<unit1, unit2>)
+    constexpr auto operator/(const unit1&, const unit2&) noexcept 
+        -> math::op::unit_division_t<typename unit1::type, typename unit2::type> {
+        
+        return math::op::unit_division_t<typename unit1::type, typename unit2::type>(); 
+        
+    } 
+
+
+} // namespace scipp::physics

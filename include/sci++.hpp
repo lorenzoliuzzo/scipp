@@ -61,7 +61,7 @@
 
     #include "math/integral.hpp"    
 
-    // #include "math/statistics.hpp"
+    #include "math/statistics.hpp"
 
     // #include "math/equations.hpp"
 
@@ -72,6 +72,11 @@
     // #include "tools/bench.hpp"
 
     #include "physics/timer.hpp"
+
+
+
+    #include "tools/reader.hpp"
+
 
 
 #endif

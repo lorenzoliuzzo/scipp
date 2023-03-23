@@ -2,7 +2,7 @@
  * @file    math/ops/base_quantities.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-20
+ * @date    2023-03-21
  * 
  * @copyright Copyright (c) 2023
  */
@@ -20,14 +20,15 @@ namespace scipp::math {
         /// @brief base_invert is a struct to compute the inverse of a base
         template <typename BASE> 
             requires (physics::is_base_v<BASE>)
-        struct base_invert : public physics::base_quantity<-BASE::length_power, 
-                                                           -BASE::time_power,
-                                                           -BASE::mass_power,
-                                                           -BASE::temperature_power,
-                                                           -BASE::substance_amount_power,
-                                                           -BASE::elettric_current_power,
-                                                           -BASE::luminous_intensity_power,
-                                                           -BASE::angle_power> {};
+        struct base_invert : public physics::base_quantity<-BASE::length, 
+                                                           -BASE::time,
+                                                           -BASE::mass,
+                                                           -BASE::temperature,
+                                                           -BASE::elettric_current,
+                                                           -BASE::substance_amount,
+                                                           -BASE::luminous_intensity,
+                                                           -BASE::angle,    
+                                                           -BASE::solid_angle> {};
 
         template <typename BASE> 
         using base_invert_t = typename base_invert<BASE>::type;
@@ -36,14 +37,15 @@ namespace scipp::math {
         /// @brief base_product is a struct to compute the product of bases in a parameter pack
         template <typename... BASES> 
             requires (physics::are_base_v<BASES...>)
-        struct base_product : public physics::base_quantity<(BASES::length_power + ...), 
-                                                            (BASES::time_power + ...),
-                                                            (BASES::mass_power + ...),
-                                                            (BASES::temperature_power + ...),
-                                                            (BASES::substance_amount_power + ...),
-                                                            (BASES::elettric_current_power + ...),
-                                                            (BASES::luminous_intensity_power + ...),
-                                                            (BASES::angle_power + ...)> {};
+        struct base_product : public physics::base_quantity<(BASES::length + ...), 
+                                                            (BASES::time + ...),
+                                                            (BASES::mass + ...),
+                                                            (BASES::temperature + ...),
+                                                            (BASES::elettric_current + ...),
+                                                            (BASES::substance_amount + ...),
+                                                            (BASES::luminous_intensity + ...),
+                                                            (BASES::angle + ...),
+                                                            (BASES::solid_angle + ...)> {};
 
         template <typename... BASES>
         using base_product_t = typename base_product<BASES...>::type;
@@ -52,14 +54,15 @@ namespace scipp::math {
         /// @brief base_division is a struct to compute the division of two base
         template <typename BASE1, typename BASE2> 
             requires (physics::are_base_v<BASE1, BASE2>)
-        struct base_division : public physics::base_quantity<BASE1::length_power - BASE2::length_power, 
-                                                             BASE1::time_power - BASE2::time_power,
-                                                             BASE1::mass_power - BASE2::mass_power,
-                                                             BASE1::temperature_power - BASE2::temperature_power,
-                                                             BASE1::substance_amount_power - BASE2::substance_amount_power,
-                                                             BASE1::elettric_current_power - BASE2::elettric_current_power,
-                                                             BASE1::luminous_intensity_power - BASE2::luminous_intensity_power,
-                                                             BASE1::angle_power - BASE2::angle_power> {}; 
+        struct base_division : public physics::base_quantity<BASE1::length - BASE2::length, 
+                                                             BASE1::time - BASE2::time,
+                                                             BASE1::mass - BASE2::mass,
+                                                             BASE1::temperature - BASE2::temperature,
+                                                             BASE1::elettric_current - BASE2::elettric_current,
+                                                             BASE1::substance_amount - BASE2::substance_amount,
+                                                             BASE1::luminous_intensity - BASE2::luminous_intensity,
+                                                             BASE1::angle - BASE2::angle, 
+                                                             BASE1::solid_angle - BASE2::solid_angle> {}; 
 
         template <typename BASE1, typename BASE2> 
         using base_division_t = typename base_division<BASE1, BASE2>::type; 
@@ -68,14 +71,15 @@ namespace scipp::math {
         /// @brief base_pow is a struct to compute the power of a base
         template <typename BASE, int POWER> 
             requires (physics::is_base_v<BASE>)
-        struct base_pow : public physics::base_quantity<BASE::length_power * POWER, 
-                                                        BASE::time_power * POWER,
-                                                        BASE::mass_power * POWER,
-                                                        BASE::temperature_power * POWER,
-                                                        BASE::substance_amount_power * POWER,
-                                                        BASE::elettric_current_power * POWER,
-                                                        BASE::luminous_intensity_power * POWER,
-                                                        BASE::angle_power * POWER> {};
+        struct base_pow : public physics::base_quantity<BASE::length * POWER, 
+                                                        BASE::time * POWER,
+                                                        BASE::mass * POWER,
+                                                        BASE::temperature * POWER,
+                                                        BASE::elettric_current * POWER,
+                                                        BASE::substance_amount * POWER,
+                                                        BASE::luminous_intensity * POWER,
+                                                        BASE::angle * POWER,
+                                                        BASE::solid_angle * POWER> {};
 
         template <typename BASE, int POWER> 
         using base_pow_t = typename base_pow<BASE, POWER>::type;
@@ -90,14 +94,15 @@ namespace scipp::math {
         /// @brief base_root is a struct to compute the root of a base
         template <typename BASE, int POWER> 
             requires (physics::has_valid_root_v<BASE, POWER>)
-        struct base_root : public physics::base_quantity<BASE::length_power / POWER, 
-                                                         BASE::time_power / POWER,
-                                                         BASE::mass_power / POWER,
-                                                         BASE::temperature_power / POWER,
-                                                         BASE::substance_amount_power / POWER,
-                                                         BASE::elettric_current_power / POWER,
-                                                         BASE::luminous_intensity_power / POWER,
-                                                         BASE::angle_power / POWER> {};
+        struct base_root : public physics::base_quantity<BASE::length / POWER, 
+                                                         BASE::time / POWER,
+                                                         BASE::mass / POWER,
+                                                         BASE::temperature / POWER,
+                                                         BASE::elettric_current / POWER,
+                                                         BASE::substance_amount / POWER,
+                                                         BASE::luminous_intensity / POWER,
+                                                         BASE::angle / POWER,
+                                                         BASE::solid_angle / POWER> {};
 
         template <typename BASE, int POWER> 
         using base_root_t = typename base_root<BASE, POWER>::type;
@@ -107,28 +112,6 @@ namespace scipp::math {
 
         template <typename BASE>
         using base_cbrt_t = typename base_root<BASE, 3>::type;
-
-
-        // template <typename RATIO, int POWER>
-        // struct ratio_pow {
-            
-        //     using type = std::ratio<(std::size_t) std::pow(RATIO::num, POWER), (std::size_t) std::pow(RATIO::den, POWER)>;
-
-        // }; 
-
-        // template <typename RATIO, int POWER>
-        // using ratio_pow_t = typename ratio_pow<RATIO, POWER>::type;
-
-
-        // template <typename RATIO, int POWER>
-        // struct ratio_root {
-            
-        //     using type = std::ratio<std::pow(RATIO::num, 1. / POWER), std::pow(RATIO::den, 1. / POWER)>;
-
-        // }; 
-
-        // template <typename RATIO, int POWER>
-        // using ratio_root_t = typename ratio_root<RATIO, POWER>::type;
 
     
     } // namespace op

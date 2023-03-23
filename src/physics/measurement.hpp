@@ -196,42 +196,37 @@ namespace scipp::physics {
                 
             }
         
+            constexpr measurement& operator*=(const double& other) noexcept {
 
-            constexpr measurement& operator*=(const measurement<units::scalar>& other) noexcept {
-
-                this->value *= other.value; 
-
-                return *this; 
-
-            }
-
-
-            constexpr measurement operator*(const measurement<units::scalar>& other) const noexcept {
-
-                return this->value * other.value; 
-
-            }
-
-
-            constexpr measurement& operator/=(const measurement<units::scalar>& other) {
-
-
-                if (other.value == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                this->value /= other.value; 
+                this->value *= other; 
 
                 return *this; 
 
             }
 
+            constexpr measurement operator*(const double& other) const noexcept {
 
-            constexpr measurement operator/(const measurement<units::scalar>& other) const {
+                return this->value * other; 
 
-                if (other.value == 0.0) 
+            }
+
+            constexpr measurement& operator/=(const double& other) {
+
+                if (other == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");
 
-                return this->value / other.value; 
+                this->value /= other; 
+
+                return *this; 
+
+            }
+
+            constexpr measurement operator/(const double& other) const {
+
+                if (other == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                return this->value / other; 
 
             }
 
@@ -350,7 +345,7 @@ namespace scipp::physics {
                 return is; 
                 
             }
-            
+
         
         // ==============================================
         // methods

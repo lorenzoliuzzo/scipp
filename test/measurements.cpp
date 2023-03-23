@@ -2,7 +2,7 @@
  * @file    measurements.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-17
+ * @date    2023-03-22
  * 
  * @copyright Copyright (c) 2023
  */
@@ -35,17 +35,8 @@ int main() {
 
     y.print_as(mm); 
 
-    length_um z; 
-    
-    std::ifstream file_in("measurements.out");
-    file_in >> z; 
-    
-    if (file_in.fail()) 
-        throw std::runtime_error("Cannot read properly from file."); 
-
-    file_in.close(); 
-
-    std::cout << z << '\n'; 
+    tools::read_measurements<length_um, 3>("measurements.out").print();
+    std::vector data = tools::read_measurements<length_um>("measurements.out");
 
 
     // std::ofstream of("measurements.out"); 
@@ -54,13 +45,6 @@ int main() {
     // of << k << '\n';
     // of.close(); 
 
-
-
-    std::cout << op::measurements_prod_t<length_m, length_m>() << '\n';
-    std::cout << op::measurements_prod_t<length_m, length_m, length_m>() << '\n';
-    std::cout << op::measurements_prod_t<length_m, length_m, time_m, length_m>() << '\n';
-
-    // std::cout << op::sin(3.54 * rad) << '\n'; 
 
 
     return 0; 

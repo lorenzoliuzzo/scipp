@@ -91,6 +91,15 @@ namespace scipp::math {
 
         };
 
+
+        template <typename BASE_TYPE, int POWER>
+            requires (physics::is_base_v<BASE_TYPE> && POWER > 0)
+        struct measurement_pow<physics::umeasurement<BASE_TYPE>, POWER> { 
+            
+            using type = physics::umeasurement<math::op::base_pow_t<BASE_TYPE, POWER>>; 
+
+        };
+
         template <typename T, int POWER>
         using measurement_pow_t = typename measurement_pow<T, POWER>::type;
 

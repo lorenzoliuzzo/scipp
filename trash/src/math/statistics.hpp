@@ -45,24 +45,6 @@ namespace scipp::math {
 
 
         /**
-         * @brief Compute the average value of a vector of measurements
-         * 
-         * @param other: vector of measurements
-         * 
-         * @return umeasurement
-         */
-        template <unit_base UB>
-        constexpr measurement<UB> average(const std::vector<measurement<UB>>& other) {
-
-            if (other.size() == 0) 
-                throw std::invalid_argument("Can't operate a descriptive statistic function on an empty vector"); 
-            
-            return std::accumulate(other.begin(), other.end(), measurement<UB>()) / other.size();
-
-        }
-
-
-        /**
          * @brief Compute the mean value of a vector of measurements
          * @note The uncertainty is computed as the standard deviation of mean (sdom)
          * 

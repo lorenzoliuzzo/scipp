@@ -320,6 +320,16 @@ namespace scipp::physics {
             }
 
 
+            constexpr umeasurement& operator*=(const double& other) noexcept {
+
+                this->value *= other;
+                this->uncertainty *= std::fabs(other);
+
+                return *this;
+
+            }
+
+
             /// @brief Multiply two measurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
@@ -335,6 +345,13 @@ namespace scipp::physics {
 
                 return { result, std::fabs(result) * tunc };
                 
+            }
+
+
+            constexpr umeasurement operator*(const double& other) const noexcept {
+
+                return { this->value * other, this->uncertainty * std::fabs(other) };
+
             }
 
 
@@ -359,6 +376,16 @@ namespace scipp::physics {
             }
 
 
+            constexpr umeasurement& operator/=(const double& other) noexcept {
+
+                this->value /= other;
+                this->uncertainty /= std::fabs(other);
+
+                return *this;
+
+            }
+
+
             /// @brief Divide two measurements
             /// @param other: umeasurement as a l-value const reference
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
@@ -376,6 +403,13 @@ namespace scipp::physics {
                 double result = this->value / other.value;
 
                 return { result, std::fabs(result) * tunc };
+                
+            }
+
+
+            constexpr umeasurement operator/(const double& other) const noexcept {
+
+                return { this->value / other, this->uncertainty / std::fabs(other) };
                 
             }
 
@@ -519,6 +553,18 @@ namespace scipp::physics {
                 
                 return this->uncertainty / UNIT_TYPE::mult; 
                 
+            }
+
+
+            /// @brief Get the weight of the measurement
+            /// @note The weight is the inverse of the square of the uncertainty
+            constexpr double weight() const {
+
+                if (this->uncertainty == 0.0)
+                    throw std::runtime_error("Cannot compute the weight of a measurement with zero uncertainty");
+                    
+                return 1.0 / std::pow(this->uncertainty, 2);
+
             }
 
 

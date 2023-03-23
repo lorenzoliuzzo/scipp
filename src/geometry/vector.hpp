@@ -14,8 +14,8 @@
 namespace scipp::geometry {
 
 
-    template <typename MEAS, std::size_t DIM>
-        requires (physics::is_measurement_v<MEAS> || physics::is_umeasurement_v<MEAS>)
+    template <typename MEAS_TYPE, std::size_t DIM>
+        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     struct vector {
 
         
@@ -23,7 +23,7 @@ namespace scipp::geometry {
         // aliases
         // ===========================================================
             
-            using measurement_type = MEAS;
+            using measurement_type = MEAS_TYPE;
 
             using index_type = typename std::array<measurement_type, DIM>::size_type;
 
@@ -298,7 +298,7 @@ namespace scipp::geometry {
 
             /// @brief Multiply the vector by a measurement
             template <typename MEAS2>
-                requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
+                requires (physics::is_generic_measurement_v<MEAS2>)
             constexpr auto operator*(const MEAS2& measurement) const noexcept
                 -> vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> {
 
@@ -360,7 +360,7 @@ namespace scipp::geometry {
 
             /// @brief Get the begin() const iterator
             /// @return constexpr measurement_type& const 
-            constexpr measurement_type& begin() const noexcept {
+            constexpr const measurement_type* begin() const noexcept {
 
                 return this->data.begin();
 
@@ -369,7 +369,7 @@ namespace scipp::geometry {
 
             /// @brief Get the begin() iterator
             /// @return constexpr measurement_type&
-            constexpr measurement_type& begin() noexcept {
+            constexpr measurement_type* begin() noexcept {
 
                 return this->data.begin();
 
@@ -378,7 +378,7 @@ namespace scipp::geometry {
 
             /// @brief Get the end() iterator
             /// @return constexpr measurement_type&
-            constexpr measurement_type& end() const noexcept {
+            constexpr const measurement_type* end() const noexcept {
 
                 return this->data.end();
 
@@ -387,7 +387,7 @@ namespace scipp::geometry {
 
             /// @brief Get the end() iterator
             /// @return constexpr measurement_type&
-            constexpr measurement_type& end() noexcept {
+            constexpr measurement_type* end() noexcept {
 
                 return this->data.end();
 
@@ -518,11 +518,11 @@ namespace scipp::geometry {
 
             /// @brief Dot product of two vectors
             template <typename MEAS2>
-                requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
+                requires (physics::is_generic_measurement_v<MEAS2>)
             friend constexpr auto dot(const vector& v1, const vector<MEAS2, DIM>& v2) noexcept 
-                -> math::op::measurements_prod_t<MEAS, MEAS2> {
+                -> math::op::measurements_prod_t<measurement_type, MEAS2> {
 
-                math::op::measurements_prod_t<MEAS, MEAS2> result;
+                math::op::measurements_prod_t<measurement_type, MEAS2> result;
 
                 for (std::size_t i{}; i < DIM; ++i) 
                     result += v1.data[i] * v2.data[i]; 
@@ -534,7 +534,7 @@ namespace scipp::geometry {
 
             /// @brief Cross product of two vectors
             template <typename MEAS2>
-                requires (physics::is_measurement_v<MEAS2> || physics::is_umeasurement_v<MEAS2>)
+                requires (physics::is_generic_measurement_v<MEAS2>)
             friend constexpr auto cross(const vector& v1, const vector<MEAS2, DIM>& v2) noexcept    
                 -> vector<math::op::measurements_prod_t<measurement_type, MEAS2>, DIM> {
 
@@ -672,7 +672,7 @@ namespace scipp::geometry {
     struct is_vector : std::false_type {};
 
     template <typename MEAS_TYPE, std::size_t DIM> 
-        requires (physics::is_measurement_v<MEAS_TYPE> || physics::is_umeasurement_v<MEAS_TYPE>)
+        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     struct is_vector<vector<MEAS_TYPE, DIM>> : std::true_type {};
 
     template <typename T>

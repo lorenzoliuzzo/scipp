@@ -32,17 +32,17 @@ namespace scipp::physics {
 
         inline static constexpr measurement eps0(math::op::invert(mu0 * math::op::square(c))); ///< electric permittivity of vacuum
 
-        inline static constexpr charge_m e(1.602176634e-19 * C); ///< elementary charge
+        // inline static constexpr charge_m e(1.602176634e-19, C); ///< elementary charge
 
-        inline static constexpr mass_m m_e(9.1093837015e-31 * kg); ///< electron mass
+        inline static constexpr mass_m m_e(9.1093837015e-31, kg); ///< electron mass
 
-        inline static constexpr mass_m m_p(1.67262192369e-27 * kg); ///< proton mass
+        inline static constexpr mass_m m_p(1.67262192369e-27, kg); ///< proton mass
 
-        inline static constexpr mass_m m_n(1.67492749804e-27 * kg); ///< neutron mass
+        inline static constexpr mass_m m_n(1.67492749804e-27, kg); ///< neutron mass
 
         inline static constexpr measurement k_B(1.380649e-23, J / K); ///< Boltzmann constant
 
-        inline static constexpr measurement N_A(6.02214076e23 / mol); ///< Avogadro constant
+        inline static constexpr math::op::measurement_inv_t<mole_m> N_A(6.02214076e23 / mol); ///< Avogadro constant
 
         inline static constexpr measurement R(N_A * k_B); ///< ideal gas constant
 

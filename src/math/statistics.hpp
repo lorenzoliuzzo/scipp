@@ -24,7 +24,7 @@ namespace scipp::math {
         inline constexpr auto average(const VECTOR_TYPE& other) noexcept 
             -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
             
-            return { std::accumulate(other.begin(), other.end(), typename VECTOR_TYPE::measurement_type()).value / static_cast<double>(VECTOR_TYPE::dim) }; 
+            return { std::accumulate(other.data.begin(), other.data.end(), typename VECTOR_TYPE::measurement_type()).value / static_cast<double>(VECTOR_TYPE::dim) }; 
 
         }
 
@@ -38,7 +38,7 @@ namespace scipp::math {
             double weighted_value{};
             double weights{};
 
-            for (const auto& um : other) {
+            for (const auto& um : other.data) {
                 weighted_value += um.value * um.weight(); 
                 weights += um.weight();
             }
@@ -56,7 +56,7 @@ namespace scipp::math {
             -> op::measurement_square_t<typename VECTOR_TYPE::measurement_type> {
 
             auto avg = average(other);
-            return std::accumulate(other.begin(), other.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_type>(), 
+            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_type>(), 
                                     [&avg](const op::measurement_square_t<typename VECTOR_TYPE::measurement_type>& acc, 
                                                             const typename VECTOR_TYPE::measurement_type& val) { 
                                                                 return acc + op::square(val - avg); 
@@ -74,7 +74,7 @@ namespace scipp::math {
             -> physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_type::base>> {
             
             op::measurement_inv_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_type::base>>> weights; 
-            for (const auto& x : other) 
+            for (const auto& x : other.data) 
                 weights += x.weight(); 
             
             return op::invert(weights);    
@@ -112,8 +112,8 @@ namespace scipp::math {
         constexpr typename VECTOR_TYPE::measurement_type median(const VECTOR_TYPE& other) noexcept {
 
             VECTOR_TYPE copy(other); 
-            if (!std::is_sorted(copy.begin(), copy.end())) 
-                std::sort(copy.begin(), copy.end());
+            if (!std::is_sorted(copy.data.begin(), copy.data.end())) 
+                std::sort(copy.data.begin(), copy.data.end());
 
             if (VECTOR_TYPE::dim % 2 != 0) 
                 return copy[VECTOR_TYPE::dim / 2];

@@ -41,14 +41,14 @@
     #include "physics/units.hpp" 
 
     #include "physics/measurement.hpp" /// ok
-    #include "physics/umeasurement.hpp" 
-    #include "physics/measurements.hpp"
-    #include "math/ops/measurements.hpp"
+    #include "physics/umeasurement.hpp" /// ok
+    #include "physics/measurement_types.hpp" 
+    #include "math/ops/measurements.hpp" /// ok
 
     #include "physics/units_litterals.hpp"
 
-    #include "math/constants.hpp"
-    // #include "physics/constants.hpp"
+    #include "math/constants.hpp" 
+    #include "physics/constants.hpp"
 
     #include "geometry/vector.hpp"
     #include "math/ops/vectors.hpp"

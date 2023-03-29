@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(sci++ VERSION 2.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fopenmp -pg -fconcepts")
+set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fopenmp -pg")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 

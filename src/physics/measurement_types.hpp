@@ -80,7 +80,7 @@ namespace scipp::physics {
     
     // using frequency_m = measurement<units::hertz>;                    ///< frequency_m
     // using power_m = measurement<units::watt>;                         ///< power_m
-    // using charge_m = measurement<units::coulomb>;                     ///< charge_m
+    using charge_m = measurement<units::coulomb>;                     ///< charge_m
     // using voltage_m = measurement<units::volt>;                       ///< voltage_m
     // using capacitance_m = measurement<units::farad>;                  ///< capacitance_m
     // using resistance_m = measurement<units::ohm>;                     ///< resistance_m

@@ -28,13 +28,13 @@ namespace scipp::physics {
 
 
     template <std::size_t DIM> 
-    using lin_velocity = geometry::vector<math::op::measurements_divide_t<length_m, time_m>, DIM>; 
+    using lin_velocity = geometry::vector<math::op::measurements_div_t<length_m, time_m>, DIM>; 
 
     using lin_velocity2 = lin_velocity<2>;
     using lin_velocity3 = lin_velocity<3>;
 
     template <std::size_t DIM> 
-    using ulin_velocity = geometry::vector<math::op::measurements_divide_t<length_um, time_um>, DIM>; 
+    using ulin_velocity = geometry::vector<math::op::measurements_div_t<length_um, time_um>, DIM>; 
 
     using ulin_velocity2 = ulin_velocity<2>;
     using ulin_velocity3 = ulin_velocity<3>;

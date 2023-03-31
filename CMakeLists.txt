@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(sci++ VERSION 2.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fopenmp -pg")
+set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fconcepts -flto -ftree-loop-vectorize -pg")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 
@@ -19,3 +19,9 @@ target_include_directories(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES 
         LINKER_LANGUAGE CXX)
+
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}-config
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

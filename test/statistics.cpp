@@ -18,7 +18,7 @@ using namespace math;
 
 int main() {
 
-    auto data = tools::read_measurements<length_m, 100000>("data.dat");
+    auto data = tools::read_measurements<length_m, 100000>("data/data.dat");
 
     std::cout << "dimension: " << data.dim << '\n'; 
     std::cout << "average: " << statistics::average(data) << '\n';
@@ -28,7 +28,7 @@ int main() {
     std::cout << "stdev_mean: " << statistics::stdev_mean(data) << "\n\n";
 
 
-    auto data2 = tools::read_measurements<length_um, 3>("measurements.out");
+    auto data2 = tools::read_measurements<length_um, 3>("data/measurements.out");
     std::cout << "average: " << statistics::average(data2) << '\n';
     std::cout << "median: " << statistics::median(data2) << '\n'; 
     std::cout << "mean: " << statistics::mean(data2) << '\n';

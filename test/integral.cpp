@@ -9,7 +9,6 @@
 
 
 #include "sci++.hpp"
-#include "cassert"
 
 using namespace scipp; 
 using namespace physics; 
@@ -20,7 +19,7 @@ using namespace math;
 int main() {
 
 
-    omp_timer t; 
+    tools::timer t; 
     t.start(); 
     t.stop(); 
 

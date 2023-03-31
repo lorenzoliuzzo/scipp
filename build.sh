@@ -1,7 +1,8 @@
 mkdir build
-cd build
-cmake ..
-make 
-# cd ..
-# doxygen Doxyfile
+cmake -S . -B build
+cmake --build build
+# doxygen doc/Doxyfile
+# cd doc/latex
+# make refman.pdf
 # open doc/html/index.html
+# evince refman.pdf

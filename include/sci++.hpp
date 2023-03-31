@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-23
+ * @date    2023-03-30
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,41 +11,43 @@
 #ifndef SCIPP_LIBRARY
 
 
+    #include <algorithm>
     #include <cmath>
-    #include <concepts>
+    // #include <concepts>
     // #include <cstdint>
+    // #include <complex>
     #include <chrono>
+    // #include <execution>
     #include <fstream>
-    #include <functional>
-    #include <iomanip>
+    // #include <functional>
+    // #include <iomanip>
     #include <iostream>
     #include <map>
     #include <numeric>
-    #include <omp.h>
+    // #include <omp.h>
     #include <ratio>
     // #include <stdexcept>
     #include <string>
+    #include <sstream>
     // #include <thread>
     // #include <variant>
     #include <vector>
   
 
-    #include "physics/base_quantity.hpp" /// ok
+    #include "physics/measurements/base_quantity.hpp" /// ok
     #include "math/ops/base_quantities.hpp" /// ok
 
-    #include "physics/prefix.hpp" /// ok
+    #include "physics/measurements/prefix.hpp" /// ok
     #include "math/ops/prefixes.hpp" /// ok
 
-    #include "physics/unit.hpp" /// ok
+    #include "physics/measurements/unit.hpp" /// ok
     #include "math/ops/units.hpp" /// ok
-    #include "physics/units.hpp" 
+    #include "physics/measurements/unit_types.hpp" 
 
-    #include "physics/measurement.hpp" /// ok
-    #include "physics/umeasurement.hpp" /// ok
-    #include "physics/measurement_types.hpp" 
+    #include "physics/measurements/measurement.hpp" /// ok
+    #include "physics/measurements/umeasurement.hpp" /// ok
+    #include "physics/measurements/measurement_types.hpp" 
     #include "math/ops/measurements.hpp" /// ok
-
-    #include "physics/units_litterals.hpp"
 
     #include "math/constants.hpp" 
     #include "physics/constants.hpp"
@@ -54,10 +56,8 @@
     #include "math/ops/vectors.hpp"
     #include "physics/vector_types.hpp"
 
-    // #include "geometry/row_vector.hpp"
-
     #include "geometry/matrix.hpp"
-    // #include "math/ops/matrices.hpp"
+    #include "math/ops/matrices.hpp"
 
     #include "math/integral.hpp"    
 
@@ -71,12 +71,11 @@
     // #include "tools/plotter.hpp"
     // #include "tools/bench.hpp"
 
-    #include "physics/timer.hpp"
+    #include "tools/io.hpp"
+    #include "tools/timer.hpp"
 
 
-
-    #include "tools/reader.hpp"
-
+    #include "math/hermite_polynomial.hpp"
 
 
 #endif

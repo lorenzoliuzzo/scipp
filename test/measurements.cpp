@@ -35,8 +35,10 @@ int main() {
 
     y.print_as(mm); 
 
-    tools::read_measurements<length_um, 3>("measurements.out").print();
-    std::vector data = tools::read_measurements<length_um>("measurements.out");
+    tools::read_measurements<length_um, 3>("data/measurements.out").print();
+    auto data = tools::read_measurements<length_um>("data/measurements.out");
+
+    tools::print("vector or std::vector", data);
 
 
     // std::ofstream of("measurements.out"); 

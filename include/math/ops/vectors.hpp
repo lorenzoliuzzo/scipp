@@ -39,7 +39,7 @@ namespace scipp::math {
             requires (geometry::are_vectors_v<VEC_TYPE1, VEC_TYPE2> && 
                       geometry::have_same_dimension_v<VEC_TYPE1, VEC_TYPE2>)
         constexpr auto cross(const VEC_TYPE1& v1, const VEC_TYPE2& v2) noexcept 
-            -> math::op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type> {
+            -> geometry::vector<math::op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type>, VEC_TYPE1::dim> {
             
             geometry::vector<math::op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type>, VEC_TYPE1::dim> result;
 

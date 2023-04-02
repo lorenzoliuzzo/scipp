@@ -14,7 +14,7 @@ using namespace scipp;
 using namespace physics; 
 using namespace physics::units; 
 using namespace math; 
-
+using namespace tools;
 
 int main() {
 
@@ -36,7 +36,7 @@ int main() {
 
     t.stop();
     std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    result_mid.print();
+    print("result", result_mid);
 
     t.start(); 
     
@@ -44,7 +44,7 @@ int main() {
 
     t.stop();
     std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    result_trap.print_as(unit<metre3, std::nano>());
+    print(result_trap, unit<metre3, std::nano>());
 
     t.start(); 
     
@@ -52,7 +52,7 @@ int main() {
 
     t.stop();
     std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    result_simp.print_as(unit<metre3, std::nano>());
+    print(result_simp, unit<metre3, std::nano>());
 
 
     std::cout << result_mid - result_trap << '\n'; 

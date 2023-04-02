@@ -1,6 +1,3 @@
-add_executable(core main.cpp)
-target_link_libraries(core ${PROJECT_NAME})
-
 add_executable(measurements measurements.cpp)
 target_link_libraries(measurements ${PROJECT_NAME})
 
@@ -15,14 +12,3 @@ target_link_libraries(integral ${PROJECT_NAME})
 
 add_executable(statistics statistics.cpp)
 target_link_libraries(statistics ${PROJECT_NAME})
-
-add_executable(hermite hermite.cpp)
-target_link_libraries(hermite ${PROJECT_NAME})
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-30
+ * @date    2023-04-02
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,14 +17,15 @@
     // #include <cstdint>
     // #include <complex>
     #include <chrono>
-    // #include <execution>
+    #include <execution>
     #include <fstream>
     // #include <functional>
     // #include <iomanip>
     #include <iostream>
     #include <map>
     #include <numeric>
-    // #include <omp.h>
+    // #include <omp.h>namespace plt = matplotlibcpp; 
+
     #include <ratio>
     // #include <stdexcept>
     #include <string>
@@ -32,7 +33,11 @@
     // #include <thread>
     // #include <variant>
     #include <vector>
-  
+
+
+    #include <external/matplotlibcpp.h>
+        namespace plt = matplotlibcpp; 
+
 
     #include "physics/measurements/base_quantity.hpp" /// ok
     #include "math/ops/base_quantities.hpp" /// ok
@@ -59,9 +64,14 @@
     #include "geometry/matrix.hpp"
     #include "math/ops/matrices.hpp"
 
+
+    // #include "physics/measurements/complex_measurement.hpp"
+
     #include "math/integral.hpp"    
 
     #include "math/statistics.hpp"
+    // #include "math/interpolation.hpp"
+    #include "geometry/linspace.hpp"
 
     // #include "math/equations.hpp"
 
@@ -73,7 +83,7 @@
 
     #include "tools/io.hpp"
     #include "tools/timer.hpp"
-
+    #include "tools/copy_counter.hpp"
 
     #include "math/hermite_polynomial.hpp"
 

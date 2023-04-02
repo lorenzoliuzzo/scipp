@@ -2,7 +2,7 @@
  * @file    measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the measurement struct and its type traits.
- * @date    2023-03-23
+ * @date    2023-04-02
  * 
  * @copyright Copyright (c) 2023
  */
@@ -55,21 +55,21 @@ namespace scipp::physics {
             /// @brief Default constructor
             constexpr measurement() noexcept : 
 
-                value{0.0} {}
+                value{0.0}{}
 
 
             /// @brief Construct a measurement from a scalar value
             /// @param val: The value of the measurement
             constexpr measurement(const double& val) noexcept :
 
-                value{val} {}
+                value{val}{}
 
 
             /// @brief Construct a measurement from a scalar value
             /// @param val: The value of the measurement
             constexpr measurement(double&& val) noexcept :
 
-                value{std::move(val)} {}
+                value{std::move(val)}{}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
@@ -80,7 +80,7 @@ namespace scipp::physics {
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
             constexpr measurement(const double& val, const UNIT_TYPE&) noexcept :
 
-                value{val * UNIT_TYPE::mult} {}
+                value{val * UNIT_TYPE::mult}{}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
@@ -91,21 +91,21 @@ namespace scipp::physics {
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
             constexpr measurement(double&& val, const UNIT_TYPE&) noexcept :
 
-                value{std::move(val * UNIT_TYPE::mult)} {}
+                value{std::move(val * UNIT_TYPE::mult)}{}
 
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to copy
             constexpr measurement(const measurement& other) noexcept :
 
-                value{other.value} {}
+                value{other.value}{}
 
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to move
             constexpr measurement(measurement&& other) noexcept :
 
-                value{std::move(other.value)} {}
+                value{std::move(other.value)}{}
 
 
         // ==============================================
@@ -455,39 +455,6 @@ namespace scipp::physics {
                 
             }
                         
-            
-            /// @brief Print the measurement to the standard output
-            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
-            constexpr void print(const bool& newline = true) const noexcept {
-
-                std::cout << this->value << ' ' << BASE_TYPE::to_string() << (newline ? '\n' : ' '); 
-
-            }
-            
-
-            /// @brief Print the measurement to the standard output
-            /// @param units: The unit in which the value is printed
-            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
-            /// @note The unit must be of the same base of the measurement
-            template <typename UNIT_TYPE>
-                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
-            constexpr void print_as(const UNIT_TYPE& units, const bool& newline = true) const noexcept {
-
-                std::cout << this->value_as(units) << ' ' << UNIT_TYPE::to_string() << (newline ? '\n' : ' '); 
-
-            }
-
-
-            /// @brief Print the measurement to the standard output
-            /// @tparam PREFIX: The std::ratio prefix desired
-            template <typename PREFIX>
-                requires (is_prefix_v<PREFIX>)
-            constexpr void print_as(const bool& newline = true) const noexcept {
-                
-                std::cout << this->value_as(unit<BASE_TYPE, PREFIX>()) << ' ' << unit<BASE_TYPE, PREFIX>::to_string() << (newline ? '\n' : ' '); 
-
-            }
-            
 
     }; // struct measurement
 
@@ -558,11 +525,24 @@ namespace scipp::physics {
         
         /// @brief Type trait to check if a type is a measurement
         template <typename T>
-        struct is_measurement : std::false_type {};
+        struct is_measurement : std::false_type{};
 
         template <typename BASE_TYPE>
             requires (is_base_v<BASE_TYPE>)
-        struct is_measurement<measurement<BASE_TYPE>> : std::true_type {};
+        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
+
+        template <>
+        struct is_measurement<double> : std::true_type{};
+
+        template <>
+        struct is_measurement<float> : std::true_type{};
+
+        template <>
+        struct is_measurement<int> : std::true_type{};
+
+        template <>
+        struct is_measurement<uint> : std::true_type{};
+        
 
         template <typename MEAS_TYPE>
         constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
@@ -570,7 +550,7 @@ namespace scipp::physics {
 
         /// @brief Type trait to check if a list of types are measurement types
         template <typename... MEAS_TYPES>
-        struct are_measurements : std::conjunction<is_measurement<MEAS_TYPES>...> {};
+        struct are_measurements : std::conjunction<is_measurement<MEAS_TYPES>...>{};
 
         template <typename... MEAS_TYPES>
         constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;

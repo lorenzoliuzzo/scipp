@@ -65,7 +65,8 @@ int main() {
     auto mat2 = make_matrix<position2>(position2(1.0m, 2.0m), 
                                        position2(3.0m, 4.0m));
     mat2.print(); 
-    mat2.determinant().print();
+    print("determinant", mat2.determinant()); 
+    
     mat2.inverse().print(); 
     (mat2.inverse() * mat2).print();
 
@@ -73,13 +74,13 @@ int main() {
                                        position3(-1.02m, -3.54m, -1.0m), 
                                        position3(-1.0m, 0.5m, 12.4m)); 
     mat3.print(); 
-    mat3.determinant().print();
+    print("determinant", mat3.determinant()); 
     mat3.inverse().print(); 
 
     auto x = lin_velocity3(-5.2 * m_s, 34.5 * m_s, 0.2 * m_s);
-    x.print(); 
-    (mat3 * mat3.solve(x)).print(); 
-    mat3.solve(x).print();
+    print(x); 
+    print(mat3 * mat3.solve(x)); 
+    print(mat3.solve(x));
 
     mat2.lower_triangular().print();
     mat2.upper_triangular().print();

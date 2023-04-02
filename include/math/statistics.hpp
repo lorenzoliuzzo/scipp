@@ -1,7 +1,7 @@
 /**
  * @file    math/statistics.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the definition and implementation of all the descriptive statistics functions for the measurements library
+ * @brief   This file contains the definition and implementation of all the descriptive statistics functions
  * @date    2023-03-23
  * 
  * @copyright Copyright (c) 2023

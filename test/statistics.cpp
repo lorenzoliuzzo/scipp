@@ -2,7 +2,7 @@
  * @file    test/statistics.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-23
+ * @date    2023-04-02
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,8 +12,8 @@
 
 using namespace scipp; 
 using namespace physics; 
-using namespace units;
 using namespace math; 
+using namespace tools; 
 
 
 int main() {
@@ -29,13 +29,11 @@ int main() {
 
 
     auto data2 = tools::read_measurements<length_um, 3>("data/measurements.out");
-    std::cout << "average: " << statistics::average(data2) << '\n';
-    std::cout << "median: " << statistics::median(data2) << '\n'; 
-    std::cout << "mean: " << statistics::mean(data2) << '\n';
-    std::cout << "variance: "; 
-    statistics::variance(data2).print_as(um2); 
-    std::cout << "stdev: "; 
-    statistics::stdev(data2).print_as(um); 
+    print("average", statistics::average(data2));
+    print("median", statistics::median(data2)); 
+    print("mean", statistics::mean(data2));
+    print("variance", statistics::variance(data2), units::um2); 
+    print("stdev", statistics::stdev(data2), units::um); 
 
     return 0; 
 

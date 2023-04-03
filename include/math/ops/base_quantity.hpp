@@ -26,9 +26,7 @@ namespace scipp::math {
                                                            -BASE::temperature,
                                                            -BASE::elettric_current,
                                                            -BASE::substance_amount,
-                                                           -BASE::luminous_intensity,
-                                                           -BASE::angle,    
-                                                           -BASE::solid_angle> {};
+                                                           -BASE::luminous_intensity> {};
 
         template <typename BASE> 
         using base_invert_t = typename base_invert<BASE>::type;
@@ -42,9 +40,7 @@ namespace scipp::math {
                                                             (BASES::temperature + ...),
                                                             (BASES::elettric_current + ...),
                                                             (BASES::substance_amount + ...),
-                                                            (BASES::luminous_intensity + ...),
-                                                            (BASES::angle + ...),
-                                                            (BASES::solid_angle + ...)> {};
+                                                            (BASES::luminous_intensity + ...)> {};
 
         template <typename... BASES>
         using base_product_t = typename base_product<BASES...>::type;
@@ -59,9 +55,7 @@ namespace scipp::math {
                                                              BASE1::temperature - BASE2::temperature,
                                                              BASE1::elettric_current - BASE2::elettric_current,
                                                              BASE1::substance_amount - BASE2::substance_amount,
-                                                             BASE1::luminous_intensity - BASE2::luminous_intensity,
-                                                             BASE1::angle - BASE2::angle, 
-                                                             BASE1::solid_angle - BASE2::solid_angle> {}; 
+                                                             BASE1::luminous_intensity - BASE2::luminous_intensity> {}; 
 
         template <typename BASE1, typename BASE2> 
         using base_division_t = typename base_division<BASE1, BASE2>::type; 
@@ -76,9 +70,7 @@ namespace scipp::math {
                                                         BASE::temperature * POWER,
                                                         BASE::elettric_current * POWER,
                                                         BASE::substance_amount * POWER,
-                                                        BASE::luminous_intensity * POWER,
-                                                        BASE::angle * POWER,
-                                                        BASE::solid_angle * POWER> {};
+                                                        BASE::luminous_intensity * POWER> {};
 
         template <typename BASE, int POWER> 
         using base_pow_t = typename base_pow<BASE, POWER>::type;
@@ -99,9 +91,7 @@ namespace scipp::math {
                                                          BASE::temperature / POWER,
                                                          BASE::elettric_current / POWER,
                                                          BASE::substance_amount / POWER,
-                                                         BASE::luminous_intensity / POWER,
-                                                         BASE::angle / POWER,
-                                                         BASE::solid_angle / POWER> {};
+                                                         BASE::luminous_intensity / POWER> {};
 
         template <typename BASE, int POWER> 
         using base_root_t = typename base_root<BASE, POWER>::type;

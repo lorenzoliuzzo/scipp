@@ -610,6 +610,29 @@ namespace scipp::geometry {
             }
 
 
+            /// @brief If the measurement has an uncertainty, get the values vector
+            constexpr auto values() const noexcept 
+                -> vector<physics::measurement<typename measurement_type::base>, dim> 
+                    requires (physics::is_umeasurement_v<measurement_type>) {
+
+                std::array<physics::measurement<typename measurement_type::base>, dim> result;
+                std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.value; });
+                return result;
+
+            }
+
+            /// @brief If the measurement has an uncertainty, get the uncertainties vector
+            constexpr auto uncertainties() const noexcept 
+                -> vector<physics::measurement<typename measurement_type::base>, dim> 
+                    requires (physics::is_umeasurement_v<measurement_type>) {
+
+                std::array<physics::measurement<typename measurement_type::base>, dim> result;
+                std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.uncertainty; });
+                return result;
+
+            }
+
+
             /// @brief Get the magnitude of the vector
             constexpr measurement_type magnitude() const noexcept {
 

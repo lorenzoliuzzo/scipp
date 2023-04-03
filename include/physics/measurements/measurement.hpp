@@ -2,7 +2,7 @@
  * @file    measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the measurement struct and its type traits.
- * @date    2023-04-02
+ * @date    2023-04-03
  * 
  * @copyright Copyright (c) 2023
  */
@@ -112,6 +112,13 @@ namespace scipp::physics {
         // operators
         // ==============================================
 
+            constexpr operator double() const noexcept { 
+                
+                return this->value; 
+                
+            }
+
+
             /// @brief Copy assignment operator
             constexpr measurement& operator=(const measurement& other) noexcept {
 
@@ -175,6 +182,50 @@ namespace scipp::physics {
                 return *this;  
 
             }
+
+            /// @brief Multiply this measurement with a scalar measurement
+            constexpr measurement& operator*=(const measurement<units::scalar>& other) noexcept {
+
+                this->value *= other.value; 
+
+                return *this; 
+
+            }
+
+            /// @brief Multiply this measurement with a scalar measurement
+            constexpr measurement& operator*=(measurement<units::scalar>&& other) noexcept {
+
+                this->value *= std::move(other.value); 
+
+                return *this; 
+
+            }
+
+
+            /// @brief Divide this measurement with a scalar measurement
+            constexpr measurement& operator/=(const measurement<units::scalar>& other) {
+
+                if (other.value == 0.0) 
+                    throw std::invalid_argument("Cannot divide a measurement by zero");
+
+                this->value /= other.value; 
+
+                return *this; 
+
+            }
+
+            /// @brief Divide this measurement with a scalar measurement
+            constexpr measurement& operator/=(measurement<units::scalar>&& other) {
+
+                if (other.value == 0.0) 
+                    throw std::invalid_argument("Cannot divide a measurement by zero");
+
+                this->value /= std::move(other.value); 
+
+                return *this; 
+
+            }
+
 
             /// @brief Subtract two measurements
             constexpr measurement operator-(const measurement& other) const noexcept { 
@@ -248,88 +299,6 @@ namespace scipp::physics {
                 
             }            
             
-            
-            /// @brief Multiply this measurement with a scalar measurement
-            constexpr measurement& operator*=(const measurement<units::scalar>& other) noexcept {
-
-                this->value *= other.value; 
-
-                return *this; 
-
-            }
-
-            /// @brief Multiply this measurement with a scalar measurement
-            constexpr measurement& operator*=(measurement<units::scalar>&& other) noexcept {
-
-                this->value *= std::move(other.value); 
-
-                return *this; 
-
-            }
-
-            /// @brief Multiply a measurement with a scalar measurement
-            constexpr measurement operator*(const measurement<units::scalar>& other) const noexcept {
-
-                return this->value * other.value; 
-
-            }
-
-            /// @brief Multiply a measurement with a scalar measurement
-            constexpr measurement operator*(measurement<units::scalar>&& other) const noexcept {
-
-                return this->value * std::move(other.value); 
-
-            }
-
-
-            /// @brief Divide this measurement with a scalar measurement
-            /// @note The scalar must not be zero
-            constexpr measurement& operator/=(const measurement<units::scalar>& other) {
-
-                if (other == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                this->value /= other.value; 
-
-                return *this; 
-
-            }
-
-            /// @brief Divide this measurement with a scalar measurement
-            /// @note The scalar must not be zero
-            constexpr measurement& operator/=(measurement<units::scalar>&& other) {
-
-                if (other == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                this->value /= std::move(other.value); 
-
-                return *this; 
-
-            }
-
-            /// @brief Divide a measurement with a scalar measurement
-            /// @note The scalar must not be zero
-            constexpr measurement operator/(const measurement<units::scalar>& other) const {
-
-                if (other == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                return this->value / other.value; 
-
-            }
-
-            /// @brief Divide a measurement with a scalar measurement
-            /// @note The scalar must not be zero
-            constexpr measurement operator/(measurement<units::scalar>&& other) const {
-
-                if (other == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                return this->value / std::move(other.value); 
-
-            }
-
 
             /// @brief Check if this measurement is equal to another measurement
             constexpr bool operator==(const measurement& other) const noexcept {
@@ -379,23 +348,23 @@ namespace scipp::physics {
         // friend operators
         // ==============================================
 
-            /// @brief Multiply a scalar measurement by a measurement
-            friend inline constexpr measurement operator*(const measurement<units::scalar>& scalar, const measurement& meas) noexcept {
+            // /// @brief Multiply a scalar measurement by a measurement
+            // friend inline constexpr measurement operator*(const measurement<units::scalar>& scalar, const measurement& meas) noexcept {
 
-                return scalar.value * meas.value; 
+            //     return scalar.value * meas.value; 
                 
-            }
+            // }
 
-            /// @brief Divide a scalar measurement by a measurement
-            friend constexpr auto operator/(const measurement<units::scalar>& scalar, const measurement& meas)
-                -> measurement<math::op::base_invert_t<BASE_TYPE>> {
+            // /// @brief Divide a scalar measurement by a measurement
+            // friend constexpr auto operator/(const measurement<units::scalar>& scalar, const measurement& meas)
+            //     -> measurement<math::op::base_invert_t<BASE_TYPE>> {
 
-                if (meas.value == 0.0) 
-                    throw std::runtime_error("Cannot divide a scalar by a zero measurement");
+            //     if (meas.value == 0.0) 
+            //         throw std::runtime_error("Cannot divide a scalar by a zero measurement");
 
-                return scalar.value / meas.value; 
+            //     return scalar.value / meas.value; 
                 
-            }
+            // }
 
 
             /// @brief Print a measurement to an output stream
@@ -473,6 +442,32 @@ namespace scipp::physics {
         measurement(double&&, const UNIT_TYPE&) 
             -> measurement<typename UNIT_TYPE::base>;
 
+    // =============================================
+    // measurement type traits
+    // =============================================
+        
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
+
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<measurement<BASE_TYPE>> : std::true_type{};
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<const measurement<BASE_TYPE>&> : std::true_type{};
+        
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<measurement<BASE_TYPE>, const measurement<BASE_TYPE>&> : std::true_type{};
+
+        template <typename BASE_TYPE>
+            requires (is_base_v<BASE_TYPE>)
+        struct are_same_measurements<const measurement<BASE_TYPE>&, measurement<BASE_TYPE>> : std::true_type{};
+
+
 
     // =================================================================
     // measurement construction from operations with double and units 
@@ -517,43 +512,6 @@ namespace scipp::physics {
             return val / UNIT_TYPE::mult; 
             
         }
-
-
-    // =============================================
-    // measurement type traits
-    // =============================================
-        
-        /// @brief Type trait to check if a type is a measurement
-        template <typename T>
-        struct is_measurement : std::false_type{};
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
-
-        template <>
-        struct is_measurement<double> : std::true_type{};
-
-        template <>
-        struct is_measurement<float> : std::true_type{};
-
-        template <>
-        struct is_measurement<int> : std::true_type{};
-
-        template <>
-        struct is_measurement<uint> : std::true_type{};
-        
-
-        template <typename MEAS_TYPE>
-        constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
-
-
-        /// @brief Type trait to check if a list of types are measurement types
-        template <typename... MEAS_TYPES>
-        struct are_measurements : std::conjunction<is_measurement<MEAS_TYPES>...>{};
-
-        template <typename... MEAS_TYPES>
-        constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;
 
 
 } // namespace physics

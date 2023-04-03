@@ -70,56 +70,56 @@ namespace scipp::tools {
     }; // class timer
 
 
-    // /// @brief Class for timing the execution of a generic function/process
-    // class omp_timer {
+    /// @brief Class for timing the execution of a generic function/process
+    class omp_timer {
 
         
-    //     public:
+        public:
 
-    //     // =============================================
-    //     // constructor and destructor
-    //     // =============================================   
+        // =============================================
+        // constructor and destructor
+        // =============================================   
 
-    //         /// @brief Default destructor
-    //         ~omp_timer() = default;
+            /// @brief Default destructor
+            ~omp_timer() = default;
 
         
-    //     // =============================================
-    //     // omp_timer methods
-    //     // =============================================   
+        // =============================================
+        // omp_timer methods
+        // =============================================   
 
 
-    //         inline void start() {
+            inline void start() {
 
-    //             start_ = omp_get_wtime();
+                start_ = omp_get_wtime();
 
-    //         }
-
-
-    //         inline void stop() {
-
-    //             stop_ = omp_get_wtime();
-
-    //         }
+            }
 
 
-    //         constexpr physics::time_m elapsed() {
+            inline void stop() {
 
-    //             return physics::time_m(stop_ - start_);
+                stop_ = omp_get_wtime();
+
+            }
+
+
+            constexpr physics::time_m elapsed() {
+
+                return physics::time_m(stop_ - start_);
             
-    //         }             
+            }             
 
 
-    //     protected: 
+        protected: 
 
-    //         // =============================================
-    //         // class members
-    //         // =============================================     
+            // =============================================
+            // class members
+            // =============================================     
 
-    //         double start_, stop_;
+            double start_, stop_;
 
 
-    // }; // class timer
+    }; // class timer
 
 
 } // namespace scipp::tools

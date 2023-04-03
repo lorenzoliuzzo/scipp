@@ -890,7 +890,7 @@ namespace scipp::physics {
 
 
     // =============================================
-    // measurement template guidelines
+    // umeasurement template guidelines
     // =============================================
 
         template <typename UNIT_TYPE> 
@@ -904,121 +904,13 @@ namespace scipp::physics {
             -> umeasurement<typename UNIT_TYPE::base>;
 
 
-        // /**
-        // * Reads a measurement from an input stream and returns it as an umeasurement.
-        // *
-        // * The input format should be "<value> ± <uncertainty> <unit>", where the value
-        // * and uncertainty are floating point numbers, and the unit is a string.
-        // *
-        // * @param is The input stream to read from.
-        // * @return The umeasurement read from the input stream.
-        // * @throws std::invalid_argument if the input format is invalid.
-        // */
-        // auto read_measurement(std::istream& is) {
-
-        //     double value{};
-        //     double uncertainty{};
-        //     std::string unit;
-
-        //     is >> value;
-        //     if (!is) {
-        //         throw std::invalid_argument("Invalid measurement format");
-        //     }
-
-        //     char plusminus = '\0';
-        //     is >> plusminus;
-        //     if (!is || (plusminus != '+' && plusminus != '-')) {
-        //         throw std::invalid_argument("Invalid measurement format");
-        //     }
-
-        //     is >> uncertainty;
-        //     if (!is) {
-        //         throw std::invalid_argument("Invalid measurement format");
-        //     }
-
-        //     is >> unit;
-
-        //     // Truncate the value to the uncertainty's precision
-        //     int precision = std::floor(std::log10(std::fabs(uncertainty)));
-        //     double truncated_value = std::round(value / std::pow(10, precision)) * std::pow(10, precision);
-
-        //     return { truncated_value, uncertainty, unit };
-
-        // }
-
-
     // =============================================
     // umeasurement type traits
     // =============================================
 
-        template <typename T>
-        struct is_umeasurement : std::false_type{}; 
-
         template <typename BASE_TYPE> 
             requires (is_base_v<BASE_TYPE>)
         struct is_umeasurement<umeasurement<BASE_TYPE>> : std::true_type{};
-
-        template <>
-        struct is_umeasurement<double> : std::false_type{};
-
-        template <>
-        struct is_umeasurement<float> : std::false_type{};
-
-        template <>
-        struct is_umeasurement<int> : std::false_type{};
-
-        template <>
-        struct is_umeasurement<uint> : std::false_type{};
-
-        template <typename T>
-        constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
-
-    
-        template <typename... Ts>
-        struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...>{};
-
-        template <typename... Ts>
-        constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
-
-
-    // =============================================
-    // measurements type traits
-    // =============================================
-
-        /// @brief Type trait to check if a type is a measurement or an umeasurement
-        template <typename T>
-        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T>, std::true_type, std::false_type>{};
-
-        template <typename T>
-        constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
-
-
-        template <typename... MEAS_TYPES>
-        struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...>{};
-
-        template <typename... MEAS_TYPEs>
-        constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
-
-
-        /// @brief Check if all the measurements are of the same base
-        template <typename T, typename... Ts>
-        struct are_same_measurements : std::false_type{};
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<measurement<BASE_TYPE>> : std::true_type{};
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<const measurement<BASE_TYPE>&> : std::true_type{};
-        
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<measurement<BASE_TYPE>, const measurement<BASE_TYPE>&> : std::true_type{};
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<const measurement<BASE_TYPE>&, measurement<BASE_TYPE>> : std::true_type{};
 
 
         template <typename BASE_TYPE>
@@ -1042,9 +934,6 @@ namespace scipp::physics {
         template <typename MEAS_TYPE, typename... MEAS_TYPEs>
             requires (are_generic_measurements_v<MEAS_TYPE, MEAS_TYPEs...>)
         struct are_same_measurements<MEAS_TYPE, MEAS_TYPE, MEAS_TYPEs...> : are_same_measurements<MEAS_TYPE, MEAS_TYPEs...>{};
-
-        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
-        constexpr bool are_same_measurements_v = are_same_measurements<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 
 } // namespace physics

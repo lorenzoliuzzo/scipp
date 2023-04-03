@@ -2,7 +2,7 @@
  * @file    tools/io.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-01
+ * @date    2023-04-02
  * 
  * @copyright Copyright (c) 2023
  */
@@ -13,10 +13,6 @@
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::tools {
-
-
-    template <typename T, typename... Args>
-    inline static constexpr bool is_one_of_v = (std::is_same_v<T, Args> || ...);
 
 
     /// @brief Print a message
@@ -57,10 +53,10 @@ namespace scipp::tools {
 
     /// @brief Print a measurement with a description
     template <typename MEAS_TYPE>
-        requires (physics::is_measurement_v<MEAS_TYPE>)
+        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other) noexcept {
 
-        std::cout << description << ": " << other.value << ' ' << MEAS_TYPE::base::to_string() << '\n'; 
+        std::cout << description << ": " << other << '\n'; 
 
     }
 
@@ -68,12 +64,12 @@ namespace scipp::tools {
     /// @brief Print the measurement with a specific unit of measure 
     /// @note The unit must be of the same base of the measurement
     template <typename MEAS_TYPE, typename UNIT_TYPE>
-        requires (physics::is_measurement_v<MEAS_TYPE> && 
+        requires (physics::is_generic_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
-    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE& units, bool newline = true) noexcept {
+    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << other.value_as(units) << ' ' << UNIT_TYPE::to_string(); 
+        std::cout << other * static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
         if (newline)
             std::cout << '\n'; 
 
@@ -86,13 +82,143 @@ namespace scipp::tools {
         requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
-    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE& units, bool newline = true) noexcept {
+    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << description << ": " << other.value_as(units) << ' ' << UNIT_TYPE::to_string(); 
+        std::cout << description << ": " << other / UNIT_TYPE::mult; 
         if (newline)
             std::cout << '\n'; 
 
     }
+
+    /// @brief Print the umeasurement with a specific unit of measure and a description
+    /// @note The unit must be of the same base of the measurement
+    template <typename MEAS_TYPE, typename UNIT_TYPE>
+        requires (physics::is_umeasurement_v<MEAS_TYPE> && 
+                  physics::is_unit_v<UNIT_TYPE> && 
+                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+    static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+
+        const double abs_value = std::fabs(other.value);
+
+        // determine number of digits before decimal point in value
+        const int n_val = (abs_value >= 1.0) ? 
+                            std::ceil(std::log10(abs_value)) : 
+                            ((abs_value == 0.0) ? 
+                                1 : 
+                                std::floor(std::log10(std::fabs(abs_value))) + 1); 
+
+        // determine number of digits before decimal point in uncertainty
+        int n_unc = (other.uncertainty >= 1.0) ? 
+                            std::ceil(std::log10(other.uncertainty)) : 
+                            ((other.uncertainty == 0.0) ? 
+                                1 : 
+                                std::floor(std::log10(std::fabs(other.uncertainty))) + 1); 
+
+        // determine the number of decimal places to show in the uncertainty
+        const int prec = std::max(0, std::min(6, -n_unc)) + 1; /// @todo
+
+        // determine whether scientific notation is needed
+        const bool scientific_notation_needed = abs_value >= 1e4 || abs_value <= 1e-4 || 
+                                                other.uncertainty >= 1e4 || other.uncertainty <= 1e-4;
+
+        // set the formatting of the output stream
+        if (other.uncertainty == 0.0) {
+
+            std::cout << std::fixed; 
+            std::cout.precision(n_val); 
+            std::cout << other.value << ' ' << UNIT_TYPE::to_string();
+
+        } else if (scientific_notation_needed) {
+
+            std::cout << std::scientific; 
+            std::cout.precision(prec - 1); 
+            std::cout << other.value << " ± ";
+            std::cout.precision(0); 
+            std::cout << other.uncertainty << ' ' << UNIT_TYPE::to_string();
+
+        } else {
+
+            std::cout << std::fixed;
+            if (other.uncertainty >= 1.0) 
+                std::cout.precision(0);
+            else 
+                std::cout.precision(std::max(0, std::min(6, -n_unc)) + 1);
+            
+            std::cout << other.value << " ± " << other.uncertainty << ' ' << UNIT_TYPE::to_string();
+            
+        }
+
+        if (newline)
+            std::cout << '\n';
+    
+    }
+
+    /// @brief Print the umeasurement with a specific unit of measure and a description
+    /// @note The unit must be of the same base of the measurement
+    template <typename MEAS_TYPE, typename UNIT_TYPE>
+        requires (physics::is_umeasurement_v<MEAS_TYPE> && 
+                  physics::is_unit_v<UNIT_TYPE> && 
+                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+    static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+
+        std::cout << description << ": "; 
+
+        const MEAS_TYPE meas = other / UNIT_TYPE::mult;
+        const double abs_value = std::fabs(meas.value);
+
+        // determine number of digits before decimal point in value
+        const int n_val = (abs_value >= 1.0) ? 
+                            std::ceil(std::log10(abs_value)) : 
+                            ((abs_value == 0.0) ? 
+                                1 : 
+                                std::floor(std::log10(std::fabs(abs_value))) + 1); 
+
+        // determine number of digits before decimal point in uncertainty
+        int n_unc = (meas.uncertainty >= 1.0) ? 
+                            std::ceil(std::log10(meas.uncertainty)) : 
+                            ((meas.uncertainty == 0.0) ? 
+                                1 : 
+                                std::floor(std::log10(std::fabs(meas.uncertainty))) + 1); 
+
+        // determine the number of decimal places to show in the uncertainty
+        const int prec = (std::fabs(n_unc) < std::fabs(n_val)) ? 1 : n_val - n_unc; 
+
+        // determine whether scientific notation is needed
+        const bool scientific_notation_needed = abs_value >= 1e4 || abs_value <= 1e-4 || 
+                                                meas.uncertainty >= 1e4 || meas.uncertainty <= 1e-4;
+
+        // set the formatting of the output stream
+        if (meas.uncertainty == 0.0) {
+
+            std::cout << std::fixed; 
+            std::cout.precision(n_val); 
+            std::cout << meas.value << ' ' << UNIT_TYPE::to_string();
+
+        } else if (scientific_notation_needed) {
+
+            std::cout << std::scientific; 
+            std::cout.precision(prec - 1); 
+            std::cout << meas.value << " ± ";
+            std::cout.precision(0); 
+            std::cout << meas.uncertainty << ' ' << UNIT_TYPE::to_string();
+
+        } else {
+
+            std::cout << std::fixed;
+            if (meas.uncertainty >= 1.0) 
+                std::cout.precision(0);
+            else 
+                std::cout.precision(std::max(0, std::min(6, -n_unc)) + 1);
+            
+            std::cout << meas.value << " ± " << meas.uncertainty << ' ' << UNIT_TYPE::to_string();
+            
+        }
+
+        if (newline)
+            std::cout << '\n';
+    
+    }
+
 
 
     /// @brief Print a geometry::vector

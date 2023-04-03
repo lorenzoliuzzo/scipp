@@ -52,17 +52,6 @@ namespace scipp::physics {
 
 
 
-    template <typename T>
-    struct is_scalar : std::false_type {};
-
-    template <>
-    struct is_scalar<double> : std::true_type {};
-
-    template <>
-    struct is_scalar<measurement<units::scalar>> : std::true_type {};
-
-    template <typename T>
-    constexpr bool is_scalar_v = is_scalar<T>::value;
 
 
     template <typename T>

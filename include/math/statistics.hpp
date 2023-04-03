@@ -24,7 +24,7 @@ namespace scipp::math {
         inline constexpr auto average(const VECTOR_TYPE& other) noexcept 
             -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
             
-            return { std::accumulate(other.data.begin(), other.data.end(), typename VECTOR_TYPE::measurement_type()).value / static_cast<double>(VECTOR_TYPE::dim) }; 
+            return std::accumulate(other.data.begin(), other.data.end(), typename VECTOR_TYPE::measurement_type()) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim); 
 
         }
 
@@ -47,6 +47,23 @@ namespace scipp::math {
 
         }
 
+        /// @brief Compute the variance of a vector of measurements
+        /// @param other: vector of measurements
+        /// @param average: average value of the vector of measurements
+        template <typename VECTOR_TYPE>
+            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_type>)
+        constexpr auto variance(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_type& average) noexcept 
+            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_type> {
+
+            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_type>(), 
+                                    [&average](const op::measurement_square_t<typename VECTOR_TYPE::measurement_type>& acc, 
+                                                            const typename VECTOR_TYPE::measurement_type& val) { 
+                                                                return acc + op::square(val - average); 
+                                                            }
+                                  ) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
+
+        }
+
 
         /// @brief Compute the variance of a vector of measurements
         /// @param other: vector of measurements
@@ -61,7 +78,7 @@ namespace scipp::math {
                                                             const typename VECTOR_TYPE::measurement_type& val) { 
                                                                 return acc + op::square(val - avg); 
                                                             }
-                                  ) / static_cast<double>(VECTOR_TYPE::dim);
+                                  ) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
 
         }
 
@@ -84,6 +101,19 @@ namespace scipp::math {
 
         /// @brief Compute the standard deviation of a vector of measurements
         /// @param other: vector of measurements
+        /// @param average: average value of the vector of measurements
+        template <typename VECTOR_TYPE>
+            requires (geometry::is_vector_v<VECTOR_TYPE>)
+        inline constexpr auto stdev(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_type& average) noexcept 
+            -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
+
+            return op::sqrt(variance(other, average));
+
+        }
+
+
+        /// @brief Compute the standard deviation of a vector of measurements
+        /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         inline constexpr auto stdev(const VECTOR_TYPE& other) noexcept 
@@ -100,7 +130,7 @@ namespace scipp::math {
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         inline constexpr typename VECTOR_TYPE::measurement_type stdev_mean(const VECTOR_TYPE& other) noexcept {
 
-            return op::sqrt(variance(other)) / static_cast<double>(VECTOR_TYPE::dim);
+            return op::sqrt(variance(other)) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
 
         }
 

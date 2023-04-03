@@ -22,12 +22,10 @@ namespace scipp::physics {
     /// @tparam TEMPERATURE: power of temperature                    
     /// @tparam SUBSTANCE_AMOUNT: power of substance amount          
     /// @tparam ELETTRIC_CURRENT: power of elettric current          
-    /// @tparam LUMINOUS_INTENSITY: power of luminous intensity      
-    /// @tparam ANGLE: power of angle    
-    /// @tparam SOLID_ANGLE: power of solid angle
+    /// @tparam LUMINOUS_INTENSITY: power of luminous intensity
     /// @note the powers are all integers                            
-    template <int LENGTH, int TIME, int MASS, int TEMPERATURE, int ELETTRIC_CURRENT,
-              int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY, int ANGLE, int SOLID_ANGLE> 
+    template <int LENGTH, int TIME, int MASS, int TEMPERATURE, 
+              int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY> 
     struct base_quantity {
 
 
@@ -36,7 +34,7 @@ namespace scipp::physics {
         // =============================================
 
             using type = base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, 
-                                       SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY, ANGLE, SOLID_ANGLE>; //< type of the base_quantity
+                                       SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>; //< type of the base_quantity
 
 
         // =============================================
@@ -57,12 +55,8 @@ namespace scipp::physics {
 
             inline static constexpr int luminous_intensity = LUMINOUS_INTENSITY; //< power of luminous intensity 
             
-            inline static constexpr int angle = ANGLE; //< power of angle
 
-            inline static constexpr int solid_angle = SOLID_ANGLE; //< power of solid_angle
-
-
-            inline static constexpr std::array<std::string_view, 9> base_litterals = {"m", "s", "kg", "K", "A", "mol", "cd", "rad", "sr"};
+            inline static constexpr std::array<std::string_view, 7> base_litterals = {"m", "s", "kg", "K", "A", "mol", "cd"};
 
 
         // =============================================
@@ -98,8 +92,6 @@ namespace scipp::physics {
                 print_unit(ELETTRIC_CURRENT, base_litterals[4]);
                 print_unit(SUBSTANCE_AMOUNT, base_litterals[5]);
                 print_unit(LUMINOUS_INTENSITY, base_litterals[6]);
-                print_unit(ANGLE, base_litterals[7]);
-                print_unit(SOLID_ANGLE, base_litterals[8]);
 
                 return ss.str();
 
@@ -118,9 +110,9 @@ namespace scipp::physics {
         struct is_base : public std::false_type {};
 
         template <int LENGTH, int TIME, int MASS, int TEMPERATURE, int ELETTRIC_CURRENT, 
-                  int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY, int ANGLE, int SOLID_ANGLE>
+                  int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY>
         struct is_base<base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, 
-                                     SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY, ANGLE, SOLID_ANGLE>> : public std::true_type {};
+                                     SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>> : public std::true_type {};
 
         template <typename T>
         constexpr bool is_base_v = is_base<T>::value;
@@ -143,9 +135,7 @@ namespace scipp::physics {
                                                         BASE1::temperature == BASE2::temperature &&
                                                         BASE1::elettric_current == BASE2::elettric_current &&
                                                         BASE1::substance_amount == BASE2::substance_amount &&
-                                                        BASE1::luminous_intensity == BASE2::luminous_intensity &&
-                                                        BASE1::angle == BASE2::angle &&
-                                                        BASE1::solid_angle == BASE2::solid_angle> {};
+                                                        BASE1::luminous_intensity == BASE2::luminous_intensity> {};
 
         template <typename BASE1, typename BASE2>
         constexpr bool is_same_base_v = is_same_base<BASE1, BASE2>::value;
@@ -169,9 +159,7 @@ namespace scipp::physics {
                                                           BASE::temperature % POWER == 0 && 
                                                           BASE::elettric_current % POWER == 0 && 
                                                           BASE::substance_amount % POWER == 0 && 
-                                                          BASE::luminous_intensity % POWER == 0 && 
-                                                          BASE::angle % POWER == 0 &&
-                                                          BASE::solid_angle % POWER == 0> {};
+                                                          BASE::luminous_intensity % POWER == 0> {};
 
         template <typename BASE, int POWER>
         constexpr bool has_valid_root_v = has_valid_root<BASE, POWER>::value;

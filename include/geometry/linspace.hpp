@@ -33,4 +33,19 @@ namespace scipp::geometry {
     };
     
 
+    // template <typename MEAS_TYPE>
+    //     requires physics::is_measurement_v<MEAS_TYPE>
+    // static constexpr vector<MEAS_TYPE, DIM> linspace(const MEAS_TYPE& start, const MEAS_TYPE& stop, std::size_t dim) noexcept {
+
+    //     const MEAS_TYPE step = (stop - start) / (dim - 1.);
+    //     vector<MEAS_TYPE, dim> result;
+
+    //     for (std::size_t i{}; i < dim; ++i)
+    //         result[i] = start + i * step;
+
+    //     return result;
+
+    // };
+
+
 }

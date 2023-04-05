@@ -329,6 +329,29 @@ namespace scipp::physics {
             }
 
 
+            template <typename OTHER_MEAS_TYPE>
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+            friend constexpr auto operator*(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
+                -> complex<math::op::measurements_prod_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                
+                complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
+                result.real = other * other_c.real;
+                result.imag = other * other_c.real;
+
+                return result;
+
+            }
+
+            template <typename OTHER_MEAS_TYPE>
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+            friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
+                -> complex<math::op::measurements_div_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+
+                return complex<OTHER_MEAS_TYPE>(other) / other_c;
+
+            }
+
+
             constexpr bool operator==(const complex& other) const noexcept {
 
                 return (this->real == other.real) && (this->imag == other.imag);
@@ -355,11 +378,6 @@ namespace scipp::physics {
         // ==============================================
         // methods
         // ==============================================
-
-            template <typename OTHER_MEAS_TYPE>
-                requires (scipp::physics::is_scalar_v<OTHER_MEAS_TYPE>)
-            friend constexpr OTHER_MEAS_TYPE norm(const complex<OTHER_MEAS_TYPE>&) noexcept;
-
 
 
     };

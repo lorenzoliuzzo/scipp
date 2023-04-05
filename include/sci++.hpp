@@ -1,8 +1,9 @@
 /**
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-04-03
+ * @brief   This file includes all the sci++ library headers files and its standard dependency. 
+ * @note    It is also included 'matplotlibcpp' as plotting library and defined the plt:: namespace
+ * @date    2023-04-05
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,93 +18,88 @@
 
     #include <algorithm>
     // #include <concepts>
-    // #include <cstdint>
     #include <chrono>
     #include <cmath>
-    // #include <complex>
     #include <execution>
     #include <fstream>
     // #include <functional>
-    // #include <iomanip>
     #include <iostream>
     #include <map>
     #include <numeric>
     #include <omp.h>
     #include <ratio>
-    // #include <stdexcept>
     #include <string>
     #include <sstream>
     // #include <thread>
-    // #include <variant>
     #include <vector>
 
 
-    #include "physics/measurements/base_quantity.hpp" /// ok
-    #include "math/ops/base_quantity.hpp" /// ok
-    #include "physics/measurements/base_quantity_types.hpp" /// ok
-
-    #include "physics/measurements/prefix.hpp" /// ok
-    #include "math/ops/prefixes.hpp" /// ok
-
-    #include "physics/measurements/unit.hpp" /// ok
-    #include "math/ops/units.hpp" /// ok
-    #include "physics/measurements/unit_types.hpp" 
-
-    #include "physics/measurements/measurement_traits.hpp"
-    #include "math/ops/generic_measurements.hpp" /// ok
-
-    #include "physics/measurements/measurement.hpp" /// ok
-    #include "math/ops/measurement.hpp" /// ok
-
-    #include "physics/measurements/umeasurement.hpp" /// ok
-    #include "math/ops/umeasurement.hpp" /// ok
-
-    #include "physics/measurements/complex.hpp"
-    #include "math/ops/complex.hpp"
-
-    #include "physics/measurements/measurement_types.hpp" 
-
-
-    #include "math/function.hpp"
-    // #include "math/equations.hpp"
-
-    #include "math/constants.hpp" 
-    #include "physics/constants.hpp"
-
-    #include "geometry/vector.hpp"
-    #include "math/ops/vector.hpp"
-    #include "physics/vector_types.hpp"
-
-    #include "geometry/matrix.hpp"
-    #include "math/ops/matrix.hpp"
-
-
-    #include "tools/io.hpp"
-    #include "tools/timer.hpp"
-
-    #include "math/integral.hpp"    
-    #include "math/statistics.hpp"
-
-    #include "tools/bench.hpp"
-    #include "tools/copy_counter.hpp"
-
-
-    // #include "math/interpolation.hpp"
-    #include "geometry/linspace.hpp"
-
-
-    // #include "tools/plotter.hpp"
     #include <external/matplotlibcpp.h>
         namespace plt = matplotlibcpp;
 
+    
+    #include "scipp/physics/measurements/base_quantity.hpp" /// ok
+    #include "scipp/math/ops/base_quantity.hpp" /// ok
+    #include "scipp/physics/measurements/base_quantity_types.hpp" /// ok
 
+    #include "scipp/physics/measurements/prefix.hpp" /// ok
+    #include "scipp/math/ops/prefixes.hpp" /// ok
 
-    // #include "physics/mass.hpp"
-    // #include "physics/gravitational_field.hpp"
+    #include "scipp/physics/measurements/unit.hpp" /// ok
+    #include "scipp/math/ops/units.hpp" /// ok
+    #include "scipp/physics/measurements/unit_types.hpp" 
 
+    #include "scipp/physics/measurements/measurement_traits.hpp"
+    #include "scipp/math/ops/generic_measurements.hpp" /// ok
 
+    #include "scipp/physics/measurements/measurement.hpp" /// ok
+    #include "scipp/math/ops/measurement.hpp" /// ok
 
-    #include "math/hermite_polynomial.hpp"
-    #include "math/bessel.hpp"
+    #include "scipp/physics/measurements/umeasurement.hpp" /// ok
+    #include "scipp/math/ops/umeasurement.hpp" /// ok
+
+    #include "scipp/physics/measurements/complex.hpp"
+    #include "scipp/math/ops/complex.hpp"
+
+    #include "scipp/physics/measurements/measurement_types.hpp" 
+
+    // #include "scipp/math/differentials.hpp" // @todo
+
+    #include "scipp/math/constants.hpp" 
+    #include "scipp/physics/constants.hpp"
+
+    #include "scipp/geometry/vector.hpp"
+    #include "scipp/math/ops/vector.hpp"
+    #include "scipp/physics/vector_types.hpp"
+
+    #include "scipp/geometry/matrix.hpp"
+    #include "scipp/math/ops/matrix.hpp"
+
+    #include "scipp/math/functions.hpp"
+
+    #include "scipp/geometry/interval.hpp"
+    #include "scipp/geometry/curve.hpp"
+    #include "scipp/geometry/curve_types.hpp"
+
+    #include "scipp/geometry/line.hpp"
+    // #include "scipp/geometry/linspace.hpp"
+    // #include "scipp/math/equations.hpp"
+
+    #include "scipp/math/integrals.hpp"    
+
+    #include "scipp/math/statistics.hpp"
+
+    #include "scipp/tools/io.hpp"
+    #include "scipp/tools/timer.hpp"
+    #include "scipp/tools/bench.hpp"
+    // #include "scipp/tools/copy_counter.hpp"
+
+    // #include "scipp/math/interpolation.hpp"
+
+    // #include "scipp/physics/mass.hpp"
+    // #include "scipp/physics/gravitational_field.hpp"
+
+    #include "scipp/math/hermite_polynomial.hpp"
+    // #include "scipp/math/bessel.hpp"
 
 #endif

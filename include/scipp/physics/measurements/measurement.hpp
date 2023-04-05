@@ -344,6 +344,50 @@ namespace scipp::physics {
             }
             
 
+            /// @brief Check if this measurement is equal to another measurement
+            constexpr bool operator==(const double& other) const noexcept {
+
+                return this->value == other; 
+
+            }
+            
+            /// @brief Check if this measurement is equal to another measurement
+            constexpr bool operator!=(const double& other) const noexcept {
+
+                return this->value != other; 
+
+            }
+
+            /// @brief Check if this measurement is greater than another measurement
+            constexpr bool operator>(const double& other) const noexcept {
+
+                return this->value > other; 
+
+            }
+
+
+            /// @brief Check if this measurement is less than another measurement
+            constexpr bool operator<(const double& other) const noexcept {
+
+                return this->value < other; 
+
+            }
+
+            /// @brief Check if this measurement is greater or equal to another measurement
+            constexpr bool operator>=(const double& other) const noexcept {
+
+                return this->value >= other; 
+
+            }
+
+            /// @brief Check if this measurement is less or equal to another measurement
+            constexpr bool operator<=(const double& other) const noexcept {
+
+                return this->value <= other; 
+
+            }
+            
+
         // ==============================================
         // friend operators
         // ==============================================

@@ -5,8 +5,8 @@ project(sci++ VERSION 2.0 LANGUAGES CXX)
 set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -fconcepts -flto -ftree-loop-vectorize -I/usr/include/python3.10 -I/usr/local/lib/python3.10/site-packages/numpy/core/include")
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/bench)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/plot)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/bench)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/plot)
 
 
 add_library(${PROJECT_NAME} 

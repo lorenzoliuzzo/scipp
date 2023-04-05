@@ -277,6 +277,29 @@ namespace scipp::tools {
     }
 
 
+
+    // /// @brief Print a geometry::MATRIX
+    // template <typename MATRIX_TYPE>
+    //     requires (geometry::is_matrix_v<MATRIX_TYPE>)
+    // inline static constexpr void print(const MATRIX_TYPE& other) noexcept {
+
+    //     std::cout << "[ "; 
+        
+
+    // }
+
+    // /// @brief Print a geometry::MATRIX with a description
+    // template <typename MATRIX_TYPE>
+    //     requires (geometry::is_matrix_v<MATRIX_TYPE>)
+    // inline static constexpr void print(const std::string& description, const MATRIX_TYPE& other) noexcept {
+
+    //     std::cout << description << ": [ "; 
+    //     for (std::size_t i{}; i < MATRIX_TYPE::dim; ++i)
+    //         std::cout << other.data[i] << ((i < MATRIX_TYPE::dim - 1) ? ", " : " ]\n"); 
+
+    // }
+
+
     template <typename PRINTABLE_TYPE>
     inline static void print(const PRINTABLE_TYPE& printable) noexcept {
 

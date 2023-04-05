@@ -57,7 +57,7 @@ namespace scipp::physics {
 
         /// @brief Type trait to check if a type is a generic measurement
         template <typename T>
-        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || is_complex_measurement_v<T>, std::true_type, std::false_type>{};
+        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T>, std::true_type, std::false_type>{};
 
         template <typename T>
         constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;

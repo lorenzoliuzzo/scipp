@@ -194,18 +194,33 @@ namespace scipp::math {
         // /// @tparam DIM: size_t
         // /// @param vec: geometry::vector<BASE, DIM> as l-value const reference
         // /// @return constexpr geometry::vector<units::base_pow_t<BASE, 2>, DIM>
-        // template <typename BASE, size_t DIM> requires (units::is_base_v<BASE>)
-        // constexpr vector<units::base_pow_t<BASE, 2>, DIM> square(const vector<BASE, DIM>& vec) noexcept {
+        template <typename VECTOR_TYPE> 
+            requires (geometry::is_vector_v<VECTOR_TYPE>)
+        constexpr auto square(const VECTOR_TYPE& vec) noexcept
+            -> geometry::vector<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
 
-        //     vector<units::base_pow_t<BASE, 2>, DIM> result;
+            std::array<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
 
-        //     for (std::size_t i{}; i < DIM; ++i) 
-        //         result[i] = op::square(vec[i]);
+            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+                result[i] = op::square(vec.data[i]);
 
-        //     return result;
+            return result;
 
-        // }
+        }
 
+        template <typename VECTOR_TYPE> 
+            requires (geometry::is_vector_v<VECTOR_TYPE>)
+        constexpr auto sqrt(const VECTOR_TYPE& vec) noexcept
+            -> geometry::vector<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
+
+            std::array<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
+
+            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+                result[i] = op::sqrt(vec.data[i]);
+
+            return result;
+
+        }
 
         // /// @brief Take the cube of a vector
         // /// @tparam BASE: physics::units::unit_base

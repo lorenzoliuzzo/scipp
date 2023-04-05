@@ -358,7 +358,7 @@ namespace scipp::geometry {
             /// @brief Divide this vector by a scalar measurement
             constexpr vector& operator/=(const physics::scalar_m& other) {
 
-                if (other.value == 0.0) 
+                if (other == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
 
                 std::transform(std::execution::par,
@@ -373,7 +373,7 @@ namespace scipp::geometry {
             /// @brief Divide this vector by a scalar measurement
             constexpr vector& operator/=(physics::scalar_m&& other) {
 
-                if (other.value == 0.0) 
+                if (other == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
                 
                 std::transform(std::execution::par,
@@ -426,7 +426,7 @@ namespace scipp::geometry {
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const
                 -> vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
 
-                if (other.value == 0.0) 
+                if (other == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
                 std::array<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
@@ -446,7 +446,7 @@ namespace scipp::geometry {
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const
                 -> vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
                 
-                if (other.value == 0.0) 
+                if (other == 0.0) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
                 std::array<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
@@ -610,27 +610,27 @@ namespace scipp::geometry {
             }
 
 
-            /// @brief If the measurement has an uncertainty, get the values vector
-            constexpr auto values() const noexcept 
-                -> vector<physics::measurement<typename measurement_type::base>, dim> 
-                    requires (physics::is_umeasurement_v<measurement_type>) {
+            // /// @brief If the measurement has an uncertainty, get the values vector
+            // constexpr auto values() const noexcept 
+            //     -> vector<physics::measurement<typename measurement_type::base>, dim> 
+            //         requires (physics::is_umeasurement_v<measurement_type>) {
 
-                std::array<physics::measurement<typename measurement_type::base>, dim> result;
-                std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.value; });
-                return result;
+            //     std::array<physics::measurement<typename measurement_type::base>, dim> result;
+            //     std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.value; });
+            //     return result;
 
-            }
+            // }
 
-            /// @brief If the measurement has an uncertainty, get the uncertainties vector
-            constexpr auto uncertainties() const noexcept 
-                -> vector<physics::measurement<typename measurement_type::base>, dim> 
-                    requires (physics::is_umeasurement_v<measurement_type>) {
+            // /// @brief If the measurement has an uncertainty, get the uncertainties vector
+            // constexpr auto uncertainties() const noexcept 
+            //     -> vector<physics::measurement<typename measurement_type::base>, dim> 
+            //         requires (physics::is_umeasurement_v<measurement_type>) {
 
-                std::array<physics::measurement<typename measurement_type::base>, dim> result;
-                std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.uncertainty; });
-                return result;
+            //     std::array<physics::measurement<typename measurement_type::base>, dim> result;
+            //     std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.uncertainty; });
+            //     return result;
 
-            }
+            // }
 
 
             /// @brief Get the magnitude of the vector

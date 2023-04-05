@@ -1,8 +1,8 @@
 /**
- * @file    integral.cpp
+ * @file    test/integral.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-02-05
+ * @date    2023-04-05
  * 
  * @copyright Copyright (c) 2023
  */
@@ -14,106 +14,116 @@ using namespace scipp;
 using namespace physics; 
 using namespace physics::units; 
 using namespace math; 
+using namespace geometry; 
 using namespace tools;
 
+
+template <typename MEAS_TYPE>
+    requires (is_generic_measurement_v<MEAS_TYPE>)
+struct andrea : unary_function<MEAS_TYPE, MEAS_TYPE> {
+
+    constexpr MEAS_TYPE operator()(const MEAS_TYPE& x) const noexcept override {
+
+        return 2 * x; 
+
+    } 
+
+};
+
+
+template <typename VECTOR_TYPE>
+    requires (is_vector_v<VECTOR_TYPE>)
+struct myFUNC : unary_function<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE> {
+
+    constexpr op::measurement_square_t<typename VECTOR_TYPE::measurement_type> operator()(const VECTOR_TYPE& other) const noexcept override {
+
+        return op::square(other.x()) + op::square(other.y());
+
+    } 
+
+};
+
+
+// template <typename VECTOR_TYPE>
+//     requires (is_vector_v<VECTOR_TYPE>)
+// struct vortex : unary_function<op::measurement_inv<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE> {
+
+//     constexpr op::measurement_inv<typename VECTOR_TYPE::measurement_type> operator()(const VECTOR_TYPE& other) const noexcept override {
+
+//         return (other.x() - other.y()) / (op::square(other.x()) + op::square(other.y()));
+
+//     } 
+
+// };
+
+
 int main() {
+
+
+    interval I(0.0m, 1.0m); 
+    print(I(0)); 
+    print(I(1)); 
 
 
     tools::timer t; 
     t.start(); 
     t.stop(); 
 
-    std::function<measurement<metre2>(length_m)> f = [](length_m x) -> measurement<metre2> { return x * x; }; 
+    auto func = andrea<length_m>();
 
-    // std::cout << f(1. * m) << '\n'; 
+    print("testing the midpoint integration");
+    auto midpoint100 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 100); 
+    auto midpoint1000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 1000); 
+    auto midpoint10000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 10000); 
+    auto midpoint100000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 100000); 
+    print("int 2x from 0 to 1, 100 steps", midpoint100); 
+    print("int 2x from 0 to 1, 1000 steps", midpoint1000); 
+    print("int 2x from 0 to 1, 10000 steps", midpoint10000); 
+    print("int 2x from 0 to 1, 100000 steps", midpoint100000); 
 
-    measurement<metre3> result_mid, result_trap, result_simp;
+    print("testing the trapexoid integration");
+    auto trapexoid100 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 100); 
+    auto trapexoid1000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 1000); 
+    auto trapexoid10000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 10000); 
+    auto trapexoid100000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 100000); 
+    print("int 2x from 0 to 1, 100 steps", trapexoid100); 
+    print("int 2x from 0 to 1, 1000 steps", trapexoid1000); 
+    print("int 2x from 0 to 1, 10000 steps", trapexoid10000); 
+    print("int 2x from 0 to 1, 100000 steps", trapexoid100000); 
 
-    
-    t.start(); 
-    
-        result_mid = integral::midpoint(f, 0.0 * m, 2.0m * math::constants::pi, 100000000); 
-
-    t.stop();
-    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    print("result", result_mid);
-
-    t.start(); 
-    
-        result_trap = integral::trapexoid(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
-
-    t.stop();
-    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    print(result_trap, unit<metre3, std::nano>());
-
-    t.start(); 
-    
-        result_simp = integral::simpson(f, 0.0m, 2.0m * math::constants::pi, 100000000); 
-
-    t.stop();
-    std::cout << "\nelapsed: " << t.elapsed() << '\n'; 
-    print(result_simp, unit<metre3, std::nano>());
-
-
-    std::cout << result_mid - result_trap << '\n'; 
-    std::cout << result_mid - result_simp << '\n'; 
-    std::cout << result_simp - result_trap << '\n'; 
+    print("testing the simpson integration");
+    auto simpson100 = integrals::riemann(func, I, integrals::method::simpson, 100); 
+    auto simpson1000 = integrals::riemann(func, I, integrals::method::simpson, 1000); 
+    auto simpson10000 = integrals::riemann(func, I, integrals::method::simpson, 10000); 
+    auto simpson100000 = integrals::riemann(func, I, integrals::method::simpson, 100000); 
+    auto simpson1000000 = integrals::riemann(func, I, integrals::method::simpson, 1000000); 
+    print("int 2x from 0 to 1, 100 steps", simpson100); 
+    print("int 2x from 0 to 1, 1000 steps", simpson1000); 
+    print("int 2x from 0 to 1, 10000 steps", simpson10000); 
+    print("int 2x from 0 to 1, 100000 steps", simpson100000); 
+    print("int 2x from 0 to 1, 1000000 steps", simpson1000000); 
 
 
-    // assert(result_mid == result_trap); 
+    auto func2 = myFUNC<position2>();
 
+    auto cframe = circumference(position2(), 1.m);
 
-    // t.start(); 
-    
-    //     std::cout << integral::midpoint(f, 0.0m, 2.0m * math::constants::pi), 1000) << '\n'; 
+    // auto loonghezza = integrals::riemann(cframe, I, integrals::method::simpson, 1000000); 
+    // print("testing the circumference integration", loonghezza);
 
-    // t.stop();
-    // std::cout << "elapsed: " << t.elapsed() << '\n'; 
-
-    // t.start(); 
-    
-    //     std::cout << integral::midpoint(f, 0.0m, 2.0m * math::constants::pi), 10000) << '\n'; 
-
-    // t.stop();
-    // std::cout << "elapsed: " << t.elapsed() << '\n'; 
-
-
-    // std::function<scalar_m(angle_m)> g = [](angle_m x) -> scalar_m { return math::op::sin(x); };
-
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 10) << '\n'; 
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 50) << '\n'; 
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 100) << '\n'; 
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 500) << '\n'; 
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(2.0 * math::constants::pi), 1000) << '\n'; 
-
-
-    // t.start(); 
-    // std::cout << integral::midpoint(g, angle_m(0.0), angle_m(math::constants::pi), 10000) << '\n';
-    // t.stop();
-    // std::cout << "elapsed: " << t.elapsed() << '\n'; 
-
-    // t.start(); 
-    // std::cout << integral::midpoint_fixed(g, angle_m(0.0), angle_m(math::constants::pi), 1.e-6) << '\n'; 
-    // t.stop();
-    // std::cout << "elapsed: " << t.elapsed() << '\n'; 
-
-
-    // std::cout << integral::midpoint_fixed(g, angle_m(0.0), angle_m(math::constants::pi), 1.e-6).value - 2.0 << '\n'; 
-
-    // integral integ; 
-
-
-    // t.start(); 
-    // integ.midpoint_fixed(0.0, math::constants::pi, [](double x) -> double { return std::sin(x); }, 1.e-6);
-    // t.stop();
-    // std::cout << "elapsed: " << t.elapsed() << '\n'; 
-
-    // std::cout << integ.result() << '\n';
-
-
-
-
+    print("testing the lebesque integration");
+    auto lebesque100 = integrals::curvilinear(func2, cframe, 100); 
+    auto lebesque1000 = integrals::curvilinear(func2, cframe, 1000); 
+    auto lebesque10000 = integrals::curvilinear(func2, cframe, 10000); 
+    auto lebesque100000 = integrals::curvilinear(func2, cframe, 100000); 
+    auto lebesque1000000 = integrals::curvilinear(func2, cframe, 1000000); 
+    print("int x * y on a circumference in the origin and radius 1.0m, 100 steps", lebesque100); 
+    print("int x * y on a circumference in the origin and radius 1.0m, 1000 steps", lebesque1000); 
+    print("int x * y on a circumference in the origin and radius 1.0m, 10000 steps", lebesque10000); 
+    print("int x * y on a circumference in the origin and radius 1.0m, 100000 steps", lebesque100000); 
+    print("int x * y on a circumference in the origin and radius 1.0m, 1000000 steps", lebesque1000000); 
 
     return 0; 
+
 
 }

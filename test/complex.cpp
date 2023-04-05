@@ -19,6 +19,17 @@ using namespace math;
 using namespace tools;
 
 
+struct complex_cos : unary_function<complex<angle_m>, complex<angle_m>> {
+
+    constexpr complex<angle_m> operator()(const complex<angle_m>& other) const noexcept override { 
+
+        return op::cos(other); 
+
+    }
+
+};
+
+
 int main() {
 
 
@@ -39,6 +50,16 @@ int main() {
     print("norm", op::norm(mc0)); 
     print("conj", op::conj(mc0)); 
     print("cos", op::cos(mc0)); 
+
+    print("3^i", op::pow({1.0, 0.5}, math::constants::i));
+
+
+    auto result = complex_cos()(mc0); 
+
+    print("mc0", mc0);
+    print("cos(mc0)", result);
+    // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral::midpoint(complex_cos(), complex<angle_m>(), complex<angle_m>(2. * math::constants::pi * rad)));
+
 
     return 0; 
 

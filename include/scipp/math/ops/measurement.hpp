@@ -110,6 +110,14 @@ namespace scipp::math {
             }
 
 
+            template <typename MEAS_TYPE>
+            constexpr MEAS_TYPE norm(const MEAS_TYPE& other) noexcept {
+
+                return op::abs(other); 
+
+            }
+
+
             /// @brief Get the sign of a measurement
             template <typename MEAS_TYPE>
                 requires physics::is_measurement_v<MEAS_TYPE>
@@ -221,7 +229,7 @@ namespace scipp::math {
 
             /// @brief Get the arcsine of a unitless_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto asin(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::radian> {
                 
@@ -232,7 +240,7 @@ namespace scipp::math {
 
             /// @brief Get the arccosine of a unitless_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto acos(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::radian> {
                 
@@ -243,7 +251,7 @@ namespace scipp::math {
 
             /// @brief Get the arctangent of a unitless_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto atan(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::radian> {
                 
@@ -254,7 +262,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic sine of a unitless_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto sinh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
                 
@@ -265,7 +273,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic cosine of a unitless_measurement
             template <typename MEAS_TYPE>
-                 requires (physics::is_measurement_v<MEAS_TYPE>)
+             requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto cosh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
                 
@@ -276,7 +284,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic tangent of a unitless_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto tanh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
                 
@@ -287,7 +295,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic arcsine of a radian_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto asinh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
 
@@ -298,7 +306,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic arccosine of a radian_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto acosh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
 
@@ -309,7 +317,7 @@ namespace scipp::math {
 
             /// @brief Get the hyperbolic arctangent of a radian_measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
             inline constexpr auto atanh(const MEAS_TYPE& meas) noexcept 
                 -> physics::measurement<physics::units::scalar> {
                 

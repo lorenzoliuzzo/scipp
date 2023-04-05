@@ -18,13 +18,6 @@ namespace scipp::math {
     struct bessel_integral_function1 : public binary_function<physics::scalar_m, physics::scalar_m> {
 
 
-        using result_t = physics::scalar_m; 
-
-        using first_argument_t = physics::scalar_m; 
-
-        using second_argument_t = physics::scalar_m; 
-
-
         constexpr physics::scalar_m operator()(const physics::scalar_m& x, const physics::scalar_m& t) const noexcept override {
             
             return op::cos(static_cast<physics::scalar_m>(N) * t - x * op::sin(t));
@@ -34,32 +27,28 @@ namespace scipp::math {
 
     };
     
-    // template <std::size_t N>
-    // struct bessel_integral_function2 : public binary_function<physics::scalar_m, physics::scalar_m> {
+
+    template <std::size_t N, typename T1, typename T2, typename T3 = T2>
+    struct bessel_integral_function2 : public binary_function<T1, T2, T3> {
 
 
-    //     using result_t = physics::scalar_m; 
-
-    //     using first_argument_t = physics::scalar_m; 
-
-    //     using second_argument_t = physics::scalar_m; 
-
-
-    //     constexpr physics::scalar_m operator()(const physics::scalar_m& x, const physics::scalar_m& t) const noexcept override {
+        constexpr T1 operator()(const T2& x, const T3& t) const noexcept override {
             
-    //         // return op::exp(i * (- x * op::sinh(t) - static_cast<physics::scalar_m>(N) * t));
+            return op::exp(math::constants::i * (x * op::sin(t) - static_cast<physics::scalar_m>(N) * t)).real;
 
-    //     }
+        }
 
 
-    // };
+    };
     
 
     template <std::size_t N>
     inline static constexpr physics::scalar_m J_n(const physics::scalar_m& x) noexcept {
 
-        return integral::simpson(bessel_integral_function1<N>(), x,
-                                  0.0, constants::pi.value, 10000) / constants::pi;
+        return integrals::riemann(bessel_integral_function1<N>(), x, 0, constants::pi, 10000) / constants::pi;
+
+        // return integral::simpson(bessel_integral_function2<N, physics::scalar_m, physics::scalar_m>(), x,
+        //                           -constants::pi, constants::pi, 10000) / (2.0 * constants::pi);
 
     }
 

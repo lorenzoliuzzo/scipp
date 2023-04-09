@@ -36,6 +36,12 @@ int main() {
     complex<angle_m> mc0(3. * rad, 4. * rad);
     print("real", mc0.real);
     print("imag", mc0.imag);
+
+
+    // complex_as_mat2<angle_m> mc1(3. * rad, 4. * rad); // @todo
+    // print("real", mc1.data[0][0]);
+    // print("imag", mc1.data[0][1]);
+
     
     std::complex<double> c0(3., 4.);
 
@@ -58,7 +64,9 @@ int main() {
 
     print("mc0", mc0);
     print("cos(mc0)", result);
-    // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral::midpoint(complex_cos(), complex<angle_m>(), complex<angle_m>(2. * math::constants::pi * rad)));
+
+    // auto integral = integrals::curvilinear(complex_cos(), geometry::circumference(complex<length_m>(), 1.0 * m));
+    // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral);
 
 
     return 0; 

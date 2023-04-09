@@ -36,8 +36,18 @@ int main() {
     // print(r(0.5));
 
     auto c = circumference(position2(), 2.m);
-    print(c(scalar_m(0.0)));
-    print(c(scalar_m(0.50000000)));
+    print("L", integrals::length(c));
+    auto aster = asteroid(position2(), 1.0);
+    print("asteroL", integrals::length(aster));
+
+    if (c.is_closed())
+        print("closed");
+    else
+        print("not closed");
+
+    auto A = c(scalar_m(0.0));
+    auto B = c(scalar_m(1.0));
+    print(B - A);
 
 
     auto e = ellipse(position2(), 2.m, 1.m);

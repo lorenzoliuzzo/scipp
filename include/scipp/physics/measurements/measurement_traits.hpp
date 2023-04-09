@@ -47,14 +47,6 @@ namespace scipp::physics {
         constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
 
 
-        /// @brief Type trait to check if a type is an umeasurement
-        template <typename T>
-        struct is_complex_measurement : std::false_type{};
-
-        template <typename T>
-        constexpr bool is_complex_measurement_v = is_complex_measurement<T>::value;
-
-
         /// @brief Type trait to check if a type is a generic measurement
         template <typename T>
         struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T>, std::true_type, std::false_type>{};

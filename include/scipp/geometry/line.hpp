@@ -17,7 +17,7 @@ namespace scipp::geometry {
 
     template <typename POINT_TYPE>
         requires (is_vector_v<POINT_TYPE>)
-    struct line : math::unary_function<POINT_TYPE, double> {
+    struct line : math::functions::unary_function<POINT_TYPE, double> {
 
 
         using type = line<POINT_TYPE>;

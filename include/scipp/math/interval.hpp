@@ -1,5 +1,5 @@
 /**
- * @file    geometry/interval.hpp
+ * @file    math/interval.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
  * @date    2023-04-04
@@ -11,8 +11,8 @@
 #pragma once
 
 
-/// @brief geometry namespace contains all the classes and functions of the geometry library
-namespace scipp::geometry {
+/// @brief math namespace contains all the classes and functions of the math library
+namespace scipp::math {
     
 
     template <typename T>
@@ -24,7 +24,7 @@ namespace scipp::geometry {
 
     template <typename ARG_TYPE>
         requires (is_ordinable_v<ARG_TYPE>)
-    struct interval : math::unary_function<ARG_TYPE, double> {
+    struct interval : functions::unary_function<ARG_TYPE, double> {
 
 
         using type = interval<ARG_TYPE>;
@@ -38,24 +38,31 @@ namespace scipp::geometry {
         constexpr interval(const arg_type& A, const arg_type& B) noexcept {
 
             if (start > end) {  
+
                 this->start = B; 
                 this->end = A; 
+
             } else {
+
                 this->start = A; 
                 this->end = B; 
+
             }
 
         }
             
-
         constexpr interval(arg_type&& A, arg_type&& B) noexcept {
 
-            if (start > end) {  
+            if (start > end) {
+
                 this->start = std::move(B); 
                 this->end = std::move(A); 
+
             } else {
+
                 this->start = std::move(A); 
                 this->end = std::move(B); 
+                
             }
 
         }
@@ -87,6 +94,13 @@ namespace scipp::geometry {
         }
 
 
+        constexpr arg_type step(std::size_t N) const noexcept {
+                
+            return (end - start) / static_cast<physics::scalar_m>(N);
+    
+        }
+
+
     };
 
 
@@ -100,4 +114,4 @@ namespace scipp::geometry {
     concept is_interval_v = is_interval<T>::value;
 
     
-} // namespace scipp::geometry
+} // namespace scipp::math

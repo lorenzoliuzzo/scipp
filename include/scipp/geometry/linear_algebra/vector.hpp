@@ -39,9 +39,9 @@ namespace scipp::geometry {
 
             data_type data;
 
-            // inline static constexpr vector zero = vector(); 
+            inline static constexpr vector zero = vector(std::array<measurement_type, DIM>{measurement_type::zero}); 
 
-            // inline static constexpr vector one = vector(std::array<measurement_type, DIM>{measurement_type::one});
+            inline static constexpr vector one = vector(std::array<measurement_type, DIM>{measurement_type::one});
 
 
         // ===========================================================
@@ -71,7 +71,6 @@ namespace scipp::geometry {
                 
                 data(other.data) {}
 
-
             /// @brief Move constructor from an std::array<measurement_type, dim>
             constexpr vector(data_type&& other) noexcept : 
                 
@@ -86,7 +85,6 @@ namespace scipp::geometry {
                 requires (sizeof...(other) == dim) : 
                 
                 data{std::forward<measurement_type>(other)...} {}
-
 
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector

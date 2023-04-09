@@ -19,68 +19,117 @@ namespace scipp::math {
 
         enum method {
 
-            midpoint = 0, 
-            rectangle = 1,
-            trapexoid = 2, 
+            rectangle = 0,
+            trapexoid = 1, 
+            midpoint = 2, 
             simpson = 3,
-
+            // MC = 4
+            
         }; 
 
 
         template <typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto rectangle_integration(const FUNCTION_TYPE& f, 
+                                                   const typename FUNCTION_TYPE::arg_t& from_a,
+                                                   const typename FUNCTION_TYPE::arg_t& to_b,
+                                                   std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+
+            const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
+            typename FUNCTION_TYPE::result_t total_sum;
+
+            for (size_t i{0}; i < steps; ++i) 
+                total_sum += f(from_a + static_cast<physics::scalar_m>(i) * increment);
+
+            return (from_a < to_b) ? total_sum * increment : -total_sum * increment;
+
+        }
+
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f, 
+                                                   const typename FUNCTION_TYPE::arg_t& from_a,
+                                                   const typename FUNCTION_TYPE::arg_t& to_b,
+                                                   std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+
+            const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
+            typename FUNCTION_TYPE::result_t total_sum = (f(from_a) + f(to_b)) / 2.;
+
+            for (size_t i{1}; i < steps; ++i) 
+                total_sum += f(from_a + static_cast<physics::scalar_m>(i) * increment); 
+
+            return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+
+        }
+
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
+                                                   const typename FUNCTION_TYPE::arg_t& from_a,
+                                                   const typename FUNCTION_TYPE::arg_t& to_b,
+                                                   std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+
+            const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
+            typename FUNCTION_TYPE::result_t total_sum = f(from_a);
+
+            for (std::size_t i{1}; i < steps; ++i)
+                total_sum += f(from_a + static_cast<physics::scalar_m>(static_cast<double>(i) + 0.5) * increment); 
+
+            return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+
+        }
+
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
+                                                  const typename FUNCTION_TYPE::arg_t& from_a,
+                                                  const typename FUNCTION_TYPE::arg_t& to_b,
+                                                  std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+
+            const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
+            typename FUNCTION_TYPE::result_t total_sum = ((steps % 2 == 0) ? (f(from_a) + f(to_b)) / 3.0 : 0.0);
+
+            for (std::size_t i = 1; i < steps; ++i) 
+                total_sum += 2.0 * (1.0 + i % 2) * f(from_a + static_cast<physics::scalar_m>(i) * increment) / 3.0;
+
+            return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+
+        }
+
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
-                                        const typename FUNCTION_TYPE::arg_t& from_a,
-                                        const typename FUNCTION_TYPE::arg_t& to_b,
-                                        method integration_method,
-                                        std::size_t steps = 1000) 
-                                        
+                                      const typename FUNCTION_TYPE::arg_t& from_a,
+                                      const typename FUNCTION_TYPE::arg_t& to_b,
+                                      method integration_method,
+                                      std::size_t steps = 1000)                                        
             -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             switch (integration_method) {
 
-                case midpoint:
-                {
-                    const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-                    typename FUNCTION_TYPE::result_t total_sum = f(from_a);
-
-                    for (std::size_t i{1}; i < steps; ++i)
-                        total_sum += f(from_a + static_cast<physics::scalar_m>(static_cast<double>(i) + 0.5) * increment); 
-
-                    return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-                    break;
-                }
-
                 case rectangle:
+                    return rectangle_integration(f, from_a, to_b, steps);
                     break; 
 
                 case trapexoid:
-                {
-                    const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-                    typename FUNCTION_TYPE::result_t total_sum = (f(from_a) + f(to_b)) / 2.;
-
-                    for (size_t i{1}; i < steps; ++i) 
-                        total_sum += f(from_a + static_cast<physics::scalar_m>(i) * increment); 
-
-                    return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+                    return trapexoid_integration(f, from_a, to_b, steps);
                     break;
 
-                }
+                case midpoint:
+                    return midpoint_integration(f, from_a, to_b, steps);
+                    break;
 
                 case simpson:   
-                {
-                    if (steps % 2 == 0)    
-                        steps++; 
-                        
-                    const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-                    typename FUNCTION_TYPE::result_t total_sum = ((steps % 2 == 0) ? (f(from_a) + f(to_b)) / 3. : 0.0);
-                    
-                    for (size_t i = 1; i < steps; ++i) 
-                        total_sum += 2. * (1. + i % 2) * (f(from_a + static_cast<physics::scalar_m>(i) * increment)) / 3.; 
-
-                    return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
+                    return simpson_integration(f, from_a, to_b, steps);
                     break;
-                }
             
                 default:
                     break;
@@ -93,27 +142,54 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<typename FUNCTION_TYPE::type>)
-        static constexpr auto riemann(const FUNCTION_TYPE& f, 
-                                        const geometry::interval<typename FUNCTION_TYPE::arg_t>& interval,
-                                        method integration_method,
-                                        std::size_t steps = 1000) 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
+                                                   const interval<typename FUNCTION_TYPE::arg_t>& I,
+                                                   std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
+            const typename FUNCTION_TYPE::arg_t increment = I.step(steps);
+            typename FUNCTION_TYPE::result_t total_sum = f(I(0));
+
+            for (std::size_t i{1}; i < steps; ++i)
+                total_sum += f(I(0) + static_cast<physics::scalar_m>(static_cast<double>(i) + 0.5) * increment); 
+
+            return total_sum * increment; 
+
+        }
+                
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
+                                                  const interval<typename FUNCTION_TYPE::arg_t>& I,
+                                                  std::size_t steps) noexcept
+            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+
+            const typename FUNCTION_TYPE::arg_t increment = I.step(steps);
+            typename FUNCTION_TYPE::result_t total_sum = ((steps % 2 == 0) ? (f(I(0)) + f(I(1))) / 3. : 0.0);
+
+            for (std::size_t i = 1; i < steps; ++i) 
+                total_sum += 2. * (1. + i % 2) * f(I(0) + static_cast<physics::scalar_m>(i) * increment) / 3.;
+
+            return total_sum * increment; 
+
+        }
+
+
+        template <typename FUNCTION_TYPE> 
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        static constexpr auto riemann(const FUNCTION_TYPE& f, 
+                                        const interval<typename FUNCTION_TYPE::arg_t>& interval,
+                                        method integration_method,
+                                        std::size_t steps = 1000)
             -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             switch (integration_method) {
 
                 case midpoint:
-                {
-                    const typename FUNCTION_TYPE::arg_t increment = op::abs(interval(1) - interval(0)) / static_cast<double>(steps);
-                    typename FUNCTION_TYPE::result_t total_sum = f(interval(0));
-
-                    for (std::size_t i{1}; i < steps; ++i)
-                        total_sum += f(interval(0) + (static_cast<physics::scalar_m>(static_cast<double>(i) + 0.5)) * increment); 
-
-                    return total_sum * increment;  
+                    return midpoint_integration(f, interval, steps);
                     break;
-                }
 
                 case rectangle:
                     break; 
@@ -131,20 +207,9 @@ namespace scipp::math {
 
                 }
 
-                case simpson:   
-                {
-                    if (steps % 2 == 0)    
-                        steps++; 
-                        
-                    const typename FUNCTION_TYPE::arg_t increment = op::abs(interval(0) - interval(1)) / static_cast<double>(steps);
-                    typename FUNCTION_TYPE::result_t total_sum = ((steps % 2 == 0) ? (f(interval(1)) + f(interval(0))) / 3. : 0.0);
-                    
-                    for (size_t i = 1; i < steps; ++i) 
-                        total_sum += 2. * (1. + i % 2) * (f(interval(0) + static_cast<physics::scalar_m>(i) * increment)) / 3.; 
-
-                    return total_sum * increment;  
+                case simpson:  
+                    return simpson_integration(f, interval, steps); 
                     break;
-                }
             
                 default:
                     break;
@@ -156,7 +221,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
         static constexpr auto curvilinear(const FUNCTION_TYPE& f, 
                                           const geometry::curve<typename FUNCTION_TYPE::arg_t>& curve,
                                           std::size_t steps = 1000, 
@@ -180,125 +245,50 @@ namespace scipp::math {
         }
 
 
+        template <typename CURVE_TYPE> 
+            requires (geometry::is_curve_v<CURVE_TYPE>)
+        static constexpr auto length(const CURVE_TYPE& curve, std::size_t steps = 1000, physics::scalar_m incr_der = 1.e-6) noexcept 
+            -> typename CURVE_TYPE::point_type::measurement_type {
+
+            typename CURVE_TYPE::point_type::measurement_type total_sum; 
+
+            // auto d_curve = total_derivative(curve); // @todo
+            for (std::size_t i{}; i < steps; ++i) {
+
+                physics::scalar_m t = static_cast<double>(i) / static_cast<double>(steps);
+
+                total_sum += op::norm((curve(t + incr_der) - curve(t)) / incr_der);
+
+            }
+
+            return total_sum / static_cast<physics::scalar_m>(steps);        
+
+        }
+
+
+        // template <typename FUNCTION_TYPE> 
+        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        // static constexpr auto volumetric(const FUNCTION_TYPE& f, 
+        //                                  const geometry::curve<typename FUNCTION_TYPE::arg_t>& curve,
+        //                                  std::size_t steps = 1000, 
+        //                                  physics::scalar_m incr_der = 1.e-6) 
+
+        //     -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_type> {
+
+        //     op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_type> total_sum; 
+
+
+
+        // }
+
+
+
     } // namespace integrals
     
-
 
 } // namespace scipp::math
 
 
-    // /// @brief Class for evaluating integrals
-    // class integral {
-
-
-    //     public:
-
-
-    //         template <typename FUNCTION_TYPE> 
-    //             requires (math::is_unary_function_v<typename FUNCTION_TYPE::type>)
-    //         static constexpr auto midpoint(FUNCTION_TYPE&& f, 
-    //                                        typename FUNCTION_TYPE::arg_t from_a,
-    //                                        typename FUNCTION_TYPE::arg_t to_b,
-    //                                        std::size_t steps = 1000) noexcept 
-
-    //             -> op::measurements_prod_t<typename FUNCTION_TYPE::arg_t, typename FUNCTION_TYPE::result_t> {
-
-    //             const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-    //             typename FUNCTION_TYPE::result_t total_sum = f(from_a);
-
-    //             for (std::size_t i{1}; i < steps; ++i)
-    //                 total_sum += f(from_a + (i + 0.5) * increment); 
-
-    //             return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-
-    //         }
-
-
-    //         // template <typename FUNCTION_TYPE> 
-    //         //     requires (math::is_unary_function_v<typename FUNCTION_TYPE::type> && 
-    //         //               (physics::is_measurement_v<typename FUNCTION_TYPE::result_t> || physics::is_umeasurement_v<typename FUNCTION_TYPE::result_t>) &&
-    //         //               physics::is_complex_measurement_v<typename FUNCTION_TYPE::arg_t>)
-    //         // static constexpr auto midpoint(FUNCTION_TYPE&& f, 
-    //         //                                unary_function<physics::scalar_m,  
-    //         //                                std::size_t steps = 1000) noexcept 
-
-    //         //     -> op::measurements_prod_t<typename FUNCTION_TYPE::arg_t, typename FUNCTION_TYPE::result_t> {
-
-    //         //     const typename FUNCTION_TYPE::arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-    //         //     typename FUNCTION_TYPE::result_t total_sum = f(from_a);
-
-    //         //     for (std::size_t i{1}; i < steps; ++i)
-    //         //         total_sum += f(from_a + (i + 0.5) * increment); 
-
-    //         //     return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-
-    //         // }
-
-
-    //         template <typename FUNCTION_TYPE> 
-    //             requires (math::is_binary_function_v<typename FUNCTION_TYPE::type>)
-    //         static constexpr auto midpoint(FUNCTION_TYPE&& f, 
-    //                                        typename FUNCTION_TYPE::first_arg_t fixed_arg,
-    //                                        typename FUNCTION_TYPE::second_arg_t from_a,
-    //                                        typename FUNCTION_TYPE::second_arg_t to_b,
-    //                                        std::size_t steps = 1000) noexcept 
-
-    //             -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::second_arg_t> {
-
-    //             const typename FUNCTION_TYPE::second_arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-    //             typename FUNCTION_TYPE::result_t total_sum = f(fixed_arg, from_a);
-
-    //             for (std::size_t i{1}; i < steps; ++i)
-    //                 total_sum += f(fixed_arg, from_a + (i + 0.5) * increment); 
-
-    //             return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-
-    //         }
-
-
-
-    //         template <typename FUNCTION_TYPE> 
-    //             requires (math::is_binary_function_v<typename FUNCTION_TYPE::type>)
-    //         static constexpr auto trapexoid(FUNCTION_TYPE&& f, 
-    //                                        typename FUNCTION_TYPE::first_arg_t fixed_arg,
-    //                                        typename FUNCTION_TYPE::second_arg_t from_a,
-    //                                        typename FUNCTION_TYPE::second_arg_t to_b,
-    //                                        std::size_t steps = 1000) noexcept 
-    //             -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::second_arg_t> {
-
-    //             const typename FUNCTION_TYPE::second_arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-    //             typename FUNCTION_TYPE::result_t total_sum = (f(fixed_arg, from_a) + f(fixed_arg, to_b)) / 2.;
-
-    //             for (size_t i{1}; i < steps; ++i) 
-    //                 total_sum += f(fixed_arg, from_a + static_cast<physics::scalar_m>(i) * increment); 
-
-    //             return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-
-    //         } 
-
-
-    //         template <typename FUNCTION_TYPE> 
-    //             requires (math::is_binary_function_v<typename FUNCTION_TYPE::type>)
-    //         static constexpr auto simpson(FUNCTION_TYPE&& f, 
-    //                                        typename FUNCTION_TYPE::first_arg_t fixed_arg,
-    //                                        typename FUNCTION_TYPE::second_arg_t from_a,
-    //                                        typename FUNCTION_TYPE::second_arg_t to_b,
-    //                                        std::size_t steps = 1000) noexcept 
-    //             -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::second_arg_t> {
-
-    //             const bool is_even = (steps % 2 == 0);
-    //             if (is_even)    
-    //                 steps++; 
-                    
-    //             const typename FUNCTION_TYPE::second_arg_t increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
-    //             typename FUNCTION_TYPE::result_t total_sum = (is_even ? (f(fixed_arg, from_a) + f(fixed_arg, to_b)) / 3. : 0.0);
-                
-    //             for (size_t i = 1; i < steps; ++i) 
-    //                 total_sum += 2. * (1. + i % 2) * (f(fixed_arg, from_a + static_cast<physics::scalar_m>(i) * increment)) / 3.; 
-
-    //             return (from_a < to_b) ? total_sum * increment : -total_sum * increment; 
-
-    //         }
 
 
     //         // template <typename MEAS1, typename MEAS2> 

@@ -19,33 +19,43 @@ namespace scipp::geometry {
     struct finite_set {
 
 
-        using type = finite_set<T, DIM>; 
+        using type = finite_set<T, DIM>;
+
+        using data_type = std::array<T, DIM>; 
 
         using arg_type = T; 
 
         inline static constexpr std::size_t dimension = DIM;
 
 
-        std::array<T, DIM> data; 
+        data_type data; 
 
-        constexpr finite_set(const std::array<T, DIM>& data) noexcept : 
+
+        constexpr finite_set(const data_type& other) noexcept : 
             
-            data(data) {}
+            data(other) {}
+
+        constexpr finite_set(data_type&& other) noexcept :
+
+            data(std::move(other)) {}
 
 
-        constexpr finite_set(std::array<T, DIM>&& data) noexcept :
+        constexpr finite_set(const finite_set& other) noexcept : 
+            
+            data(other.data) {}
 
-            data(std::move(data)) {}
+        constexpr finite_set(finite_set&& other) noexcept :
+
+            data(std::move(other.data)) {}
 
 
-        constexpr T operator[](const std::size_t& i) const noexcept {
+        constexpr arg_type& operator[](const std::size_t& i) const noexcept {
 
             return data[i];
 
         }
 
-
-        constexpr T& operator[](const std::size_t& i) noexcept {
+        constexpr arg_type& operator[](const std::size_t& i) noexcept {
 
             return data[i];
 
@@ -153,18 +163,18 @@ namespace scipp::geometry {
         inline static constexpr std::size_t dimension = DIM;
 
 
-        std::array<T, DIM> data;
+        data_type data;
 
 
         PROPERTY property;
 
 
-        constexpr finite_set(const std::array<T, DIM>& data, const PROPERTY& property) noexcept : 
+        constexpr finite_set(const data_type& data, const PROPERTY& property) noexcept : 
             
             data(data), property(property) {}
 
 
-        constexpr finite_set(std::array<T, DIM>&& data, PROPERTY&& property) noexcept :
+        constexpr finite_set(data_type&& data, PROPERTY&& property) noexcept :
 
             data(std::move(data)), property(std::move(property)) {}
 

@@ -37,7 +37,7 @@ namespace scipp::geometry {
 
         });
 
-    }
+    }    
 
 
     template <typename POINT_TYPE>
@@ -46,7 +46,8 @@ namespace scipp::geometry {
 
         return curve<POINT_TYPE>([center, a, b](const vector<physics::scalar_m, 1>& t) {
 
-            return center + make_vector(a * math::op::cos(2.0 * math::constants::pi * t[0]), b * math::op::sin(2.0 * math::constants::pi * t[0]));
+            return center + make_vector(a * math::op::cos(2.0 * math::constants::pi * t[0]), 
+                                        b * math::op::sin(2.0 * math::constants::pi * t[0]));
 
         });
 
@@ -59,7 +60,23 @@ namespace scipp::geometry {
 
         return curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 2>& t) {
 
-            return center + radius * make_vector(math::op::cos(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]), math::op::sin(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]), math::op::cos(math::constants::pi * t[1]));
+            return center + radius * make_vector(math::op::cos(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]),
+                                                 math::op::sin(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]),
+                                                 math::op::cos(math::constants::pi * t[1]));
+
+        });
+
+    }
+
+
+    template <typename POINT_TYPE>
+        requires (POINT_TYPE::dim == 2)
+    constexpr auto asteroid(const POINT_TYPE& center, const typename POINT_TYPE::measurement_type& radius) {
+
+        return curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 1>& t) {
+
+            return center + radius * make_vector(math::op::cube(math::op::cos(0.5 * math::constants::pi * t[0])), 
+                                                 math::op::cube(math::op::sin(0.5 * math::constants::pi * t[0]))); 
 
         });
 
@@ -107,28 +124,17 @@ namespace scipp::geometry {
 
     // template <typename POINT_TYPE>
     //     requires (is_vector_v<POINT_TYPE> && POINT_TYPE::dim == 2)
-    // constexpr auto cardiod(const POINT_TYPE& center, const typename POINT_TYPE::measurement_type& radius_x, const typename POINT_TYPE::measurement_type& radius_y) {
+    // constexpr auto cardiod(const POINT_TYPE& center, const typename POINT_TYPE::measurement_type& radius) {
 
-    //     return curve<POINT_TYPE>([center, radius_x, radius_y](physics::scalar_m t) {
+    //     return curve<POINT_TYPE>([&center, &radius](const vector<physics::scalar_m, 1>& t) {
 
-    //         // return center + radius_x * make_vector(math::op::cos(t), math::op::sin(t)) + radius_y * make_vector(math::op::cos(t), math::op::sin(t));
+    //         return center + radius * make_vector(math::op::cos(2.0 * math::constants::pi * t[0]) * (1.0 + math::op::sin(2.0 * math::constants::pi * t[0])), math::op::sin(2.0 * math::constants::pi * t[0]) * (1.0 + math::op::sin(2.0 * math::constants::pi * t[0])));
 
-    //     }, 0.0, 2.0 * math::constants::pi);
-
-    // }
-
-
-    // template <typename POINT_TYPE>
-    //     requires (is_vector_v<POINT_TYPE> && POINT_TYPE::dim == 2)
-    // constexpr auto rose(POINT_TYPE center, typename POINT_TYPE::measurement_type radius_x, typename POINT_TYPE::measurement_type radius_y) {
-
-    //     return curve<POINT_TYPE>([center, radius_x, radius_y](physics::scalar_m t) {
-
-    //         // return center + radius_x * make_vector(math::op::cos(t), math::op::sin(t)) + radius_y * make_vector(math::op::cos(t), math::op::sin(t));
-
-    //     }, 0.0, 2.0 * math::constants::pi);
+    //     });
 
     // }
+
+
 
 
 } // namespace scipp::geometry

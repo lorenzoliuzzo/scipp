@@ -145,7 +145,7 @@ namespace scipp::geometry {
             
     //     }
 
-        return result;
+        // return result;
 
     };
 

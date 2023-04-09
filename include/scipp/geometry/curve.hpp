@@ -17,23 +17,33 @@ namespace scipp::geometry {
 
     template <typename POINT_TYPE>      
         requires (is_vector_v<POINT_TYPE>)
-    struct curve : math::nary_function<POINT_TYPE, physics::scalar_m, POINT_TYPE::dim - 1> {
+    struct curve : math::functions::nary_function<POINT_TYPE, physics::scalar_m, POINT_TYPE::dim - 1> {
 
 
-        std::function<POINT_TYPE(vector<physics::scalar_m, POINT_TYPE::dim - 1>)> f;
+        using type = curve<POINT_TYPE>;
+
+        using point_type = POINT_TYPE;
+
+        using args_type = vector<physics::scalar_m, POINT_TYPE::dim - 1>;
 
 
-        constexpr curve(std::function<POINT_TYPE(vector<physics::scalar_m, POINT_TYPE::dim - 1>)>&& f) noexcept : 
+        inline static constexpr std::size_t dimension = POINT_TYPE::dim - 1;
+
+
+        std::function<point_type(args_type)> f;
+
+
+        constexpr curve(std::function<point_type(args_type)>&& f) noexcept : 
             
             f(f) {}
 
 
-        constexpr POINT_TYPE operator()(const vector<physics::scalar_m, POINT_TYPE::dim - 1>& params) const {
+        constexpr point_type operator()(const args_type& params) const {
 
             for (auto t : params.data)
                 if (t < 0.0 || t > 1.0) {
-                    std::cerr << "Cannot evaluate segment at t = " << t << '\n';
-                    throw std::out_of_range("t must be in the range [0, 1]");
+                    std::cerr << "Cannot evaluate curve at t = " << t << '\n';
+                    throw std::out_of_range("All scalar parameters must be in the range [0, 1]");
                 }
 
             return f(params);
@@ -41,8 +51,8 @@ namespace scipp::geometry {
         }
 
 
-        // constexpr auto diff(const vector<physics::scalar_m, POINT_TYPE::dim - 1>& params, 
-        //                     const vector<physics::scalar_m, POINT_TYPE::dim - 1>& increments) const {
+        // constexpr auto diff(const args_type& params, 
+        //                     const args_type& increments) const {
 
         //     return (f(params + increments) - f(params)) / increments;
 
@@ -51,12 +61,25 @@ namespace scipp::geometry {
 
         constexpr bool is_closed() const noexcept {
 
-            return f(0) == f(1);
+            return f(args_type::zero) == f(args_type::one);
 
         }
 
 
     }; // struct curve 
 
+
+    template <typename T>
+    struct is_curve : std::false_type {};
+
+
+    template <typename POINT_TYPE>
+        requires (is_vector_v<POINT_TYPE>)
+    struct is_curve<curve<POINT_TYPE>> : std::true_type {};
+
+
+    template <typename T>
+    inline constexpr bool is_curve_v = is_curve<T>::value;
+        
 
 } // namespace scipp::geometry

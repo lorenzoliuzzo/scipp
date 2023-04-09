@@ -1,5 +1,5 @@
 /**
- * @file    physics/measurements/complex.hpp
+ * @file    math/complex.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-04-03
@@ -11,13 +11,13 @@
 #pragma once 
 
 
-namespace scipp::physics {
+namespace scipp::math {
 
 
     /// A measurement of a complex quantity, such as a complex refractive index.
     /// The measurement is represented by a pair of real and imaginary parts.
     template <typename MEAS_TYPE>   
-        requires (is_generic_measurement_v<MEAS_TYPE>)
+        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     struct complex {
 
 
@@ -203,7 +203,7 @@ namespace scipp::physics {
                 this->imag *= other.real;
                 this->imag -= this->real * other.imag; 
 
-                *this /= math::op::sqrt(math::op::square(other.real) + math::op::square(other.imag));
+                *this /= op::sqrt(op::square(other.real) + op::square(other.imag));
 
                 return *this;
 
@@ -221,7 +221,7 @@ namespace scipp::physics {
                 this->imag *= std::move(other.real);
                 this->imag -= this->real * std::move(other.imag); 
 
-                *this /= math::op::sqrt(math::op::square(std::move(other.real)) + math::op::square(std::move(other.imag)));
+                *this /= op::sqrt(op::square(std::move(other.real)) + op::square(std::move(other.imag)));
 
                 return *this;
 
@@ -289,11 +289,11 @@ namespace scipp::physics {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const complex<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> {
+                -> complex<op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> {
                 
-                complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
+                complex<op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other.real - this->imag * other.imag;
                 result.imag = this->real * other.imag + this->imag * other.real;
 
@@ -303,11 +303,11 @@ namespace scipp::physics {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> {
+                -> complex<op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> {
                 
-                complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
+                complex<op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other;
                 result.imag = this->real * other;
 
@@ -316,11 +316,11 @@ namespace scipp::physics {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>> {
+                -> complex<op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>> {
                 
-                complex<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>> result; 
+                complex<op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real / other;
                 result.imag = this->real / other;
 
@@ -330,11 +330,11 @@ namespace scipp::physics {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator*(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
-                -> complex<math::op::measurements_prod_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                -> complex<op::measurements_prod_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
                 
-                complex<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
+                complex<op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>> result; 
                 result.real = other * other_c.real;
                 result.imag = other * other_c.real;
 
@@ -343,9 +343,9 @@ namespace scipp::physics {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
-                -> complex<math::op::measurements_div_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                -> complex<op::measurements_div_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
 
                 return complex<OTHER_MEAS_TYPE>(other) / other_c;
 
@@ -387,54 +387,18 @@ namespace scipp::physics {
     // complex type traits
     // ==============================================
 
+        template <typename T>
+        struct is_complex_measurement : std::false_type{};
+
         template <typename MEAS_TYPE>
-            requires (is_generic_measurement_v<MEAS_TYPE>)
+            requires (physics::is_generic_measurement_v<MEAS_TYPE>)
         struct is_complex_measurement<complex<MEAS_TYPE>> : std::true_type{};
 
-
-//   ///  Return magnitude of @a z.
-//   template<typename _Tp> _Tp abs(const complex<_Tp>&);
-//   ///  Return phase angle of @a z.
-//   template<typename _Tp> _Tp arg(const complex<_Tp>&);
-//   ///  Return @a z magnitude squared.
-//   template<typename _Tp> _Tp _GLIBCXX20_CONSTEXPR norm(const complex<_Tp>&);
-
-//   ///  Return complex conjugate of @a z.
-//   template<typename _Tp>
-//     _GLIBCXX20_CONSTEXPR complex<_Tp> conj(const complex<_Tp>&);
-//   ///  Return complex with magnitude @a rho and angle @a theta.
-//   template<typename _Tp> complex<_Tp> polar(const _Tp&, const _Tp& = 0);
-
-//   // Transcendentals:
-//   /// Return complex cosine of @a z.
-//   template<typename _Tp> complex<_Tp> cos(const complex<_Tp>&);
-//   /// Return complex hyperbolic cosine of @a z.
-//   template<typename _Tp> complex<_Tp> cosh(const complex<_Tp>&);
-//   /// Return complex base e exponential of @a z.
-//   template<typename _Tp> complex<_Tp> exp(const complex<_Tp>&);
-//   /// Return complex natural logarithm of @a z.
-//   template<typename _Tp> complex<_Tp> log(const complex<_Tp>&);
-//   /// Return complex base 10 logarithm of @a z.
-//   template<typename _Tp> complex<_Tp> log10(const complex<_Tp>&);
-//   /// Return @a x to the @a y'th power.
-//   template<typename _Tp> complex<_Tp> pow(const complex<_Tp>&, int);
-//   /// Return @a x to the @a y'th power.
-//   template<typename _Tp> complex<_Tp> pow(const complex<_Tp>&, const _Tp&);
-//   /// Return @a x to the @a y'th power.
-//   template<typename _Tp> complex<_Tp> pow(const complex<_Tp>&,
-//                                           const complex<_Tp>&);
-//   /// Return @a x to the @a y'th power.
-//   template<typename _Tp> complex<_Tp> pow(const _Tp&, const complex<_Tp>&);
-//   /// Return complex sine of @a z.
-//   template<typename _Tp> complex<_Tp> sin(const complex<_Tp>&);
-//   /// Return complex hyperbolic sine of @a z.
-//   template<typename _Tp> complex<_Tp> sinh(const complex<_Tp>&);
-//   /// Return complex square root of @a z.
-//   template<typename _Tp> complex<_Tp> sqrt(const complex<_Tp>&);
-//   /// Return complex tangent of @a z.
-//   template<typename _Tp> complex<_Tp> tan(const complex<_Tp>&);
-//   /// Return complex hyperbolic tangent of @a z.
-//   template<typename _Tp> complex<_Tp> tanh(const complex<_Tp>&);
+        template <typename T>
+        inline constexpr bool is_complex_measurement_v = is_complex_measurement<T>::value;
 
 
-} // namespace scipp::physics
+        static_assert(is_complex_measurement_v<complex<physics::measurement<physics::units::metre>>>);
+
+
+} // namespace scipp::math

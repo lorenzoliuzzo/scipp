@@ -71,11 +71,9 @@ namespace scipp::math {
     template <typename T>
     struct is_curve : std::false_type {};
 
-
     template <typename POINT_TYPE>
         requires (geometry::is_vector_v<POINT_TYPE>)
     struct is_curve<curve<POINT_TYPE>> : std::true_type {};
-
 
     template <typename T>
     inline constexpr bool is_curve_v = is_curve<T>::value;

@@ -2,7 +2,7 @@
  * @file    math/function/mathematical.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-09
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,17 +17,13 @@ namespace scipp::math {
     namespace functions {
 
 
-        struct abs : unary_function<physics::scalar_m, physics::scalar_m> {
+        template <typename ARG_TYPE>  
+            requires (is_dual_measurement_v<ARG_TYPE>)
+        struct abs : unary_function<ARG_TYPE, ARG_TYPE> {
 
-            constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
+            constexpr ARG_TYPE operator()(const ARG_TYPE& other) const noexcept override {
 
-                return op::abs(x);
-
-            }
-
-            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
-
-                return op::sign(x) * y;
+                return op::abs(other); 
 
             }
 
@@ -236,9 +232,10 @@ namespace scipp::math {
         };
 
 
-        struct sqrt : unary_function<physics::scalar_m, physics::scalar_m> {
+        template <typename T>
+        struct sqrt : unary_function<op::measurement_sqrt_t<T>, T> {
 
-            constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
+            constexpr op::measurement_sqrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::sqrt(x);
 
@@ -247,30 +244,16 @@ namespace scipp::math {
         };
 
 
-        struct cbrt : unary_function<physics::scalar_m, physics::scalar_m> {
+        template <typename T>
+        struct cbrt : unary_function<op::measurement_cbrt_t<T>, T> {
 
-            constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
+            constexpr op::measurement_cbrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::cbrt(x);
 
             }
 
         };
-
-
-        // struct ceil : unary_function<physics::scalar_m, physics::scalar_m> {
-
-        //     constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
-
-        //         return op::ceil(x);
-
-        //     }
-
-        // };
-
-
-
-
 
 
         template <std::size_t N>
@@ -286,8 +269,6 @@ namespace scipp::math {
             }
 
         };
-
-
 
 
     } // namespace functions

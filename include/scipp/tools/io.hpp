@@ -64,12 +64,12 @@ namespace scipp::tools {
     /// @brief Print the measurement with a specific unit of measure 
     /// @note The unit must be of the same base of the measurement
     template <typename MEAS_TYPE, typename UNIT_TYPE>
-        requires (physics::is_generic_measurement_v<MEAS_TYPE> && 
+        requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
     inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << other * static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
+        std::cout << other.value / static_cast<physics::scalar_m>(UNIT_TYPE::mult) << ' ' << UNIT_TYPE::to_string(); 
         if (newline)
             std::cout << '\n'; 
 
@@ -84,7 +84,7 @@ namespace scipp::tools {
                   physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << description << ": " << other / UNIT_TYPE::mult; 
+        std::cout << description << ": " << other / static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
         if (newline)
             std::cout << '\n'; 
 

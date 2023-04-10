@@ -2,7 +2,7 @@
  * @file    math/ops/prefixes.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains all the possible mathematical operations among physics::units::prefix
- * @date    2023-03-23
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -26,12 +26,10 @@ namespace scipp::math {
 
             static constexpr auto value = std::pow(RATIO::num, POWER);
             static constexpr auto denom_pow = std::pow(RATIO::den, POWER);
-            static_assert(denom_pow > 0, "Denominator must be positive");
             static constexpr std::size_t denom = denom_pow;
             static_assert(value <= std::numeric_limits<std::size_t>::max() / denom, "Overflow in constant expression");
-            static constexpr std::size_t num = value * denom;
 
-            using type = std::ratio<num, denom>;
+            using type = std::ratio<static_cast<std::size_t>(value * denom), denom>;
 
         };
 
@@ -46,12 +44,9 @@ namespace scipp::math {
 
             static constexpr auto num_pow = std::pow(RATIO::num, 1. / POWER);
             static_assert(num_pow <= std::numeric_limits<std::size_t>::max(), "Overflow in constant expression");
-            static constexpr std::size_t num = static_cast<std::size_t>(num_pow);
             static constexpr auto denom_pow = std::pow(RATIO::den, 1. / POWER);
-            static_assert(denom_pow > 0, "Denominator must be positive");
-            static constexpr std::size_t denom = static_cast<std::size_t>(denom_pow);
 
-            using type = std::ratio<num, denom>;
+            using type = std::ratio<static_cast<std::size_t>(num_pow), static_cast<std::size_t>(denom_pow)>;
 
         };
 

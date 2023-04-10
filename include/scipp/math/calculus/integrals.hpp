@@ -2,7 +2,7 @@
  * @file    math/calculus/integrals.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-03
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -29,7 +29,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto rectangle_integration(const FUNCTION_TYPE& f, 
                                                    const typename FUNCTION_TYPE::arg_t& from_a,
                                                    const typename FUNCTION_TYPE::arg_t& to_b,
@@ -48,7 +48,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f, 
                                                    const typename FUNCTION_TYPE::arg_t& from_a,
                                                    const typename FUNCTION_TYPE::arg_t& to_b,
@@ -67,7 +67,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
                                                    const typename FUNCTION_TYPE::arg_t& from_a,
                                                    const typename FUNCTION_TYPE::arg_t& to_b,
@@ -86,7 +86,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const typename FUNCTION_TYPE::arg_t& from_a,
                                                   const typename FUNCTION_TYPE::arg_t& to_b,
@@ -105,7 +105,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const typename FUNCTION_TYPE::arg_t& from_a,
                                       const typename FUNCTION_TYPE::arg_t& to_b,
@@ -142,7 +142,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
                                                    const interval<typename FUNCTION_TYPE::arg_t>& I,
                                                    std::size_t steps) noexcept
@@ -160,7 +160,7 @@ namespace scipp::math {
                 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const interval<typename FUNCTION_TYPE::arg_t>& I,
                                                   std::size_t steps) noexcept
@@ -178,7 +178,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                         const interval<typename FUNCTION_TYPE::arg_t>& interval,
                                         method integration_method,
@@ -221,7 +221,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto curvilinear(const FUNCTION_TYPE& f, 
                                           const curve<typename FUNCTION_TYPE::arg_t>& curve,
                                           std::size_t steps = 1000, 
@@ -267,7 +267,7 @@ namespace scipp::math {
 
 
         // template <typename FUNCTION_TYPE> 
-        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
+        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto volumetric(const FUNCTION_TYPE& f, 
         //                                  const curve<typename FUNCTION_TYPE::arg_t>& curve,
         //                                  std::size_t steps = 1000, 
@@ -358,7 +358,7 @@ namespace scipp::math {
 
 
     //         // template <typename FUNCTION_TYPE> 
-    //         //     requires (math::is_binary_function_v<typename FUNCTION_TYPE::type>)
+    //         //     requires (math::is_binary_function_v<typename FUNCTION_TYPE::_t>)
     //         // static constexpr auto simpson(FUNCTION_TYPE&& f, 
     //         //                                typename FUNCTION_TYPE::first_arg_t fixed_arg,
     //         //                                typename FUNCTION_TYPE::second_arg_t from_a,

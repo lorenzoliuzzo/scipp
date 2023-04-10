@@ -1,11 +1,46 @@
-measurements to_string and from_string methods
-column and row vectors functions 
-matrix multiplication
-units litterals
-matrix and vector multiplication
-geometry shapes
-math equations
-geometry linear applications 
-geometry linear transformations
-geometry vectorial spaces and basis
-add solid angle as base_quantity
+/// @todo
+
+    // #include "scipp/math/complex_as_mat2.hpp"
+
+    // #include "scipp/math/interpolation/linear.hpp"
+    // #include "scipp/math/interpolation/cubic.hpp"
+    // #include "scipp/math/interpolation/nearest.hpp"
+    // #include "scipp/math/interpolation/akima.hpp"
+    // #include "scipp/math/interpolation/barycentric.hpp"
+    // #include "scipp/math/interpolation/bicubic.hpp"
+    // #include "scipp/math/interpolation/biquadratic.hpp"
+    // #include "scipp/math/interpolation/biquintic.hpp"
+    // #include "scipp/math/interpolation/bispline.hpp"
+    // #include "scipp/math/interpolation/bivariate.hpp"
+
+
+    // #include "scipp/math/functions/bessel.hpp"
+    // #include "scipp/math/functions/elliptic.hpp"
+    // #include "scipp/math/functions/erf.hpp"
+    // #include "scipp/math/functions/erfc.hpp"
+    // #include "scipp/math/functions/exp.hpp"
+    // #include "scipp/math/functions/expint.hpp"
+    // #include "scipp/math/functions/gamma.hpp"
+    // #include "scipp/math/functions/hypergeometric.hpp"
+    // #include "scipp/math/functions/legendre.hpp"
+    // #include "scipp/math/functions/log.hpp"
+    // #include "scipp/math/functions/logistic.hpp"
+    // #include "scipp/math/functions/lognormal.hpp"
+    // #include "scipp/math/functions/normal.hpp"
+    // #include "scipp/math/functions/polygamma.hpp"
+    // #include "scipp/math/functions/pow.hpp"
+    // #include "scipp/math/functions/sinc.hpp"
+    // #include "scipp/math/functions/sinhc.hpp"
+    // #include "scipp/math/functions/sqrt.hpp"
+    // #include "scipp/math/functions/trig.hpp"
+    // #include "scipp/math/functions/zeta.hpp"
+    
+    // #include "scipp/math/polynomial/lagrange.hpp"
+    // #include "scipp/math/polynomial/legendre.hpp"
+    // #include "scipp/math/polynomial/chebyshev.hpp"
+    // #include "scipp/math/polynomial/bernstein.hpp"
+    // #include "scipp/math/polynomial/monomial.hpp"
+    
+    // #include "scipp/physics/mass.hpp"
+    // #include "scipp/physics/gravitational_field.hpp"
+    // #include "scipp/math/node.hpp"

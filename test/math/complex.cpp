@@ -19,16 +19,6 @@ using namespace geometry;
 using namespace tools;
 
 
-struct complex_cos : functions::unary_function<complex<angle_m>, complex<angle_m>> {
-
-    constexpr complex<angle_m> operator()(const complex<angle_m>& other) const noexcept override { 
-
-        return op::cos(other); 
-
-    }
-
-};
-
 
 int main() {
 
@@ -38,19 +28,14 @@ int main() {
     print("imag", mc0.imag);
 
 
-    print("abs", op::abs(mc0)); 
-    print("arg", op::arg(mc0)); 
-    print("norm", op::norm(mc0)); 
-    print("conj", op::conj(mc0)); 
-    print("cos", op::cos(mc0)); 
+    // print("abs", op::abs(mc0)); 
+    // print("arg", op::arg(mc0)); 
+    // print("norm", op::norm(mc0)); 
+    // print("conj", op::conj(mc0)); 
+    // print("cos", op::cos(mc0)); 
 
-    print("3^i", op::pow({1.0, 0.5}, math::constants::i));
+    // print("3^i", op::pow({1.0, 0.5}, math::constants::i));
 
-
-    auto result = complex_cos()(mc0); 
-
-    print("mc0", mc0);
-    print("cos(mc0)", result);
 
     // auto integral = integrals::curvilinear(complex_cos(), geometry::circumference(complex<length_m>(), 1.0 * m));
     // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral);
@@ -68,27 +53,27 @@ int main() {
     complex<scalar_m> r(1.0, 4.0); 
     auto r_mat = Rmat * r.real + Cmat * r.imag;
     print("r", r);
-    print("alternatively", r_mat); 
+    print("in matrix form", r_mat); 
 
     complex<scalar_m> c(5.0, -3.0);
     auto c_mat = Rmat * c.real + Cmat * c.imag;
     print("c", c);
-    print("alternatively", c_mat);
+    print("in matrix form", c_mat);
 
     print("r * c", r * c);
-    print("alternatively", r_mat * c_mat);
+    print("in matrix form", r_mat * c_mat);
 
 
-    dual<scalar_m> d1(1.0, 2.0);
+    dual<scalar_m> d1(-1.0, 2.0);
     dual<length_m> d2(3.0m, 4.0m);
-
-    dual<scalar_m> eps(0.0, 1.0); 
 
     print(d1);
     print(d2);
-    print(eps); 
-    print(eps * eps);
+    print(math::constants::epsilon * math::constants::epsilon);
     print(math::constants::i * math::constants::i);
+
+
+    print(op::abs(d1)); 
 
 
     return 0; 

@@ -13,7 +13,7 @@
 #define SCIPP_LIBRARY 1
 
 
-    /// STD dependencies
+    /// std dependencies
     #include <algorithm>
     #include <array>
     #include <concepts> 
@@ -21,21 +21,16 @@
     #include <cmath>
     #include <execution>
     #include <fstream> 
-    #include <functional> // maybe not needed
+    // #include <functional> // maybe not needed
     #include <iostream>
-    #include <map>
-    #include <numeric>
+    #include <map> // maybe not needed
+    // #include <numeric> // maybe not needed
+    #include <omp.h> // maybe not needed
     #include <ratio>
     #include <string>
     #include <sstream>
-    #include <thread> // maybe not needed
+    // #include <thread> // maybe not needed
     #include <vector>
-
-
-    /// external dependencies
-    #include <omp.h> // maybe not needed
-    #include <external/matplotlibcpp.h>
-        namespace plt = matplotlibcpp;
 
 
     /// sci++ library headers
@@ -64,8 +59,9 @@
     #include "scipp/physics/measurements/types/measurements.hpp" 
 
     #include "scipp/math/numbers/complex.hpp"
-    #include "scipp/math/ops/complex.hpp"
     #include "scipp/math/numbers/dual.hpp"
+    
+    // #include "scipp/math/ops/complex.hpp"
     #include "scipp/math/ops/dual.hpp"
 
     #include "scipp/math/numbers/constants.hpp" 
@@ -77,18 +73,16 @@
 
     #include "scipp/geometry/linear_algebra/matrix.hpp"
     #include "scipp/math/ops/matrix.hpp"
-    #include "scipp/geometry/linear_algebra/vectorial_base.hpp"
+    // #include "scipp/physics/matrix_types.hpp" // @todo
 
-    // #include "scipp/math/complex_as_mat2.hpp"
+    // #include "scipp/geometry/linear_algebra/vectorial_space.hpp" // @todo
+    #include "scipp/geometry/linear_algebra/vectorial_base.hpp"
     
     #include "scipp/math/calculus/function.hpp"
     #include "scipp/math/calculus/function_traits.hpp"
     #include "scipp/math/functions/mathematical.hpp"
-
-    #include "scipp/math/node.hpp"
     
     #include "scipp/math/calculus/derivative.hpp" // @todo
-    // #include "scipp/math/interpolation.hpp" // @todo
 
     #include "scipp/math/calculus/interval.hpp"
     
@@ -101,10 +95,7 @@
 
     #include "scipp/math/calculus/integrals.hpp"    
 
-    #include "scipp/math/polynomials/hermite.hpp"
-    // #include "scipp/math/functions/bessel.hpp" // @todo
-    // #include "scipp/math/polynomials/lagrange.hpp" // @todo
-    // #include "scipp/math/polynomials/legendre.hpp" // @todo
+    #include "scipp/math/polynomial/hermite.hpp"
 
 
     #include "scipp/math/statistics.hpp"
@@ -112,11 +103,11 @@
     #include "scipp/tools/io.hpp"
     #include "scipp/tools/timer.hpp"
     #include "scipp/tools/bench.hpp"
-    // #include "scipp/tools/copy_counter.hpp"
-
-
-    // #include "scipp/physics/mass.hpp"
-    // #include "scipp/physics/gravitational_field.hpp"
 
 
 #endif
+
+
+    /// external dependencies
+    // #include <external/matplotlibcpp.h>
+    //     namespace plt = matplotlibcpp;

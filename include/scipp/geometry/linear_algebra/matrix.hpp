@@ -509,14 +509,34 @@ namespace scipp::geometry {
             /// @brief Get the column at index
             template <std::size_t index>
                 requires (index < columns)
-            constexpr decltype(auto) column() noexcept {
+            constexpr vector_type column() const noexcept {
                                     
                 return this->data[index];
 
             }
 
             /// @brief Get the column at index
-            constexpr decltype(auto) column(std::size_t& index) {
+            template <std::size_t index>
+                requires (index < columns)
+            constexpr vector_type column() noexcept {
+                                    
+                return this->data[index];
+
+            }
+
+
+            /// @brief Get the column at index
+            constexpr vector_type column(std::size_t& index) const {
+                                    
+                if (index >= columns) 
+                    throw std::out_of_range("Cannot access column " + std::to_string(index) + " from a matrix with " + std::to_string(columns) + " columns."); 
+
+                return this->data[index];
+
+            }
+
+            /// @brief Get the column at index
+            constexpr vector_type column(std::size_t& index) {
                                     
                 if (index >= columns) 
                     throw std::out_of_range("Cannot access column " + std::to_string(index) + " from a matrix with " + std::to_string(columns) + " columns."); 
@@ -997,6 +1017,19 @@ namespace scipp::geometry {
         return result;
 
     }
+
+
+    template <typename T>
+    struct is_matrix : std::false_type {};
+
+
+    template <typename VEC_TYPE, std::size_t DIM>
+        requires (is_vector_v<VEC_TYPE>)
+    struct is_matrix<matrix<VEC_TYPE, DIM>> : std::true_type {};
+
+
+    template <typename T>
+    inline constexpr bool is_matrix_v = is_matrix<T>::value;
 
 
 } // namespace scipp::geometry

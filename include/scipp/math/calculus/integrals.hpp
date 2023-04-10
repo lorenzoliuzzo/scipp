@@ -1,5 +1,5 @@
 /**
- * @file    math/integrals.hpp
+ * @file    math/calculus/integrals.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-04-03
@@ -223,7 +223,7 @@ namespace scipp::math {
         template <typename FUNCTION_TYPE> 
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
         static constexpr auto curvilinear(const FUNCTION_TYPE& f, 
-                                          const geometry::curve<typename FUNCTION_TYPE::arg_t>& curve,
+                                          const curve<typename FUNCTION_TYPE::arg_t>& curve,
                                           std::size_t steps = 1000, 
                                           physics::scalar_m incr_der = 1.e-6) 
 
@@ -246,7 +246,7 @@ namespace scipp::math {
 
 
         template <typename CURVE_TYPE> 
-            requires (geometry::is_curve_v<CURVE_TYPE>)
+            requires (math::is_curve_v<CURVE_TYPE>)
         static constexpr auto length(const CURVE_TYPE& curve, std::size_t steps = 1000, physics::scalar_m incr_der = 1.e-6) noexcept 
             -> typename CURVE_TYPE::point_type::measurement_type {
 
@@ -269,7 +269,7 @@ namespace scipp::math {
         // template <typename FUNCTION_TYPE> 
         //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::type>)
         // static constexpr auto volumetric(const FUNCTION_TYPE& f, 
-        //                                  const geometry::curve<typename FUNCTION_TYPE::arg_t>& curve,
+        //                                  const curve<typename FUNCTION_TYPE::arg_t>& curve,
         //                                  std::size_t steps = 1000, 
         //                                  physics::scalar_m incr_der = 1.e-6) 
 

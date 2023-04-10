@@ -1,5 +1,5 @@
 /**
- * @file    math/interval.hpp
+ * @file    math/calculus/interval.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
  * @date    2023-04-04

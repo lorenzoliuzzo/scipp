@@ -1,5 +1,5 @@
 /**
- * @file    physics/measurement_types.hpp
+ * @file    physics/measurements/measurement_types.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-03-30

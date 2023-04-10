@@ -2,7 +2,7 @@
  * @file    tools/io.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-02
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */
@@ -221,6 +221,24 @@ namespace scipp::tools {
 
 
 
+    template <typename MEAS_TYPE>
+        requires (math::is_complex_measurement_v<MEAS_TYPE>)
+    static constexpr void print(const MEAS_TYPE& other) noexcept {
+
+        std::cout << other.real << " + i(" << other.imag << ")\n";
+
+    }
+    
+
+    template <typename MEAS_TYPE>
+        requires (math::is_dual_measurement_v<MEAS_TYPE>)
+    static constexpr void print(const MEAS_TYPE& other) noexcept {
+
+        std::cout << other.real << " + ε(" << other.imag << ")\n";
+
+    }
+
+
     /// @brief Print a geometry::vector
     template <typename VECTOR_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE>)
@@ -273,6 +291,29 @@ namespace scipp::tools {
             print(other.data[i], units, false); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
         }
+
+    }
+
+
+    /// @brief Print a geometry::matrix
+    template <typename MATRIX_TYPE>
+        requires (geometry::is_matrix_v<MATRIX_TYPE>)
+    inline static constexpr void print(const MATRIX_TYPE& other) noexcept {
+
+        for (std::size_t i{}; i < MATRIX_TYPE::columns; ++i)
+            print(other.data[i]); 
+
+    }
+
+
+    /// @brief Print a geometry::matrix
+    template <typename MATRIX_TYPE>
+        requires (geometry::is_matrix_v<MATRIX_TYPE>)
+    inline static constexpr void print(const std::string& description, const MATRIX_TYPE& other) noexcept {
+
+        std::cout << description << ":\n"; 
+        for (std::size_t i{}; i < MATRIX_TYPE::columns; ++i)
+            print(other.data[i]); 
 
     }
 

@@ -2,7 +2,7 @@
  * @file    math/function/mathematical.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-31
+ * @date    2023-04-09
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,12 +17,17 @@ namespace scipp::math {
     namespace functions {
 
 
-
         struct abs : unary_function<physics::scalar_m, physics::scalar_m> {
 
             constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
 
                 return op::abs(x);
+
+            }
+
+            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
+
+                return op::sign(x) * y;
 
             }
 
@@ -37,6 +42,12 @@ namespace scipp::math {
 
             }
 
+            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
+
+                return -op::square(op::invert(x)) * y;
+
+            }
+
         };
 
 
@@ -45,6 +56,12 @@ namespace scipp::math {
             constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
 
                 return op::sin(x);
+
+            }
+
+            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
+
+                return op::cos(x) * y;
 
             }
 
@@ -59,6 +76,13 @@ namespace scipp::math {
 
             }
 
+            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
+
+                return -op::sin(x) * y;
+
+            }
+
+
         };
 
 
@@ -69,6 +93,13 @@ namespace scipp::math {
                 return op::tan(x);
 
             }
+
+            constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
+
+                return op::square(op::cos(x)) * y;
+
+            }
+
 
         };
 

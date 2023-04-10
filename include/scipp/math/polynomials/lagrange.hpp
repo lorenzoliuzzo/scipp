@@ -1,8 +1,8 @@
 /**
- * @file    math/polynomial/lagrange.hpp
+ * @file    math/polynomials/lagrange.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-03
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */

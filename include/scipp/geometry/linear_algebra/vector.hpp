@@ -1,5 +1,5 @@
 /**
- * @file    geometry/vector.hpp
+ * @file    geometry/linear_algebra/vector.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the vector struct and its type traits.
  * @date    2023-04-02

@@ -1,5 +1,5 @@
 /**
- * @file    physics/prefix_traits.hpp
+ * @file    physics/measurements/prefix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the a prefix and the map converting multipliers to prefix symbols
  * @date    2023-03-23

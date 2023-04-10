@@ -15,9 +15,9 @@ int main() {
 
     print("Testing the derivatives class...");
 
-    const auto f = functions::log();
-    const auto df = functions::total_derivative(f); 
-    const auto expected_df = functions::invert();
+    const auto f = functions::sin();
+    const auto df = functions::derivative(f); 
+    const auto expected_df = functions::cos();
     print("f(2)", f(2. * rad));
     print("df(2, 0.1)", df(2. * rad, 0.1 * rad));
     print("expected_df(2, 0.1)", expected_df(2. * rad));
@@ -28,6 +28,7 @@ int main() {
     vector<scalar_m, 100> x_values;
     vector<scalar_m, 100> f_values;
     vector<scalar_m, 100> df_values;
+    vector<scalar_m, 100> back_values;
     vector<scalar_m, 100> expected_df_values;
 
     scalar_m increment = 2.0 * math::constants::pi / 100.0;
@@ -37,6 +38,7 @@ int main() {
         x_values[i] = x;
         f_values[i] = f(x);
         df_values[i] = df(x, increment);
+        back_values[i] = f.backward(x, 1.0);
         expected_df_values[i] = expected_df(x);
 
     }
@@ -47,6 +49,7 @@ int main() {
     plt::xlim(0, static_cast<int>(2.0 * math::constants::pi));
     plt::named_plot("f", static_cast<std::vector<double>>(x_values), static_cast<std::vector<double>>(f_values));
     plt::named_plot("df", static_cast<std::vector<double>>(x_values), static_cast<std::vector<double>>(df_values));
+    plt::named_plot("back", static_cast<std::vector<double>>(x_values), static_cast<std::vector<double>>(back_values));
     plt::named_plot("expected_df", static_cast<std::vector<double>>(x_values), static_cast<std::vector<double>>(expected_df_values));
     plt::tight_layout(); 
     plt::legend();

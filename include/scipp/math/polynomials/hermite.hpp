@@ -1,8 +1,8 @@
 /**
- * @file    math/hermite_polinomial.hpp
+ * @file    math/polynomials/hermite.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-31
+ * @date    2023-04-10
  * 
  * @copyright Copyright (c) 2023
  */

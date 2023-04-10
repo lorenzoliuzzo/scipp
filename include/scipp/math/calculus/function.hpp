@@ -1,8 +1,8 @@
 /**
- * @file    math/function/functions.hpp
+ * @file    math/calculus/function.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-05
+ * @date    2023-04-09
  * 
  * @copyright Copyright (c) 2023
  */
@@ -15,6 +15,7 @@ namespace scipp::math {
 
 
     namespace functions {
+
 
         template <typename RESULT_TYPE, typename ARG_TYPE>
         struct unary_function {
@@ -74,10 +75,27 @@ namespace scipp::math {
         };
 
 
+        template <typename T>
+        struct identity : public unary_function<T, T> {
+
+            using result_t = T;
+
+            using arg_t = T;
+
+            constexpr T operator()(const T& x) const noexcept override { 
+                
+                return x; 
+                
+            }
+
+        };
+
+
     } // namespace functions
 
 
 } // namespace scipp::math
+
 
     // template <typename RESULT_TYPE, typename SINGLE_ARG_TYPE, std::size_t N>
     // struct nary_function<RESULT_TYPE, SINGLE_ARG_TYPE> {

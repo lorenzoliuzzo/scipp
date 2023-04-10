@@ -1,5 +1,5 @@
 /**
- * @file    physics/measurement_traits.hpp
+ * @file    physics/measurements/measurement_traits.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the
  * @note    
@@ -125,9 +125,6 @@ namespace scipp::physics {
         template <>
         struct is_umeasurement<uint> : std::false_type{};
 
-
-        template <typename T>
-        struct is_scalar : std::false_type {};
 
         template <>
         struct is_scalar<double> : std::true_type {};

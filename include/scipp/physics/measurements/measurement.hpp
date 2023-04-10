@@ -1,5 +1,5 @@
 /**
- * @file    measurement.hpp
+ * @file    physics/measurements/measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the measurement struct and its type traits.
  * @date    2023-04-03
@@ -414,7 +414,10 @@ namespace scipp::physics {
             /// @brief Print a measurement to an output stream
             friend inline std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
                 
-                return os << other.value << ' ' << BASE_TYPE::to_string();
+                os << other.value; 
+                if constexpr (!is_scalar_v<BASE_TYPE>) 
+                    os << ' ' << BASE_TYPE::to_string();
+                return os;
                 
             }
 

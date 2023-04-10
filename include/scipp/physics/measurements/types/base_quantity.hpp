@@ -1,5 +1,5 @@
 /**
- * @file    physics/base_quantity_types.hpp
+ * @file    physics/measurements/base_quantity_types.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the aliases and declarations of units
  * @note    

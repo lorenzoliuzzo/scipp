@@ -38,7 +38,7 @@ int main() {
     auto c = circumference(position2(), 2.m);
     print("L", integrals::length(c));
     auto aster = asteroid(position2(), 1.0);
-    print("asteroL", integrals::length(aster));
+    print("asteroL", integrals::length(aster, 1000000, static_cast<scalar_m>(1.e-8)));
 
     if (c.is_closed())
         print("closed");

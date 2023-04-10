@@ -1,8 +1,8 @@
 /**
- * @file vector_types.hpp
- * @author Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
+ * @file    physics/vector_types.hpp
+ * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief 
- * @date 2023-02-05
+ * @date    2023-02-05
  * 
  * @copyright Copyright (c) 2023
  */

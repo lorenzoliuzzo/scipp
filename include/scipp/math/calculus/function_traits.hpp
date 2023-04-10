@@ -1,5 +1,5 @@
 /**
- * @file    math/functions/function_traits.hpp
+ * @file    math/calculus/function_traits.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-03-31
@@ -64,22 +64,6 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr bool is_function_v = is_function<T>::value;
-
-
-        template <typename T>
-        struct identity : public unary_function<T, T> {
-
-            using result_t = T;
-
-            using arg_t = T;
-
-            constexpr T operator()(const T& x) const noexcept override { 
-                
-                return x; 
-                
-            }
-
-        };
 
 
     } // namespace functions

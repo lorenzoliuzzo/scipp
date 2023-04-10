@@ -46,7 +46,7 @@ namespace detail {
 static std::string s_backend;
 
 struct _interpreter {
-    PyObject* s_python_function_arrow;
+    PyObject *s_python_function_arrow;
     PyObject *s_python_function_show;
     PyObject *s_python_function_close;
     PyObject *s_python_function_draw;
@@ -56,7 +56,7 @@ struct _interpreter {
     PyObject *s_python_function_fignum_exists;
     PyObject *s_python_function_plot;
     PyObject *s_python_function_quiver;
-    PyObject* s_python_function_contour;
+    PyObject *s_python_function_contour;
     PyObject *s_python_function_semilogx;
     PyObject *s_python_function_semilogy;
     PyObject *s_python_function_loglog;
@@ -83,10 +83,10 @@ struct _interpreter {
     PyObject *s_python_function_gca;
     PyObject *s_python_function_xticks;
     PyObject *s_python_function_yticks;
-    PyObject* s_python_function_margins;
+    PyObject *s_python_function_margins;
     PyObject *s_python_function_tick_params;
     PyObject *s_python_function_grid;
-    PyObject* s_python_function_cla;
+    PyObject *s_python_function_cla;
     PyObject *s_python_function_clf;
     PyObject *s_python_function_errorbar;
     PyObject *s_python_function_annotate;

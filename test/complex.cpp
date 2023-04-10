@@ -10,16 +10,16 @@
 
 #include "sci++.hpp"
 
-#include <complex>
 
 using namespace scipp; 
 using namespace physics; 
 using namespace physics::units; 
 using namespace math; 
+using namespace geometry; 
 using namespace tools;
 
 
-struct complex_cos : unary_function<complex<angle_m>, complex<angle_m>> {
+struct complex_cos : functions::unary_function<complex<angle_m>, complex<angle_m>> {
 
     constexpr complex<angle_m> operator()(const complex<angle_m>& other) const noexcept override { 
 
@@ -38,19 +38,6 @@ int main() {
     print("imag", mc0.imag);
 
 
-    // complex_as_mat2<angle_m> mc1(3. * rad, 4. * rad); // @todo
-    // print("real", mc1.data[0][0]);
-    // print("imag", mc1.data[0][1]);
-
-    
-    std::complex<double> c0(3., 4.);
-
-    std::cout << "abs: " << std::abs(c0) << '\n';
-    std::cout << "arg: " << std::arg(c0) << '\n';
-    std::cout << "norm: " << std::norm(c0) << '\n';
-    std::cout << "conj: " << std::conj(c0) << '\n';
-    std::cout << "cos: " << std::cos(c0) << '\n';
-
     print("abs", op::abs(mc0)); 
     print("arg", op::arg(mc0)); 
     print("norm", op::norm(mc0)); 
@@ -67,6 +54,41 @@ int main() {
 
     // auto integral = integrals::curvilinear(complex_cos(), geometry::circumference(complex<length_m>(), 1.0 * m));
     // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral);
+
+
+    auto Rmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)), 
+                                                    make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(1.0)));
+
+    auto Cmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(-1.0)), 
+                                                    make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)));
+    
+    print("Rmat", Rmat);
+    print("Cmat", Cmat);
+
+    complex<scalar_m> r(1.0, 4.0); 
+    auto r_mat = Rmat * r.real + Cmat * r.imag;
+    print("r", r);
+    print("alternatively", r_mat); 
+
+    complex<scalar_m> c(5.0, -3.0);
+    auto c_mat = Rmat * c.real + Cmat * c.imag;
+    print("c", c);
+    print("alternatively", c_mat);
+
+    print("r * c", r * c);
+    print("alternatively", r_mat * c_mat);
+
+
+    dual<scalar_m> d1(1.0, 2.0);
+    dual<length_m> d2(3.0m, 4.0m);
+
+    dual<scalar_m> eps(0.0, 1.0); 
+
+    print(d1);
+    print(d2);
+    print(eps); 
+    print(eps * eps);
+    print(math::constants::i * math::constants::i);
 
 
     return 0; 

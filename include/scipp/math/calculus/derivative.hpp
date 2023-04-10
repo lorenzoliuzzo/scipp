@@ -1,5 +1,5 @@
 /**
- * @file    math/function/derivatives.hpp
+ * @file    math/calculus/derivatives.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-04-09
@@ -17,35 +17,19 @@ namespace scipp::math {
     namespace functions {
 
 
-            // using _t = pippo<ARG_TYPE, ARG_DERIVATE_TYPEs...>;
-            // using arg_t = ARG_TYPE;
-            // using derivate_t = std::tuple<ARG_DERIVATE_TYPEs...>;
-
-
-            // constexpr auto val(const arg_t& x) const {
-
-            //     return std::get<0>(derivate_t{})(x);
-
-            // }
-
-            // constexpr auto derivate(const arg_t& x) const {
-
-            //     return std::get<1>(derivate_t{})(x);
-
-            // }
-
-
         template <typename FUNCTION>
             requires (is_unary_function_v<typename FUNCTION::type>)
-        struct total_derivative : binary_function<decltype(typename FUNCTION::type::result_t{} / typename FUNCTION::type::arg_t{}), typename FUNCTION::type::arg_t, typename FUNCTION::type::arg_t> {
+        struct derivative : binary_function<decltype(typename FUNCTION::type::result_t{} / typename FUNCTION::type::arg_t{}), 
+                                            typename FUNCTION::type::arg_t, 
+                                            typename FUNCTION::type::arg_t> {
 
 
-            constexpr total_derivative(const FUNCTION& f) noexcept : 
+            constexpr derivative(const FUNCTION& f) noexcept : 
 
                 f(f) {}
 
             
-            constexpr total_derivative(FUNCTION&& f) noexcept :
+            constexpr derivative(FUNCTION&& f) noexcept :
 
                 f(std::move(f)) {}
 
@@ -54,17 +38,36 @@ namespace scipp::math {
                 -> decltype(typename FUNCTION::type::result_t{} / typename FUNCTION::type::arg_t{}) 
                     override {
 
-                return (f(x + h) - f(x)) / h;
+                return (f(x + h) - f(x - h)) / (2.0 * h);
 
             }
 
             const FUNCTION f;
 
 
-        }; // struct total_derivative
+        }; // struct derivative
 
 
-        // template <typename FUNCTION>
+        template <std::size_t ORDER>
+        struct auto_derivative {
+
+            template <typename FUNCTION, typename... DERIV_TYPES>
+                requires (is_unary_function_v<typename FUNCTION::type>)
+            constexpr auto operator()(const FUNCTION& f) const noexcept {
+
+                std::tuple<DERIV_TYPES...> derivatives;
+
+                
+
+            }
+
+
+        }; // struct auto_derivative
+
+
+
+
+        // // template <typename FUNCTION>
         //     requires (is_binary_function_v<typename FUNCTION::type>)
         // struct total_derivative : binary_function<decltype(typename FUNCTION::type::result_t{} / typename FUNCTION::type::first_arg_t{}), typename FUNCTION::type::first_arg_t, typename FUNCTION::type::first_arg_t> {
             

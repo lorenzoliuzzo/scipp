@@ -8,8 +8,6 @@
  */
 
 
-#pragma once
-
 
 namespace scipp::geometry {
 

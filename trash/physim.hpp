@@ -12,7 +12,7 @@
  */
 
 
-#pragma once 
+ 
 
 #include <cassert>
 #include <chrono>

@@ -64,16 +64,6 @@ int main() {
     print("in matrix form", r_mat * c_mat);
 
 
-    dual<scalar_m> d1(-1.0, 2.0);
-    dual<length_m> d2(3.0m, 4.0m);
-
-    print(d1);
-    print(d2);
-    print(math::constants::epsilon * math::constants::epsilon);
-    print(math::constants::i * math::constants::i);
-
-
-    print(op::abs(d1)); 
 
 
     return 0; 

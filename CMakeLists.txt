@@ -6,12 +6,12 @@ set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suf
 
 add_library(${PROJECT_NAME} 
     STATIC   
-        ${PROJECT_SOURCE_DIR}/include/sci++.hpp)
+        ${PROJECT_SOURCE_DIR}/scipp/sci++.hpp)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC
         /usr/include/python3.10
-        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/scipp>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 set_target_properties(${PROJECT_NAME} 

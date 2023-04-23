@@ -8,9 +8,8 @@
  */
 
 
+
 #include "sci++.hpp"
-
-
 using namespace scipp; 
 using namespace physics; 
 using namespace physics::units; 
@@ -19,13 +18,73 @@ using namespace geometry;
 using namespace tools;
 
 
+#include <external/matplotlibcpp.h>
+namespace plt = matplotlibcpp;
+
+
+struct complex_cosh : functions::unary_function<complex<scalar_m>, complex<scalar_m>> {
+
+    
+    constexpr complex<scalar_m> operator()(const complex<scalar_m>& x) const noexcept override {
+
+        return op::cosh(x);
+
+    }
+
+
+};
+
 
 int main() {
 
 
-    complex<angle_m> mc0(3. * rad, 4. * rad);
-    print("real", mc0.real);
-    print("imag", mc0.imag);
+    scalar_m radius = 1.0;
+    auto circ = circumference(complex<scalar_m>(), radius);
+    vector<scalar_m, 100> x_vec;
+    vector<scalar_m, 100> y_vec;
+
+    for (std::size_t i = 0; i < 100; ++i) {
+
+        auto p = circ(static_cast<scalar_m>(i / 100.0));
+        x_vec[i] = p.real;
+        y_vec[i] = p.imag;
+
+    }
+
+    plt::title("Circumference in C");
+    plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
+    plt::show(); 
+    
+
+    vector<scalar_m, 2> p0;
+    auto circ2 = circumference(p0, radius);
+
+    for (std::size_t i = 0; i < 100; ++i) {
+
+        auto p = circ2(static_cast<scalar_m>(i / 100.0));
+        x_vec[i] = p[0];
+        y_vec[i] = p[1];
+
+    }
+
+    plt::title("Circumference in R2");
+    plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
+    plt::show(); 
+
+
+    // auto result = integrals::curvilinear(complex_cosh(), circ);
+    // print("log(r)", result);
+
+
+    return 0; 
+
+}
+
+
+
+    // complex<angle_m> mc0(3. * rad, 4. * rad);
+    // print("real", mc0.real);
+    // print("imag", mc0.imag);
 
 
     // print("abs", op::abs(mc0)); 
@@ -41,31 +100,24 @@ int main() {
     // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral);
 
 
-    auto Rmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)), 
-                                                    make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(1.0)));
+    // auto Rmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)), 
+    //                                                 make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(1.0)));
 
-    auto Cmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(-1.0)), 
-                                                    make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)));
+    // auto Cmat = make_matrix<vector<scalar_m, 2>, 2>(make_vector(static_cast<scalar_m>(0.0), static_cast<scalar_m>(-1.0)), 
+    //                                                 make_vector(static_cast<scalar_m>(1.0), static_cast<scalar_m>(0.0)));
     
-    print("Rmat", Rmat);
-    print("Cmat", Cmat);
+    // print("Rmat", Rmat);
+    // print("Cmat", Cmat);
 
-    complex<scalar_m> r(1.0, 4.0); 
-    auto r_mat = Rmat * r.real + Cmat * r.imag;
-    print("r", r);
-    print("in matrix form", r_mat); 
+    // complex<scalar_m> r(1.0, 4.0); 
+    // auto r_mat = Rmat * r.real + Cmat * r.imag;
+    // print("r", r);
+    // print("in matrix form", r_mat); 
 
-    complex<scalar_m> c(5.0, -3.0);
-    auto c_mat = Rmat * c.real + Cmat * c.imag;
-    print("c", c);
-    print("in matrix form", c_mat);
+    // complex<scalar_m> c(5.0, -3.0);
+    // auto c_mat = Rmat * c.real + Cmat * c.imag;
+    // print("c", c);
+    // print("in matrix form", c_mat);
 
-    print("r * c", r * c);
-    print("in matrix form", r_mat * c_mat);
-
-
-
-
-    return 0; 
-
-}
+    // print("r * c", r * c);
+    // print("in matrix form", r_mat * c_mat);

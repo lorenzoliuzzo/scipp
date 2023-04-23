@@ -9,8 +9,6 @@
 
 
 
-
-
 /// @brief math namespace contains all the classes and functions of the math library
 namespace scipp::math {
 

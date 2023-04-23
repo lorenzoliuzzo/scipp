@@ -24,11 +24,11 @@ namespace scipp::geometry {
         // aliases
         // ===========================================================
             
-            using type = vector<MEAS_TYPE, DIM>;
+            using _t = vector<MEAS_TYPE, DIM>;
 
-            using data_type = std::array<MEAS_TYPE, DIM>;
+            using data_t = std::array<MEAS_TYPE, DIM>;
 
-            using measurement_type = MEAS_TYPE;
+            using measurement_t = MEAS_TYPE;
 
 
         // ===========================================================
@@ -37,11 +37,11 @@ namespace scipp::geometry {
 
             inline static constexpr std::size_t dim = DIM;
 
-            data_type data;
+            data_t data;
 
-            inline static constexpr vector zero = vector(std::array<measurement_type, DIM>{measurement_type::zero}); 
+            inline static constexpr vector zero = vector(std::array<measurement_t, DIM>{measurement_t::zero}); 
 
-            inline static constexpr vector one = vector(std::array<measurement_type, DIM>{measurement_type::one});
+            inline static constexpr vector one = vector(std::array<measurement_t, DIM>{measurement_t::one});
 
 
         // ===========================================================
@@ -66,13 +66,13 @@ namespace scipp::geometry {
                 data(std::move(other.data)) {}
 
 
-            /// @brief Copy constructor from an std::array<measurement_type, dim>
-            constexpr vector(const data_type& other) noexcept : 
+            /// @brief Copy constructor from an std::array<measurement_t, dim>
+            constexpr vector(const data_t& other) noexcept : 
                 
                 data(other.data) {}
 
-            /// @brief Move constructor from an std::array<measurement_type, dim>
-            constexpr vector(data_type&& other) noexcept : 
+            /// @brief Move constructor from an std::array<measurement_t, dim>
+            constexpr vector(data_t&& other) noexcept : 
                 
                 data(std::move(other)) {}
 
@@ -80,31 +80,31 @@ namespace scipp::geometry {
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
-                requires (physics::are_same_measurements_v<measurement_type, OTHER_MEAS_TYPE...>)
+                requires (physics::are_same_measurements_v<measurement_t, OTHER_MEAS_TYPE...>)
             constexpr vector(OTHER_MEAS_TYPE&... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
-                data{std::forward<measurement_type>(other)...} {}
+                data{std::forward<measurement_t>(other)...} {}
 
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
-                requires (physics::are_same_measurements_v<measurement_type, OTHER_MEAS_TYPE...>)
+                requires (physics::are_same_measurements_v<measurement_t, OTHER_MEAS_TYPE...>)
             constexpr vector(OTHER_MEAS_TYPE&&... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
-                data{std::forward<measurement_type>(std::move(other))...} {}
+                data{std::forward<measurement_t>(std::move(other))...} {}
 
 
             /// @brief Construct a new vector from a single measurement
-            constexpr vector(const measurement_type& other) noexcept {
+            constexpr vector(const measurement_t& other) noexcept {
                 
                 this->data.fill(other); 
 
             }
 
             /// @brief Construct a new vector from a single measurement
-            constexpr vector(measurement_type&& other) noexcept {
+            constexpr vector(measurement_t&& other) noexcept {
                 
                 this->data.fill(std::move(other)); 
 
@@ -123,7 +123,7 @@ namespace scipp::geometry {
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                vec.begin(), 
-                               [](const measurement_type& meas) { return meas.value; }); 
+                               [](const measurement_t& meas) { return meas.value; }); 
 
                 return vec; 
 
@@ -132,7 +132,7 @@ namespace scipp::geometry {
 
             /// @brief Access the i-th element of the vector
             /// @note: index must be in the range [0, dim)
-            constexpr const measurement_type& operator[](const std::size_t& index) const { 
+            constexpr const measurement_t& operator[](const std::size_t& index) const { 
                 
                 if (index >= dim) 
                     throw std::out_of_range("Cannot access a vector with an index out of range");
@@ -143,7 +143,7 @@ namespace scipp::geometry {
 
             /// @brief Access the i-th element of the vector
             /// @note: index must be in the range [0, dim)
-            constexpr measurement_type& operator[](const std::size_t& index) { 
+            constexpr measurement_t& operator[](const std::size_t& index) { 
                 
                 if (index >= dim) 
                     throw std::out_of_range("Cannot access a vector with an index out of range");
@@ -185,16 +185,16 @@ namespace scipp::geometry {
             }
 
 
-            /// @brief Copy assignment operator from an std::array<measurement_type, dim>
-            constexpr vector& operator=(const data_type& other) noexcept {
+            /// @brief Copy assignment operator from an std::array<measurement_t, dim>
+            constexpr vector& operator=(const data_t& other) noexcept {
 
                 this->data = other; 
                 return *this; 
 
             }
             
-            /// @brief Move assignment operator from an std::array<measurement_type, dim>
-            constexpr vector& operator=(data_type&& other) noexcept {
+            /// @brief Move assignment operator from an std::array<measurement_t, dim>
+            constexpr vector& operator=(data_t&& other) noexcept {
                 
                 this->data = std::move(other); 
                 return *this; 
@@ -209,7 +209,7 @@ namespace scipp::geometry {
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
                                this->data.begin(), 
-                               std::plus<measurement_type>());
+                               std::plus<measurement_t>());
 
                 return *this;
 
@@ -222,7 +222,7 @@ namespace scipp::geometry {
                                this->data.begin(), this->data.end(), 
                                std::move(other).data.begin(), 
                                this->data.begin(), 
-                               std::plus<measurement_type>());
+                               std::plus<measurement_t>());
 
                 return *this;
 
@@ -236,7 +236,7 @@ namespace scipp::geometry {
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
                                this->data.begin(), 
-                               std::minus<measurement_type>());
+                               std::minus<measurement_t>());
 
                 return *this;
                 
@@ -249,7 +249,7 @@ namespace scipp::geometry {
                                this->data.begin(), this->data.end(), 
                                std::move(other).data.begin(), 
                                this->data.begin(), 
-                               std::minus<measurement_type>());
+                               std::minus<measurement_t>());
 
                 return *this;
 
@@ -259,12 +259,12 @@ namespace scipp::geometry {
             /// @brief Addition operator
             constexpr vector operator+(const vector& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
                                result.begin(), 
-                               std::plus<measurement_type>());
+                               std::plus<measurement_t>());
 
                 return result;
 
@@ -273,12 +273,12 @@ namespace scipp::geometry {
             /// @brief Addition operator
             constexpr vector operator+(vector&& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
                                result.begin(), 
-                               std::plus<measurement_type>());
+                               std::plus<measurement_t>());
 
                 return result;
 
@@ -288,12 +288,12 @@ namespace scipp::geometry {
             /// @brief Subtraction operator
             constexpr vector operator-(const vector& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
                                result.begin(), 
-                               std::minus<measurement_type>());
+                               std::minus<measurement_t>());
 
                 return result;
 
@@ -302,12 +302,12 @@ namespace scipp::geometry {
             /// @brief Subtraction operator
             constexpr vector operator-(vector&& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                std::move(other).data.begin(), 
                                result.begin(), 
-                               std::minus<measurement_type>());
+                               std::minus<measurement_t>());
 
                 return result;
 
@@ -317,11 +317,11 @@ namespace scipp::geometry {
             /// @brief Negation operator
             constexpr vector operator-() const noexcept {
 
-                data_type result; 
+                data_t result; 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
-                               std::negate<measurement_type>()); 
+                               std::negate<measurement_t>()); 
 
                 return result;    
 
@@ -334,7 +334,7 @@ namespace scipp::geometry {
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                this->data.begin(), 
-                               [&other](measurement_type& x) { return x *= other; });
+                               [&other](measurement_t& x) { return x *= other; });
 
                 return *this;
 
@@ -346,7 +346,7 @@ namespace scipp::geometry {
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                this->data.begin(), 
-                               [&other](measurement_type& x) { return std::move(x *= other); });
+                               [&other](measurement_t& x) { return std::move(x *= other); });
 
                 return *this;
 
@@ -356,13 +356,13 @@ namespace scipp::geometry {
             /// @brief Divide this vector by a scalar measurement
             constexpr vector& operator/=(const physics::scalar_m& other) {
 
-                if (other == measurement_type::zero) 
+                if (other == measurement_t::zero) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                this->data.begin(), 
-                               [&other](measurement_type& x) { return x /= other; });
+                               [&other](measurement_t& x) { return x /= other; });
 
                 return *this;
 
@@ -371,13 +371,13 @@ namespace scipp::geometry {
             /// @brief Divide this vector by a scalar measurement
             constexpr vector& operator/=(physics::scalar_m&& other) {
 
-                if (other == measurement_type::zero) 
+                if (other == measurement_t::zero) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
                 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                this->data.begin(), 
-                               [&other](measurement_type& x) { return std::move(x /= other); });
+                               [&other](measurement_t& x) { return std::move(x /= other); });
 
                 return *this;
 
@@ -388,14 +388,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept
-                -> vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
+                -> vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
 
-                std::array<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
+                std::array<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
-                               [&other](const measurement_type& x) { return x * other; });
+                               [&other](const measurement_t& x) { return x * other; });
 
                 return result;
 
@@ -405,14 +405,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept
-                -> vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
+                -> vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
 
-                std::array<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
+                std::array<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
-                               [&other](const measurement_type& x) { return std::move(x * other); });
+                               [&other](const measurement_t& x) { return std::move(x * other); });
 
                 return result;
 
@@ -422,17 +422,17 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const
-                -> vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
+                -> vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
 
-                if (other == measurement_type::zero) 
+                if (other == measurement_t::zero) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
-                std::array<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
+                std::array<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
-                               [&other](const measurement_type& x) { return x / other; });
+                               [&other](const measurement_t& x) { return x / other; });
 
                 return result;
 
@@ -442,17 +442,17 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const
-                -> vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> {
+                -> vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
                 
-                if (other == measurement_type::zero) 
+                if (other == measurement_t::zero) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
-                std::array<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, dim> result;
+                std::array<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
-                               [&other](const measurement_type& x) { return std::move(x / other); });
+                               [&other](const measurement_t& x) { return std::move(x / other); });
 
                 return result;
 
@@ -463,14 +463,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator*(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept
-                -> vector<math::op::measurements_prod_t<OTHER_MEAS_TYPE, measurement_type>, dim> {
+                -> vector<math::op::measurements_prod_t<OTHER_MEAS_TYPE, measurement_t>, dim> {
 
-                std::array<math::op::measurements_prod_t<OTHER_MEAS_TYPE, measurement_type>, dim> result;
+                std::array<math::op::measurements_prod_t<OTHER_MEAS_TYPE, measurement_t>, dim> result;
 
                 std::transform(std::execution::par,
                                vec.data.begin(), vec.data.end(), 
                                result.begin(), 
-                               [&meas](const measurement_type& x) { return meas * x; });
+                               [&meas](const measurement_t& x) { return meas * x; });
 
                 return result;
             
@@ -480,14 +480,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept
-                -> vector<math::op::measurements_div_t<OTHER_MEAS_TYPE, measurement_type>, dim> {
+                -> vector<math::op::measurements_div_t<OTHER_MEAS_TYPE, measurement_t>, dim> {
                 
-                std::array<math::op::measurements_div_t<OTHER_MEAS_TYPE, measurement_type>, dim> result;
+                std::array<math::op::measurements_div_t<OTHER_MEAS_TYPE, measurement_t>, dim> result;
 
                 std::transform(std::execution::par,
                                vec.data.begin(), vec.data.end(), 
                                result.begin(), 
-                               [&meas](const measurement_type& x) { return meas / x; });
+                               [&meas](const measurement_t& x) { return meas / x; });
 
                 return result;
             
@@ -527,7 +527,7 @@ namespace scipp::geometry {
             /// @note: index must be in the range [0, dim)
             template <std::size_t INDEX>
                 requires (INDEX < dim)
-            constexpr measurement_type& element() noexcept { 
+            constexpr measurement_t& element() noexcept { 
                 
                 return this->data[INDEX]; 
                 
@@ -538,7 +538,7 @@ namespace scipp::geometry {
             /// @note: index must be in the range [0, dim)
             template <std::size_t INDEX>
                 requires (INDEX < dim)
-            constexpr const measurement_type& element() const noexcept { 
+            constexpr const measurement_t& element() const noexcept { 
                 
                 return this->data[INDEX]; 
                 
@@ -546,21 +546,21 @@ namespace scipp::geometry {
 
 
             /// @brief Get the first element of the vector
-            constexpr measurement_type x() const noexcept {
+            constexpr measurement_t x() const noexcept {
 
                 return this->data[0];
 
             }
 
             /// @brief Get the first element of the vector
-            constexpr measurement_type x() noexcept {
+            constexpr measurement_t x() noexcept {
 
                 return this->data[0];
 
             }
 
             /// @brief Get the second element of the vector
-            constexpr measurement_type y() const noexcept 
+            constexpr measurement_t y() const noexcept 
                 requires (DIM >= 1) {
 
                 return this->data[1];
@@ -568,7 +568,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the second element of the vector
-            constexpr measurement_type y() noexcept 
+            constexpr measurement_t y() noexcept 
                 requires (DIM >= 1) { 
 
                 return this->data[1];
@@ -576,7 +576,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the third element of the vector
-            constexpr measurement_type z() const noexcept 
+            constexpr measurement_t z() const noexcept 
                 requires (DIM >= 2) { 
 
                 return this->data[2];
@@ -584,7 +584,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the third element of the vector
-            constexpr measurement_type z() noexcept 
+            constexpr measurement_t z() noexcept 
                 requires (DIM >= 2) { 
 
                 return this->data[2];
@@ -592,7 +592,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the forth element of the vector
-            constexpr measurement_type w() const noexcept 
+            constexpr measurement_t w() const noexcept 
                 requires (DIM >= 3) { 
 
                 return this->data[3];
@@ -600,7 +600,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the forth element of the vector
-            constexpr measurement_type w() noexcept 
+            constexpr measurement_t w() noexcept 
                 requires (DIM >= 3) { 
 
                 return this->data[3];
@@ -610,10 +610,10 @@ namespace scipp::geometry {
 
             // /// @brief If the measurement has an uncertainty, get the values vector
             // constexpr auto values() const noexcept 
-            //     -> vector<physics::measurement<typename measurement_type::base>, dim> 
-            //         requires (physics::is_umeasurement_v<measurement_type>) {
+            //     -> vector<physics::measurement<typename measurement_t::base>, dim> 
+            //         requires (physics::is_umeasurement_v<measurement_t>) {
 
-            //     std::array<physics::measurement<typename measurement_type::base>, dim> result;
+            //     std::array<physics::measurement<typename measurement_t::base>, dim> result;
             //     std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.value; });
             //     return result;
 
@@ -621,10 +621,10 @@ namespace scipp::geometry {
 
             // /// @brief If the measurement has an uncertainty, get the uncertainties vector
             // constexpr auto uncertainties() const noexcept 
-            //     -> vector<physics::measurement<typename measurement_type::base>, dim> 
-            //         requires (physics::is_umeasurement_v<measurement_type>) {
+            //     -> vector<physics::measurement<typename measurement_t::base>, dim> 
+            //         requires (physics::is_umeasurement_v<measurement_t>) {
 
-            //     std::array<physics::measurement<typename measurement_type::base>, dim> result;
+            //     std::array<physics::measurement<typename measurement_t::base>, dim> result;
             //     std::transform(this->data.begin(), this->data.end(), result.begin(), [](const auto& x) { return x.uncertainty; });
             //     return result;
 
@@ -632,9 +632,9 @@ namespace scipp::geometry {
 
 
             /// @brief Get the magnitude of the vector
-            constexpr measurement_type magnitude() const noexcept {
+            constexpr measurement_t magnitude() const noexcept {
 
-                return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::square(val); }, math::op::measurement_square_t<measurement_type>{}));
+                return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::square(val); }, math::op::measurement_square_t<measurement_t>{}));
 
             }
 
@@ -664,7 +664,7 @@ namespace scipp::geometry {
             // /// @brief Get the azimuthal angle
             // /// @note the vector must have at least three elements
             // constexpr auto azimuthal_angle() const 
-            //     -> std::conditional_t<physics::is_umeasurement_v<measurement_type>, 
+            //     -> std::conditional_t<physics::is_umeasurement_v<measurement_t>, 
             //                           physics::umeasurement<physics::units::radian>,
             //                           physics::measurement<physics::units::radian>> {
                 
@@ -783,8 +783,8 @@ namespace scipp::geometry {
     template <typename VECTOR_TYPE, typename... VECTORS>
         requires (are_vectors_v<VECTOR_TYPE, VECTORS...>)
     struct are_same_vectors : std::conjunction<std::bool_constant<VECTOR_TYPE::dim == VECTORS::dim>..., 
-                                               std::bool_constant<physics::are_same_measurements_v<typename VECTOR_TYPE::measurement_type, 
-                                                                                                   typename VECTORS::measurement_type>>...> {};
+                                               std::bool_constant<physics::are_same_measurements_v<typename VECTOR_TYPE::measurement_t, 
+                                                                                                   typename VECTORS::measurement_t>>...> {};
 
     template <typename... VECTORS>  
     constexpr bool are_same_vectors_v = are_same_vectors<VECTORS...>::value;

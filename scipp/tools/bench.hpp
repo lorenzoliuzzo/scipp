@@ -43,32 +43,32 @@ namespace scipp::tools {
     }
 
 
-    /**
-     * @brief A class for benchmarking an operation or a function or a piece of code
-     * 
-     * @param n: number of times the operation is repeated
-     * @param func: the operation to be benchmarked
-     * 
-     * @return physics::time_um
-     */
-    template <std::size_t N>
-    physics::time_um omp_bench(std::function<void()> func) {
+    // /**
+    //  * @brief A class for benchmarking an operation or a function or a piece of code
+    //  * 
+    //  * @param n: number of times the operation is repeated
+    //  * @param func: the operation to be benchmarked
+    //  * 
+    //  * @return physics::time_um
+    //  */
+    // template <std::size_t N>
+    // physics::time_um omp_bench(std::function<void()> func) {
 
-        omp_timer stopwatch;
-        geometry::vector<physics::time_m, N> times;
+    //     omp_timer stopwatch;
+    //     geometry::vector<physics::time_m, N> times;
 
-        for (std::size_t i{}; i < N; ++i) {
+    //     for (std::size_t i{}; i < N; ++i) {
 
-            stopwatch.start();
-            func();
-            stopwatch.stop();
-            times[i] = stopwatch.elapsed();
+    //         stopwatch.start();
+    //         func();
+    //         stopwatch.stop();
+    //         times[i] = stopwatch.elapsed();
 
-        }
+    //     }
 
-        return math::statistics::average(times);
+    //     return math::statistics::average(times);
 
-    }
+    // }
 
 
     // /**

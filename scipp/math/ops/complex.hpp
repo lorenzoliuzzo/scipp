@@ -17,7 +17,7 @@ namespace scipp::math {
 
         template <typename MEAS_TYPE>
             requires (is_complex_measurement_v<MEAS_TYPE>)
-        inline constexpr MEAS_TYPE::measurement_t abs(const MEAS_TYPE& other) noexcept {
+        inline constexpr typename MEAS_TYPE::measurement_t abs(const MEAS_TYPE& other) noexcept {
             
             return op::sqrt(op::square(other.real) + op::square(other.imag));
 
@@ -42,7 +42,7 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE>
-            requires (is_complex_measurement_v<MEAS_TYPE> || is_dual_measurement_v<MEAS_TYPE>)
+            requires (is_complex_measurement_v<MEAS_TYPE>) // || is_dual_measurement_v<MEAS_TYPE>)
         inline constexpr auto conj(const MEAS_TYPE& other) noexcept {
             
             return MEAS_TYPE{other.real, -other.imag};

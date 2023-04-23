@@ -13,29 +13,29 @@ namespace scipp::math {
     
 
     template <typename POINT_TYPE>      
-        requires (geometry::is_vector_v<POINT_TYPE>)
+        requires (geometry::is_vector_v<POINT_TYPE> || is_complex_measurement_v<POINT_TYPE>)
     struct curve : functions::nary_function<POINT_TYPE, physics::scalar_m, POINT_TYPE::dim - 1> {
 
 
         using type = curve<POINT_TYPE>;
 
-        using point_type = POINT_TYPE;
+        using point_t = POINT_TYPE;
 
-        using args_type = geometry::vector<physics::scalar_m, POINT_TYPE::dim - 1>;
+        using args_t = geometry::vector<physics::scalar_m, POINT_TYPE::dim - 1>;
 
 
         inline static constexpr std::size_t dimension = POINT_TYPE::dim - 1;
 
 
-        std::function<point_type(args_type)> f;
+        std::function<point_t(args_t)> f;
 
 
-        constexpr curve(std::function<point_type(args_type)>&& f) noexcept : 
+        constexpr curve(std::function<point_t(args_t)>&& f) noexcept : 
             
             f(f) {}
 
 
-        constexpr point_type operator()(const args_type& params) const {
+        constexpr point_t operator()(const args_t& params) const {
 
             for (auto t : params.data)
                 if (t < physics::scalar_m::zero || t > physics::scalar_m::one) {
@@ -58,7 +58,7 @@ namespace scipp::math {
 
         constexpr bool is_closed() const noexcept {
 
-            return f(args_type::zero) == f(args_type::one);
+            return f(args_t::zero) == f(args_t::one);
 
         }
 

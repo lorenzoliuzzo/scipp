@@ -267,7 +267,7 @@ namespace scipp::tools {
     template <typename VECTOR_TYPE, typename UNIT_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_type::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base>)
     inline static constexpr void print(const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << "[ "; 
@@ -283,7 +283,7 @@ namespace scipp::tools {
     template <typename VECTOR_TYPE, typename UNIT_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_type::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base>)
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << description << ": [ "; 

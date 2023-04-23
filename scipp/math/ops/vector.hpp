@@ -20,9 +20,9 @@ namespace scipp::math {
             requires (geometry::are_vectors_v<VEC_TYPE1, VEC_TYPE2> && 
                       geometry::have_same_dimension_v<VEC_TYPE1, VEC_TYPE2>)
         constexpr auto dot(const VEC_TYPE1& v1, const VEC_TYPE2& v2) noexcept 
-            -> op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type> {
+            -> op::measurements_prod_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t> {
             
-            op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type> result;
+            op::measurements_prod_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t> result;
 
             for (std::size_t i{}; i < VEC_TYPE1::dim; ++i) 
                 result += v1.data[i] * v2.data[i]; 
@@ -37,9 +37,9 @@ namespace scipp::math {
             requires (geometry::are_vectors_v<VEC_TYPE1, VEC_TYPE2> && 
                       geometry::have_same_dimension_v<VEC_TYPE1, VEC_TYPE2>)
         constexpr auto cross(const VEC_TYPE1& v1, const VEC_TYPE2& v2) noexcept 
-            -> geometry::vector<op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type>, VEC_TYPE1::dim> {
+            -> geometry::vector<op::measurements_prod_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t>, VEC_TYPE1::dim> {
             
-            geometry::vector<op::measurements_prod_t<typename VEC_TYPE1::measurement_type, typename VEC_TYPE2::measurement_type>, VEC_TYPE1::dim> result;
+            geometry::vector<op::measurements_prod_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t>, VEC_TYPE1::dim> result;
 
             for (std::size_t i{}; i < VEC_TYPE1::dim; ++i)
                 result.data[i] = v1[(i + 1) % VEC_TYPE1::dim] * v2[(i + 2) % VEC_TYPE1::dim] - 
@@ -53,12 +53,12 @@ namespace scipp::math {
         /// @brief Get the norm of the vector
         template <typename VEC_TYPE>
             requires (geometry::is_vector_v<VEC_TYPE>)
-        constexpr typename VEC_TYPE::measurement_type norm(const VEC_TYPE& other) noexcept { 
+        constexpr typename VEC_TYPE::measurement_t norm(const VEC_TYPE& other) noexcept { 
 
             if constexpr (VEC_TYPE::dim == 1) 
                 return other[0];
 
-            op::measurement_square_t<typename VEC_TYPE::measurement_type> result;
+            op::measurement_square_t<typename VEC_TYPE::measurement_t> result;
 
             for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
                 result += op::square(other.data[i]);
@@ -72,12 +72,12 @@ namespace scipp::math {
         template <typename VEC_TYPE>
             requires (geometry::is_vector_v<VEC_TYPE>)
         constexpr auto norm2(const VEC_TYPE& other) noexcept 
-            -> op::measurement_square_t<typename VEC_TYPE::measurement_type> { 
+            -> op::measurement_square_t<typename VEC_TYPE::measurement_t> { 
 
             if constexpr (VEC_TYPE::dim == 1) 
                 return op::square(other[0]);
 
-            op::measurement_square_t<typename VEC_TYPE::measurement_type> result;
+            op::measurement_square_t<typename VEC_TYPE::measurement_t> result;
 
             for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
                 result += op::square(other.data[i]);
@@ -91,7 +91,7 @@ namespace scipp::math {
         template <typename VEC_TYPE>
             requires (geometry::is_vector_v<VEC_TYPE>)
         constexpr auto normalize(const VEC_TYPE& other) noexcept 
-            -> std::conditional_t<physics::is_umeasurement_v<typename VEC_TYPE::measurement_type>, 
+            -> std::conditional_t<physics::is_umeasurement_v<typename VEC_TYPE::measurement_t>, 
                                     geometry::vector<physics::scalar_um, VEC_TYPE::dim>, 
                                     geometry::vector<physics::scalar_m, VEC_TYPE::dim>> { 
 
@@ -104,9 +104,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE> 
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         constexpr auto invert(const VECTOR_TYPE& vec)
-            -> geometry::vector<op::measurement_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
+            -> geometry::vector<op::measurement_inv_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> {
 
-            geometry::vector<op::measurement_inv_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
+            geometry::vector<op::measurement_inv_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
             for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result.data[i] = op::invert(vec.data[i]);
@@ -136,9 +136,9 @@ namespace scipp::math {
         // template <int POWER, typename VECTOR_TYPE>
         //     requires (geometry::is_vector_v<VECTOR_TYPE>)
         // constexpr auto pow(const VECTOR_TYPE& vec) noexcept
-        //     -> std::conditional_t<physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_type>, 
-        //         geometry::vector<physics::umeasurement<op::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>,
-        //         geometry::vector<physics::measurement<op::base_pow_t<typename VECTOR_TYPE::measurement_type::base, POWER>>, VECTOR_TYPE::dim>> {
+        //     -> std::conditional_t<physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_t>, 
+        //         geometry::vector<physics::umeasurement<op::base_pow_t<typename VECTOR_TYPE::measurement_t::base, POWER>>, VECTOR_TYPE::dim>,
+        //         geometry::vector<physics::measurement<op::base_pow_t<typename VECTOR_TYPE::measurement_t::base, POWER>>, VECTOR_TYPE::dim>> {
 
         //     geometry::vector<auto, VECTOR_TYPE::dim> result;
 
@@ -195,9 +195,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE> 
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         constexpr auto square(const VECTOR_TYPE& vec) noexcept
-            -> geometry::vector<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
+            -> geometry::vector<op::measurement_square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> {
 
-            std::array<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
+            std::array<op::measurement_square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
             for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result[i] = op::square(vec.data[i]);
@@ -209,9 +209,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE> 
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         constexpr auto sqrt(const VECTOR_TYPE& vec) noexcept
-            -> geometry::vector<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> {
+            -> geometry::vector<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> {
 
-            std::array<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE::dim> result;
+            std::array<op::measurement_sqrt_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
             for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result[i] = op::sqrt(vec.data[i]);

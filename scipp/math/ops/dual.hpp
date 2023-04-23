@@ -19,7 +19,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr MEAS_TYPE ceil(const MEAS_TYPE& other) noexcept {
 
-            return {op::ceil(other.real), op::ceil(other.imag)}; 
+            return {op::ceil(other.val), op::ceil(other.eps)}; 
 
         }
 
@@ -27,7 +27,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr MEAS_TYPE floor(const MEAS_TYPE& other) noexcept {
 
-            return {op::floor(other.real), op::floor(other.imag)}; 
+            return {op::floor(other.val), op::floor(other.eps)}; 
 
         }
 
@@ -36,7 +36,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr MEAS_TYPE abs(const MEAS_TYPE& other) noexcept {
 
-            return {op::abs(other.real), other.imag * op::sign(other.real)}; 
+            return {op::abs(other.val), other.eps * op::sign(other.val)}; 
 
         }
 
@@ -46,8 +46,8 @@ namespace scipp::math {
         static inline constexpr auto pow(const MEAS_TYPE& other) noexcept 
             -> dual<op::measurement_pow_t<typename MEAS_TYPE::measurement_t, POWER>> {
 
-            const auto pow = op::pow<POWER - 1>(other.real);
-            return {other.real * pow, other.imag * static_cast<physics::scalar_m>(POWER) * pow}; 
+            const auto pow = op::pow<POWER - 1>(other.val);
+            return {other.val * pow, other.eps * static_cast<double>(POWER) * pow}; 
 
         }
 
@@ -57,8 +57,8 @@ namespace scipp::math {
         static inline constexpr auto square(const MEAS_TYPE& other) noexcept 
             -> dual<op::measurement_square_t<typename MEAS_TYPE::measurement_t>> {
 
-            const auto pow = op::square(other.real);
-            return {other.real * pow, 2.0 * other.imag * pow}; 
+            const auto pow = op::square(other.val);
+            return {other.val * pow, 2.0 * other.eps * pow}; 
 
         }
 
@@ -73,11 +73,11 @@ namespace scipp::math {
 
         //     using T = common_numeric_t<T1,T2>;
 
-        //     const auto ba_ea_1 = T(pow(b.real(), e.real()-1));
+        //     const auto ba_ea_1 = T(pow(b.val(), e.val()-1));
 
         //     return dual<T>{
-        //         T(b.real()) * ba_ea_1 * (T(1) + (T(e.imag()) * T(log(b.real()))) ),
-        //         T(b.imag()) * T(e.real()) * ba_ea_1 };
+        //         T(b.val()) * ba_ea_1 * (T(1) + (T(e.eps()) * T(log(b.val()))) ),
+        //         T(b.eps()) * T(e.val()) * ba_ea_1 };
         // }
 
 
@@ -86,8 +86,8 @@ namespace scipp::math {
         static inline constexpr auto sqrt(const MEAS_TYPE& other) noexcept 
             -> dual<op::measurement_sqrt_t<typename MEAS_TYPE::measurement_t>> {
 
-            const auto sqrt = op::sqrt(other.real);
-            return {sqrt, other.imag / (2.0 * sqrt)}; 
+            const auto sqrt = op::sqrt(other.val);
+            return {sqrt, other.eps / (2.0 * sqrt)}; 
 
         }
 
@@ -96,8 +96,8 @@ namespace scipp::math {
         static inline constexpr auto cbrt(const MEAS_TYPE& other) noexcept 
             -> dual<op::measurement_cbrt_t<typename MEAS_TYPE::measurement_t>> {
 
-            const auto cbrt = op::cbrt(other.real);
-            return {cbrt, other.imag / (3.0 * op::square(cbrt))}; 
+            const auto cbrt = op::cbrt(other.val);
+            return {cbrt, other.eps / (3.0 * op::square(cbrt))}; 
 
         }
 
@@ -106,7 +106,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE sin(const MEAS_TYPE& other) noexcept {
 
-            return {op::sin(other.real), other.imag * op::cos(other.real)}; 
+            return {op::sin(other.val), other.eps * op::cos(other.val)}; 
 
         }
 
@@ -115,7 +115,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE cos(const MEAS_TYPE& other) noexcept {
 
-            return {op::cos(other.real), - other.imag * op::sin(other.real)}; 
+            return {op::cos(other.val), - other.eps * op::sin(other.val)}; 
 
         }
 
@@ -123,7 +123,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE tan(const MEAS_TYPE& other) noexcept {
 
-            return {op::tan(other.real), other.imag * op::square(op::cos(other.real))}; 
+            return {op::tan(other.val), other.eps * op::square(op::cos(other.val))}; 
 
         }
 
@@ -131,7 +131,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE asin(const MEAS_TYPE& other) noexcept {
 
-            return {op::asin(other.real), other.imag / op::sqrt(1.0 - op::square(other.real))}; 
+            return {op::asin(other.val), other.eps / op::sqrt(1.0 - op::square(other.val))}; 
 
         }
 
@@ -139,7 +139,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE acos(const MEAS_TYPE& other) noexcept {
 
-            return {op::acos(other.real), -other.imag / op::sqrt(1.0 - op::square(other.real))}; 
+            return {op::acos(other.val), -other.eps / op::sqrt(1.0 - op::square(other.val))}; 
 
         }
 
@@ -147,7 +147,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE atan(const MEAS_TYPE& other) noexcept {
 
-            return {op::atan(other.real), other.imag / (1.0 + op::square(other.real))}; 
+            return {op::atan(other.val), other.eps / (1.0 + op::square(other.val))}; 
 
         }
 
@@ -156,7 +156,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE sinh(const MEAS_TYPE& other) noexcept {
 
-            return {op::sinh(other.real), other.imag * op::cosh(other.real)}; 
+            return {op::sinh(other.val), other.eps * op::cosh(other.val)}; 
 
         }
 
@@ -164,7 +164,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE cosh(const MEAS_TYPE& other) noexcept {
 
-            return {op::cosh(other.real), other.imag * op::sinh(other.real)}; 
+            return {op::cosh(other.val), other.eps * op::sinh(other.val)}; 
 
         }
 
@@ -172,7 +172,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE tanh(const MEAS_TYPE& other) noexcept {
 
-            return {op::tanh(other.real), other.imag / op::square(op::cosh(other.real))}; 
+            return {op::tanh(other.val), other.eps / op::square(op::cosh(other.val))}; 
 
         }
 
@@ -181,7 +181,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE asinh(const MEAS_TYPE& other) noexcept {
 
-            return {op::asinh(other.real), other.imag / op::sqrt(op::square(other.real) + 1.0)}; 
+            return {op::asinh(other.val), other.eps / op::sqrt(op::square(other.val) + 1.0)}; 
 
         }
 
@@ -189,7 +189,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE acosh(const MEAS_TYPE& other) noexcept {
 
-            return {op::acosh(other.real), other.imag / op::sqrt(op::square(other.real) - 1.0)}; 
+            return {op::acosh(other.val), other.eps / op::sqrt(op::square(other.val) - 1.0)}; 
 
         }
 
@@ -197,7 +197,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE atanh(const MEAS_TYPE& other) noexcept {
 
-            return {op::atanh(other.real), other.imag / (1.0 - op::square(other.real))}; 
+            return {op::atanh(other.val), other.eps / (1.0 - op::square(other.val))}; 
 
         }
 
@@ -206,8 +206,8 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE exp(const MEAS_TYPE& other) noexcept {
 
-            const auto exp = op::exp(other.real); 
-            return {exp, other.imag * exp}; 
+            const auto exp = op::exp(other.val); 
+            return {exp, other.eps * exp}; 
 
         }
 
@@ -215,8 +215,8 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE exp10(const MEAS_TYPE& other) noexcept {
 
-            const auto exp10 = op::exp10(other.real); 
-            return {exp10, other.imag * std::exp(10.0) * exp10}; 
+            const auto exp10 = op::exp10(other.val); 
+            return {exp10, other.eps * std::exp(10.0) * exp10}; 
 
         }
 
@@ -224,7 +224,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE log(const MEAS_TYPE& other) noexcept {
 
-            return {op::log(other.real), other.imag / other.real}; 
+            return {op::log(other.val), other.eps / other.val}; 
 
         }
 
@@ -232,7 +232,7 @@ namespace scipp::math {
             requires (is_dual_measurement_v<MEAS_TYPE> && physics::is_scalar_v<typename MEAS_TYPE::measurement_t>)
         static inline constexpr MEAS_TYPE log10(const MEAS_TYPE& other) noexcept {
 
-            return {op::log10(other.real), other.imag / (other.real * std::log(10.0))}; 
+            return {op::log10(other.val), other.eps / (other.val * std::log(10.0))}; 
 
         }
 

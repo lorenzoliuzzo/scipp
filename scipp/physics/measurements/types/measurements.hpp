@@ -67,7 +67,8 @@ namespace scipp::physics {
     constexpr bool is_angle_v = is_angle<T>::value;
 
     
-    // using frequency_m = measurement<units::hertz>;                    ///< frequency_m
+    using frequency_m = measurement<units::hertz>;                    ///< frequency_m
+    using frequency_um = umeasurement<units::hertz>;                    ///< frequency_m
     // using power_m = measurement<units::watt>;                         ///< power_m
     using charge_m = measurement<units::coulomb>;                     ///< charge_m
     // using voltage_m = measurement<units::volt>;                       ///< voltage_m

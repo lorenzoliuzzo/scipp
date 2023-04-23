@@ -20,9 +20,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         inline constexpr auto average(const VECTOR_TYPE& other) noexcept 
-            -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
+            -> physics::measurement<typename VECTOR_TYPE::measurement_t::base> {
             
-            return std::accumulate(other.data.begin(), other.data.end(), typename VECTOR_TYPE::measurement_type()) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim); 
+            return std::accumulate(other.data.begin(), other.data.end(), typename VECTOR_TYPE::measurement_t()) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim); 
 
         }
 
@@ -30,8 +30,8 @@ namespace scipp::math {
         /// @brief Compute the mean value of a vector of umeasurements
         /// @param other: vector of umeasurements
         template <typename VECTOR_TYPE>
-            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_type>)
-        constexpr typename VECTOR_TYPE::measurement_type mean(const VECTOR_TYPE& other) noexcept {
+            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_t>)
+        constexpr typename VECTOR_TYPE::measurement_t mean(const VECTOR_TYPE& other) noexcept {
 
             double weighted_value{};
             double weights{};
@@ -49,13 +49,13 @@ namespace scipp::math {
         /// @param other: vector of measurements
         /// @param average: average value of the vector of measurements
         template <typename VECTOR_TYPE>
-            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_type>)
-        constexpr auto variance(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_type& average) noexcept 
-            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_type> {
+            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_t>)
+        constexpr auto variance(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_t& average) noexcept 
+            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_t> {
 
-            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_type>(), 
-                                    [&average](const op::measurement_square_t<typename VECTOR_TYPE::measurement_type>& acc, 
-                                                            const typename VECTOR_TYPE::measurement_type& val) { 
+            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_t>(), 
+                                    [&average](const op::measurement_square_t<typename VECTOR_TYPE::measurement_t>& acc, 
+                                                            const typename VECTOR_TYPE::measurement_t& val) { 
                                                                 return acc + op::square(val - average); 
                                                             }
                                   ) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
@@ -66,14 +66,14 @@ namespace scipp::math {
         /// @brief Compute the variance of a vector of measurements
         /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
-            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_type>)
+            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_t>)
         constexpr auto variance(const VECTOR_TYPE& other) noexcept 
-            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_type> {
+            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_t> {
 
             auto avg = average(other);
-            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_type>(), 
-                                    [&avg](const op::measurement_square_t<typename VECTOR_TYPE::measurement_type>& acc, 
-                                                            const typename VECTOR_TYPE::measurement_type& val) { 
+            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_t>(), 
+                                    [&avg](const op::measurement_square_t<typename VECTOR_TYPE::measurement_t>& acc, 
+                                                            const typename VECTOR_TYPE::measurement_t& val) { 
                                                                 return acc + op::square(val - avg); 
                                                             }
                                   ) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
@@ -84,11 +84,11 @@ namespace scipp::math {
         /// @brief Compute the variance of a vector of umeasurements
         /// @param other: vector of umeasurements
         template <typename VECTOR_TYPE>
-            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_type>)
+            requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_t>)
         constexpr auto variance(const VECTOR_TYPE& other) 
-            -> physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_type::base>> {
+            -> physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>> {
             
-            op::measurement_inv_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_type::base>>> weights; 
+            op::measurement_inv_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>>> weights; 
             for (const auto& x : other.data) 
                 weights += x.weight(); 
             
@@ -102,8 +102,8 @@ namespace scipp::math {
         /// @param average: average value of the vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        inline constexpr auto stdev(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_type& average) noexcept 
-            -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
+        inline constexpr auto stdev(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_t& average) noexcept 
+            -> physics::measurement<typename VECTOR_TYPE::measurement_t::base> {
 
             return op::sqrt(variance(other, average));
 
@@ -115,7 +115,7 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         inline constexpr auto stdev(const VECTOR_TYPE& other) noexcept 
-            -> physics::measurement<typename VECTOR_TYPE::measurement_type::base> {
+            -> physics::measurement<typename VECTOR_TYPE::measurement_t::base> {
 
             return op::sqrt(variance(other));
 
@@ -126,7 +126,7 @@ namespace scipp::math {
         /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        inline constexpr typename VECTOR_TYPE::measurement_type stdev_mean(const VECTOR_TYPE& other) noexcept {
+        inline constexpr typename VECTOR_TYPE::measurement_t stdev_mean(const VECTOR_TYPE& other) noexcept {
 
             return op::sqrt(variance(other)) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
 
@@ -137,7 +137,7 @@ namespace scipp::math {
         /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        constexpr typename VECTOR_TYPE::measurement_type median(const VECTOR_TYPE& other) noexcept {
+        constexpr typename VECTOR_TYPE::measurement_t median(const VECTOR_TYPE& other) noexcept {
 
             VECTOR_TYPE copy(other); 
             if (!std::is_sorted(copy.data.begin(), copy.data.end())) 

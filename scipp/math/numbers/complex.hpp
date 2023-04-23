@@ -28,6 +28,7 @@ namespace scipp::math {
             using measurement_t = MEAS_TYPE; 
 
 
+
         // ==============================================
         // members
         // ==============================================
@@ -35,6 +36,9 @@ namespace scipp::math {
             measurement_t real;
 
             measurement_t imag;
+
+
+            inline static constexpr std::size_t dim = 2;
 
 
         // ==============================================
@@ -369,7 +373,34 @@ namespace scipp::math {
             }
 
 
-    };
+
+            constexpr measurement_t x() const noexcept {
+
+                return this->real;
+
+            }
+
+            constexpr measurement_t x() noexcept {
+
+                return this->real;
+
+            }
+
+
+            constexpr measurement_t y() const noexcept {
+
+                return this->imag;
+
+            }         
+
+            constexpr measurement_t y() noexcept {
+
+                return this->imag;
+
+            }         
+
+
+    }; // class complex
 
 
     // ==============================================

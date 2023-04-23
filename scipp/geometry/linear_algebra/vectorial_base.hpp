@@ -26,7 +26,7 @@ namespace scipp::geometry {
 
         using vector_t = VEC_TYPE;
 
-        using measurement_t = typename vector_t::measurement_type;
+        using measurement_t = typename vector_t::measurement_t;
 
 
         static inline constexpr std::size_t dim = DIM;

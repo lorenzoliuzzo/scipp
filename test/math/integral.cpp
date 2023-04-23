@@ -24,7 +24,7 @@ struct andrea : functions::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
     constexpr MEAS_TYPE operator()(const MEAS_TYPE& x) const noexcept override {
 
-        return 2 * x; 
+        return 2 * x + op::log(x) * op::square(x); 
 
     } 
 
@@ -33,9 +33,9 @@ struct andrea : functions::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC : functions::unary_function<op::measurement_square_t<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE> {
+struct myFUNC : functions::unary_function<op::measurement_square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
-    constexpr op::measurement_square_t<typename VECTOR_TYPE::measurement_type> operator()(const VECTOR_TYPE& other) const noexcept override {
+    constexpr op::measurement_square_t<typename VECTOR_TYPE::measurement_t> operator()(const VECTOR_TYPE& other) const noexcept override {
 
         return op::square(other.x()) + op::square(other.y());
 
@@ -46,9 +46,9 @@ struct myFUNC : functions::unary_function<op::measurement_square_t<typename VECT
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC2 : functions::unary_function<op::measurement_inv<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE> {
+struct myFUNC2 : functions::unary_function<op::measurement_inv<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
-    constexpr op::measurement_inv<typename VECTOR_TYPE::measurement_type> operator()(const VECTOR_TYPE& other) const noexcept override {
+    constexpr op::measurement_inv<typename VECTOR_TYPE::measurement_t> operator()(const VECTOR_TYPE& other) const noexcept override {
 
         return (other.x() - other.y()) / (op::square(other.x()) + op::square(other.y()));
 
@@ -59,9 +59,9 @@ struct myFUNC2 : functions::unary_function<op::measurement_inv<typename VECTOR_T
 
 // template <typename VECTOR_TYPE>
 //     requires (is_vector_v<VECTOR_TYPE>)
-// struct vortex : unary_function<op::measurement_inv<typename VECTOR_TYPE::measurement_type>, VECTOR_TYPE> {
+// struct vortex : unary_function<op::measurement_inv<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
-//     constexpr op::measurement_inv<typename VECTOR_TYPE::measurement_type> operator()(const VECTOR_TYPE& other) const noexcept override {
+//     constexpr op::measurement_inv<typename VECTOR_TYPE::measurement_t> operator()(const VECTOR_TYPE& other) const noexcept override {
 
 //         return (other.x() - other.y()) / (op::square(other.x()) + op::square(other.y()));
 
@@ -73,7 +73,7 @@ struct myFUNC2 : functions::unary_function<op::measurement_inv<typename VECTOR_T
 int main() {
 
 
-    interval I(0.0m, 1.0m); 
+    interval I(1.0m, 10.0m); 
     print(I(0)); 
     print(I(1)); 
 
@@ -84,43 +84,43 @@ int main() {
 
     auto func = andrea<length_m>();
 
-    print("testing the rectangle integration");
-    auto rectangle100 = integrals::riemann(func, 0.m, 1.m, integrals::method::rectangle, 100); 
-    auto rectangle1000 = integrals::riemann(func, 0.m, 1.m, integrals::method::rectangle, 1000); 
-    auto rectangle10000 = integrals::riemann(func, 0.m, 1.m, integrals::method::rectangle, 10000); 
-    auto rectangle100000 = integrals::riemann(func, 0.m, 1.m, integrals::method::rectangle, 100000); 
-    print("int 2x from 0 to 1, 100 steps", rectangle100); 
-    print("int 2x from 0 to 1, 1000 steps", rectangle1000); 
-    print("int 2x from 0 to 1, 10000 steps", rectangle10000); 
-    print("int 2x from 0 to 1, 100000 steps", rectangle100000); 
+        print("testing the rectangle integration");
+        auto rectangle100 = integrals::riemann<integrals::method::rectangle, 100>(func, I); 
+        auto rectangle1000 = integrals::riemann<integrals::method::rectangle, 1000>(func, I); 
+        auto rectangle10000 = integrals::riemann<integrals::method::rectangle, 10000>(func, I); 
+        auto rectangle100000 = integrals::riemann<integrals::method::rectangle, 100000>(func, I); 
+        print("int 2x from 0 to 1, 100 steps", rectangle100); 
+        print("int 2x from 0 to 1, 1000 steps", rectangle1000); 
+        print("int 2x from 0 to 1, 10000 steps", rectangle10000); 
+        print("int 2x from 0 to 1, 100000 steps", rectangle100000); 
 
 
     print("testing the trapexoid integration");
-    auto trapexoid100 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 100); 
-    auto trapexoid1000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 1000); 
-    auto trapexoid10000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 10000); 
-    auto trapexoid100000 = integrals::riemann(func, 0.m, 1.m, integrals::method::trapexoid, 100000); 
+    auto trapexoid100 = integrals::riemann<integrals::method::trapexoid, 100>(func, I(0), I(1)); 
+    auto trapexoid1000 = integrals::riemann<integrals::method::trapexoid, 1000>(func, I(0), I(1)); 
+    auto trapexoid10000 = integrals::riemann<integrals::method::trapexoid, 10000>(func, I(0), I(1)); 
+    auto trapexoid100000 = integrals::riemann<integrals::method::trapexoid, 100000>(func, I(0), I(1)); 
     print("int 2x from 0 to 1, 100 steps", trapexoid100); 
     print("int 2x from 0 to 1, 1000 steps", trapexoid1000); 
     print("int 2x from 0 to 1, 10000 steps", trapexoid10000); 
     print("int 2x from 0 to 1, 100000 steps", trapexoid100000); 
 
     print("testing the midpoint integration");
-    auto midpoint100 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 100); 
-    auto midpoint1000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 1000); 
-    auto midpoint10000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 10000); 
-    auto midpoint100000 = integrals::riemann(func, 0.m, 1.m, integrals::method::midpoint, 100000); 
+    auto midpoint100 = integrals::riemann<integrals::method::midpoint, 100>(func, I); 
+    auto midpoint1000 = integrals::riemann<integrals::method::midpoint, 1000>(func, I); 
+    auto midpoint10000 = integrals::riemann<integrals::method::midpoint, 10000>(func, I); 
+    auto midpoint100000 = integrals::riemann<integrals::method::midpoint, 100000>(func, I); 
     print("int 2x from 0 to 1, 100 steps", midpoint100); 
     print("int 2x from 0 to 1, 1000 steps", midpoint1000); 
     print("int 2x from 0 to 1, 10000 steps", midpoint10000); 
     print("int 2x from 0 to 1, 100000 steps", midpoint100000); 
 
     print("testing the simpson integration");
-    auto simpson100 = integrals::riemann(func, I(0), I(1), integrals::method::simpson, 100); 
-    auto simpson1000 = integrals::riemann(func, I(0), I(1), integrals::method::simpson, 1000); 
-    auto simpson10000 = integrals::riemann(func, I(0), I(1), integrals::method::simpson, 10000); 
-    auto simpson100000 = integrals::riemann(func, I(0), I(1), integrals::method::simpson, 100000); 
-    auto simpson1000000 = integrals::riemann(func, I(0), I(1), integrals::method::simpson, 1000000); 
+    auto simpson100 = integrals::riemann<integrals::method::simpson, 100>(func, I); 
+    auto simpson1000 = integrals::riemann<integrals::method::simpson, 1000>(func, I); 
+    auto simpson10000 = integrals::riemann<integrals::method::simpson, 10000>(func, I); 
+    auto simpson100000 = integrals::riemann<integrals::method::simpson, 100000>(func, I); 
+    auto simpson1000000 = integrals::riemann<integrals::method::simpson, 1000000>(func, I); 
     print("int 2x from 0 to 1, 100 steps", simpson100); 
     print("int 2x from 0 to 1, 1000 steps", simpson1000); 
     print("int 2x from 0 to 1, 10000 steps", simpson10000); 

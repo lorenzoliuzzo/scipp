@@ -23,13 +23,13 @@ namespace scipp::geometry {
 
             using type = matrix<VECTOR_TYPE, COLUMNS>;
 
-            using data_type = std::array<VECTOR_TYPE, COLUMNS>;
+            using data_t = std::array<VECTOR_TYPE, COLUMNS>;
 
-            using measurement_type = typename VECTOR_TYPE::measurement_type; 
+            using measurement_t = typename VECTOR_TYPE::measurement_t; 
 
             using vector_type = VECTOR_TYPE; 
 
-            using row_vector_type = vector<measurement_type, COLUMNS>;
+            using row_vector_type = vector<measurement_t, COLUMNS>;
 
 
         // ===========================================================
@@ -40,7 +40,7 @@ namespace scipp::geometry {
 
             inline static constexpr std::size_t columns = COLUMNS;
 
-            data_type data; 
+            data_t data; 
 
 
         // ===========================================================
@@ -65,13 +65,13 @@ namespace scipp::geometry {
                 data{std::move(other.data)} {}
 
 
-            /// @brief Constructor from an std::array<vector<measurement_type, rows>, columns>
-            constexpr matrix(const data_type& other) noexcept :
+            /// @brief Constructor from an std::array<vector<measurement_t, rows>, columns>
+            constexpr matrix(const data_t& other) noexcept :
                 
                 data{other} {}
             
-            /// @brief Constructor from an std::array<vector<measurement_type, rows>, columns>
-            constexpr matrix(data_type&& other) noexcept :
+            /// @brief Constructor from an std::array<vector<measurement_t, rows>, columns>
+            constexpr matrix(data_t&& other) noexcept :
                 
                 data{std::move(other)} {}
 
@@ -96,16 +96,16 @@ namespace scipp::geometry {
 
 
             /// @brief Construct a new matrix from a single vector
-            constexpr matrix(const vector_type& other) noexcept {
+            constexpr matrix(const measurement_t& other) noexcept {
                 
-                this->data.fill(other); 
+                this->data.fill(vector<measurement_t, rows>(other)); 
 
             }
 
             /// @brief Construct a new matrix from a single vector
-            constexpr matrix(vector_type&& other) noexcept {
+            constexpr matrix(measurement_t&& other) noexcept {
                 
-                this->data.fill(std::move(other)); 
+                this->data.fill(vector<measurement_t, rows>(std::move(other))); 
 
             }
 
@@ -146,16 +146,16 @@ namespace scipp::geometry {
             }
 
 
-            /// @brief Copy assignment operator from a data_type object
-            constexpr matrix& operator=(const data_type& other) noexcept {
+            /// @brief Copy assignment operator from a data_t object
+            constexpr matrix& operator=(const data_t& other) noexcept {
 
                 this->data = other;
                 return *this;
 
             }
 
-            /// @brief Move assignment operator from a data_type object
-            constexpr matrix& operator=(data_type&& other) noexcept {
+            /// @brief Move assignment operator from a data_t object
+            constexpr matrix& operator=(data_t&& other) noexcept {
 
                 this->data = std::move(other);
                 return *this;
@@ -220,7 +220,7 @@ namespace scipp::geometry {
             /// @brief Addition operator
             constexpr matrix operator+(const matrix& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
@@ -234,7 +234,7 @@ namespace scipp::geometry {
             /// @brief Addition operator
             constexpr matrix operator+(matrix&& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
@@ -249,7 +249,7 @@ namespace scipp::geometry {
             /// @brief Subtraction operator
             constexpr matrix operator-(const matrix& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                other.data.begin(), 
@@ -263,7 +263,7 @@ namespace scipp::geometry {
             /// @brief Subtraction operator
             constexpr matrix operator-(matrix&& other) const noexcept {
 
-                data_type result;
+                data_t result;
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                std::move(other).data.begin(), 
@@ -278,7 +278,7 @@ namespace scipp::geometry {
             /// @brief Negate a matrix
             constexpr matrix operator-() const noexcept {
 
-                data_type result; 
+                data_t result; 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
                                result.begin(), 
@@ -349,9 +349,9 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> matrix<vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
-                std::array<vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> result;
+                std::array<vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -366,9 +366,9 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept 
-                -> matrix<vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
-                std::array<vector<math::op::measurements_prod_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> result;
+                std::array<vector<math::op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -384,14 +384,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const 
-                -> matrix<vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
                 if (other.value == 0.0)
                     throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
 
                 return std::apply(
                     [&](const auto&... components) {
-                        return std::array<vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns>({components / other ...});
+                        return std::array<vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / other ...});
                     }, this->data
                 );
 
@@ -401,14 +401,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const 
-                -> matrix<vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
                 if (other.value == 0.0)
                     throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
 
                 return std::apply(
                     [&](const auto&... components) {
-                        return std::array<vector<math::op::measurements_div_t<measurement_type, OTHER_MEAS_TYPE>, rows>, columns>({components / std::move(other) ...});
+                        return std::array<vector<math::op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / std::move(other) ...});
                     }, this->data
                 );
 
@@ -419,9 +419,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
             constexpr auto operator*(const OTHER_VEC_TYPE& other) const noexcept 
-                -> vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows> {
+                -> vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
                 
-                std::array<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows> result;
+                std::array<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
                 const auto transposed_data = this->transpose().data;
 
                 std::transform(std::execution::par,
@@ -437,9 +437,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
             constexpr auto operator*(OTHER_VEC_TYPE&& other) const noexcept 
-                -> vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows> {
+                -> vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
                 
-                std::array<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows> result;
+                std::array<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
                 const auto transposed_data = this->transpose().data;  
 
                 std::transform(std::execution::par,
@@ -456,9 +456,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns) 
             constexpr auto operator*(const matrix<OTHER_VEC_TYPE, rows>& other) const noexcept 
-                -> matrix<vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
 
-                std::array<vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows>, columns> result;
+                std::array<vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
                 const auto transposed_data = this->transpose().data;  
                 for (std::size_t i{}; i < columns; ++i)
                     for (std::size_t j{}; j < rows; ++j)
@@ -472,9 +472,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns) 
             constexpr auto operator*(matrix<OTHER_VEC_TYPE, rows>&& other) const noexcept 
-                -> matrix<vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows>, columns> {
+                -> matrix<vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
 
-                std::array<vector<math::op::measurements_prod_t<measurement_type, typename OTHER_VEC_TYPE::measurement_type>, rows>, columns> result;
+                std::array<vector<math::op::measurements_prod_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
                 const auto transposed_data = this->transpose().data;  
                 for (std::size_t i{}; i < columns; ++i)
                     for (std::size_t j{}; j < rows; ++j)
@@ -609,7 +609,7 @@ namespace scipp::geometry {
             /// @brief Add a row to a matrix
             constexpr auto hstack(const row_vector_type& other) const noexcept {
                 
-                std::array<vector<measurement_type, rows + 1>, columns> result;
+                std::array<vector<measurement_t, rows + 1>, columns> result;
                 for (std::size_t i{}; i < columns; ++i)
                     for (std::size_t j{}; j < rows; ++j)
                         result[i][j] = this->data[i][j];
@@ -625,9 +625,9 @@ namespace scipp::geometry {
             // /// @brief Get the subvector of the matrix
             // template <std::size_t row_i>
             //     requires (row_i < rows)
-            // constexpr vector<measurement_type, columns> subvector() const noexcept {
+            // constexpr vector<measurement_t, columns> subvector() const noexcept {
 
-            //     vector<measurement_type, columns> result;
+            //     vector<measurement_t, columns> result;
 
             //     for (std::size_t i{}; i < columns; ++i)
             //         result[i] = this->data[i][row_i];
@@ -641,9 +641,9 @@ namespace scipp::geometry {
             template <std::size_t row_i, std::size_t col_j>
                 requires (row_i < rows && col_j < columns)
             constexpr auto submatrix() const noexcept 
-                -> matrix<vector<measurement_type, columns - 1>, rows - 1> {
+                -> matrix<vector<measurement_t, columns - 1>, rows - 1> {
                     
-                std::array<vector<measurement_type, columns - 1>, rows - 1> result;
+                std::array<vector<measurement_t, columns - 1>, rows - 1> result;
 
                 for (std::size_t i{}; i < columns - 1; ++i)
                     for (std::size_t j{}; j < rows - 1; ++j)
@@ -656,14 +656,14 @@ namespace scipp::geometry {
 
             /// @brief Get the submatrix of the matrix
             constexpr auto submatrix(std::size_t row_i, std::size_t col_j) const 
-                -> matrix<vector<measurement_type, columns - 1>, rows - 1> {
+                -> matrix<vector<measurement_t, columns - 1>, rows - 1> {
                     
                 if (row_i >= rows) 
                     throw std::out_of_range("Cannot access row " + std::to_string(row_i) + " from a matrix with " + std::to_string(rows) + " rows."); 
                 else if (col_j >= columns) 
                     throw std::out_of_range("Cannot access column " + std::to_string(col_j) + " from a matrix with " + std::to_string(columns) + " columns.");
 
-                std::array<vector<measurement_type, columns - 1>, rows - 1> result;
+                std::array<vector<measurement_t, columns - 1>, rows - 1> result;
 
                 for (std::size_t i{}; i < columns - 1; ++i)
                     for (std::size_t j{}; j < rows - 1; ++j)
@@ -689,10 +689,10 @@ namespace scipp::geometry {
 
 
             /// @brief Get the trace of the matrix
-            constexpr measurement_type trace() const noexcept 
+            constexpr measurement_t trace() const noexcept 
                 requires (columns == rows) {
 
-                measurement_type result;
+                measurement_t result;
 
                 for (std::size_t i{}; i < columns; ++i)
                     result += this->data[i][i];
@@ -704,10 +704,10 @@ namespace scipp::geometry {
 
             /// @brief Get the diagonal of the matrix
             constexpr auto diagonal() const noexcept 
-                -> vector<measurement_type, columns> 
+                -> vector<measurement_t, columns> 
                     requires (columns == rows) {
 
-                std::array<measurement_type, columns> result;
+                std::array<measurement_t, columns> result;
                 for (std::size_t i{}; i < columns; ++i)
                     result[i] = this->data[i][i];
 
@@ -718,7 +718,7 @@ namespace scipp::geometry {
 
             /// @brief Get the determinant of the matrix
             constexpr auto determinant() const noexcept 
-                -> math::op::measurement_pow_t<measurement_type, columns> 
+                -> math::op::measurement_pow_t<measurement_t, columns> 
                     requires (columns == rows) {
 
                 if constexpr (columns == 1)
@@ -743,7 +743,7 @@ namespace scipp::geometry {
 
             /// @brief Get the cofactor at row and column
             constexpr auto cofactor(const std::size_t& row_i, const std::size_t& col_j) const noexcept 
-                -> math::op::measurement_pow_t<measurement_type, columns - 1>
+                -> math::op::measurement_pow_t<measurement_t, columns - 1>
                     requires (columns == rows) {
 
                 return this->submatrix(row_i, col_j).determinant() * (((row_i + col_j) % 2 == 0) ? 1. : -1.);
@@ -753,10 +753,10 @@ namespace scipp::geometry {
 
             /// @brief Get the adjoint matrix
             constexpr auto adjoint() const noexcept 
-                -> matrix<vector<math::op::measurement_pow_t<measurement_type, columns - 1>, columns>, rows> 
+                -> matrix<vector<math::op::measurement_pow_t<measurement_t, columns - 1>, columns>, rows> 
                     requires (columns == rows) {
 
-                std::array<vector<math::op::measurement_pow_t<measurement_type, columns - 1>, columns>, rows> result;
+                std::array<vector<math::op::measurement_pow_t<measurement_t, columns - 1>, columns>, rows> result;
                 for (std::size_t i{}; i < columns; ++i) 
                     for (std::size_t j{}; j < rows; ++j) 
                         result[i][j] = this->cofactor(j, i);
@@ -768,7 +768,7 @@ namespace scipp::geometry {
 
             /// @brief Get the inverse of the matrix
             constexpr auto inverse() const 
-                -> matrix<vector<math::op::measurement_inv_t<measurement_type>, columns>, rows>
+                -> matrix<vector<math::op::measurement_inv_t<measurement_t>, columns>, rows>
                     requires (columns == rows) {
 
                 if (this->determinant().value == 0.0) 
@@ -783,7 +783,7 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == rows && columns == rows)
             constexpr auto solve(const OTHER_VEC_TYPE& b) const 
-                -> vector<math::op::measurements_div_t<typename OTHER_VEC_TYPE::measurement_type, measurement_type>, columns> {
+                -> vector<math::op::measurements_div_t<typename OTHER_VEC_TYPE::measurement_t, measurement_t>, columns> {
 
                 if (this->determinant().value == 0.0) 
                     throw std::domain_error("Cannot solve a singular system of linear equations.");
@@ -804,7 +804,7 @@ namespace scipp::geometry {
                 for (std::size_t k{}; k < columns; ++k) {
                     
                     std::size_t pivot{k};
-                    measurement_type maxPivot;
+                    measurement_t maxPivot;
 
                     // Find the best pivot
                     for (std::size_t i{k}; i < columns; ++i) 
@@ -835,7 +835,7 @@ namespace scipp::geometry {
                 // Back substitution
                 for (long int k = columns - 1; k >= 0; k--) {
 
-                    measurement_type sum = A_b[columns][k];
+                    measurement_t sum = A_b[columns][k];
                     for (std::size_t j = k + 1; j < columns; j++)
                         sum -= result[j] * A_b[j][k];
 

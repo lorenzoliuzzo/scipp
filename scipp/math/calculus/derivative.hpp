@@ -33,7 +33,7 @@ namespace scipp::math {
 
             constexpr result_t operator()(const arg_t& x) const noexcept override {
 
-                return function_t()(x).imag;
+                return function_t()(x).eps;
 
             }
 
@@ -64,7 +64,7 @@ namespace scipp::math {
 
             constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y) const noexcept override {
                 
-                return function_t()(x, y).imag; 
+                return function_t()(x, y).eps; 
 
             }
 

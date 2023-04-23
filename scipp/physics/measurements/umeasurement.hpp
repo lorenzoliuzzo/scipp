@@ -9,8 +9,6 @@
 
 
 
-
-
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
 
@@ -908,32 +906,38 @@ namespace scipp::physics {
     // umeasurement type traits
     // =============================================
 
+        /// @brief Type trait to check if a type is an umeasurement
+        template <typename T>
+        struct is_umeasurement : std::false_type{};
+
         template <typename BASE_TYPE> 
-            requires (is_base_v<BASE_TYPE>)
         struct is_umeasurement<umeasurement<BASE_TYPE>> : std::true_type{};
 
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<umeasurement<BASE_TYPE>> : std::true_type{};
-
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<const umeasurement<BASE_TYPE>&> : std::true_type{};
+        template <typename T>
+        inline static constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
 
 
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<umeasurement<BASE_TYPE>, const umeasurement<BASE_TYPE>&> : std::true_type{};
+        template <typename... Ts>
+        struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...>{};
 
-        template <typename BASE_TYPE>
-            requires (is_base_v<BASE_TYPE>)
-        struct are_same_measurements<const umeasurement<BASE_TYPE>&, umeasurement<BASE_TYPE>> : std::true_type{};
+        template <typename... Ts>
+        inline static constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
 
 
+        /// @brief Type trait to check if two measurement types are the same
+        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
+            requires (are_umeasurements_v<MEAS_TYPE1, MEAS_TYPE2> && is_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>)
+        struct is_same_umeasurement : std::true_type {};
+
+        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
+        inline static constexpr bool is_same_umeasurement_v = is_same_umeasurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
+
+
+        template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 
+        struct are_same_umeasurement : std::conjunction<is_same_umeasurement<MEAS_TYPE, OTHER_MEAS_TYPEs>...> {};
+        
         template <typename MEAS_TYPE, typename... MEAS_TYPEs>
-            requires (are_generic_measurements_v<MEAS_TYPE, MEAS_TYPEs...>)
-        struct are_same_measurements<MEAS_TYPE, MEAS_TYPE, MEAS_TYPEs...> : are_same_measurements<MEAS_TYPE, MEAS_TYPEs...>{};
+        inline static constexpr bool are_same_umeasurement_v = are_same_umeasurement<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 
 } // namespace physics

@@ -349,9 +349,9 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> matrix<vector<math::op::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
-                std::array<vector<math::op::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
+                std::array<vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -366,9 +366,9 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept 
-                -> matrix<vector<math::op::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
-                std::array<vector<math::op::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
+                std::array<vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> result;
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -384,14 +384,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const 
-                -> matrix<vector<math::op::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
                 if (other.value == 0.0)
                     throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
 
                 return std::apply(
                     [&](const auto&... components) {
-                        return std::array<vector<math::op::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / other ...});
+                        return std::array<vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / other ...});
                     }, this->data
                 );
 
@@ -401,14 +401,14 @@ namespace scipp::geometry {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const 
-                -> matrix<vector<math::op::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
+                -> matrix<vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns> {
 
                 if (other.value == 0.0)
                     throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
 
                 return std::apply(
                     [&](const auto&... components) {
-                        return std::array<vector<math::op::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / std::move(other) ...});
+                        return std::array<vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, rows>, columns>({components / std::move(other) ...});
                     }, this->data
                 );
 
@@ -419,9 +419,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
             constexpr auto operator*(const OTHER_VEC_TYPE& other) const noexcept 
-                -> vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
+                -> vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
                 
-                std::array<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
+                std::array<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
                 const auto transposed_data = this->transpose().data;
 
                 std::transform(std::execution::par,
@@ -437,9 +437,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
             constexpr auto operator*(OTHER_VEC_TYPE&& other) const noexcept 
-                -> vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
+                -> vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> {
                 
-                std::array<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
+                std::array<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows> result;
                 const auto transposed_data = this->transpose().data;  
 
                 std::transform(std::execution::par,
@@ -456,9 +456,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns) 
             constexpr auto operator*(const matrix<OTHER_VEC_TYPE, rows>& other) const noexcept 
-                -> matrix<vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
+                -> matrix<vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
 
-                std::array<vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
+                std::array<vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
                 const auto transposed_data = this->transpose().data;  
                 for (std::size_t i{}; i < columns; ++i)
                     for (std::size_t j{}; j < rows; ++j)
@@ -472,9 +472,9 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns) 
             constexpr auto operator*(matrix<OTHER_VEC_TYPE, rows>&& other) const noexcept 
-                -> matrix<vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
+                -> matrix<vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> {
 
-                std::array<vector<math::op::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
+                std::array<vector<math::meta::multiply_t<measurement_t, typename OTHER_VEC_TYPE::measurement_t>, rows>, columns> result;
                 const auto transposed_data = this->transpose().data;  
                 for (std::size_t i{}; i < columns; ++i)
                     for (std::size_t j{}; j < rows; ++j)
@@ -718,7 +718,7 @@ namespace scipp::geometry {
 
             /// @brief Get the determinant of the matrix
             constexpr auto determinant() const noexcept 
-                -> math::op::power_t<measurement_t, columns> 
+                -> math::meta::power_t<measurement_t, columns> 
                     requires (columns == rows) {
 
                 if constexpr (columns == 1)
@@ -743,20 +743,21 @@ namespace scipp::geometry {
 
             /// @brief Get the cofactor at row and column
             constexpr auto cofactor(const std::size_t& row_i, const std::size_t& col_j) const noexcept 
-                -> math::op::power_t<measurement_t, columns - 1>
+                -> math::meta::power_t<measurement_t, columns - 1>
                     requires (columns == rows) {
-
-                return this->submatrix(row_i, col_j).determinant() * (((row_i + col_j) % 2 == 0) ? 1. : -1.);
-
+                
+                auto submatrix = this->submatrix(row_i, col_j);
+                return (((row_i + col_j) % 2 == 0) ? submatrix.determinant() : -submatrix.determinant()); 
+                
             }
 
 
             /// @brief Get the adjoint matrix
             constexpr auto adjoint() const noexcept 
-                -> matrix<vector<math::op::power_t<measurement_t, columns - 1>, columns>, rows> 
+                -> matrix<vector<math::meta::power_t<measurement_t, columns - 1>, columns>, rows> 
                     requires (columns == rows) {
 
-                std::array<vector<math::op::power_t<measurement_t, columns - 1>, columns>, rows> result;
+                std::array<vector<math::meta::power_t<measurement_t, columns - 1>, columns>, rows> result;
                 for (std::size_t i{}; i < columns; ++i) 
                     for (std::size_t j{}; j < rows; ++j) 
                         result[i][j] = this->cofactor(j, i);
@@ -768,7 +769,7 @@ namespace scipp::geometry {
 
             /// @brief Get the inverse of the matrix
             constexpr auto inverse() const 
-                -> matrix<vector<math::op::invert_t<measurement_t>, columns>, rows>
+                -> matrix<vector<math::meta::invert_t<measurement_t>, columns>, rows>
                     requires (columns == rows) {
 
                 if (this->determinant().value == 0.0) 
@@ -783,7 +784,7 @@ namespace scipp::geometry {
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == rows && columns == rows)
             constexpr auto solve(const OTHER_VEC_TYPE& b) const 
-                -> vector<math::op::divide_t<typename OTHER_VEC_TYPE::measurement_t, measurement_t>, columns> {
+                -> vector<math::meta::divide_t<typename OTHER_VEC_TYPE::measurement_t, measurement_t>, columns> {
 
                 if (this->determinant().value == 0.0) 
                     throw std::domain_error("Cannot solve a singular system of linear equations.");

@@ -110,7 +110,8 @@ namespace scipp::physics {
         // operators
         // ==============================================
 
-            constexpr operator double() const noexcept { 
+            constexpr operator double() const noexcept 
+                requires (is_scalar_v<base_t>) { 
                 
                 return this->value; 
                 
@@ -182,9 +183,9 @@ namespace scipp::physics {
             }
 
             /// @brief Multiply this measurement with a scalar measurement
-            template <typename SCALAR_BASE_TYPE>
-                requires is_scalar_v<SCALAR_BASE_TYPE>
-            constexpr measurement& operator*=(const measurement<SCALAR_BASE_TYPE>& other) noexcept {
+            template <typename SCALAR_MEAS_TYPE>
+                requires is_scalar_measurement_v<SCALAR_MEAS_TYPE>
+            constexpr measurement& operator*=(const SCALAR_MEAS_TYPE& other) noexcept {
 
                 this->value *= other.value; 
 
@@ -193,9 +194,9 @@ namespace scipp::physics {
             }
 
             /// @brief Multiply this measurement with a scalar measurement
-            template <typename SCALAR_BASE_TYPE>
-                requires is_scalar_v<SCALAR_BASE_TYPE>
-            constexpr measurement& operator*=(measurement<SCALAR_BASE_TYPE>&& other) noexcept {
+            template <typename SCALAR_MEAS_TYPE>
+                requires is_scalar_measurement_v<SCALAR_MEAS_TYPE>
+            constexpr measurement& operator*=(SCALAR_MEAS_TYPE&& other) noexcept {
 
                 this->value *= std::move(other.value); 
 
@@ -257,20 +258,20 @@ namespace scipp::physics {
 
 
             /// @brief Multiply two measurements
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*(const measurement<OTHER_BASE_TYPE>& other) const noexcept 
-                -> measurement<math::op::base_product_t<base_t, OTHER_BASE_TYPE>> { 
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*(const MEAS_TYPE& other) const noexcept 
+                -> math::meta::multiply_t<measurement, MEAS_TYPE> { 
                 
                 return this->value * other.value; 
                 
             }
 
             /// @brief Multiply two measurements
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*(measurement<OTHER_BASE_TYPE>&& other) const noexcept 
-                -> measurement<math::op::base_product_t<base_t, OTHER_BASE_TYPE>> { 
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*(MEAS_TYPE&& other) const noexcept 
+                -> math::meta::multiply_t<measurement, MEAS_TYPE> { 
                 
                 return this->value * std::move(other.value); 
                 
@@ -279,10 +280,10 @@ namespace scipp::physics {
 
             /// @brief Divide two measurements
             /// @note The denominator must not be zero
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/(const measurement<OTHER_BASE_TYPE>& other) const 
-                -> measurement<math::op::base_division_t<base_t, OTHER_BASE_TYPE>> {
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator/(const MEAS_TYPE& other) const 
+                -> math::meta::divide_t<measurement, MEAS_TYPE> { 
 
                 if (other.value == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by a zero measurement");
@@ -293,10 +294,10 @@ namespace scipp::physics {
 
             /// @brief Divide two measurements
             /// @note The denominator must not be zero
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/(measurement<OTHER_BASE_TYPE>&& other) const 
-                -> measurement<math::op::base_division_t<base_t, OTHER_BASE_TYPE>> {
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator/(MEAS_TYPE&& other) const 
+                -> math::meta::divide_t<measurement, MEAS_TYPE> { 
 
                 if (other.value == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by a zero measurement");
@@ -461,7 +462,7 @@ namespace scipp::physics {
         template <typename UNIT_TYPE> 
             requires (is_unit_v<UNIT_TYPE>)
         inline constexpr auto operator/(const double& val, const UNIT_TYPE&) noexcept
-            -> measurement<math::op::base_invert_t<typename UNIT_TYPE::base_t>> { 
+            -> measurement<math::meta::invert_t<typename UNIT_TYPE::base_t>> { 
             
             return val / UNIT_TYPE::mult; 
             
@@ -471,7 +472,7 @@ namespace scipp::physics {
         template <typename UNIT_TYPE> 
             requires (is_unit_v<UNIT_TYPE>)
         inline constexpr auto operator/(double&& val, const UNIT_TYPE&) noexcept
-            -> measurement<math::op::base_invert_t<typename UNIT_TYPE::base_t>> { 
+            -> measurement<math::meta::invert_t<typename UNIT_TYPE::base_t>> { 
             
             return val / UNIT_TYPE::mult; 
             
@@ -482,15 +483,9 @@ namespace scipp::physics {
     // measurement type traits
     // =============================================
         
-
         template <typename BASE_TYPE>
         struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
 
-        template <typename BASE_TYPE>
-        struct is_measurement<const measurement<BASE_TYPE>&> : std::true_type{};
-
-        template <typename BASE_TYPE>
-        struct is_measurement<measurement<BASE_TYPE>&> : std::true_type{};
 
         template <typename BASE_TYPE>
             requires (is_scalar_v<BASE_TYPE>)

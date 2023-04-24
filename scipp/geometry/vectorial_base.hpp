@@ -42,7 +42,7 @@ namespace scipp::geometry {
 
         constexpr vectorial_base(const data_t& other) {
 
-            if (other.determinant() != measurement_t::zero)
+            if (other.determinant().value != 0.0)
                 this->data = other;
             else
                 throw std::invalid_argument("Cannot initializate a vectorial base with matrix of linear dependent vectors");
@@ -51,7 +51,7 @@ namespace scipp::geometry {
             
         constexpr vectorial_base(data_t&& other) {
 
-            if (other.determinant() != measurement_t::zero)
+            if (other.determinant().value != 0.0)
                 this->data = std::move(other);
             else
                 throw std::invalid_argument("Cannot initializate a vectorial base with matrix of linear dependent vectors");

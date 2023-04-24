@@ -256,9 +256,9 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct sqrt : unary_function<op::sqrt_t<T>, T> {
+        struct sqrt : unary_function<meta::sqrt_t<T>, T> {
 
-            constexpr op::sqrt_t<T> operator()(const T& x) const noexcept override {
+            constexpr meta::sqrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::sqrt(x);
 
@@ -268,9 +268,9 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct cbrt : unary_function<op::cbrt_t<T>, T> {
+        struct cbrt : unary_function<meta::cbrt_t<T>, T> {
 
-            constexpr op::cbrt_t<T> operator()(const T& x) const noexcept override {
+            constexpr meta::cbrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::cbrt(x);
 

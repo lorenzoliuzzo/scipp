@@ -388,10 +388,10 @@ namespace scipp::physics {
 
             /// @brief Multiply two umeasurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator*=(const UMEAS_TYPE& other) noexcept 
+                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
                 double result = this->value * other.value;
                 double runc1 = this->uncertainty / this->value;
@@ -407,10 +407,10 @@ namespace scipp::physics {
 
             /// @brief Multiply two umeasurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*=(umeasurement<OTHER_BASE_TYPE>&& other) noexcept 
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator*=(UMEAS_TYPE&& other) noexcept 
+                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
                 double result = this->value * std::move(other.value);
                 double runc1 = this->uncertainty / this->value;
@@ -425,10 +425,10 @@ namespace scipp::physics {
             }
 
             /// @brief Multiply an umeasurement and a measurement
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*=(const measurement<OTHER_BASE_TYPE>& other) noexcept
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*=(const MEAS_TYPE& other) noexcept 
+                -> math::meta::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
                 this->value *= other.value;
                 this->uncertainty *= std::fabs(other.value);
@@ -438,10 +438,10 @@ namespace scipp::physics {
             }
 
             /// @brief Multiply an umeasurement and a measurement
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*=(measurement<OTHER_BASE_TYPE>&& other) noexcept
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            template <typename MEAS_TYPE> 
+                requires (is_measurement_v<MEAS_TYPE>)
+            constexpr auto operator*=(MEAS_TYPE&& other) noexcept 
+                -> math::meta::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
                 this->value *= std::move(other.value);
                 this->uncertainty *= std::fabs(std::move(other.value));
@@ -452,10 +452,10 @@ namespace scipp::physics {
 
             /// @brief Multiply two umeasurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*(const umeasurement<OTHER_BASE_TYPE>& other) const noexcept 
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>> { 
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator*(const UMEAS_TYPE& other) const noexcept 
+                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -468,10 +468,10 @@ namespace scipp::physics {
 
             /// @brief Multiply two umeasurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator*(umeasurement<OTHER_BASE_TYPE>&& other) const noexcept 
-                -> umeasurement<math::op::base_product_t<BASE_TYPE, OTHER_BASE_TYPE>> { 
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator*(UMEAS_TYPE&& other) const noexcept 
+                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = std::move(other.uncertainty) / std::move(other.value);
@@ -516,7 +516,7 @@ namespace scipp::physics {
             template <typename OTHER_BASE_TYPE> 
                 requires (is_base_v<OTHER_BASE_TYPE>)
             constexpr auto operator/=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
-                -> umeasurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+                -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
                 double result = this->value / other.value;
                 double runc1 = this->uncertainty / this->value;
@@ -535,7 +535,7 @@ namespace scipp::physics {
             template <typename OTHER_BASE_TYPE> 
                 requires (is_base_v<OTHER_BASE_TYPE>)
             constexpr auto operator/=(umeasurement<OTHER_BASE_TYPE>&& other) noexcept 
-                -> umeasurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+                -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
                 double result = this->value / std::move(other.value);
                 double runc1 = this->uncertainty / this->value;
@@ -571,10 +571,10 @@ namespace scipp::physics {
 
             /// @brief Divide two measurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/(const umeasurement<OTHER_BASE_TYPE>& other) const 
-                -> umeasurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>> {
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator/(const UMEAS_TYPE& other) const 
+                -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
 
                 if (other.value == 0.0) 
                     throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
@@ -590,10 +590,10 @@ namespace scipp::physics {
 
             /// @brief Divide two measurements
             /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/(umeasurement<OTHER_BASE_TYPE>&& other) const 
-                -> umeasurement<math::op::base_division_t<BASE_TYPE, OTHER_BASE_TYPE>> {
+            template <typename UMEAS_TYPE> 
+                requires (is_umeasurement_v<UMEAS_TYPE>)
+            constexpr auto operator/(UMEAS_TYPE&& other) const 
+                -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
 
                 if (other.value == 0.0) 
                     throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
@@ -906,22 +906,8 @@ namespace scipp::physics {
     // umeasurement type traits
     // =============================================
 
-        /// @brief Type trait to check if a type is an umeasurement
-        template <typename T>
-        struct is_umeasurement : std::false_type{};
-
         template <typename BASE_TYPE> 
         struct is_umeasurement<umeasurement<BASE_TYPE>> : std::true_type{};
-
-        template <typename T>
-        inline static constexpr bool is_umeasurement_v = is_umeasurement<T>::value;
-
-
-        template <typename... Ts>
-        struct are_umeasurements : std::conjunction<is_umeasurement<Ts>...>{};
-
-        template <typename... Ts>
-        inline static constexpr bool are_umeasurements_v = are_umeasurements<Ts...>::value;
 
 
         /// @brief Type trait to check if two measurement types are the same

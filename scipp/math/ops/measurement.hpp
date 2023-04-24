@@ -16,31 +16,6 @@ namespace scipp::math {
 
 
         // ====================================================================================================
-        // operations on types
-        // ====================================================================================================
-
-            template <typename MEAS_TYPE>   
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct invert<MEAS_TYPE> : physics::measurement<op::base_invert_t<typename MEAS_TYPE::base_t>> {};
-
-            template <typename MEAS_TYPE1, typename MEAS_TYPE2>
-                requires (physics::are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>)
-            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : physics::measurement<op::base_product_t<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>> {};
-
-            template <typename MEAS_TYPE1, typename MEAS_TYPE2>
-                requires (physics::are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>)
-            struct divide<MEAS_TYPE1, MEAS_TYPE2> : physics::measurement<op::base_division_t<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>> {};
-
-            template <typename MEAS_TYPE, std::size_t POWER>    
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct power<MEAS_TYPE, POWER> : physics::measurement<op::base_pow_t<typename MEAS_TYPE::base_t, POWER>> {};
-
-            template <typename MEAS_TYPE, std::size_t POWER>    
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct root_power<MEAS_TYPE, POWER> : physics::measurement<op::base_root_t<typename MEAS_TYPE::base_t, POWER>> {};
-
-        
-        // ====================================================================================================
         // operations on values
         // ====================================================================================================
 
@@ -86,7 +61,7 @@ namespace scipp::math {
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto inv(const MEAS_TYPE& other) 
-                -> op::invert_t<MEAS_TYPE> {            
+                -> meta::invert_t<MEAS_TYPE> {            
 
                 if (other.value == 0.0) 
                     throw std::runtime_error("Cannot invert a zero measurement");
@@ -100,7 +75,7 @@ namespace scipp::math {
             template <int POWER, typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto pow(const MEAS_TYPE& other) noexcept
-                -> op::power_t<MEAS_TYPE, POWER> { 
+                -> meta::power_t<MEAS_TYPE, POWER> { 
                                 
                 return std::pow(other.value, POWER); 
 
@@ -110,7 +85,7 @@ namespace scipp::math {
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto square(const MEAS_TYPE& other) noexcept 
-                -> op::square_t<MEAS_TYPE> {
+                -> meta::square_t<MEAS_TYPE> {
 
                 return std::pow(other.value, 2); 
             
@@ -120,7 +95,7 @@ namespace scipp::math {
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto cube(const MEAS_TYPE& other) noexcept 
-                -> op::cube_t<MEAS_TYPE> {
+                -> meta::cube_t<MEAS_TYPE> {
                 
                 return std::pow(other.value, 3); 
             
@@ -131,7 +106,7 @@ namespace scipp::math {
             template <int POWER, typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto root(const MEAS_TYPE& other)
-                -> op::root_power_t<MEAS_TYPE, POWER> { 
+                -> meta::root_t<MEAS_TYPE, POWER> { 
 
                 if (POWER % 2 == 0 && other.value < 0.0) 
                     throw std::runtime_error("Cannot get the root of a negative measurement");
@@ -144,7 +119,7 @@ namespace scipp::math {
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto sqrt(const MEAS_TYPE& other) 
-                -> op::sqrt_t<MEAS_TYPE> {
+                -> meta::sqrt_t<MEAS_TYPE> {
                 
                 if (other.value < 0.0)  
                     throw std::runtime_error("Cannot take the square root of a negative measurement"); 
@@ -157,7 +132,7 @@ namespace scipp::math {
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             inline constexpr auto cbrt(const MEAS_TYPE& other) noexcept 
-                -> op::cbrt_t<MEAS_TYPE> {
+                -> meta::cbrt_t<MEAS_TYPE> {
                 
                 return std::cbrt(other.value); 
             
@@ -166,9 +141,8 @@ namespace scipp::math {
 
             /// @brief Get the exponential of a measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            inline constexpr auto exp(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+                requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
+            inline constexpr MEAS_TYPE exp(const MEAS_TYPE& other) noexcept {
 
                 return std::exp(other.value); 
             
@@ -176,9 +150,8 @@ namespace scipp::math {
 
             /// @brief Get the natural logarithm of a measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            inline constexpr auto log(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+                requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
+            inline constexpr MEAS_TYPE log(const MEAS_TYPE& other) noexcept {
                 
                 return std::log(other.value); 
             
@@ -187,9 +160,8 @@ namespace scipp::math {
 
             /// @brief Get the base-10 exponential of a measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            inline constexpr auto exp10(const MEAS_TYPE& other) noexcept
-                -> physics::measurement<physics::units::scalar> {
+                requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
+            inline constexpr MEAS_TYPE exp10(const MEAS_TYPE& other) noexcept {
                 
                 return std::pow(10.0, other.value); 
 
@@ -197,9 +169,8 @@ namespace scipp::math {
 
             /// @brief Get the base-10 logarithm of a measurement
             template <typename MEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            inline constexpr auto log10(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+                requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
+            inline constexpr MEAS_TYPE log10(const MEAS_TYPE& other) noexcept {
                                     
                 return std::log10(other.value); 
 
@@ -213,8 +184,7 @@ namespace scipp::math {
             /// @brief Get the sine of an angle_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto sin(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE sin(const MEAS_TYPE& other) noexcept {
 
                 return std::sin(static_cast<double>(other)); 
             
@@ -224,8 +194,7 @@ namespace scipp::math {
             /// @brief Get the cosine of an angle_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto cos(const MEAS_TYPE& other) noexcept
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE cos(const MEAS_TYPE& other) noexcept{
 
                 return std::cos(static_cast<double>(other)); 
 
@@ -235,8 +204,7 @@ namespace scipp::math {
             /// @brief Get the tangent of an angle_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto tan(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE tan(const MEAS_TYPE& other) noexcept {
 
                 return std::tan(static_cast<double>(other)); 
             
@@ -246,8 +214,7 @@ namespace scipp::math {
             /// @brief Get the arcsine of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto asin(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE asin(const MEAS_TYPE& other) noexcept {
 
                 return std::asin(other.value); 
             
@@ -257,8 +224,7 @@ namespace scipp::math {
             /// @brief Get the arccosine of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto acos(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE acos(const MEAS_TYPE& other) noexcept {
 
                 return std::acos(other.value); 
             
@@ -268,8 +234,7 @@ namespace scipp::math {
             /// @brief Get the arctangent of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto atan(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE atan(const MEAS_TYPE& other) noexcept {
 
                 return std::atan(other.value); 
             
@@ -279,8 +244,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic sine of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto sinh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE sinh(const MEAS_TYPE& other) noexcept {
 
                 return std::sinh(other.value); 
 
@@ -290,8 +254,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic cosine of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto cosh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE cosh(const MEAS_TYPE& other) noexcept {
 
                 return std::cosh(other.value); 
 
@@ -301,8 +264,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic tangent of a unitless_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto tanh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE tanh(const MEAS_TYPE& other) noexcept {
 
                 return std::tanh(other.value); 
 
@@ -312,8 +274,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic arcsine of a radian_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto asinh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE asinh(const MEAS_TYPE& other) noexcept {
 
                 return std::asinh(other.value);
 
@@ -323,8 +284,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic arccosine of a radian_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto acosh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE acosh(const MEAS_TYPE& other) noexcept {
 
                 return std::acosh(other.value);
 
@@ -334,8 +294,7 @@ namespace scipp::math {
             /// @brief Get the hyperbolic arctangent of a radian_measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_scalar_measurement_v<MEAS_TYPE>)
-            inline constexpr auto atanh(const MEAS_TYPE& other) noexcept 
-                -> physics::measurement<physics::units::scalar> {
+            inline constexpr MEAS_TYPE atanh(const MEAS_TYPE& other) noexcept {
 
                 return std::atanh(other.value);
 

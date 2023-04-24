@@ -22,10 +22,10 @@ using namespace tools;
 namespace plt = matplotlibcpp;
 
 
-struct complex_cosh : functions::unary_function<complex<scalar_m>, complex<scalar_m>> {
+struct complex_cosh : functions::unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
 
     
-    constexpr complex<scalar_m> operator()(const complex<scalar_m>& x) const noexcept override {
+    constexpr cmeasurement<scalar_m> operator()(const cmeasurement<scalar_m>& x) const noexcept override {
 
         return op::cosh(x);
 
@@ -39,7 +39,7 @@ int main() {
 
 
     scalar_m radius = 1.0;
-    auto circ = circumference(complex<scalar_m>(), radius);
+    auto circ = circumference(cmeasurement<scalar_m>(), radius);
     vector<scalar_m, 100> x_vec;
     vector<scalar_m, 100> y_vec;
 
@@ -82,7 +82,7 @@ int main() {
 
 
 
-    // complex<angle_m> mc0(3. * rad, 4. * rad);
+    // cmeasurement<angle_m> mc0(3. * rad, 4. * rad);
     // print("real", mc0.real);
     // print("imag", mc0.imag);
 
@@ -96,7 +96,7 @@ int main() {
     // print("3^i", op::pow({1.0, 0.5}, math::constants::i));
 
 
-    // auto integral = integrals::curvilinear(complex_cos(), geometry::circumference(complex<length_m>(), 1.0 * m));
+    // auto integral = integrals::curvilinear(cmeasurement_cos(), geometry::circumference(cmeasurement<length_m>(), 1.0 * m));
     // print("integrate(cos, (0.0, 0.0) -> (2pi, 0))", integral);
 
 
@@ -109,12 +109,12 @@ int main() {
     // print("Rmat", Rmat);
     // print("Cmat", Cmat);
 
-    // complex<scalar_m> r(1.0, 4.0); 
+    // cmeasurement<scalar_m> r(1.0, 4.0); 
     // auto r_mat = Rmat * r.real + Cmat * r.imag;
     // print("r", r);
     // print("in matrix form", r_mat); 
 
-    // complex<scalar_m> c(5.0, -3.0);
+    // cmeasurement<scalar_m> c(5.0, -3.0);
     // auto c_mat = Rmat * c.real + Cmat * c.imag;
     // print("c", c);
     // print("in matrix form", c_mat);

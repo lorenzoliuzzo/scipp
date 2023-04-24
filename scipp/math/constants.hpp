@@ -26,9 +26,9 @@ namespace scipp::math {
         inline static constexpr physics::scalar_m e = 2.7182818284590452353603; /// scalar Euler's number
 
 
-        inline static constexpr math::complex<physics::scalar_m> i(0.0, 1.0); /// scalar imaginary unit
+        inline static constexpr physics::cmeasurement<physics::scalar_m> i(0.0, 1.0); /// scalar imaginary unit
         
-        inline static constexpr math::dual<physics::scalar_m> epsilon(0.0, 1.0); /// scalar dual unit
+        // inline static constexpr math::dual<physics::scalar_m> epsilon(0.0, 1.0); /// scalar dual unit
         
 
     } // namespace constants

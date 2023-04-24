@@ -364,7 +364,7 @@ namespace scipp::math {
                     old_integral_ = integral_; 
 
                     simpson(a_, b_, f, steps_ * 2);
-                    error_ = 256 * std::fabs(1024 * integral_ - 1104 * old_integral_ + 81 * old_integral_2 - old_integral_3) / 240975;
+                    error_ = 256 * op::abs(1024 * integral_ - 1104 * old_integral_ + 81 * old_integral_2 - old_integral_3) / 240975;
                     
                     if (error_ < prec) 
                         break; 

@@ -1,27 +1,28 @@
 /**
- * @file    math/numbers/complex.hpp
+ * @file    physics/measurements/cmeasurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-04-10
+ * @brief   This file contains the implementation of the cmeasurement struct and its type traits.
+ * @date    2023-04-03
  * 
  * @copyright Copyright (c) 2023
  */
 
 
- 
-namespace scipp::math {
+
+/// @brief physics namespace contains all the classes and functions of the physics library
+namespace scipp::physics {
 
 
     template <typename MEAS_TYPE>   
-        requires (physics::is_measurement_v<MEAS_TYPE> || physics::is_umeasurement_v<MEAS_TYPE>)
-    struct complex {
+        requires (is_measurement_v<MEAS_TYPE> || is_umeasurement_v<MEAS_TYPE>)
+    struct cmeasurement {
 
 
         // ==============================================
         // aliases
         // ==============================================
 
-            using _t = complex<MEAS_TYPE>;
+            using _t = cmeasurement<MEAS_TYPE>;
 
             using measurement_t = MEAS_TYPE; 
 
@@ -44,59 +45,59 @@ namespace scipp::math {
         // constructors
         // ==============================================
 
-            constexpr complex() noexcept :
+            constexpr cmeasurement() noexcept :
                 
                 real{}, imag{} {}
 
 
-            constexpr complex(const complex& other) noexcept :
+            constexpr cmeasurement(const cmeasurement& other) noexcept :
 
                 real(other.real), imag(other.imag) {}
 
 
-            constexpr complex(complex&& other) noexcept :
+            constexpr cmeasurement(cmeasurement&& other) noexcept :
 
                 real(std::move(other.real)), imag(std::move(other.imag)) {}
 
 
-            constexpr complex(const measurement_t& real, const measurement_t& imag) noexcept : 
+            constexpr cmeasurement(const measurement_t& real, const measurement_t& imag) noexcept : 
                 
                 real(real), imag(imag) {}
 
 
-            constexpr complex(const measurement_t& real) noexcept :
+            constexpr cmeasurement(const measurement_t& real) noexcept :
 
                 real(real), imag{} {}
 
 
-            constexpr complex(measurement_t&& real, measurement_t&& imag) noexcept : 
+            constexpr cmeasurement(measurement_t&& real, measurement_t&& imag) noexcept : 
                 
                 real(std::move(real)), imag(std::move(imag)) {}
 
 
-            constexpr complex(measurement_t&& real) noexcept :
+            constexpr cmeasurement(measurement_t&& real) noexcept :
 
                 real(std::move(real)), imag{} {}
 
 
         // ==============================================
-        // operators with complex
+        // operators with cmeasurement
         // ==============================================
 
-            constexpr bool operator==(const complex& other) const noexcept {
+            constexpr bool operator==(const cmeasurement& other) const noexcept {
 
                 return (this->real == other.real) && (this->imag == other.imag);
 
             }
 
-            constexpr bool operator!=(const complex& other) const noexcept {
+            constexpr bool operator!=(const cmeasurement& other) const noexcept {
 
                 return !(*this == other);
 
             }
 
 
-            constexpr complex& operator=(const complex& other) noexcept {
+            constexpr cmeasurement& operator=(const cmeasurement& other) noexcept {
 
                 this->real = other.real;
                 this->imag = other.imag;
@@ -105,7 +106,7 @@ namespace scipp::math {
 
             }
 
-            constexpr complex& operator=(complex&& other) noexcept {
+            constexpr cmeasurement& operator=(cmeasurement&& other) noexcept {
 
                 this->real = std::move(other.real);
                 this->imag = std::move(other.imag);
@@ -115,7 +116,7 @@ namespace scipp::math {
             }
 
 
-            constexpr complex& operator+=(const complex& other) noexcept {
+            constexpr cmeasurement& operator+=(const cmeasurement& other) noexcept {
 
                 this->real += other.real;
                 this->imag += other.imag;
@@ -124,7 +125,7 @@ namespace scipp::math {
 
             }
 
-            constexpr complex& operator+=(complex&& other) noexcept {
+            constexpr cmeasurement& operator+=(cmeasurement&& other) noexcept {
 
                 this->real += std::move(other.real);
                 this->imag += std::move(other.imag);
@@ -134,7 +135,7 @@ namespace scipp::math {
             }
 
 
-            constexpr complex& operator-=(const complex& other) noexcept {
+            constexpr cmeasurement& operator-=(const cmeasurement& other) noexcept {
 
                 this->real -= other.real;
                 this->imag -= other.imag;
@@ -143,7 +144,7 @@ namespace scipp::math {
 
             }
 
-            constexpr complex& operator-=(complex&& other) noexcept {
+            constexpr cmeasurement& operator-=(cmeasurement&& other) noexcept {
 
                 this->real -= std::move(other.real);
                 this->imag -= std::move(other.imag);
@@ -154,8 +155,8 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
-            constexpr complex& operator*=(const complex<OTHER_MEAS_TYPE>& other) noexcept {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> && is_scalar_v<OTHER_MEAS_TYPE>)
+            constexpr cmeasurement& operator*=(const cmeasurement<OTHER_MEAS_TYPE>& other) noexcept {
 
                 this->real *= other.real; 
                 this->real -= this->imag * other.imag; 
@@ -167,8 +168,8 @@ namespace scipp::math {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
-            constexpr complex& operator*=(complex<OTHER_MEAS_TYPE>&& other) noexcept {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> && is_scalar_v<OTHER_MEAS_TYPE>)
+            constexpr cmeasurement& operator*=(cmeasurement<OTHER_MEAS_TYPE>&& other) noexcept {
 
                 this->real *= std::move(other.real); 
                 this->real -= this->imag * std::move(other.imag); 
@@ -180,8 +181,8 @@ namespace scipp::math {
             }
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator*=(const SCALAR_TYPE& other) noexcept {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator*=(const SCALAR_TYPE& other) noexcept {
 
                 this->real *= other; 
                 this->imag *= other; 
@@ -191,8 +192,8 @@ namespace scipp::math {
             }
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator*=(SCALAR_TYPE&& other) noexcept {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator*=(SCALAR_TYPE&& other) noexcept {
 
                 this->real *= std::move(other); 
                 this->imag *= std::move(other); 
@@ -203,47 +204,47 @@ namespace scipp::math {
 
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator/=(const complex<SCALAR_TYPE>& other) {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator/=(const cmeasurement<SCALAR_TYPE>& other) {
 
                 if (other == measurement_t::zero) 
-                    throw std::runtime_error("Cannot divide a complex measurment by zero.");
+                    throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real *= other.real; 
                 this->real += this->imag * other.imag; 
                 this->imag *= other.real;
                 this->imag -= this->real * other.imag; 
 
-                *this /= op::sqrt(op::square(other.real) + op::square(other.imag));
+                *this /= math::op::sqrt(math::op::square(other.real) + math::op::square(other.imag));
 
                 return *this;
 
             }
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator/=(complex<SCALAR_TYPE>&& other) {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator/=(cmeasurement<SCALAR_TYPE>&& other) {
 
                 if (other == measurement_t::zero) 
-                    throw std::runtime_error("Cannot divide a complex measurment by zero.");
+                    throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real *= std::move(other.real); 
                 this->real += this->imag * std::move(other.imag); 
                 this->imag *= std::move(other.real);
                 this->imag -= this->real * std::move(other.imag); 
 
-                *this /= op::sqrt(op::square(std::move(other.real)) + op::square(std::move(other.imag)));
+                *this /= math::op::sqrt(math::op::square(std::move(other.real)) + math::op::square(std::move(other.imag)));
 
                 return *this;
 
             }
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator/=(const SCALAR_TYPE& other) {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator/=(const SCALAR_TYPE& other) {
 
                 if (other == measurement_t::zero) 
-                    throw std::runtime_error("Cannot divide a complex measurment by zero.");
+                    throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real /= other; 
                 this->imag /= other; 
@@ -253,11 +254,11 @@ namespace scipp::math {
             }
 
             template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr complex& operator/=(SCALAR_TYPE&& other) {
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr cmeasurement& operator/=(SCALAR_TYPE&& other) {
 
                 if (other == measurement_t::zero) 
-                    throw std::runtime_error("Cannot divide a complex measurment by zero.");
+                    throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real /= std::move(other); 
                 this->imag /= std::move(other); 
@@ -267,9 +268,9 @@ namespace scipp::math {
             }
 
 
-            constexpr complex operator-() const noexcept {
+            constexpr cmeasurement operator-() const noexcept {
 
-                complex result; 
+                cmeasurement result; 
                 result.real = -this->real;
                 result.imag = -this->imag;
 
@@ -278,9 +279,9 @@ namespace scipp::math {
             }
 
 
-            constexpr complex operator+(const complex& other) const noexcept {
+            constexpr cmeasurement operator+(const cmeasurement& other) const noexcept {
 
-                complex result; 
+                cmeasurement result; 
                 result.real = this->real + other.real;
                 result.imag = this->imag + other.imag;
 
@@ -288,9 +289,9 @@ namespace scipp::math {
 
             }
 
-            constexpr complex operator-(const complex& other) const noexcept {
+            constexpr cmeasurement operator-(const cmeasurement& other) const noexcept {
 
-                complex result; 
+                cmeasurement result; 
                 result.real = this->real - other.real;
                 result.imag = this->imag - other.imag;
 
@@ -300,11 +301,11 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(const complex<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+            constexpr auto operator*(const cmeasurement<OTHER_MEAS_TYPE>& other) const noexcept 
+                -> cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other.real - this->imag * other.imag;
                 result.imag = this->real * other.imag + this->imag * other.real;
 
@@ -314,11 +315,11 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other;
                 result.imag = this->real * other;
 
@@ -327,11 +328,11 @@ namespace scipp::math {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<op::divide_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> cmeasurement<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::divide_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real / other;
                 result.imag = this->real / other;
 
@@ -341,10 +342,10 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
-            friend constexpr complex<op::multiply_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+            friend constexpr cmeasurement<math::meta::multiply_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const cmeasurement<MEAS_TYPE>& other_c) noexcept {
                 
-                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = other * other_c.real;
                 result.imag = other * other_c.imag;
 
@@ -353,16 +354,16 @@ namespace scipp::math {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
-            friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
-                -> complex<op::divide_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
+            friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const cmeasurement<MEAS_TYPE>& other_c) noexcept 
+                -> cmeasurement<math::meta::divide_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
 
-                return complex<OTHER_MEAS_TYPE>(other) / other_c;
+                return cmeasurement<OTHER_MEAS_TYPE>(other) / other_c;
 
             }
 
 
-            friend constexpr std::ostream& operator<<(std::ostream& os, const complex& other) noexcept {
+            friend constexpr std::ostream& operator<<(std::ostream& os, const cmeasurement& other) noexcept {
 
 
                 os << '(' << other.real << " " << other.imag << ')'; 
@@ -399,48 +400,11 @@ namespace scipp::math {
             }         
 
 
-    }; // class complex
+    }; // class cmeasurement
 
 
-    // ==============================================
-    // complex type traits
-    // ==============================================
-
-        template <typename T>
-        struct is_complex : std::false_type{};
-
-        template <typename MEAS_TYPE>
-        struct is_complex<complex<MEAS_TYPE>> : std::true_type{};
-
-        template <typename T>
-        inline constexpr bool is_complex_v = is_complex<T>::value;
-
-
-        template <typename... MEAS_TYPES>
-        struct are_complex : std::conjunction<is_complex<MEAS_TYPES>...>{};
-
-        template <typename... MEAS_TYPES>
-        inline constexpr bool are_complex_v = are_complex<MEAS_TYPES...>::value;
-
-
-} // namespace scipp::math
-
-
-namespace scipp::physics {
-
-
-    /// @brief Type trait to check if a type is a generic measurement
-    template <typename T>
-    struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || math::is_complex_v<T>, std::true_type, std::false_type>{};
-
-    template <typename T>
-    constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
-
-    template <typename... MEAS_TYPES>
-    struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...>{};
-
-    template <typename... MEAS_TYPEs>
-    constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
+    template <typename MEAS_TYPE>
+    struct is_cmeasurement<cmeasurement<MEAS_TYPE>> : std::true_type{};
 
 
 } // namespace scipp::physics

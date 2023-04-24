@@ -64,19 +64,19 @@ namespace scipp::physics {
 
 
     // =============================================
-    // is complex_measurements type traits
+    // is cmeasurements type traits
     // =============================================
 
         // template <typename T>
-        // struct is_generic_complex_measurement : std::conditional_t<is_complex_measurement_v<T> || is_complex_umeasurement_v<T>, std::true_type, std::false_type>{};
+        // struct is_generic_cmeasurement : std::conditional_t<is_cmeasurement_v<T> || is_complex_umeasurement_v<T>, std::true_type, std::false_type>{};
 
         // template <typename T>
-        // constexpr bool is_generic_complex_measurement_v = is_generic_complex_measurement<T>::value;
+        // constexpr bool is_generic_cmeasurement_v = is_generic_cmeasurement<T>::value;
 
 
         // template <typename T>
         //     requires (std::is_arithmetic_v<T>)  
-        // struct is_complex_measurement<std::complex<T>> : std::true_type{};
+        // struct is_cmeasurement<std::complex<T>> : std::true_type{};
 
         // template <typename T>
         //     requires (std::is_arithmetic_v<T>)
@@ -84,10 +84,10 @@ namespace scipp::physics {
 
 
         // template <typename... MEAS_TYPES>
-        // struct are_generic_complex_measurements : std::conjunction<is_generic_complex_measurement<MEAS_TYPES>...>{};
+        // struct are_generic_cmeasurements : std::conjunction<is_generic_cmeasurement<MEAS_TYPES>...>{};
 
         // template <typename... MEAS_TYPEs>
-        // constexpr bool are_generic_complex_measurements_v = are_generic_complex_measurements<MEAS_TYPEs...>::value;
+        // constexpr bool are_generic_cmeasurements_v = are_generic_cmeasurements<MEAS_TYPEs...>::value;
 
 
 } // namespace scipp::physics

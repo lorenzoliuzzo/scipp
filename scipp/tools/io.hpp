@@ -222,7 +222,7 @@ namespace scipp::tools {
 
 
     template <typename MEAS_TYPE>
-        requires (math::is_complex_v<MEAS_TYPE>)
+        requires (physics::is_cmeasurement_v<MEAS_TYPE>)
     static constexpr void print(const MEAS_TYPE& other) noexcept {
 
         std::cout << other.real << " + i(" << other.imag << ")\n";

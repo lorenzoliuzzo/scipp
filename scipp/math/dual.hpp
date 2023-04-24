@@ -286,7 +286,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const dual<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
 
                 return {this->val * other.val, this->val * other.eps + this->eps * other.val};
 
@@ -296,7 +296,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(dual<OTHER_MEAS_TYPE>&& other) const noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
 
                 return {this->val * std::move(other.val), this->val * std::move(other.eps) + this->eps * std::move(other.val)};
 
@@ -307,7 +307,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const dual<OTHER_MEAS_TYPE>& other) const
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>> {
 
                 if (other.val == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -320,7 +320,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(dual<OTHER_MEAS_TYPE>&& other) const
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>> {
 
                 if (other.val == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -397,7 +397,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*=(const OTHER_MEAS_TYPE& other) noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
                 
                 this->val *= other;
                 this->eps *= other;
@@ -410,7 +410,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*=(OTHER_MEAS_TYPE&& other) noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
                 
                 this->val *= std::move(other);
                 this->eps *= std::move(other);
@@ -424,7 +424,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/=(const OTHER_MEAS_TYPE& other) 
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>>& {
 
                 if (other == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -440,7 +440,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/=(OTHER_MEAS_TYPE&& other) 
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>>& {
 
                 if (other == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -495,7 +495,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                     
                 return {this->val * other, this->eps * other};
         
@@ -504,7 +504,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept 
-                -> dual<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                     
                 return {this->val * std::move(other), this->eps * std::move(other)};
         
@@ -514,7 +514,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const 
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>> {
 
                 if (other == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -526,7 +526,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const 
-                -> dual<op::divide<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<meta::divide<measurement_t, OTHER_MEAS_TYPE>> {
 
                 if (other == OTHER_MEAS_TYPE::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
@@ -539,7 +539,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator*(const OTHER_MEAS_TYPE& other, const dual<measurement_t>& other_dual) noexcept 
-                -> dual<op::multiply_t<OTHER_MEAS_TYPE, measurement_t>> {
+                -> dual<meta::multiply_t<OTHER_MEAS_TYPE, measurement_t>> {
                     
                 return {other_dual.val * other, other_dual.eps * other};
         
@@ -548,7 +548,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const dual<measurement_t>& other_dual) 
-                -> dual<op::divide<OTHER_MEAS_TYPE, measurement_t>> {
+                -> dual<meta::divide<OTHER_MEAS_TYPE, measurement_t>> {
 
                 if (other_dual.val == measurement_t::zero)
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");

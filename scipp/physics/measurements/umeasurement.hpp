@@ -940,4 +940,5 @@ namespace scipp::physics {
         inline static constexpr bool are_same_umeasurement_v = are_same_umeasurement<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 
+
 } // namespace physics

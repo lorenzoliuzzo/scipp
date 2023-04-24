@@ -53,17 +53,17 @@ namespace scipp::math {
         };
 
 
-        struct invert : unary_function<physics::scalar_m, physics::scalar_m> {
+        struct inv : unary_function<physics::scalar_m, physics::scalar_m> {
 
             constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
 
-                return op::invert(x);
+                return op::inv(x);
 
             }
 
             constexpr auto backward(const physics::scalar_m& x, const physics::scalar_m& y) const noexcept {
 
-                return -op::square(op::invert(x)) * y;
+                return -op::square(op::inv(x)) * y;
 
             }
 
@@ -256,9 +256,9 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct sqrt : unary_function<op::measurement_sqrt_t<T>, T> {
+        struct sqrt : unary_function<op::sqrt_t<T>, T> {
 
-            constexpr op::measurement_sqrt_t<T> operator()(const T& x) const noexcept override {
+            constexpr op::sqrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::sqrt(x);
 
@@ -268,9 +268,9 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct cbrt : unary_function<op::measurement_cbrt_t<T>, T> {
+        struct cbrt : unary_function<op::cbrt_t<T>, T> {
 
-            constexpr op::measurement_cbrt_t<T> operator()(const T& x) const noexcept override {
+            constexpr op::cbrt_t<T> operator()(const T& x) const noexcept override {
 
                 return op::cbrt(x);
 

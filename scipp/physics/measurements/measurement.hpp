@@ -482,38 +482,22 @@ namespace scipp::physics {
     // measurement type traits
     // =============================================
         
-        /// @brief Type trait to check if a type is a measurement
-        template <typename T>
-        struct is_measurement : std::false_type{};
 
         template <typename BASE_TYPE>
         struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
 
-        template <typename MEAS_TYPE>
-        inline static constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
+        template <typename BASE_TYPE>
+        struct is_measurement<const measurement<BASE_TYPE>&> : std::true_type{};
 
+        template <typename BASE_TYPE>
+        struct is_measurement<measurement<BASE_TYPE>&> : std::true_type{};
 
-        template <typename... MEAS_TYPES>
-        struct are_measurements : std::conjunction<is_measurement<MEAS_TYPES>...>{};
+        template <typename BASE_TYPE>
+            requires (is_scalar_v<BASE_TYPE>)
+        struct is_scalar_measurement<measurement<BASE_TYPE>> : std::true_type {};
 
-        template <typename... MEAS_TYPES>
-        inline static constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;
-
-
-        /// @brief Type trait to check if two measurement types are the same
-        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2> && is_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>)
-        struct is_same_measurement : std::true_type {};
-
-        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-        inline static constexpr bool is_same_measurement_v = is_same_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
-
-
-        template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 
-        struct are_same_measurement : std::conjunction<is_same_measurement<MEAS_TYPE, OTHER_MEAS_TYPEs>...> {};
-        
-        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
-        inline static constexpr bool are_same_measurement_v = are_same_measurement<MEAS_TYPE, MEAS_TYPEs...>::value;
+        template <>
+        struct is_scalar_measurement<double> : std::true_type {};
 
 
 } // namespace physics

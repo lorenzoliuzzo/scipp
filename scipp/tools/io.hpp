@@ -46,7 +46,7 @@ namespace scipp::tools {
         requires (physics::is_measurement_v<MEAS_TYPE>)
     inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
-        std::cout << other.value << ' ' << MEAS_TYPE::base::to_string() << '\n'; 
+        std::cout << other.value << ' ' << MEAS_TYPE::base_t::to_string() << '\n'; 
 
     }
     
@@ -66,7 +66,7 @@ namespace scipp::tools {
     template <typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
         std::cout << other.value / static_cast<physics::scalar_m>(UNIT_TYPE::mult) << ' ' << UNIT_TYPE::to_string(); 
@@ -81,7 +81,7 @@ namespace scipp::tools {
     template <typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
         std::cout << description << ": " << other / static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
@@ -95,7 +95,7 @@ namespace scipp::tools {
     template <typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_umeasurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
         const double abs_value = std::fabs(other.value);
@@ -158,7 +158,7 @@ namespace scipp::tools {
     template <typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_umeasurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename MEAS_TYPE::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
         std::cout << description << ": "; 
@@ -222,7 +222,7 @@ namespace scipp::tools {
 
 
     template <typename MEAS_TYPE>
-        requires (math::is_complex_measurement_v<MEAS_TYPE>)
+        requires (math::is_complex_v<MEAS_TYPE>)
     static constexpr void print(const MEAS_TYPE& other) noexcept {
 
         std::cout << other.real << " + i(" << other.imag << ")\n";
@@ -267,7 +267,7 @@ namespace scipp::tools {
     template <typename VECTOR_TYPE, typename UNIT_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << "[ "; 
@@ -283,7 +283,7 @@ namespace scipp::tools {
     template <typename VECTOR_TYPE, typename UNIT_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
-                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base>)
+                  physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << description << ": [ "; 

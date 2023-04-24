@@ -9,13 +9,11 @@
 
 
  
-
-
 namespace scipp::math {
 
 
     template <typename MEAS_TYPE>   
-        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+        requires (physics::is_measurement_v<MEAS_TYPE> || physics::is_umeasurement_v<MEAS_TYPE>)
     struct complex {
 
 
@@ -27,6 +25,7 @@ namespace scipp::math {
 
             using measurement_t = MEAS_TYPE; 
 
+            using base_t = typename MEAS_TYPE::base_t;
 
 
         // ==============================================
@@ -301,11 +300,11 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const complex<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> complex<op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other.real - this->imag * other.imag;
                 result.imag = this->real * other.imag + this->imag * other.real;
 
@@ -315,11 +314,11 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other;
                 result.imag = this->real * other;
 
@@ -328,11 +327,11 @@ namespace scipp::math {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> complex<op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> complex<op::divide_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                complex<op::measurements_div_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                complex<op::divide_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real / other;
                 result.imag = this->real / other;
 
@@ -342,10 +341,10 @@ namespace scipp::math {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
-            friend constexpr complex<op::measurements_prod_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept {
+                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
+            friend constexpr complex<op::multiply_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept {
                 
-                complex<op::measurements_prod_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                complex<op::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = other * other_c.real;
                 result.imag = other * other_c.imag;
 
@@ -354,9 +353,9 @@ namespace scipp::math {
             }
 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_measurement_v<OTHER_MEAS_TYPE> || physics::is_umeasurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const complex<MEAS_TYPE>& other_c) noexcept 
-                -> complex<op::measurements_div_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                -> complex<op::divide_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
 
                 return complex<OTHER_MEAS_TYPE>(other) / other_c;
 
@@ -408,20 +407,40 @@ namespace scipp::math {
     // ==============================================
 
         template <typename T>
-        struct is_complex_measurement : std::false_type{};
+        struct is_complex : std::false_type{};
 
         template <typename MEAS_TYPE>
-        struct is_complex_measurement<complex<MEAS_TYPE>> : std::true_type{};
+        struct is_complex<complex<MEAS_TYPE>> : std::true_type{};
 
         template <typename T>
-        inline constexpr bool is_complex_measurement_v = is_complex_measurement<T>::value;
+        inline constexpr bool is_complex_v = is_complex<T>::value;
 
 
         template <typename... MEAS_TYPES>
-        struct are_complex_measurements : std::conjunction<is_complex_measurement<MEAS_TYPES>...>{};
+        struct are_complex : std::conjunction<is_complex<MEAS_TYPES>...>{};
 
         template <typename... MEAS_TYPES>
-        inline constexpr bool are_complex_measurements_v = are_complex_measurements<MEAS_TYPES...>::value;
+        inline constexpr bool are_complex_v = are_complex<MEAS_TYPES...>::value;
 
 
 } // namespace scipp::math
+
+
+namespace scipp::physics {
+
+
+    /// @brief Type trait to check if a type is a generic measurement
+    template <typename T>
+    struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || math::is_complex_v<T>, std::true_type, std::false_type>{};
+
+    template <typename T>
+    constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
+
+    template <typename... MEAS_TYPES>
+    struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...>{};
+
+    template <typename... MEAS_TYPEs>
+    constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
+
+
+} // namespace scipp::physics

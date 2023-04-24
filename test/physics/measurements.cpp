@@ -19,8 +19,8 @@ using namespace tools;
 int main() {
 
 
-    static_assert(are_same_measurements_v<length_m, length_m>);
-    static_assert(are_same_measurements_v<length_m, length_m, length_m>);
+    static_assert(are_same_measurement_v<length_m, length_m>);
+    static_assert(are_same_measurement_v<length_m, length_m, length_m>);
 
     constexpr measurement x = 3.54 * m; 
     constexpr measurement y = 1.5 * mm;

@@ -15,8 +15,25 @@ namespace scipp::math {
     namespace op {
 
 
+        // ====================================================================================================
+        // operations on types
+        // ====================================================================================================
+
+            template <typename MEAS_TYPE>   
+                requires (math::is_complex_v<MEAS_TYPE>)
+            struct invert<MEAS_TYPE> : math::complex<op::invert_t<typename MEAS_TYPE::measurement_t>> {};
+
+            template <typename MEAS_TYPE1, typename MEAS_TYPE2>
+                requires (math::are_complex_v<MEAS_TYPE1, MEAS_TYPE2>)
+            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : math::complex<op::multiply_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
+
+            template <typename MEAS_TYPE1, typename MEAS_TYPE2>
+                requires (math::are_complex_v<MEAS_TYPE1, MEAS_TYPE2>)
+            struct divide<MEAS_TYPE1, MEAS_TYPE2> : math::complex<op::divide_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
+
+
         template <typename MEAS_TYPE>
-            requires (is_complex_measurement_v<MEAS_TYPE>)
+            requires (is_complex_v<MEAS_TYPE>)
         inline constexpr typename MEAS_TYPE::measurement_t abs(const MEAS_TYPE& other) noexcept {
             
             return op::sqrt(op::square(other.real) + op::square(other.imag));
@@ -25,7 +42,7 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE>
-            requires (is_complex_measurement_v<MEAS_TYPE>)
+            requires (is_complex_v<MEAS_TYPE>)
         inline constexpr auto arg(const MEAS_TYPE& other) noexcept {
             
             return op::atan(other.imag / other.real);
@@ -33,7 +50,7 @@ namespace scipp::math {
         }
 
         template <typename MEAS_TYPE>
-            requires (is_complex_measurement_v<MEAS_TYPE>)
+            requires (is_complex_v<MEAS_TYPE>)
         inline constexpr auto norm(const MEAS_TYPE& other) noexcept {
             
             return op::square(other.real) + op::square(other.imag);
@@ -42,7 +59,7 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE>
-            requires (is_complex_measurement_v<MEAS_TYPE>) // || is_dual_measurement_v<MEAS_TYPE>)
+            requires (is_complex_v<MEAS_TYPE>) // || is_dual_measurement_v<MEAS_TYPE>)
         inline constexpr auto conj(const MEAS_TYPE& other) noexcept {
             
             return MEAS_TYPE{other.real, -other.imag};
@@ -63,7 +80,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto exp(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::polar(op::exp(other.real), other.imag) };
 
@@ -74,7 +91,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto log(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::log(op::abs(other)), op::arg(other) };
 
@@ -94,7 +111,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto sin(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::sin(other.real) * op::cosh(other.imag), op::cos(other.real) * op::sinh(other.imag) };
 
@@ -104,7 +121,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto cos(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::cos(other.real) * op::cosh(other.imag), -op::sin(other.real) * op::sinh(other.imag) };
 
@@ -124,7 +141,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto sinh(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::sinh(other.real) * op::cos(other.imag), op::cosh(other.real) * op::sin(other.imag) };
 
@@ -134,7 +151,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto cosh(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::cosh(other.real) * op::cos(other.imag), op::sinh(other.real) * op::sin(other.imag) };
 
@@ -154,7 +171,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto asin(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
 
             auto z = op::asinh(MEAS_TYPE(-other.imag, other.real));
             return { z.imag, -z.real };
@@ -166,7 +183,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto acos(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             auto z = op::asin(other);
             return { M_PI_2 - z.real, -z.imag };
@@ -178,7 +195,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto atan(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
                     
             const auto r2 = op::square(other.real);
             const auto x = 1.0 - r2 - op::square(other.imag);
@@ -192,7 +209,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto acosh(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return 2.0 * op::log(op::sqrt(0.5 * (other + 1.0)) + op::sqrt(0.5 * (other - 1.0)));
 
@@ -202,9 +219,9 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto asinh(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
-            complex<math::op::measurement_square_t<MEAS_TYPE>> z((other.real - other.imag) * (other.real + other.imag) + 1.0, 2.0 * other.real * other.imag);
+            complex<math::op::square_t<MEAS_TYPE>> z((other.real - other.imag) * (other.real + other.imag) + 1.0, 2.0 * other.real * other.imag);
 
             return op::log(op::sqrt(z) + other);
 
@@ -214,7 +231,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
         inline constexpr auto atanh(const complex<MEAS_TYPE>& other) noexcept 
-            -> complex<math::op::measurements_div_t<MEAS_TYPE, MEAS_TYPE>> {
+            -> complex<math::op::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             const auto i2 = op::square(other.imag);
 
@@ -227,7 +244,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE>)
         inline constexpr auto sqrt(const complex<MEAS_TYPE>& other) noexcept
-            -> complex<math::op::measurement_sqrt_t<MEAS_TYPE>> {
+            -> complex<math::op::sqrt_t<MEAS_TYPE>> {
     
             if (other.real == MEAS_TYPE()) {
 
@@ -251,7 +268,7 @@ namespace scipp::math {
         // template <typename MEAS_TYPE>
         //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
         // inline static constexpr auto pow_impl(const complex<MEAS_TYPE>& x, unsigned n) 
-        //     -> complex<math::op::measurement_pow_t<MEAS_TYPE, n>> {
+        //     -> complex<math::op::power_t<MEAS_TYPE, n>> {
 
         //     complex<MEAS_TYPE> y = (n % 2) ? x : complex<MEAS_TYPE>(1.0);
 
@@ -271,7 +288,7 @@ namespace scipp::math {
         //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
         // inline static constexpr auto pow(const complex<MEAS_TYPE>& x, int n) {
 
-        //     return (n < 0) ? 1.0 / op::pow_impl(x, -n) : op::pow_impl(x, static_cast<unsigned>(n));
+        //     return (n < 0) ? 1.0 / op::power_impl(x, -n) : op::power_impl(x, static_cast<unsigned>(n));
 
         // }       
 

@@ -13,23 +13,12 @@
 namespace scipp::physics {
 
 
-        /// @brief Type trait to check if a type is a generic measurement
-        template <typename T>
-        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T>, std::true_type, std::false_type>{};
-
-        template <typename T>
-        constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
 
 
     // =============================================
     // are_measurements type traits
     // =============================================
 
-        template <typename... MEAS_TYPES>
-        struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...>{};
-
-        template <typename... MEAS_TYPEs>
-        constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
 
 
     // =============================================
@@ -71,26 +60,7 @@ namespace scipp::physics {
 
         template <>
         struct is_umeasurement<uint> : std::false_type{};
-
-
-        template <>
-        struct is_scalar<double> : std::true_type {};
-        
-        template <>
-        struct is_scalar<float> : std::true_type {};    
-        
-        template <>
-        struct is_scalar<long double> : std::true_type {};    
-        
-        template <>
-        struct is_scalar<int> : std::true_type {};
-
-        template <>
-        struct is_scalar<uint> : std::true_type {};
-        
-        template <>
-        struct is_scalar<measurement<units::scalar>> : std::true_type {};
-
+      
 
 
     // =============================================

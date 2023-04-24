@@ -30,7 +30,7 @@ namespace scipp::physics {
 
         inline static constexpr measurement mu0(1.25663706212e-6, N / A2); ///< magnetic permeability of vacuum
 
-        inline static constexpr measurement eps0(math::op::invert(mu0 * math::op::square(c))); ///< electric permittivity of vacuum
+        inline static constexpr measurement eps0(math::op::inv(mu0 * math::op::square(c))); ///< electric permittivity of vacuum
 
         // inline static constexpr charge_m e(1.602176634e-19, C); ///< elementary charge
 
@@ -42,7 +42,7 @@ namespace scipp::physics {
 
         inline static constexpr measurement k_B(1.380649e-23, J / K); ///< Boltzmann constant
 
-        inline static constexpr math::op::measurement_inv_t<mole_m> N_A(6.02214076e23 / mol); ///< Avogadro constant
+        inline static constexpr math::op::invert_t<mole_m> N_A(6.02214076e23 / mol); ///< Avogadro constant
 
         inline static constexpr measurement R(N_A * k_B); ///< ideal gas constant
 

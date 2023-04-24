@@ -51,10 +51,10 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_t>)
         constexpr auto variance(const VECTOR_TYPE& other, const typename VECTOR_TYPE::measurement_t& average) noexcept 
-            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_t> {
+            -> op::square_t<typename VECTOR_TYPE::measurement_t> {
 
-            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_t>(), 
-                                    [&average](const op::measurement_square_t<typename VECTOR_TYPE::measurement_t>& acc, 
+            return std::accumulate(other.data.begin(), other.data.end(), op::square_t<typename VECTOR_TYPE::measurement_t>(), 
+                                    [&average](const op::square_t<typename VECTOR_TYPE::measurement_t>& acc, 
                                                             const typename VECTOR_TYPE::measurement_t& val) { 
                                                                 return acc + op::square(val - average); 
                                                             }
@@ -68,11 +68,11 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_measurement_v<typename VECTOR_TYPE::measurement_t>)
         constexpr auto variance(const VECTOR_TYPE& other) noexcept 
-            -> op::measurement_square_t<typename VECTOR_TYPE::measurement_t> {
+            -> op::square_t<typename VECTOR_TYPE::measurement_t> {
 
             auto avg = average(other);
-            return std::accumulate(other.data.begin(), other.data.end(), op::measurement_square_t<typename VECTOR_TYPE::measurement_t>(), 
-                                    [&avg](const op::measurement_square_t<typename VECTOR_TYPE::measurement_t>& acc, 
+            return std::accumulate(other.data.begin(), other.data.end(), op::square_t<typename VECTOR_TYPE::measurement_t>(), 
+                                    [&avg](const op::square_t<typename VECTOR_TYPE::measurement_t>& acc, 
                                                             const typename VECTOR_TYPE::measurement_t& val) { 
                                                                 return acc + op::square(val - avg); 
                                                             }
@@ -88,11 +88,11 @@ namespace scipp::math {
         constexpr auto variance(const VECTOR_TYPE& other) 
             -> physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>> {
             
-            op::measurement_inv_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>>> weights; 
+            op::invert_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>>> weights; 
             for (const auto& x : other.data) 
                 weights += x.weight(); 
             
-            return op::invert(weights);    
+            return op::inv(weights);    
 
         }
 

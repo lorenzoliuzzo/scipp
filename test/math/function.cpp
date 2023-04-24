@@ -8,11 +8,26 @@
  */
 
 
+
 #include "sci++.hpp"
+
 
 using namespace scipp; 
 using namespace math; 
 using namespace physics; 
+using namespace geometry; 
+using namespace tools; 
+
+
+struct func : functions::unary_function<complex<scalar_m>, complex<scalar_m>> {
+
+    constexpr complex<scalar_m> operator()(const complex<scalar_m>& x) const override {
+
+        return x * op::exp(x); 
+
+    }
+
+};
 
 
 int main() {
@@ -26,6 +41,25 @@ int main() {
     std::cout << op::sqrt(3.0 * m2) << '\n';  
     std::cout << op::square(-3 * units::mm) << '\n';  
 
+
+    std::cout << op::multiply_t<length_m>() << '\n';
+    std::cout << op::multiply_t<length_m, length_m, time_m>() << '\n';
+    std::cout << op::divide_t<length_m, time_m>() << '\n';
+    std::cout << op::cube_t<length_m>() << '\n';
+    std::cout << op::invert_t<length_m>() << '\n';
+
+
+    std::cout << op::multiply_t<complex<length_m>, complex<time_m>, time_m>() << '\n';
+
+    auto f = func(); 
+    complex<scalar_m> x(1.0, 1.0);
+
+    auto circ = circumference(x, x.real); 
+
+    print(f(x)); 
+
+    // auto integral = integrals::curvilinear(f, circ); 
+    // print(integral);
 
     return 0; 
 

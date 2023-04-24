@@ -44,7 +44,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE, std::size_t POWER>
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr auto pow(const MEAS_TYPE& other) noexcept 
-            -> dual<op::measurement_pow_t<typename MEAS_TYPE::measurement_t, POWER>> {
+            -> dual<op::power_t<typename MEAS_TYPE::measurement_t, POWER>> {
 
             const auto pow = op::pow<POWER - 1>(other.val);
             return {other.val * pow, other.eps * static_cast<double>(POWER) * pow}; 
@@ -55,7 +55,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr auto square(const MEAS_TYPE& other) noexcept 
-            -> dual<op::measurement_square_t<typename MEAS_TYPE::measurement_t>> {
+            -> dual<op::square_t<typename MEAS_TYPE::measurement_t>> {
 
             const auto pow = op::square(other.val);
             return {other.val * pow, 2.0 * other.eps * pow}; 
@@ -84,7 +84,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr auto sqrt(const MEAS_TYPE& other) noexcept 
-            -> dual<op::measurement_sqrt_t<typename MEAS_TYPE::measurement_t>> {
+            -> dual<op::sqrt_t<typename MEAS_TYPE::measurement_t>> {
 
             const auto sqrt = op::sqrt(other.val);
             return {sqrt, other.eps / (2.0 * sqrt)}; 
@@ -94,7 +94,7 @@ namespace scipp::math {
         template <typename MEAS_TYPE>
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr auto cbrt(const MEAS_TYPE& other) noexcept 
-            -> dual<op::measurement_cbrt_t<typename MEAS_TYPE::measurement_t>> {
+            -> dual<op::cbrt_t<typename MEAS_TYPE::measurement_t>> {
 
             const auto cbrt = op::cbrt(other.val);
             return {cbrt, other.eps / (3.0 * op::square(cbrt))}; 

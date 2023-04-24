@@ -13,7 +13,7 @@ namespace scipp::math {
     
 
     template <typename POINT_TYPE>      
-        requires (geometry::is_vector_v<POINT_TYPE> || is_complex_measurement_v<POINT_TYPE>)
+        requires (geometry::is_vector_v<POINT_TYPE> || is_complex_v<POINT_TYPE>)
     struct curve : functions::nary_function<POINT_TYPE, physics::scalar_m, POINT_TYPE::dim - 1> {
 
 

@@ -7,8 +7,8 @@ target_link_libraries(function ${PROJECT_NAME} python3.10)
 # add_executable(dual dual.cpp)
 # target_link_libraries(dual ${PROJECT_NAME} python3.10)
 
-# add_executable(integral integral.cpp)
-# target_link_libraries(integral ${PROJECT_NAME} python3.10)
+add_executable(integral integral.cpp)
+target_link_libraries(integral ${PROJECT_NAME} python3.10)
 
 # add_executable(derivatives derivatives.cpp)
 # target_link_libraries(derivatives ${PROJECT_NAME} python3.10)

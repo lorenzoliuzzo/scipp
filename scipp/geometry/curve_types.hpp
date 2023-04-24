@@ -33,7 +33,7 @@ namespace scipp::geometry {
 
         return math::curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 1>& t) {
             
-            auto t_ = t[0] * 2.0 * math::constants::pi;
+            physics::scalar_m t_ = t[0] * 2.0 * math::constants::pi;
             return POINT_TYPE(center.x() + radius * math::op::cos(t_), center.y() + radius * math::op::sin(t_));
 
         });
@@ -76,8 +76,8 @@ namespace scipp::geometry {
 
         return math::curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 1>& t) {
 
-            return center + radius * make_vector(math::op::cube(math::op::cos(2 * math::constants::pi * t[0])), 
-                                                 math::op::cube(math::op::sin(2 * math::constants::pi * t[0]))); 
+            return center + radius * make_vector(math::op::cube(math::op::cos(2.0 * math::constants::pi * t[0])), 
+                                                 math::op::cube(math::op::sin(2.0 * math::constants::pi * t[0]))); 
 
         });
 

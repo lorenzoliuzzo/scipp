@@ -2,12 +2,10 @@
  * @file    physics/measurements/types/measurements.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-30
+ * @date    2023-04-23
  * 
  * @copyright Copyright (c) 2023
  */
-
-
 
 
 
@@ -51,17 +49,30 @@ namespace scipp::physics {
     using energy_um = umeasurement<units::kilogram_metre2_per_second2>;  ///< energy_m 
 
 
+    template <>
+    struct is_scalar<scalar_m> : std::true_type {};
 
+    template <>
+    struct is_scalar<double> : std::true_type {};
+    
+    template <>
+    struct is_scalar<float> : std::true_type {};    
+    
+    template <>
+    struct is_scalar<long double> : std::true_type {};    
+    
+    template <>
+    struct is_scalar<int> : std::true_type {};
+
+    template <>
+    struct is_scalar<uint> : std::true_type {};
 
 
     template <typename T>
     struct is_angle : std::false_type {};
 
     template <>
-    struct is_angle<measurement<units::radian>> : std::true_type {};
-
-    template <>
-    struct is_angle<umeasurement<units::radian>> : std::true_type {};
+    struct is_angle<angle_m> : std::true_type {};
 
     template <typename T>
     constexpr bool is_angle_v = is_angle<T>::value;

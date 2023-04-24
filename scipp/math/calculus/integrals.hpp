@@ -30,7 +30,7 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto rectangle_integration(const FUNCTION_TYPE& f,
                                                     const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum;
 
@@ -46,7 +46,7 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
                                                     const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum = (f(I(0)) + f(I(1))) / 2.;
 
@@ -62,7 +62,7 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
                                                    const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum = f(I(0));
 
@@ -78,7 +78,7 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum;
 
@@ -98,7 +98,7 @@ namespace scipp::math {
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const typename FUNCTION_TYPE::arg_t& from_a,
                                       const typename FUNCTION_TYPE::arg_t& to_b)                                        
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             interval I(from_a, to_b); 
 
@@ -133,7 +133,7 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const interval<typename FUNCTION_TYPE::arg_t>& I)
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             switch (integration_method) {
 
@@ -171,9 +171,9 @@ namespace scipp::math {
                                           const curve<typename FUNCTION_TYPE::arg_t>& curve,
                                           physics::scalar_m incr_der = 1.e-6) 
 
-            -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
+            -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
 
-            op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
+            op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
 
             // auto d_curve = total_derivative(curve); // @todo
             for (std::size_t i{}; i < steps; ++i) {
@@ -217,9 +217,9 @@ namespace scipp::math {
         //                                  std::size_t steps = 1000, 
         //                                  physics::scalar_m incr_der = 1.e-6) 
 
-        //     -> op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
+        //     -> op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
 
-        //     op::measurements_prod_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
+        //     op::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
 
 
 
@@ -240,7 +240,7 @@ namespace scipp::math {
     //         // static constexpr auto midpoint_fixed(std::function<MEAS2(MEAS1)>& f, 
     //         //                                      const MEAS1 from_a,
     //         //                                      const MEAS1 to_b,
-    //         //                                      const MEAS2& prec = MEAS2(1.e-6)) noexcept -> op::measurements_prod_t<MEAS1, MEAS2> {
+    //         //                                      const MEAS2& prec = MEAS2(1.e-6)) noexcept -> op::multiply_t<MEAS1, MEAS2> {
                 
     //         //     std::size_t steps = 1;
     //         //     auto integral = midpoint(f, from_a, to_b, steps);
@@ -286,7 +286,7 @@ namespace scipp::math {
     //         // static constexpr auto simpson(std::function<MEAS2(MEAS1)>& f, 
     //         //                               const MEAS1 from_a,
     //         //                               const MEAS1 to_b,
-    //         //                               const std::size_t& steps = 1000) noexcept -> op::measurements_prod_t<MEAS1, MEAS2> {
+    //         //                               const std::size_t& steps = 1000) noexcept -> op::multiply_t<MEAS1, MEAS2> {
                                                 
     //         //     bool is_even = (steps % 2 == 0);
     //         //     const MEAS1 increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);

@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
  * @note    It is also include 'matplotlibcpp' as plotting library
- * @date    2023-04-24
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -46,29 +46,24 @@
 
     /// ---------------------------------------------------------------
 
-        #include "math/ops/meta.hpp"
+        #include "math/meta/function.hpp"
+        #include "math/meta/mathematical.hpp"
+
+    /// ---------------------------------------------------------------
+
+        #include "math/ops.hpp"
 
     /// ---------------------------------------------------------------
 
         #include "physics/measurements/base_quantity.hpp" 
-
-    /// ---------------------------------------------------------------
-
         #include "physics/measurements/unit.hpp" 
-        #include "math/ops/unit.hpp" 
 
     /// ---------------------------------------------------------------
-        
+       
         #include "physics/measurements/measurement.hpp"
-        #include "math/ops/measurement.hpp"
-
-    /// ---------------------------------------------------------------
-
         // #include "physics/measurements/umeasurement.hpp"
         #include "physics/measurements/cmeasurement.hpp"
-
-        // #include "math/ops/umeasurement.hpp"
-        // #include "math/ops/cmeasurement.hpp"
+        #include "physics/measurements/scalars.hpp"
 
     /// ---------------------------------------------------------------
         
@@ -78,7 +73,6 @@
     /// ---------------------------------------------------------------
         
         // #include "math/numbers/dual.hpp"
-        // #include "math/ops/dual.hpp"      
 
     /// ---------------------------------------------------------------
 
@@ -111,8 +105,6 @@
 
     /// ---------------------------------------------------------------
 
-    //     #include "math/calculus/function.hpp"
-    //     #include "math/calculus/function_traits.hpp"
     //     #include "math/functions/mathematical.hpp"
 
     /// ---------------------------------------------------------------

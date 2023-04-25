@@ -400,11 +400,36 @@ namespace scipp::physics {
             }         
 
 
+            constexpr cmeasurement conj() noexcept {
+
+                return { this->real, -this->imag };
+
+            }
+
+
+            constexpr auto arg() const noexcept {
+                
+                return math::op::atan(this->imag, this->real);
+
+            }
+
+
+            inline static constexpr cmeasurement cartesian(const measurement_t& x, const measurement_t& y) noexcept {
+
+                return { x, y };
+
+            }
+            
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+            inline static constexpr cmeasurement polar(const measurement_t& rho, const SCALAR_MEAS_TYPE& theta) noexcept {
+
+                return { rho * math::op::cos(theta), rho * math::op::sin(theta) };
+
+            }
+
+
     }; // class cmeasurement
-
-
-    template <typename MEAS_TYPE>
-    struct is_cmeasurement<cmeasurement<MEAS_TYPE>> : std::true_type{};
 
 
 } // namespace scipp::physics

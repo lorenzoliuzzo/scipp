@@ -2,7 +2,7 @@
  * @file    physics/measurements/unit.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the unit struct and its type traits.
- * @date    2023-04-23
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -13,12 +13,8 @@
 namespace scipp::physics {
 
 
-    template <intmax_t N, intmax_t D>
-    struct is_prefix<std::ratio<N, D>> : std::true_type {};
-
-
     /// @brief The prefix map contains all SI prefix multipliers and char representation
-    static std::map<double, char> prefix_map = {
+    inline static std::map<double, char> prefix_map = {
 
         {1.0e-24, 'y'}, //< yocto prefix
         {1.0e-21, 'z'}, //< zepto prefix
@@ -129,36 +125,6 @@ namespace scipp::physics {
         return {}; 
         
     } 
-
-
-    template <typename BASE>
-    struct is_unit<unit<BASE>> : std::true_type {};
-
-    template <typename BASE, typename PREFIX>
-    struct is_unit<unit<BASE, PREFIX>> : std::true_type {};
-
-
-    template <typename BASE> 
-    struct is_same_unit<unit<BASE>, unit<BASE>> : std::true_type {};
-
-    template <typename BASE, typename PREFIX> 
-    struct is_same_unit<unit<BASE>, unit<BASE, PREFIX>> : std::true_type {};
-
-    template <typename BASE, typename PREFIX> 
-    struct is_same_unit<unit<BASE, PREFIX>, unit<BASE>> : std::true_type {};
-
-    template <typename BASE, typename PREFIX> 
-    struct is_same_unit<unit<BASE, PREFIX>, unit<BASE, PREFIX>> : std::true_type {};
-
-
-    template <typename BASE>
-    struct is_prefixed_unit<unit<BASE>> : std::false_type {};
-
-    template <typename BASE, typename PREFIX>
-    struct is_prefixed_unit<unit<BASE, PREFIX>> : std::true_type {};
-
-    template <typename BASE>
-    struct is_base_unit<unit<BASE>> : std::true_type {};
 
 
 } // namespace scipp::physics 

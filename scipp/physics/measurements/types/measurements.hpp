@@ -49,24 +49,6 @@ namespace scipp::physics {
     using energy_um = umeasurement<units::kilogram_metre2_per_second2>;  ///< energy_m 
 
 
-    template <>
-    struct is_scalar<scalar_m> : std::true_type {};
-
-    template <>
-    struct is_scalar<double> : std::true_type {};
-    
-    template <>
-    struct is_scalar<float> : std::true_type {};    
-    
-    template <>
-    struct is_scalar<long double> : std::true_type {};    
-    
-    template <>
-    struct is_scalar<int> : std::true_type {};
-
-    template <>
-    struct is_scalar<uint> : std::true_type {};
-
 
     template <typename T>
     struct is_angle : std::false_type {};

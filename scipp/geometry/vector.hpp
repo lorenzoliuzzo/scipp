@@ -742,7 +742,7 @@ namespace scipp::geometry {
     inline constexpr auto make_vector(const std::array<MEAS_TYPE, DIM>& other) noexcept
         -> vector<MEAS_TYPE, DIM> {
         
-        return vector<MEAS_TYPE, DIM>(other);
+        return other;
 
     }
     

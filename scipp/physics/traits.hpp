@@ -2,7 +2,7 @@
  * @file    physics/traits.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::physics namespace
- * @date    2023-04-24
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,18 +11,6 @@
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
-
-
-    // =============================================
-    // common traits
-    // =============================================
-
-        template <typename T>
-        struct is_scalar : std::false_type {};
-
-        template <typename T>
-        inline static constexpr bool is_scalar_v = is_scalar<T>::value; 
-
 
     // =============================================
     // base_quantity traits
@@ -37,6 +25,9 @@ namespace scipp::physics {
         template <typename T>
         struct is_base : std::false_type {};
 
+        template <int LENGTH, int TIME, int MASS, int TEMPERATURE, int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY>
+        struct is_base<base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>> : std::true_type {};
+            
         template <typename T>
         constexpr bool is_base_v = is_base<T>::value;
 
@@ -52,6 +43,17 @@ namespace scipp::physics {
         template <typename BASE1, typename BASE2>
         struct is_same_base : std::false_type {}; 
 
+        /// @brief Type trait to check if two base_quantity types are the same
+        template <typename BASE1, typename BASE2> 
+            requires (are_base_v<BASE1, BASE2>)
+        struct is_same_base<BASE1, BASE2> : std::bool_constant<BASE1::length == BASE2::length &&
+                                                               BASE1::time == BASE2::time &&
+                                                               BASE1::mass == BASE2::mass &&
+                                                               BASE1::temperature == BASE2::temperature &&
+                                                               BASE1::elettric_current == BASE2::elettric_current &&
+                                                               BASE1::substance_amount == BASE2::substance_amount &&
+                                                               BASE1::luminous_intensity == BASE2::luminous_intensity> {};
+
         template <typename BASE1, typename BASE2>
         constexpr bool is_same_base_v = is_same_base<BASE1, BASE2>::value;
 
@@ -66,6 +68,17 @@ namespace scipp::physics {
         template <typename BASE, int POWER>
         struct has_valid_root : std::false_type {};
 
+        /// @brief Type trait to check if a base_quantity type has valid root
+        template <typename BASE, int POWER> 
+            requires (is_base_v<BASE>)
+        struct has_valid_root<BASE, POWER> : std::bool_constant<BASE::length % POWER == 0 && 
+                                                                BASE::time % POWER == 0 && 
+                                                                BASE::mass % POWER == 0 && 
+                                                                BASE::temperature % POWER == 0 && 
+                                                                BASE::elettric_current % POWER == 0 && 
+                                                                BASE::substance_amount % POWER == 0 && 
+                                                                BASE::luminous_intensity % POWER == 0> {};
+
         template <typename BASE, int POWER>
         constexpr bool has_valid_root_v = has_valid_root<BASE, POWER>::value;
 
@@ -78,11 +91,12 @@ namespace scipp::physics {
         template <typename T>
         struct is_prefix : std::false_type {};
 
+        template <intmax_t N, intmax_t D>
+        struct is_prefix<std::ratio<N, D>> : std::true_type {};
+
         template <typename T>
         inline static constexpr bool is_prefix_v = is_prefix<T>::value;
 
-
-        /// @brief Type trait to check if a type is a valid prefix
         template <typename... Ts>
         struct are_prefix : std::conjunction<is_prefix<Ts>...> {};
 
@@ -103,6 +117,9 @@ namespace scipp::physics {
         template <typename T>
         struct is_unit : std::false_type {}; 
 
+        template <typename BASE_TYPE, typename PREFIX_TYPE>
+        struct is_unit<unit<BASE_TYPE, PREFIX_TYPE>> : std::true_type {};
+
         template <typename T>
         inline constexpr bool is_unit_v = is_unit<T>::value;
 
@@ -119,8 +136,12 @@ namespace scipp::physics {
         struct is_same_unit : std::false_type {};
 
         template <typename T1, typename T2>
+            requires (are_units_v<T1, T2>)
+        struct is_same_unit<T1, T2> : std::bool_constant<is_same_base_v<typename T1::base_t, typename T2::base_t> && 
+                                                         std::ratio_equal_v<typename T1::prefix_t, typename T2::prefix_t>> {};
+
+        template <typename T1, typename T2>
         inline constexpr bool is_same_unit_v = is_same_unit<T1, T2>::value;
-        
         
         /// @brief Type trait to check if a list of base_quantity types are the same
         template <typename T, typename... Ts> 
@@ -131,18 +152,19 @@ namespace scipp::physics {
 
 
         /// @brief Type trait to check if an unit type is prefixed
-        template <typename T>
-        struct is_prefixed_unit : std::false_type {};
-
+        template <typename UNIT_TYPE>
+            requires (is_unit_v<UNIT_TYPE>)
+        struct is_prefixed_unit : std::bool_constant<!std::ratio_equal_v<typename UNIT_TYPE::prefix_t, std::ratio<1>>> {};
+        
+        template <typename UNIT_TYPE>
+            requires (is_unit_v<UNIT_TYPE>)
+        struct is_based_unit : std::bool_constant<std::ratio_equal_v<typename UNIT_TYPE::prefix_t, std::ratio<1>>> {};
+        
         template <typename T>
         inline constexpr bool is_prefixed_unit_v = is_prefixed_unit<T>::value;
 
-        /// @brief Type trait to check if an unit type is a base unit type
         template <typename T>
-        struct is_base_unit : std::false_type {};
-
-        template <typename T>
-        inline constexpr bool is_base_unit_v = is_base_unit<T>::value;
+        inline constexpr bool is_based_unit_v = is_prefixed_unit<T>::value;
 
 
     // =============================================
@@ -157,6 +179,9 @@ namespace scipp::physics {
         /// @brief Type trait to check if a type is a measurement
         template <typename T>
         struct is_measurement : std::false_type{};
+
+        template <typename BASE_TYPE>
+        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
 
         template <typename MEAS_TYPE>
         inline static constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
@@ -181,13 +206,6 @@ namespace scipp::physics {
         
         template <typename MEAS_TYPE, typename... MEAS_TYPEs>
         inline static constexpr bool are_same_measurement_v = are_same_measurement<MEAS_TYPE, MEAS_TYPEs...>::value;
-
-
-        template <typename T>
-        struct is_scalar_measurement : std::false_type {};
-
-        template <typename T>
-        inline static constexpr bool is_scalar_measurement_v = is_scalar_measurement<T>::value;
 
 
         template <typename UNIT_TYPE> 
@@ -232,6 +250,9 @@ namespace scipp::physics {
         struct is_cmeasurement : std::false_type{};
 
         template <typename MEAS_TYPE>
+        struct is_cmeasurement<cmeasurement<MEAS_TYPE>> : std::true_type{};
+
+        template <typename MEAS_TYPE>
         inline static constexpr bool is_cmeasurement_v = is_cmeasurement<MEAS_TYPE>::value;
 
         template <typename... MEAS_TYPES>
@@ -260,5 +281,81 @@ namespace scipp::physics {
         template <typename... MEAS_TYPEs>
         constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
 
+
+
+    // =============================================
+    // scalar traits
+    // =============================================
+
+        template <typename T>
+        struct is_scalar : std::false_type {};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_v = is_scalar<T>::value; 
+
+
+        template <>
+        struct is_scalar<int> : std::true_type {};
+
+        template <>
+        struct is_scalar<float> : std::true_type {};
+
+        template <>
+        struct is_scalar<double> : std::true_type {};
+
+        template <>
+        struct is_scalar<long double> : std::true_type {};
+
+        template <>
+        struct is_scalar<unsigned int> : std::true_type {};
+
+        template <>
+        struct is_scalar<unsigned long> : std::true_type {};
+
+        template <>
+        struct is_scalar<unsigned long long> : std::true_type {};
+
+
+        template <>
+        struct is_scalar<base_quantity<0, 0, 0, 0, 0, 0, 0>> : std::true_type {};
+
+        template <typename T>
+        struct is_scalar_base : std::conditional_t<is_scalar_v<T> && is_base_v<T>, 
+                                                   std::true_type, 
+                                                   std::false_type>{};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_base_v = is_scalar_base<T>::value;
+
+        template <typename MEAS_TYPE>
+        struct is_scalar_measurement : is_scalar_base<typename MEAS_TYPE::base_t> {};
+
+        template <typename T>
+            requires (is_measurement_v<T>)
+        inline static constexpr bool is_scalar_measurement_v = is_scalar_measurement<T>::value;
+
+
+        template <typename UMEAS_TYPE>
+            requires (is_umeasurement_v<UMEAS_TYPE>)
+        struct is_scalar_umeasurement : is_scalar_base<typename UMEAS_TYPE::base_t> {};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_umeasurement_v = is_scalar_umeasurement<T>::value;
+
+
+        template <typename CMEAS_TYPE>
+        struct is_scalar_cmeasurement : is_scalar_base<typename CMEAS_TYPE::base_t> {};
+
+        template <typename T>
+            requires (is_cmeasurement_v<T>)
+        inline static constexpr bool is_scalar_cmeasurement_v = is_scalar_cmeasurement<T>::value;
+
+
+        template <typename... CMEAS_TYPEs>
+        struct are_scalar_cmeasurements : std::conjunction<is_scalar_cmeasurement<CMEAS_TYPEs>...> {};
+
+        template <typename... CMEAS_TYPEs>
+        inline static constexpr bool are_scalar_cmeasurements_v = are_scalar_cmeasurements<CMEAS_TYPEs...>::value;
+        
 
 } // namespace scipp::physics

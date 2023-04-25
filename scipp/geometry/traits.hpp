@@ -2,7 +2,7 @@
  * @file    geometry/traits.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::geometry namespace
- * @date    2023-04-24
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -61,6 +61,33 @@ namespace scipp::geometry {
 
         template <typename... VECTORS>
         constexpr bool have_same_dimension_v = have_same_dimension<VECTORS...>::value;
+
+
+    // =============================================
+    // vector traits
+    // =============================================
+
+        template <typename VECTOR_TYPE, std::size_t COLUMNS>
+            requires (is_vector_v<VECTOR_TYPE>)
+        struct matrix;
+
+
+        template <typename T>
+        struct is_matrix : std::false_type{};
+
+        template <typename VECTOR_TYPE, std::size_t COLUMNS>
+            requires (is_vector_v<VECTOR_TYPE>)
+        struct is_matrix<matrix<VECTOR_TYPE, COLUMNS>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_matrix_v = is_matrix<T>::value;
+
+
+        template <typename... Ts>
+        struct are_matrices : std::conjunction<is_matrix<Ts>...> {};
+
+        template <typename... MATRICES>
+        inline static constexpr bool are_matrices_v = are_matrices<MATRICES...>::value;
 
 
 } /// namespace scipp::geometry

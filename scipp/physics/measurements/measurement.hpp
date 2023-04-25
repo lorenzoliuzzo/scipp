@@ -2,7 +2,7 @@
  * @file    physics/measurements/measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the measurement struct and its type traits.
- * @date    2023-04-03
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -184,7 +184,7 @@ namespace scipp::physics {
 
             /// @brief Multiply this measurement with a scalar measurement
             template <typename SCALAR_MEAS_TYPE>
-                requires is_scalar_measurement_v<SCALAR_MEAS_TYPE>
+                requires (is_measurement_v<SCALAR_MEAS_TYPE> && is_scalar_v<SCALAR_MEAS_TYPE>)
             constexpr measurement& operator*=(const SCALAR_MEAS_TYPE& other) noexcept {
 
                 this->value *= other.value; 
@@ -195,7 +195,7 @@ namespace scipp::physics {
 
             /// @brief Multiply this measurement with a scalar measurement
             template <typename SCALAR_MEAS_TYPE>
-                requires is_scalar_measurement_v<SCALAR_MEAS_TYPE>
+                requires (is_measurement_v<SCALAR_MEAS_TYPE> && is_scalar_v<SCALAR_MEAS_TYPE>)
             constexpr measurement& operator*=(SCALAR_MEAS_TYPE&& other) noexcept {
 
                 this->value *= std::move(other.value); 
@@ -205,13 +205,36 @@ namespace scipp::physics {
             }
 
 
+            /// @brief Multiply this measurement with a scalar
+            template <typename SCALAR_TYPE>
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement& operator*=(const SCALAR_TYPE& other) noexcept {
+
+                this->value *= static_cast<double>(other); 
+
+                return *this; 
+
+            }
+
+            /// @brief Multiply this measurement with a scalar
+            template <typename SCALAR_TYPE>
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement& operator*=(SCALAR_TYPE&& other) noexcept {
+
+                this->value *= std::move(static_cast<double>(other)); 
+
+                return *this; 
+
+            }
+
+
             /// @brief Divide this measurement with a scalar measurement
             template <typename SCALAR_BASE_TYPE>
-                requires is_scalar_v<SCALAR_BASE_TYPE>
+                requires (is_scalar_v<SCALAR_BASE_TYPE>)
             constexpr measurement& operator/=(const measurement<SCALAR_BASE_TYPE>& other) {
 
                 if (other.value == 0.0) 
-                    throw std::invalid_argument("Cannot divide a measurement by zero");
+                    throw std::domain_error("Cannot divide a measurement by zero");
 
                 this->value /= other.value; 
 
@@ -221,13 +244,41 @@ namespace scipp::physics {
 
             /// @brief Divide this measurement with a scalar measurement
             template <typename SCALAR_BASE_TYPE>
-                requires is_scalar_v<SCALAR_BASE_TYPE>
+                requires (is_scalar_v<SCALAR_BASE_TYPE>)
             constexpr measurement& operator/=(measurement<SCALAR_BASE_TYPE>&& other) {
 
                 if (other.value == 0.0) 
-                    throw std::invalid_argument("Cannot divide a measurement by zero");
+                    throw std::domain_error("Cannot divide a measurement by zero");
 
                 this->value /= std::move(other.value); 
+
+                return *this; 
+
+            }
+
+            /// @brief Divide this measurement with a scalar
+            template <typename SCALAR_TYPE>
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement& operator/=(const SCALAR_TYPE& other) {
+
+                if (static_cast<double>(other) == 0.0) 
+                    throw std::domain_error("Cannot divide a measurement by zero");
+
+                this->value /= static_cast<double>(other); 
+
+                return *this; 
+
+            }
+
+            /// @brief Divide this measurement with a scalar
+            template <typename SCALAR_TYPE>
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement& operator/=(SCALAR_TYPE&& other) {
+
+                if (static_cast<double>(other) == 0.0) 
+                    throw std::domain_error("Cannot divide a measurement by zero");
+
+                this->value /= std::move(static_cast<double>(other)); 
 
                 return *this; 
 
@@ -278,6 +329,25 @@ namespace scipp::physics {
             }
 
 
+            /// @brief Multiply this measurement and a scalar
+            template <typename SCALAR_TYPE> 
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement operator*(const SCALAR_TYPE& other) const noexcept { 
+                
+                return this->value * static_cast<double>(other); 
+                
+            }
+
+            /// @brief Multiply this measurement and a scalar
+            template <typename SCALAR_TYPE> 
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement operator*(SCALAR_TYPE&& other) const noexcept { 
+                
+                return this->value * std::move(static_cast<double>(other)); 
+                
+            }
+
+
             /// @brief Divide two measurements
             /// @note The denominator must not be zero
             template <typename MEAS_TYPE> 
@@ -306,6 +376,33 @@ namespace scipp::physics {
                 
             }            
             
+
+            /// @brief Divide this measurement and a scalar
+            /// @note The denominator must not be zero
+            template <typename SCALAR_TYPE> 
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement operator/(const SCALAR_TYPE& other) const noexcept { 
+                
+                if (static_cast<double>(other) == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                return this->value / static_cast<double>(other); 
+                
+            }
+
+            /// @brief Divide this measurement and a scalar
+            /// @note The denominator must not be zero
+            template <typename SCALAR_TYPE> 
+                requires (is_scalar_v<SCALAR_TYPE>)
+            constexpr measurement operator/(SCALAR_TYPE&& other) const noexcept { 
+                
+                if (static_cast<double>(other) == 0.0) 
+                    throw std::runtime_error("Cannot divide a measurement by zero");
+
+                return this->value / std::move(static_cast<double>(other)); 
+                
+            }
+
 
             /// @brief Check if this measurement is equal to another measurement
             constexpr bool operator==(const measurement& other) const noexcept {
@@ -434,65 +531,12 @@ namespace scipp::physics {
             -> measurement<typename UNIT_TYPE::base_t>;
             
 
-    // =================================================================
-    // measurement construction from operations with double and units 
-    // =================================================================
-
-        /// @brief Multiply a double with an unit to get a measurement
-        template <typename UNIT_TYPE> 
-            requires (is_unit_v<UNIT_TYPE>)
-        inline constexpr auto operator*(const double& val, const UNIT_TYPE&) noexcept
-            -> measurement<typename UNIT_TYPE::base_t> { 
-            
-            return val * UNIT_TYPE::mult; 
-            
-        }
-        
-        /// @brief Multiply a double with an unit to get a measurement
-        template <typename UNIT_TYPE> 
-            requires (is_unit_v<UNIT_TYPE>)
-        inline constexpr auto operator*(double&& val, const UNIT_TYPE&) noexcept
-            -> measurement<typename UNIT_TYPE::base_t> { 
-            
-            return val * UNIT_TYPE::mult; 
-            
-        }
-        
-        /// @brief Divide a double with an unit to get a measurement
-        template <typename UNIT_TYPE> 
-            requires (is_unit_v<UNIT_TYPE>)
-        inline constexpr auto operator/(const double& val, const UNIT_TYPE&) noexcept
-            -> measurement<math::meta::invert_t<typename UNIT_TYPE::base_t>> { 
-            
-            return val / UNIT_TYPE::mult; 
-            
-        }
-    
-        /// @brief Divide a double with an unit to get a measurement
-        template <typename UNIT_TYPE> 
-            requires (is_unit_v<UNIT_TYPE>)
-        inline constexpr auto operator/(double&& val, const UNIT_TYPE&) noexcept
-            -> measurement<math::meta::invert_t<typename UNIT_TYPE::base_t>> { 
-            
-            return val / UNIT_TYPE::mult; 
-            
-        }
-
-
     // =============================================
     // measurement type traits
     // =============================================
         
-        template <typename BASE_TYPE>
-        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
-
-
-        template <typename BASE_TYPE>
-            requires (is_scalar_v<BASE_TYPE>)
-        struct is_scalar_measurement<measurement<BASE_TYPE>> : std::true_type {};
-
-        template <>
-        struct is_scalar_measurement<double> : std::true_type {};
+        // template <>
+        // struct is_scalar_measurement<double> : std::true_type {};
 
 
 } // namespace physics

@@ -17,25 +17,6 @@ namespace scipp::math {
     namespace op {
 
 
-        /// @brief Compute the inverse of an unit type
-        template <typename UNIT_TYPE>
-            requires (physics::is_unit_v<UNIT_TYPE>)
-        inline static constexpr auto inv() noexcept
-            -> meta::invert_t<UNIT_TYPE> {
-
-            return {};  
-        
-        }; 
-
-
-        template <std::size_t POWER, typename UNIT_TYPE>
-            requires (physics::is_unit_v<UNIT_TYPE>)
-        inline static constexpr auto pow(const UNIT_TYPE&) noexcept
-            -> meta::power_t<UNIT_TYPE, POWER> {
-
-            return {};  
-        
-        };
 
 
         // template <typename UNIT_TYPE>

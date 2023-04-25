@@ -30,7 +30,7 @@ namespace scipp::physics {
 
         inline static constexpr measurement mu0(1.25663706212e-6, N / A2); ///< magnetic permeability of vacuum
 
-        inline static constexpr auto eps0(math::op::inv(mu0 * math::op::square(c))); ///< electric permittivity of vacuum
+        // inline static constexpr measurement eps0(math::op::inv(mu0 * c * c)); ///< electric permittivity of vacuum
 
         // inline static constexpr charge_m e(1.602176634e-19, C); ///< elementary charge
 

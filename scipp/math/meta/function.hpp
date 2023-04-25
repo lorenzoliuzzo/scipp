@@ -2,7 +2,7 @@
  * @file    math/calculus/function.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-10
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,7 +12,7 @@
 namespace scipp::math {
 
 
-    namespace functions {
+    namespace meta {
 
 
         template <typename RESULT_TYPE, typename ARG_TYPE>
@@ -26,9 +26,14 @@ namespace scipp::math {
             using arg_t = ARG_TYPE;
 
 
-            virtual ~unary_function() = default;
+            virtual constexpr result_t f(const arg_t& x) const = 0;
 
-            virtual constexpr result_t operator()(const arg_t& x) const = 0; 
+
+            inline constexpr result_t operator()(const arg_t& x) const { 
+
+                return f(x); 
+            
+            }
 
 
         };
@@ -47,28 +52,57 @@ namespace scipp::math {
             using second_arg_t = ARG_TYPE2;
 
 
-            virtual ~binary_function() = default;
+            virtual constexpr result_t f(const first_arg_t&, const second_arg_t&) const = 0;
 
-            virtual constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y) const = 0; 
+
+
+            inline constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y) const { 
+
+                return f(x, y); 
+            
+            }
+
+        };
+
+
+        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1, typename ARG_TYPE3 = ARG_TYPE1>
+        struct ternary_function {
+
+
+            using _t = ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>; 
+
+            using result_t = RESULT_TYPE;
+
+            using first_arg_t = ARG_TYPE1;
+
+            using second_arg_t = ARG_TYPE2;
+
+            using third_arg_t = ARG_TYPE3;
+
+
+            virtual ~ternary_function() = default;
+
+            virtual constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y, const third_arg_t& z) const = 0; 
 
 
         };
 
 
-        template <typename RESULT_TYPE, typename ARG_TYPE, std::size_t DIM> 
+        template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs> 
+            requires (sizeof...(ARG_TYPEs) == DIM)
         struct nary_function {
 
 
-            using _t = nary_function<RESULT_TYPE, ARG_TYPE, DIM>; 
+            using _t = nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>; 
 
             using result_t = RESULT_TYPE;
 
-            using arg_t = geometry::vector<ARG_TYPE, DIM>;
+            using arg_t = std::tuple<ARG_TYPEs...>;
 
 
             virtual ~nary_function() = default;
 
-            constexpr result_t operator()(const geometry::vector<ARG_TYPE, DIM>& x) const {} 
+            constexpr result_t operator()(const arg_t& x) const {} 
 
 
         };

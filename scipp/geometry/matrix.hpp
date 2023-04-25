@@ -2,7 +2,7 @@
  * @file    geometry/matrix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-02
+ * @date    2023-04-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -1016,19 +1016,6 @@ namespace scipp::geometry {
         return result;
 
     }
-
-
-    template <typename T>
-    struct is_matrix : std::false_type {};
-
-
-    template <typename VEC_TYPE, std::size_t DIM>
-        requires (is_vector_v<VEC_TYPE>)
-    struct is_matrix<matrix<VEC_TYPE, DIM>> : std::true_type {};
-
-
-    template <typename T>
-    inline constexpr bool is_matrix_v = is_matrix<T>::value;
 
 
 } // namespace scipp::geometry

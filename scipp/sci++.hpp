@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
  * @note    It is also include 'matplotlibcpp' as plotting library
- * @date    2023-04-25
+ * @date    2023-04-26
  * 
  * @copyright Copyright (c) 2023
  */
@@ -18,18 +18,18 @@
     /// ===============================================================
 
         #include <algorithm>
-        #include <array>
+        #include <array> /// geometry::vector, geometry::matrix
         #include <concepts> 
-        #include <chrono>
+        #include <chrono> /// tools::timer
         #include <cmath>
         #include <execution>
         #include <fstream> 
         // #include <functional> // maybe not needed
-        #include <iostream>
-        #include <map> // maybe not needed
+        #include <iostream> /// tools::io
+        #include <map> /// physics::prefix_map
         // #include <numeric> // maybe not needed
         // #include <omp.h> // maybe not needed
-        #include <ratio>
+        #include <ratio> /// physics::prefix
         #include <string>
         #include <sstream>
         // #include <thread> // maybe not needed
@@ -82,12 +82,7 @@
     /// ---------------------------------------------------------------
 
         #include "geometry/vector.hpp"
-        #include "math/ops/vector.hpp"
-
-    /// ---------------------------------------------------------------
-
         #include "geometry/matrix.hpp"
-        #include "math/ops/matrix.hpp"
 
     /// ---------------------------------------------------------------
 
@@ -97,16 +92,8 @@
     /// ---------------------------------------------------------------
 
     //     // #include "geometry/vectorial_space.hpp" // @todo
-    //     #include "geometry/vectorial_base.hpp"
+        #include "geometry/vectorial_base.hpp"
     
-    /// ---------------------------------------------------------------
-
-    //     #include "tools/io.hpp"
-
-    /// ---------------------------------------------------------------
-
-    //     #include "math/functions/mathematical.hpp"
-
     /// ---------------------------------------------------------------
 
     //     #include "math/autodiff.hpp"
@@ -114,12 +101,12 @@
 
     /// ---------------------------------------------------------------
 
-    //     #include "math/calculus/interval.hpp"
-    //     #include "math/calculus/curve.hpp"
+        #include "math/calculus/interval.hpp"
+        #include "math/calculus/curve.hpp"
 
     /// ---------------------------------------------------------------
 
-    //     #include "math/calculus/integrals.hpp"  
+        #include "math/calculus/integrals.hpp"  
 
     /// ---------------------------------------------------------------
 
@@ -127,13 +114,13 @@
 
     /// ---------------------------------------------------------------
 
-    //     #include "geometry/curve_types.hpp"
+        #include "geometry/curve_types.hpp"
     //     // #include "geometry/line.hpp"
     //     // #include "geometry/linspace.hpp"
 
     /// ---------------------------------------------------------------
 
-    //     #include "math/statistics.hpp"
+        #include "math/statistics.hpp"
 
     /// ---------------------------------------------------------------
 
@@ -141,7 +128,8 @@
 
     /// ---------------------------------------------------------------
 
-    //     #include "tools/timer.hpp"
-    //     #include "tools/bench.hpp"
+        #include "tools/io.hpp"
+        #include "tools/timer.hpp"
+        // #include "tools/bench.hpp"
 
 #endif

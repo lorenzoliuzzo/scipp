@@ -27,74 +27,78 @@ namespace scipp::math {
 
 
         template <std::size_t steps, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto rectangle_integration(const FUNCTION_TYPE& f,
                                                     const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum;
+            constexpr auto N = static_cast<double>(steps); 
 
             for (size_t i{0}; i < steps; ++i) 
-                total_sum += f(I(static_cast<physics::scalar_m>(i) / steps));
+                total_sum += f(I(static_cast<double>(i) / N));
 
-            return total_sum * (I.end - I.start) / static_cast<double>(steps);
+            return total_sum * (I.end - I.start) / N;
 
         }
 
 
         template <std::size_t steps, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
                                                     const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum = (f(I(0.0)) + f(I(1.0))) / 2.;
+            constexpr auto N = static_cast<double>(steps); 
 
             for (size_t i{1}; i < steps; ++i) 
-                total_sum += f(I(static_cast<double>(i) / static_cast<double>(steps))); 
+                total_sum += f(I(static_cast<double>(i) / N)); 
 
-            return total_sum * (I.end - I.start) / static_cast<double>(steps); 
+            return total_sum * (I.end - I.start) / N; 
 
         }
 
 
         template <std::size_t steps, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
                                                    const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum = f(I(0.0));
+            constexpr auto N = static_cast<double>(steps); 
 
             for (std::size_t i{1}; i < steps; ++i)
-                total_sum += f(I((static_cast<double>(i) + 0.5) / static_cast<double>(steps))); 
+                total_sum += f(I((static_cast<double>(i) + 0.5) / N)); 
 
-            return total_sum * (I.end - I.start) / static_cast<double>(steps); 
+            return total_sum * (I.end - I.start) / N; 
 
         }
                 
 
         template <std::size_t steps, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum;
+            constexpr auto N = static_cast<double>(steps); 
 
             if constexpr (steps % 2 == 0) 
                 total_sum = (f(I(0.0)) + f(I(1.0))) / 3.;
 
             for (std::size_t i = 1; i < steps; ++i) 
-                total_sum += 2. * (1. + i % 2) * f(I(static_cast<double>(i) / static_cast<double>(steps))) / 3.;
+                total_sum += 2. * (1. + i % 2) * f(I(static_cast<double>(i) / N)) / 3.;
 
-            return total_sum * (I.end - I.start) / static_cast<double>(steps); 
+            return total_sum * (I.end - I.start) / N; 
 
         }
 
 
         // template <typename FUNCTION_TYPE> 
-        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+        //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto rectangle_integration(const FUNCTION_TYPE& f,
         //                                             const interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                             const double& relative_error) noexcept
@@ -103,7 +107,7 @@ namespace scipp::math {
         //     typename FUNCTION_TYPE::result_t total_sum;
 
         //     for (size_t i{0}; i < steps; ++i) 
-        //         total_sum += f(I(static_cast<physics::scalar_m>(i) / steps));
+        //         total_sum += f(I(static_cast<double>(i) / steps));
 
         //     return total_sum * (I.end - I.start) / static_cast<double>(steps);
 
@@ -111,7 +115,7 @@ namespace scipp::math {
 
 
         // template <typename FUNCTION_TYPE> 
-        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+        //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
         //                                             const interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                             const double& relative_error) noexcept
@@ -128,7 +132,7 @@ namespace scipp::math {
 
 
         // template <typename FUNCTION_TYPE> 
-        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+        //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
         //                                            const interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                            const double& relative_error) noexcept
@@ -145,14 +149,14 @@ namespace scipp::math {
                 
 
         template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const interval<typename FUNCTION_TYPE::arg_t>& I,
                                                   const double& relative_error) noexcept
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
-            std::size_t steps = 2;
-            typename FUNCTION_TYPE::arg_t increment = (I.end - I.start) / static_cast<double>(steps);
+            double steps = 2;
+            typename FUNCTION_TYPE::arg_t increment = (I.end - I.start) / steps;
             meta::multiply_t<typename FUNCTION_TYPE::result_t, 
                            typename FUNCTION_TYPE::arg_t> result = (f(I(0.0)) + f(I(1.0))) * increment / 3.;
             meta::multiply_t<typename FUNCTION_TYPE::result_t, 
@@ -165,7 +169,7 @@ namespace scipp::math {
                 old_sum1 = result;
                 result = (f(I(0.0)) + f(I(1.0))) * increment / 3.;
                 for (std::size_t i = 1; i < steps; ++i)
-                    result += 2. * (1. + i % 2) * increment * f(I(static_cast<double>(i) / static_cast<double>(steps))) / 3.;
+                    result += 2. * (1. + i % 2) * increment * f(I(static_cast<double>(i) / steps)) / 3.;
                 
                 err = 256. * op::abs(1024. * result - 1104. * old_sum1 + 81. * old_sum2 - old_sum3) / 240975.0; 
                 result = (1024. * result - 80. * old_sum1 + old_sum2) / 945.;
@@ -179,7 +183,7 @@ namespace scipp::math {
 
 
         template <integration_method method, std::size_t steps = 1000, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const typename FUNCTION_TYPE::arg_t& from_a,
                                       const typename FUNCTION_TYPE::arg_t& to_b)                                        
@@ -206,7 +210,7 @@ namespace scipp::math {
 
 
         template <integration_method method, std::size_t steps = 1000, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const interval<typename FUNCTION_TYPE::arg_t>& I)
             -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
@@ -229,7 +233,7 @@ namespace scipp::math {
 
 
         template <integration_method method, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const typename FUNCTION_TYPE::arg_t& from_a,
                                       const typename FUNCTION_TYPE::arg_t& to_b,
@@ -260,7 +264,7 @@ namespace scipp::math {
 
 
         template <integration_method method, typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const interval<typename FUNCTION_TYPE::arg_t>& I, 
                                       const double& relative_error = 1.e-6)
@@ -287,7 +291,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE, std::size_t steps = 1000> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto curvilinear(const FUNCTION_TYPE& f, 
                                           const curve<typename FUNCTION_TYPE::arg_t>& curve,
                                           physics::scalar_m incr_der = 1.e-6) 
@@ -305,7 +309,7 @@ namespace scipp::math {
 
             }
 
-            return total_sum / static_cast<physics::scalar_m>(steps); 
+            return total_sum / static_cast<double>(steps); 
 
         }
 
@@ -326,13 +330,13 @@ namespace scipp::math {
 
             }
 
-            return total_sum / static_cast<physics::scalar_m>(steps);        
+            return total_sum / static_cast<double>(steps);        
 
         }
 
 
         // template <typename FUNCTION_TYPE> 
-        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
+        //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto volumetric(const FUNCTION_TYPE& f, 
         //                                  const curve<typename FUNCTION_TYPE::arg_t>& curve,
         //                                  std::size_t steps = 1000, 
@@ -410,7 +414,7 @@ namespace scipp::math {
     //         //                               const std::size_t& steps = 1000) noexcept -> meta::multiply_t<MEAS1, MEAS2> {
                                                 
     //         //     bool is_even = (steps % 2 == 0);
-    //         //     const MEAS1 increment = op::abs(to_b - from_a) / static_cast<physics::scalar_m>(steps);
+    //         //     const MEAS1 increment = op::abs(to_b - from_a) / static_cast<double>(steps);
     //         //     MEAS2 total_sum = (is_even ? (f(from_a) + f(to_b)) / 3. : 0.0);
 
     //         //     for (size_t i{1}; i < ((is_even) ? steps : steps + 1); ++i) 

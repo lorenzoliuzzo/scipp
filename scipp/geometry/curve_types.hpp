@@ -31,7 +31,7 @@ namespace scipp::geometry {
         requires (POINT_TYPE::dim == 2)
     constexpr auto circumference(const POINT_TYPE& center, const auto& radius) {
 
-        return math::curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 1>& t) {
+        return math::curve<POINT_TYPE>([center, radius](const std::array<double, 1>& t) {
             
             physics::scalar_m t_ = t[0] * 2.0 * math::constants::pi;
             return POINT_TYPE(center.x() + radius * math::op::cos(t_), center.y() + radius * math::op::sin(t_));
@@ -45,10 +45,10 @@ namespace scipp::geometry {
         requires (POINT_TYPE::dim == 2)
     constexpr auto ellipse(const POINT_TYPE& center, const typename POINT_TYPE::measurement_t& a, const typename POINT_TYPE::measurement_t& b) {
 
-        return math::curve<POINT_TYPE>([center, a, b](const vector<physics::scalar_m, 1>& t) {
+        return math::curve<POINT_TYPE>([center, a, b](const double& t) {
 
-            return center + make_vector(a * math::op::cos(2.0 * math::constants::pi * t[0]), 
-                                        b * math::op::sin(2.0 * math::constants::pi * t[0]));
+            return center + make_vector(a * math::op::cos(2.0 * math::constants::pi * t), 
+                                        b * math::op::sin(2.0 * math::constants::pi * t));
 
         });
 
@@ -59,7 +59,7 @@ namespace scipp::geometry {
         requires (POINT_TYPE::dim == 3)
     constexpr auto sphere(const POINT_TYPE& center, const typename POINT_TYPE::measurement_t& radius) {
 
-        return math::curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 2>& t) {
+        return math::curve<POINT_TYPE>([center, radius](const std::array<double, 2>& t) {
 
             return center + radius * make_vector(math::op::cos(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]),
                                                  math::op::sin(2.0 * math::constants::pi * t[0]) * math::op::sin(math::constants::pi * t[1]),
@@ -74,7 +74,7 @@ namespace scipp::geometry {
         requires (POINT_TYPE::dim == 2)
     constexpr auto asteroid(const POINT_TYPE& center, const typename POINT_TYPE::measurement_t& radius) {
 
-        return math::curve<POINT_TYPE>([center, radius](const vector<physics::scalar_m, 1>& t) {
+        return math::curve<POINT_TYPE>([center, radius](const std::array<double, 1>& t) {
 
             return center + radius * make_vector(math::op::cube(math::op::cos(2.0 * math::constants::pi * t[0])), 
                                                  math::op::cube(math::op::sin(2.0 * math::constants::pi * t[0]))); 

@@ -111,7 +111,7 @@ namespace scipp::physics {
         // ==============================================
 
             constexpr operator double() const noexcept 
-                requires (is_scalar_v<base_t>) { 
+                requires (is_scalar_base_v<base_t>) { 
                 
                 return this->value; 
                 
@@ -184,7 +184,7 @@ namespace scipp::physics {
 
             /// @brief Multiply this measurement with a scalar measurement
             template <typename SCALAR_MEAS_TYPE>
-                requires (is_measurement_v<SCALAR_MEAS_TYPE> && is_scalar_v<SCALAR_MEAS_TYPE>)
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE>)
             constexpr measurement& operator*=(const SCALAR_MEAS_TYPE& other) noexcept {
 
                 this->value *= other.value; 
@@ -195,7 +195,7 @@ namespace scipp::physics {
 
             /// @brief Multiply this measurement with a scalar measurement
             template <typename SCALAR_MEAS_TYPE>
-                requires (is_measurement_v<SCALAR_MEAS_TYPE> && is_scalar_v<SCALAR_MEAS_TYPE>)
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE>)
             constexpr measurement& operator*=(SCALAR_MEAS_TYPE&& other) noexcept {
 
                 this->value *= std::move(other.value); 
@@ -206,9 +206,9 @@ namespace scipp::physics {
 
 
             /// @brief Multiply this measurement with a scalar
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement& operator*=(const SCALAR_TYPE& other) noexcept {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement& operator*=(const NUMBER_TYPE& other) noexcept {
 
                 this->value *= static_cast<double>(other); 
 
@@ -217,9 +217,9 @@ namespace scipp::physics {
             }
 
             /// @brief Multiply this measurement with a scalar
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement& operator*=(SCALAR_TYPE&& other) noexcept {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement& operator*=(NUMBER_TYPE&& other) noexcept {
 
                 this->value *= std::move(static_cast<double>(other)); 
 
@@ -229,9 +229,9 @@ namespace scipp::physics {
 
 
             /// @brief Divide this measurement with a scalar measurement
-            template <typename SCALAR_BASE_TYPE>
-                requires (is_scalar_v<SCALAR_BASE_TYPE>)
-            constexpr measurement& operator/=(const measurement<SCALAR_BASE_TYPE>& other) {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE>)
+            constexpr measurement& operator/=(const SCALAR_MEAS_TYPE& other) {
 
                 if (other.value == 0.0) 
                     throw std::domain_error("Cannot divide a measurement by zero");
@@ -243,9 +243,9 @@ namespace scipp::physics {
             }
 
             /// @brief Divide this measurement with a scalar measurement
-            template <typename SCALAR_BASE_TYPE>
-                requires (is_scalar_v<SCALAR_BASE_TYPE>)
-            constexpr measurement& operator/=(measurement<SCALAR_BASE_TYPE>&& other) {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE>)
+            constexpr measurement& operator/=(SCALAR_MEAS_TYPE&& other) {
 
                 if (other.value == 0.0) 
                     throw std::domain_error("Cannot divide a measurement by zero");
@@ -257,9 +257,9 @@ namespace scipp::physics {
             }
 
             /// @brief Divide this measurement with a scalar
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement& operator/=(const SCALAR_TYPE& other) {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement& operator/=(const NUMBER_TYPE& other) {
 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::domain_error("Cannot divide a measurement by zero");
@@ -271,9 +271,9 @@ namespace scipp::physics {
             }
 
             /// @brief Divide this measurement with a scalar
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement& operator/=(SCALAR_TYPE&& other) {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement& operator/=(NUMBER_TYPE&& other) {
 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::domain_error("Cannot divide a measurement by zero");
@@ -330,18 +330,18 @@ namespace scipp::physics {
 
 
             /// @brief Multiply this measurement and a scalar
-            template <typename SCALAR_TYPE> 
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement operator*(const SCALAR_TYPE& other) const noexcept { 
+            template <typename NUMBER_TYPE> 
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement operator*(const NUMBER_TYPE& other) const noexcept { 
                 
                 return this->value * static_cast<double>(other); 
                 
             }
 
             /// @brief Multiply this measurement and a scalar
-            template <typename SCALAR_TYPE> 
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement operator*(SCALAR_TYPE&& other) const noexcept { 
+            template <typename NUMBER_TYPE> 
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement operator*(NUMBER_TYPE&& other) const noexcept { 
                 
                 return this->value * std::move(static_cast<double>(other)); 
                 
@@ -379,9 +379,9 @@ namespace scipp::physics {
 
             /// @brief Divide this measurement and a scalar
             /// @note The denominator must not be zero
-            template <typename SCALAR_TYPE> 
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement operator/(const SCALAR_TYPE& other) const noexcept { 
+            template <typename NUMBER_TYPE> 
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement operator/(const NUMBER_TYPE& other) const noexcept { 
                 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");
@@ -392,9 +392,9 @@ namespace scipp::physics {
 
             /// @brief Divide this measurement and a scalar
             /// @note The denominator must not be zero
-            template <typename SCALAR_TYPE> 
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr measurement operator/(SCALAR_TYPE&& other) const noexcept { 
+            template <typename NUMBER_TYPE> 
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr measurement operator/(NUMBER_TYPE&& other) const noexcept { 
                 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");
@@ -456,7 +456,7 @@ namespace scipp::physics {
             friend std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
                 
                 os << other.value; 
-                if constexpr (!is_scalar_v<base_t>) 
+                if constexpr (!is_scalar_base_v<base_t>) 
                     os << ' ' << base_t::to_string();
                 return os;
                 

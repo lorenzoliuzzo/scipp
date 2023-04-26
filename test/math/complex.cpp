@@ -22,17 +22,17 @@ using namespace tools;
 namespace plt = matplotlibcpp;
 
 
-struct complex_cosh : functions::unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
+// struct complex_cosh : meta::unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
 
     
-    constexpr cmeasurement<scalar_m> operator()(const cmeasurement<scalar_m>& x) const noexcept override {
+//     constexpr cmeasurement<scalar_m> f(const cmeasurement<scalar_m>& x) const noexcept override {
 
-        return op::cosh(x);
+//         return op::cosh(x);
 
-    }
+//     }
 
 
-};
+// };
 
 
 int main() {
@@ -40,36 +40,38 @@ int main() {
 
     scalar_m radius = 1.0;
     auto circ = circumference(cmeasurement<scalar_m>(), radius);
-    vector<scalar_m, 100> x_vec;
-    vector<scalar_m, 100> y_vec;
+    print("circumference", circ(0));
+    print("circumference", circ(1));
+    // vector<scalar_m, 100> x_vec;
+    // vector<scalar_m, 100> y_vec;
 
-    for (std::size_t i = 0; i < 100; ++i) {
+    // for (std::size_t i = 0; i < 100; ++i) {
 
-        auto p = circ(static_cast<scalar_m>(i / 100.0));
-        x_vec[i] = p.real;
-        y_vec[i] = p.imag;
+    //     auto p = circ(static_cast<double>(i) / 100.0);
+    //     x_vec[i] = p.real;
+    //     y_vec[i] = p.imag;
 
-    }
+    // }
 
-    plt::title("Circumference in C");
-    plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
-    plt::show(); 
+    // plt::title("Circumference in C");
+    // plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
+    // plt::show(); 
     
 
-    vector<scalar_m, 2> p0;
-    auto circ2 = circumference(p0, radius);
+    // vector<scalar_m, 2> p0;
+    // auto circ2 = circumference(p0, radius);
 
-    for (std::size_t i = 0; i < 100; ++i) {
+    // for (std::size_t i = 0; i < 100; ++i) {
 
-        auto p = circ2(static_cast<scalar_m>(i / 100.0));
-        x_vec[i] = p[0];
-        y_vec[i] = p[1];
+    //     auto p = circ2(static_cast<double>(i) / 100.0);
+    //     x_vec[i] = p[0];
+    //     y_vec[i] = p[1];
 
-    }
+    // }
 
-    plt::title("Circumference in R2");
-    plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
-    plt::show(); 
+    // plt::title("Circumference in R2");
+    // plt::plot(static_cast<std::vector<double>>(x_vec), static_cast<std::vector<double>>(y_vec), "r");
+    // plt::show(); 
 
 
     // auto result = integrals::curvilinear(complex_cosh(), circ);

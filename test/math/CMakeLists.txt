@@ -4,8 +4,8 @@ target_link_libraries(meta ${PROJECT_NAME} python3.10)
 # add_executable(function function.cpp)
 # target_link_libraries(function ${PROJECT_NAME} python3.10)
 
-# add_executable(complex complex.cpp)
-# target_link_libraries(complex ${PROJECT_NAME} python3.10)
+add_executable(complex complex.cpp)
+target_link_libraries(complex ${PROJECT_NAME} python3.10)
 
 # add_executable(dual dual.cpp)
 # target_link_libraries(dual ${PROJECT_NAME} python3.10)

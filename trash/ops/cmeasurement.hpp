@@ -268,7 +268,7 @@ namespace scipp::math {
         // template <typename MEAS_TYPE>
         //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
         // inline static constexpr auto pow_impl(const physics::cmeasurement<MEAS_TYPE>& x, unsigned n) 
-        //     -> physics::cmeasurement<math::meta::power_t<MEAS_TYPE, n>> {
+        //     -> physics::cmeasurement<math::meta::pow_t<MEAS_TYPE, n>> {
 
         //     physics::cmeasurement<MEAS_TYPE> y = (n % 2) ? x : physics::cmeasurement<MEAS_TYPE>(1.0);
 

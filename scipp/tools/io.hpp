@@ -230,13 +230,13 @@ namespace scipp::tools {
     }
     
 
-    template <typename MEAS_TYPE>
-        requires (math::is_dual_measurement_v<MEAS_TYPE>)
-    static constexpr void print(const MEAS_TYPE& other) noexcept {
+    // template <typename MEAS_TYPE>
+    //     requires (math::is_dual_measurement_v<MEAS_TYPE>)
+    // static constexpr void print(const MEAS_TYPE& other) noexcept {
 
-        std::cout << other.real << " + ε(" << other.imag << ")\n";
+    //     std::cout << other.real << " + ε(" << other.imag << ")\n";
 
-    }
+    // }
 
 
     /// @brief Print a geometry::vector

@@ -154,9 +154,9 @@ namespace scipp::physics {
             }
 
 
-            template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> && is_scalar_v<OTHER_MEAS_TYPE>)
-            constexpr cmeasurement& operator*=(const cmeasurement<OTHER_MEAS_TYPE>& other) noexcept {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+            constexpr cmeasurement& operator*=(const cmeasurement<SCALAR_MEAS_TYPE>& other) noexcept {
 
                 this->real *= other.real; 
                 this->real -= this->imag * other.imag; 
@@ -167,9 +167,9 @@ namespace scipp::physics {
 
             }
 
-            template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> && is_scalar_v<OTHER_MEAS_TYPE>)
-            constexpr cmeasurement& operator*=(cmeasurement<OTHER_MEAS_TYPE>&& other) noexcept {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+            constexpr cmeasurement& operator*=(cmeasurement<SCALAR_MEAS_TYPE>&& other) noexcept {
 
                 this->real *= std::move(other.real); 
                 this->real -= this->imag * std::move(other.imag); 
@@ -180,9 +180,9 @@ namespace scipp::physics {
 
             }
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator*=(const SCALAR_TYPE& other) noexcept {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr cmeasurement& operator*=(const NUMBER_TYPE& other) noexcept {
 
                 this->real *= other; 
                 this->imag *= other; 
@@ -191,9 +191,9 @@ namespace scipp::physics {
 
             }
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator*=(SCALAR_TYPE&& other) noexcept {
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr cmeasurement& operator*=(NUMBER_TYPE&& other) noexcept {
 
                 this->real *= std::move(other); 
                 this->imag *= std::move(other); 
@@ -203,11 +203,11 @@ namespace scipp::physics {
             }
 
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator/=(const cmeasurement<SCALAR_TYPE>& other) {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+            constexpr cmeasurement& operator/=(const cmeasurement<SCALAR_MEAS_TYPE>& other) {
 
-                if (other == measurement_t::zero) 
+                if (other == SCALAR_MEAS_TYPE::zero) 
                     throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real *= other.real; 
@@ -221,11 +221,11 @@ namespace scipp::physics {
 
             }
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator/=(cmeasurement<SCALAR_TYPE>&& other) {
+            template <typename SCALAR_MEAS_TYPE>
+                requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+            constexpr cmeasurement& operator/=(cmeasurement<SCALAR_MEAS_TYPE>&& other) {
 
-                if (other == measurement_t::zero) 
+                if (other == SCALAR_MEAS_TYPE::zero) 
                     throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real *= std::move(other.real); 
@@ -239,11 +239,12 @@ namespace scipp::physics {
 
             }
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator/=(const SCALAR_TYPE& other) {
 
-                if (other == measurement_t::zero) 
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr cmeasurement& operator/=(const NUMBER_TYPE& other) {
+
+                if (other == NUMBER_TYPE{}) 
                     throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real /= other; 
@@ -253,11 +254,12 @@ namespace scipp::physics {
 
             }
 
-            template <typename SCALAR_TYPE>
-                requires (is_scalar_v<SCALAR_TYPE>)
-            constexpr cmeasurement& operator/=(SCALAR_TYPE&& other) {
 
-                if (other == measurement_t::zero) 
+            template <typename NUMBER_TYPE>
+                requires (math::is_number_v<NUMBER_TYPE>)
+            constexpr cmeasurement& operator/=(NUMBER_TYPE&& other) {
+
+                if (other == NUMBER_TYPE{}) 
                     throw std::runtime_error("Cannot divide a cmeasurement measurment by zero.");
 
                 this->real /= std::move(other); 

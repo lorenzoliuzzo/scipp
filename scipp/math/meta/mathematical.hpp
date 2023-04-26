@@ -2,7 +2,7 @@
  * @file    math/function/mathematical.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-25
+ * @date    2023-04-26
  * 
  * @copyright Copyright (c) 2023
  */
@@ -22,9 +22,13 @@ namespace scipp::math {
             struct invert;
 
             template <typename T>
+            struct inv_impl;
+
+            template <typename T>
             using invert_t = typename invert<T>::_t;
 
 
+            // @brief Invert a physics::base_quantity
             template <typename BASE_TYPE>
                 requires (physics::is_base_v<BASE_TYPE>)
             struct invert<BASE_TYPE> {
@@ -36,10 +40,11 @@ namespace scipp::math {
                                                   -BASE_TYPE::elettric_current,
                                                   -BASE_TYPE::substance_amount,
                                                   -BASE_TYPE::luminous_intensity>;                                             
-
+                
             };
 
 
+            /// @brief Invert a prefix
             template <typename PREFIX_TYPE>
                 requires (physics::is_prefix_v<PREFIX_TYPE>)
             struct invert<PREFIX_TYPE> {
@@ -48,7 +53,20 @@ namespace scipp::math {
 
             };
 
+            template <typename PREFIX_TYPE>
+                requires (physics::is_prefix_v<PREFIX_TYPE>)
+            struct inv_impl<PREFIX_TYPE> : unary_function<invert_t<PREFIX_TYPE>, PREFIX_TYPE> {
 
+                constexpr invert_t<PREFIX_TYPE> f(const PREFIX_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Invert an unit of measurement
             template <typename UNIT_TYPE>
                 requires (physics::is_unit_v<UNIT_TYPE>)
             struct invert<UNIT_TYPE> {
@@ -57,12 +75,40 @@ namespace scipp::math {
 
             };
 
+            template <typename UNIT_TYPE>
+                requires (physics::is_unit_v<UNIT_TYPE>)
+            struct inv_impl<UNIT_TYPE> : unary_function<invert_t<UNIT_TYPE>, UNIT_TYPE> {
 
+                constexpr invert_t<UNIT_TYPE> f(const UNIT_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Invert a measurement
             template <typename MEAS_TYPE>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             struct invert<MEAS_TYPE> {
 
                 using _t = physics::measurement<invert_t<typename MEAS_TYPE::base_t>>;                                             
+
+            };
+
+            template <typename MEAS_TYPE>  
+                requires (physics::is_measurement_v<MEAS_TYPE>)
+            struct inv_impl<MEAS_TYPE> : unary_function<invert_t<MEAS_TYPE>, MEAS_TYPE> {
+
+                constexpr invert_t<MEAS_TYPE> f(const MEAS_TYPE& x) const override {
+
+                    if (x == MEAS_TYPE::zero) 
+                        throw std::domain_error("Cannot invert a zero measurement"); 
+
+                    return 1. / x.value; 
+
+                }
 
             };
 
@@ -76,6 +122,7 @@ namespace scipp::math {
             };
 
 
+            /// @brief Invert a cmeasurement
             template <typename CMEAS_TYPE>
                 requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct invert<CMEAS_TYPE> {
@@ -84,7 +131,23 @@ namespace scipp::math {
 
             };
 
+            template <typename CMEAS_TYPE>  
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+            struct inv_impl<CMEAS_TYPE> : unary_function<invert_t<CMEAS_TYPE>, CMEAS_TYPE> {
 
+                constexpr invert_t<CMEAS_TYPE> f(const CMEAS_TYPE& x) const override {
+
+                    if (x == CMEAS_TYPE::zero) 
+                        throw std::domain_error("Cannot invert a zero cmeasurement"); 
+
+                    return 1. / x; 
+
+                }
+
+            };
+
+
+            /// @brief Invert a vector
             template <typename VEC_TYPE>
                 requires (geometry::is_vector_v<VEC_TYPE>)
             struct invert<VEC_TYPE> {
@@ -93,6 +156,27 @@ namespace scipp::math {
 
             };
             
+            template <typename VEC_TYPE>  
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct inv_impl<VEC_TYPE> : unary_function<invert_t<VEC_TYPE>, VEC_TYPE> {
+
+                constexpr invert_t<VEC_TYPE> f(const VEC_TYPE& other) const override {
+
+                    using measurement_t = typename VEC_TYPE::measurement_t;
+
+                    invert_t<VEC_TYPE> result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) {
+                        if (other[i] == measurement_t::zero) 
+                            throw std::domain_error("Cannot invert a vector because one of its component is zero"); 
+                        result[i] = 1. / other[i];
+                    }
+
+                    return result;
+
+                }
+
+            };
+
 
         // ===================================================
         // multiply types
@@ -116,6 +200,7 @@ namespace scipp::math {
             using multiply_t = typename multiply<Ts...>::_t;  
 
 
+            // @brief Multiply two physics::base_quantity types
             template <typename BASE_TYPE1, typename BASE_TYPE2>
                 requires (physics::are_base_v<BASE_TYPE1, BASE_TYPE2>)
             struct multiply<BASE_TYPE1, BASE_TYPE2> {
@@ -246,6 +331,25 @@ namespace scipp::math {
 
                 using _t = geometry::vector<multiply_t<MEAS_TYPE, typename VEC_TYPE::measurement_t>, VEC_TYPE::dim>;                                             
 
+            };
+
+
+            template <typename T, typename NUMBER_TYPE>
+                requires ((physics::is_generic_measurement_v<T> || geometry::is_vector_v<T>) && 
+                          is_number_v<NUMBER_TYPE>)
+            struct multiply<T, NUMBER_TYPE> {
+
+                using _t = T; 
+
+            };
+
+            template <typename NUMBER_TYPE, typename T>
+                requires (is_number_v<NUMBER_TYPE> && 
+                          (physics::is_generic_measurement_v<T> || geometry::is_vector_v<T>))
+            struct multiply<NUMBER_TYPE, T> {
+
+                using _t = T; 
+                
             };
 
 
@@ -393,26 +497,44 @@ namespace scipp::math {
             };
 
 
+            template <typename T, typename NUMBER_TYPE>
+                requires ((physics::is_generic_measurement_v<T> || geometry::is_vector_v<T>) && 
+                          is_number_v<NUMBER_TYPE>)
+            struct divide<T, NUMBER_TYPE> {
+
+                using _t = T; 
+
+            };
+
+            template <typename NUMBER_TYPE, typename T>
+                requires (is_number_v<NUMBER_TYPE> && 
+                          (physics::is_generic_measurement_v<T> || geometry::is_vector_v<T>))
+            struct divide<NUMBER_TYPE, T> {
+
+                using _t = invert_t<T>; 
+                
+            };
+
+
         // ===================================================
         // take the power of a type
         // ===================================================
 
-            template <typename T, std::size_t POWER>    
-            struct power;
+            template <typename T, uint POWER>    
+            struct pow;
 
-            template <typename T, std::size_t POWER>
-            using power_t = typename power<T, POWER>::_t;
-
-            template <typename T>
-            using square_t = power_t<T, 2>;
-
-            template <typename T>
-            using cube_t = power_t<T, 3>;
+            template <typename T, uint POWER>
+            struct pow_impl;
 
 
-            template <typename BASE_TYPE, std::size_t POWER>
+            template <typename T, uint POWER>
+            using pow_t = typename pow<T, POWER>::_t;
+
+
+            /// @brief Power of an physics::base_quantity
+            template <typename BASE_TYPE, uint POWER>
                 requires (physics::is_base_v<BASE_TYPE>)
-            struct power<BASE_TYPE, POWER> {
+            struct pow<BASE_TYPE, POWER> {
 
                 using _t = physics::base_quantity<static_cast<int>(BASE_TYPE::length * POWER), 
                                                   static_cast<int>(BASE_TYPE::time * POWER),
@@ -425,10 +547,10 @@ namespace scipp::math {
             };
 
 
-            /// @brief Struct to compute the power of an std::ratio
-            template <typename PREFIX_TYPE, std::size_t POWER>
+            /// @brief Power of a prefix
+            template <typename PREFIX_TYPE, uint POWER>
                 requires (physics::is_prefix_v<PREFIX_TYPE>)
-            struct power<PREFIX_TYPE, POWER> {
+            struct pow<PREFIX_TYPE, POWER> {
 
                 static constexpr auto value = std::pow(PREFIX_TYPE::num, POWER);
                 static constexpr auto denom_pow = std::pow(PREFIX_TYPE::den, POWER);
@@ -439,61 +561,196 @@ namespace scipp::math {
 
             };
 
-            template <typename UNIT_TYPE, std::size_t POWER>
+            template <typename PREFIX_TYPE, uint POWER>
+                requires (physics::is_prefix_v<PREFIX_TYPE>)
+            struct pow_impl<PREFIX_TYPE, POWER> : unary_function<pow_t<PREFIX_TYPE, POWER>, PREFIX_TYPE> {
+
+                constexpr pow_t<PREFIX_TYPE, POWER> f(const PREFIX_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Power of an unit of measurement
+            template <typename UNIT_TYPE, uint POWER>
                 requires (physics::is_unit_v<UNIT_TYPE>)
-            struct power<UNIT_TYPE, POWER> {
+            struct pow<UNIT_TYPE, POWER> {
 
-                using _t = physics::unit<power_t<typename UNIT_TYPE::base_t, POWER>, 
-                                         power_t<typename UNIT_TYPE::prefix_t, POWER>>;
+                using _t = physics::unit<pow_t<typename UNIT_TYPE::base_t, POWER>, 
+                                         pow_t<typename UNIT_TYPE::prefix_t, POWER>>;
 
             };
-        
 
-            template <typename MEAS_TYPE, std::size_t POWER>
+            template <typename UNIT_TYPE, uint POWER>
+                requires (physics::is_unit_v<UNIT_TYPE>)
+            struct pow_impl<UNIT_TYPE, POWER> : unary_function<pow_t<UNIT_TYPE, POWER>, UNIT_TYPE> {
+
+                constexpr pow_t<UNIT_TYPE, POWER> f(const UNIT_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Power of a number
+            template <typename NUMBER_TYPE, uint POWER>
+                requires (is_number_v<NUMBER_TYPE>)
+            struct pow<NUMBER_TYPE, POWER> {
+
+                using _t = NUMBER_TYPE; 
+
+            };
+
+            template <typename NUMBER_TYPE, uint POWER>
+                requires (is_number_v<NUMBER_TYPE>)
+            struct pow_impl<NUMBER_TYPE, POWER> : unary_function<NUMBER_TYPE, NUMBER_TYPE> {
+
+                constexpr NUMBER_TYPE f(const NUMBER_TYPE& x) const noexcept override {
+
+                    return std::pow(static_cast<double>(x), POWER); 
+
+                }
+
+            };
+                
+
+            /// @brief Power of a measurement
+            template <typename MEAS_TYPE, uint POWER>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct power<MEAS_TYPE, POWER> {
+            struct pow<MEAS_TYPE, POWER> {
 
-                using _t = physics::measurement<power_t<typename MEAS_TYPE::base_t, POWER>>;
+                using _t = physics::measurement<pow_t<typename MEAS_TYPE::base_t, POWER>>;
+
+            };
+
+            template <typename MEAS_TYPE, uint POWER>
+                requires (physics::is_measurement_v<MEAS_TYPE>)
+            struct pow_impl<MEAS_TYPE, POWER> : unary_function<pow_t<MEAS_TYPE, POWER>, MEAS_TYPE> {
+
+                constexpr pow_t<MEAS_TYPE, POWER> f(const MEAS_TYPE& x) const noexcept override {
+
+                    return std::pow(x.value, POWER); 
+
+                }
 
             };
 
 
-            template <typename UMEAS_TYPE, std::size_t POWER>
+            /// @todo 
+            /// @brief Power of a umeasurement
+            template <typename UMEAS_TYPE, uint POWER>
                 requires (physics::is_umeasurement_v<UMEAS_TYPE>)
-            struct power<UMEAS_TYPE, POWER> {
+            struct pow<UMEAS_TYPE, POWER> {
 
-                using _t = physics::umeasurement<power_t<typename UMEAS_TYPE::base_t, POWER>>;
+                using _t = physics::umeasurement<pow_t<typename UMEAS_TYPE::base_t, POWER>>;
 
             };
 
 
-            template <typename CMEAS_TYPE, std::size_t POWER>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-            struct power<CMEAS_TYPE, POWER> {
+            /// @brief Power of a cmeasurement
+            template <typename CMEAS_TYPE, uint POWER>
+                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+            struct pow_impl<CMEAS_TYPE, POWER> : unary_function<pow_t<CMEAS_TYPE, POWER>, CMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<power_t<typename CMEAS_TYPE::measurement_t, POWER>>;
+                constexpr pow_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
+
+                    const auto z = op::log(other);
+                    return CMEAS_TYPE::polar(op::exp(POWER * z.real), POWER * z.imag);
+
+                }
+
+            };
+
+            template <typename CMEAS_TYPE, uint POWER>
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+            struct pow<CMEAS_TYPE, POWER> {
+
+                using _t = physics::cmeasurement<pow_t<typename CMEAS_TYPE::measurement_t, POWER>>;
 
             };
     
 
-            template <typename VEC_TYPE, std::size_t POWER>
-                requires (geometry::is_vector_v<VEC_TYPE>)
-            struct power<VEC_TYPE, POWER> {
+            template <typename T, typename U>   
+            struct pow_impl2; 
 
-                using _t = geometry::vector<power_t<typename VEC_TYPE::measurement_t, POWER>, VEC_TYPE::dim>;
+            template <typename CMEAS_TYPE1, typename CMEAS_TYPE2>
+                requires (physics::are_scalar_cmeasurements_v<CMEAS_TYPE1, CMEAS_TYPE2>)
+            struct pow_impl2<CMEAS_TYPE1, CMEAS_TYPE2> : binary_function<CMEAS_TYPE1, CMEAS_TYPE1, CMEAS_TYPE2> {
+
+                constexpr CMEAS_TYPE1 f(const CMEAS_TYPE1& base, const CMEAS_TYPE2& exp) const noexcept override {
+                    
+                    return (base == CMEAS_TYPE1()) ? CMEAS_TYPE1() : op::exp(exp * op::log(base));
+
+                }
 
             };
+
+
+            /// @brief Power of a geometry::vector
+            template <typename VEC_TYPE, uint POWER>
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct pow<VEC_TYPE, POWER> {
+
+                using _t = geometry::vector<pow_t<typename VEC_TYPE::measurement_t, POWER>, VEC_TYPE::dim>;
+
+            };
+
+            template <typename VEC_TYPE, uint POWER>
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct pow_impl<VEC_TYPE, POWER> : unary_function<pow_t<VEC_TYPE, POWER>, VEC_TYPE> {
+
+                constexpr pow_t<VEC_TYPE, POWER> f(const VEC_TYPE& other) const noexcept override {
+
+                    pow_t<VEC_TYPE, POWER> result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::pow<POWER>(other[i]);
+
+                    return result;
+
+                }
+
+            };
+
+
+            // template <typename T>    
+            // struct square_impl;
+
+            // template <typename T>    
+            // struct cube_impl;
+
+            template <typename T>
+            using square_t = pow_t<T, 2>;
+
+            template <typename T>
+            using cube_t = pow_t<T, 3>;
+
+
 
 
         // ===================================================
         // take the root of a type
         // ===================================================
 
-            template <typename T, std::size_t POWER>    
+            template <typename T, uint POWER>    
             struct root;
 
-            template <typename T, std::size_t POWER>
+            template <typename T, uint POWER>    
+            struct root_impl;
+
+            template <typename T, uint POWER>
             using root_t = typename root<T, POWER>::_t;
+
+
+            template <typename T>    
+            struct sqrt_impl;
+
+            template <typename T>    
+            struct cbrt_impl;
 
             template <typename T>
             using sqrt_t = root_t<T, 2>;
@@ -502,7 +759,8 @@ namespace scipp::math {
             using cbrt_t = root_t<T, 3>;
 
 
-            template <typename BASE_TYPE, std::size_t POWER>
+            /// @brief Root power of a base_quantity
+            template <typename BASE_TYPE, uint POWER>
                 requires (physics::is_base_v<BASE_TYPE>)
             struct root<BASE_TYPE, POWER> {
 
@@ -517,7 +775,8 @@ namespace scipp::math {
             };
 
 
-            template <typename PREFIX_TYPE, std::size_t POWER>
+            /// @brief Root power of a prefix
+            template <typename PREFIX_TYPE, uint POWER>
                 requires (physics::is_prefix_v<PREFIX_TYPE>)
             struct root<PREFIX_TYPE, POWER> {
 
@@ -529,8 +788,21 @@ namespace scipp::math {
 
             };
             
+            template <typename PREFIX_TYPE, uint POWER>
+                requires (physics::is_prefix_v<PREFIX_TYPE>)
+            struct root_impl<PREFIX_TYPE, POWER> : unary_function<root_t<PREFIX_TYPE, POWER>, PREFIX_TYPE> {
 
-            template <typename UNIT_TYPE, std::size_t POWER>
+                constexpr root_t<PREFIX_TYPE, POWER> f(const PREFIX_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Root power of an unit
+            template <typename UNIT_TYPE, uint POWER>
                 requires (physics::is_unit_v<UNIT_TYPE>)
             struct root<UNIT_TYPE, POWER> {
 
@@ -539,8 +811,43 @@ namespace scipp::math {
 
             };
 
+            template <typename UNIT_TYPE, uint POWER>
+                requires (physics::is_unit_v<UNIT_TYPE>)
+            struct root_impl<UNIT_TYPE, POWER> : unary_function<root_t<UNIT_TYPE, POWER>, UNIT_TYPE> {
 
-            template <typename MEAS_TYPE, std::size_t POWER>
+                constexpr root_t<UNIT_TYPE, POWER> f(const UNIT_TYPE&) const noexcept override {
+
+                    return {};  
+
+                }
+
+            };
+
+
+            /// @brief Root power of a number
+            template <typename NUMBER_TYPE, uint POWER>
+                requires (is_number_v<NUMBER_TYPE>)
+            struct root<NUMBER_TYPE, POWER> {
+
+                using _t = NUMBER_TYPE; 
+
+            };
+
+            template <typename NUMBER_TYPE, uint POWER>
+                requires (is_number_v<NUMBER_TYPE>)
+            struct root_impl<NUMBER_TYPE, POWER> : unary_function<NUMBER_TYPE, NUMBER_TYPE> {
+
+                constexpr NUMBER_TYPE f(const NUMBER_TYPE& x) const noexcept override {
+
+                    return std::pow(static_cast<double>(x), 1. / static_cast<double>(POWER)); 
+
+                }
+
+            };
+                
+
+            /// @brief Root power of a measurement
+            template <typename MEAS_TYPE, uint POWER>
                 requires (physics::is_measurement_v<MEAS_TYPE>)
             struct root<MEAS_TYPE, POWER> {
 
@@ -548,8 +855,20 @@ namespace scipp::math {
 
             };
 
+            template <typename MEAS_TYPE, uint POWER>
+                requires (physics::is_measurement_v<MEAS_TYPE>)
+            struct root_impl<MEAS_TYPE, POWER> : unary_function<root_t<MEAS_TYPE, POWER>, MEAS_TYPE> {
 
-            template <typename UMEAS_TYPE, std::size_t POWER>
+                constexpr root_t<MEAS_TYPE, POWER> f(const MEAS_TYPE& x) const noexcept override {
+
+                    return std::pow(x.value, 1. / static_cast<double>(POWER)); 
+
+                }
+
+            };
+
+
+            template <typename UMEAS_TYPE, uint POWER>
                 requires (physics::is_umeasurement_v<UMEAS_TYPE>)
             struct root<UMEAS_TYPE, POWER> {
 
@@ -558,7 +877,7 @@ namespace scipp::math {
             };
 
 
-            template <typename CMEAS_TYPE, std::size_t POWER>
+            template <typename CMEAS_TYPE, uint POWER>
                 requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct root<CMEAS_TYPE, POWER> {
 
@@ -567,7 +886,7 @@ namespace scipp::math {
             };
 
 
-            template <typename VEC_TYPE, std::size_t POWER>
+            template <typename VEC_TYPE, uint POWER>
                 requires (geometry::is_vector_v<VEC_TYPE>)
             struct root<VEC_TYPE, POWER> {
 
@@ -575,6 +894,22 @@ namespace scipp::math {
 
             };
     
+            template <typename VEC_TYPE, uint POWER>
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct root_impl<VEC_TYPE, POWER> : unary_function<root_t<VEC_TYPE, POWER>, VEC_TYPE> {
+
+                constexpr root_t<VEC_TYPE, POWER> f(const VEC_TYPE& other) const noexcept override {
+
+                    root_t<VEC_TYPE, POWER> result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::root<POWER>(other[i]);
+
+                    return result;
+
+                }
+
+            };
+
 
         // ====================================================
         // ABS
@@ -584,13 +919,13 @@ namespace scipp::math {
             struct abs_impl;
 
 
-            template <typename MEAS_TYPE>  
-                requires (physics::is_measurement_v<MEAS_TYPE> || physics::is_umeasurement_v<MEAS_TYPE>)
-            struct abs_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
+            template <typename T>  
+                requires (is_number_v<T> || physics::is_measurement_v<T> || physics::is_umeasurement_v<T>)
+            struct abs_impl<T> : unary_function<T, T> {
 
-                constexpr MEAS_TYPE f(const MEAS_TYPE& x) const noexcept override {
+                constexpr T f(const T& x) const noexcept override {
 
-                    return (x > MEAS_TYPE{}) ? x : -x; 
+                    return (x > T{}) ? x : -x; 
 
                 }
 
@@ -633,177 +968,17 @@ namespace scipp::math {
 
 
         // ====================================================
-        // INV
+        // INV -> @todo umeasurement
         // ====================================================
 
-            template <typename T>
-            struct inv_impl;
-
-
-            /// @brief Invert an unit of measurement
-            template <typename UNIT_TYPE>
-                requires (physics::is_unit_v<UNIT_TYPE>)
-            struct inv_impl<UNIT_TYPE> : unary_function<invert_t<UNIT_TYPE>, UNIT_TYPE> {
-
-                constexpr invert_t<UNIT_TYPE> f(const UNIT_TYPE&) const noexcept override {
-
-                    return {};  
-
-                }
-
-            };
-
-
-            /// @brief Invert a measurement
-            template <typename MEAS_TYPE>  
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct inv_impl<MEAS_TYPE> : unary_function<invert_t<MEAS_TYPE>, MEAS_TYPE> {
-
-                constexpr invert_t<MEAS_TYPE> f(const MEAS_TYPE& x) const override {
-
-                    if (x == MEAS_TYPE::zero) 
-                        throw std::domain_error("Cannot invert a zero measurement"); 
-
-                    return 1. / x.value; 
-
-                }
-
-            };
-
-
-            /// @brief Invert a cmeasurement
-            template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-            struct inv_impl<CMEAS_TYPE> : unary_function<invert_t<CMEAS_TYPE>, CMEAS_TYPE> {
-
-                constexpr invert_t<CMEAS_TYPE> f(const CMEAS_TYPE& x) const override {
-
-                    if (x == CMEAS_TYPE::zero) 
-                        throw std::domain_error("Cannot invert a zero cmeasurement"); 
-
-                    return 1. / x; 
-
-                }
-
-            };
-
-
-            /// @brief Invert a vector
-            template <typename VEC_TYPE>  
-                requires (geometry::is_vector_v<VEC_TYPE>)
-            struct inv_impl<VEC_TYPE> : unary_function<invert_t<VEC_TYPE>, VEC_TYPE> {
-
-                constexpr invert_t<VEC_TYPE> f(const VEC_TYPE& other) const override {
-
-                    using measurement_t = typename VEC_TYPE::measurement_t;
-
-                    invert_t<VEC_TYPE> result;
-                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) {
-                        if (other[i] == measurement_t::zero) 
-                            throw std::domain_error("Cannot invert a vector because one of its component is zero"); 
-                        result[i] = 1. / other[i];
-                    }
-
-                    return result;
-
-                }
-
-            };
-
-
         // ====================================================
-        // POW
+        // POW -> @todo umeasurement, complex^complex
         // ====================================================
-            
-            template <typename T, uint POWER>
-            struct pow_impl;
-
-
-            /// @brief Power of an unit of measurement
-            template <typename UNIT_TYPE, uint POWER>
-                requires (physics::is_unit_v<UNIT_TYPE>)
-            struct pow_impl<UNIT_TYPE, POWER> : unary_function<power_t<UNIT_TYPE, POWER>, UNIT_TYPE> {
-
-                constexpr power_t<UNIT_TYPE, POWER> f(const UNIT_TYPE&) const noexcept override {
-
-                    return {};  
-
-                }
-
-            };
-
-
-            /// @brief Power of a scalar
-            template <typename SCALAR_TYPE, uint POWER>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            struct pow_impl<SCALAR_TYPE, POWER> : unary_function<SCALAR_TYPE, SCALAR_TYPE> {
-
-                constexpr SCALAR_TYPE f(const SCALAR_TYPE& x) const noexcept override {
-
-                    return std::pow(static_cast<double>(x), POWER); 
-
-                }
-
-            };
-            
-
-            /// @brief Power of a measurement
-            template <typename MEAS_TYPE, uint POWER>
-                requires (physics::is_measurement_v<MEAS_TYPE>)
-            struct pow_impl<MEAS_TYPE, POWER> : unary_function<power_t<MEAS_TYPE, POWER>, MEAS_TYPE> {
-
-                constexpr power_t<MEAS_TYPE, POWER> f(const MEAS_TYPE& x) const noexcept override {
-
-                    return std::pow(x.value, POWER); 
-
-                }
-
-            };
-
-
-            /// @brief Power of a measurement
-            template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
-            struct pow_impl<CMEAS_TYPE, POWER> : unary_function<power_t<CMEAS_TYPE, POWER>, CMEAS_TYPE> {
-
-                constexpr power_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
-
-
-                    // if (other.imag == measurement_t::zero && other.real > measurement_t::zero)
-                    //     return op::pow<POWER>(other.real);
-
-                    const auto z = op::log(other);
-                    return CMEAS_TYPE::polar(op::exp(POWER * z.real), POWER * z.imag);
-
-                }
-
-            };
-
-
-            template <typename T, typename U>   
-            struct pow_impl2; 
-
-            template <typename CMEAS_TYPE1, typename CMEAS_TYPE2>
-                requires (physics::are_scalar_cmeasurements_v<CMEAS_TYPE1, CMEAS_TYPE2>)
-            struct pow_impl2<CMEAS_TYPE1, CMEAS_TYPE2> : binary_function<CMEAS_TYPE1, CMEAS_TYPE1, CMEAS_TYPE2> {
-
-                constexpr CMEAS_TYPE1 f(const CMEAS_TYPE1& base, const CMEAS_TYPE2& exp) const noexcept override {
-                    
-                    return (base == CMEAS_TYPE1()) ? CMEAS_TYPE1() : op::exp(exp * op::log(base));
-
-                }
-
-            };
 
         // ====================================================
         // ROOT
         // ====================================================
             
-            template <typename T, typename POWER>
-            struct root_impl;
-
-
-
         // ====================================================
         // exp_impl
         // ====================================================
@@ -813,7 +988,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (physics::is_measurement_v<MEAS_TYPE>)
             struct exp_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -839,6 +1014,22 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct exp_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::exp(other[i]);
+
+                    return result;
+
+                }
+
+            };
+
 
         // ====================================================
         // log_impl
@@ -849,7 +1040,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct log_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const override {
@@ -862,12 +1053,29 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct log_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {   
                     
-                    return { op::log(op::abs(other)), other.arg() };
+                    return { std::log(op::abs(other)), other.arg() };
+
+                }
+
+            };
+
+
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct log_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::log(other[i]);
+
+                    return result; 
 
                 }
 
@@ -882,7 +1090,7 @@ namespace scipp::math {
             struct sin_impl;
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct sin_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -908,6 +1116,23 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct sin_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::sin(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
+
         // ====================================================
         // COS
         // ====================================================
@@ -915,8 +1140,9 @@ namespace scipp::math {
             template <typename T>
             struct cos_impl;
 
+
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct cos_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -942,6 +1168,22 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct cos_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::cos(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
 
         // ====================================================
         // TAN
@@ -951,7 +1193,7 @@ namespace scipp::math {
             struct tan_impl;
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct tan_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -964,7 +1206,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct tan_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -989,6 +1231,23 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct tan_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::tan(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
+
         // ====================================================
         // SIN
         // ====================================================
@@ -996,8 +1255,9 @@ namespace scipp::math {
             template <typename T>
             struct sinh_impl;
 
+
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct sinh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1010,7 +1270,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct sinh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1023,6 +1283,23 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct sinh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::sinh(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
+
         // ====================================================
         // COSH
         // ====================================================
@@ -1030,8 +1307,9 @@ namespace scipp::math {
             template <typename T>
             struct cosh_impl;
 
+
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct cosh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1042,8 +1320,9 @@ namespace scipp::math {
 
             };
 
+
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct cosh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1051,6 +1330,23 @@ namespace scipp::math {
                     return { std::cosh(other.real) * std::cos(other.imag), 
                              std::sinh(other.real) * std::sin(other.imag) };
 
+                }
+
+            };
+
+
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct cosh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::cosh(other[i]);
+
+                    return result; 
+                    
                 }
 
             };
@@ -1065,7 +1361,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct tanh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1078,7 +1374,7 @@ namespace scipp::math {
             
             
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct tanh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1090,6 +1386,22 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct tanh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::tanh(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
 
         // ====================================================
         // ASIN
@@ -1100,7 +1412,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct asin_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1113,7 +1425,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct asin_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1126,6 +1438,22 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct asin_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::asin(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
         // ====================================================
         // ACOS
         // ====================================================
@@ -1135,7 +1463,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct acos_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1148,7 +1476,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct acos_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1161,6 +1489,21 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct acos_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::acos(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
 
 
         // ====================================================
@@ -1172,7 +1515,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct atan_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1185,7 +1528,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct atan_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1208,7 +1551,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct atan_impl2<MEAS_TYPE> : binary_function<MEAS_TYPE, MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& y, const MEAS_TYPE& x) const noexcept override {
@@ -1220,6 +1563,22 @@ namespace scipp::math {
             };
 
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct atan_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::atan(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
 
         // ====================================================
         // ASINH
@@ -1230,7 +1589,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct asinh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1243,7 +1602,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct asinh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1259,6 +1618,23 @@ namespace scipp::math {
             };
             
 
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct asinh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::asinh(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
+
         // ====================================================
         // ACOSH
         // ====================================================
@@ -1268,7 +1644,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct acosh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1281,7 +1657,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct acosh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1290,6 +1666,23 @@ namespace scipp::math {
 
                     return 2.0 * op::log(op::sqrt(0.5 * (other + measurement_t::one)) + op::sqrt(0.5 * (other - measurement_t::one)));
 
+                }
+
+            };
+
+
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct acosh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::acosh(other[i]);
+
+                    return result; 
+                    
                 }
 
             };
@@ -1304,7 +1697,7 @@ namespace scipp::math {
 
 
             template <typename MEAS_TYPE>  
-                requires (physics::is_scalar_v<MEAS_TYPE> || physics::is_scalar_measurement_v<MEAS_TYPE>)
+                requires (is_number_v<MEAS_TYPE> || physics::is_measurement_v<MEAS_TYPE>)
             struct atanh_impl<MEAS_TYPE> : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
                 constexpr MEAS_TYPE f(const MEAS_TYPE& other) const noexcept override {
@@ -1317,7 +1710,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
             struct atanh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1328,6 +1721,77 @@ namespace scipp::math {
 
                     return { op::log((i2 + op::square(measurement_t::one + other.real)) / (i2 + op::square(measurement_t::one - other.real))) / 4.0,
                              op::atan(2.0 * other.imag / (decltype(i2)::one - i2 - op::square(other.real))) / 2.0 };
+
+                }
+
+            };
+
+
+            template <typename VEC_TYPE>    
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct atanh_impl<VEC_TYPE> : unary_function<VEC_TYPE, VEC_TYPE> {
+
+                constexpr VEC_TYPE f(const VEC_TYPE& other) const noexcept override {
+
+                    VEC_TYPE result;
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result[i] = op::atanh(other[i]);
+
+                    return result; 
+                    
+                }
+
+            };
+
+
+        // ====================================================
+        // NORM
+        // ====================================================
+
+            template <typename T>
+            struct norm_impl;
+
+            /// @brief Get the norm of the vector
+            template <typename VEC_TYPE>
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct norm_impl<VEC_TYPE> : unary_function<typename VEC_TYPE::measurement_t, VEC_TYPE> { 
+
+                constexpr typename VEC_TYPE::measurement_t f(const VEC_TYPE& other) const noexcept override {
+
+                    if constexpr (VEC_TYPE::dim == 1) 
+                        return other.data[0];
+
+                    square_t<typename VEC_TYPE::measurement_t> result;
+
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result += op::square(other.data[i]);
+
+                    return op::sqrt(result);
+
+                }
+
+            };
+
+
+            template <typename T>
+            struct norm2_impl;
+
+            /// @brief Get the norm of the vector
+            template <typename VEC_TYPE>
+                requires (geometry::is_vector_v<VEC_TYPE>)
+            struct norm2_impl<VEC_TYPE> : unary_function<square_t<typename VEC_TYPE::measurement_t>, VEC_TYPE> { 
+
+                constexpr square_t<typename VEC_TYPE::measurement_t> f(const VEC_TYPE& other) const noexcept override {
+
+                    if constexpr (VEC_TYPE::dim == 1) 
+                        return other.data[0];
+
+                    square_t<typename VEC_TYPE::measurement_t> result;
+
+                    for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
+                        result += op::square(other.data[i]);
+
+                    return result;
 
                 }
 

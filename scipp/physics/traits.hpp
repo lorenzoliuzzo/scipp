@@ -288,69 +288,71 @@ namespace scipp::physics {
     // =============================================
 
         template <typename T>
-        struct is_scalar : std::false_type {};
-
-        template <typename T>
-        inline static constexpr bool is_scalar_v = is_scalar<T>::value; 
-
+        struct is_scalar_base : std::false_type {};
 
         template <>
-        struct is_scalar<int> : std::true_type {};
-
-        template <>
-        struct is_scalar<float> : std::true_type {};
-
-        template <>
-        struct is_scalar<double> : std::true_type {};
-
-        template <>
-        struct is_scalar<long double> : std::true_type {};
-
-        template <>
-        struct is_scalar<unsigned int> : std::true_type {};
-
-        template <>
-        struct is_scalar<unsigned long> : std::true_type {};
-
-        template <>
-        struct is_scalar<unsigned long long> : std::true_type {};
-
-
-        template <>
-        struct is_scalar<base_quantity<0, 0, 0, 0, 0, 0, 0>> : std::true_type {};
-
-        template <typename T>
-        struct is_scalar_base : std::conditional_t<is_scalar_v<T> && is_base_v<T>, 
-                                                   std::true_type, 
-                                                   std::false_type>{};
+        struct is_scalar_base<base_quantity<0, 0, 0, 0, 0, 0, 0>> : std::true_type {};
 
         template <typename T>
         inline static constexpr bool is_scalar_base_v = is_scalar_base<T>::value;
 
-        template <typename MEAS_TYPE>
-        struct is_scalar_measurement : is_scalar_base<typename MEAS_TYPE::base_t> {};
 
         template <typename T>
-            requires (is_measurement_v<T>)
+        struct is_scalar_unit : std::false_type {};
+
+        template <typename SCALAR_BASE_TYPE, typename PREFIX_TYPE>
+            requires (is_scalar_base_v<SCALAR_BASE_TYPE>)
+        struct is_scalar_unit<unit<SCALAR_BASE_TYPE, PREFIX_TYPE>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_unit_v = is_scalar_unit<T>::value;
+
+
+        template <typename T>
+        struct is_scalar_measurement : std::false_type {};
+
+        template <typename SCALAR_BASE_TYPE>
+            requires (is_scalar_base_v<SCALAR_BASE_TYPE>)
+        struct is_scalar_measurement<measurement<SCALAR_BASE_TYPE>> : std::true_type {};
+
+        template <typename T>
         inline static constexpr bool is_scalar_measurement_v = is_scalar_measurement<T>::value;
 
 
-        template <typename UMEAS_TYPE>
-            requires (is_umeasurement_v<UMEAS_TYPE>)
-        struct is_scalar_umeasurement : is_scalar_base<typename UMEAS_TYPE::base_t> {};
+        template <typename T>
+        struct is_scalar_umeasurement : std::false_type {};
+
+        template <typename SCALAR_BASE_TYPE>
+            requires (is_scalar_base_v<SCALAR_BASE_TYPE>)
+        struct is_scalar_umeasurement<umeasurement<SCALAR_BASE_TYPE>> : std::true_type {};
 
         template <typename T>
         inline static constexpr bool is_scalar_umeasurement_v = is_scalar_umeasurement<T>::value;
 
 
-        template <typename CMEAS_TYPE>
-        struct is_scalar_cmeasurement : is_scalar_base<typename CMEAS_TYPE::base_t> {};
+        template <typename T>
+        struct is_scalar_cmeasurement : std::false_type {};
+
+        template <typename SCALAR_MEAS_TYPE>
+            requires (is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
+        struct is_scalar_cmeasurement<cmeasurement<SCALAR_MEAS_TYPE>> : std::true_type {};
 
         template <typename T>
-            requires (is_cmeasurement_v<T>)
         inline static constexpr bool is_scalar_cmeasurement_v = is_scalar_cmeasurement<T>::value;
 
 
+        template <typename... MEAS_TYPEs>
+        struct are_scalar_measurements : std::conjunction<is_scalar_measurement<MEAS_TYPEs>...> {};
+
+        template <typename... MEAS_TYPEs>
+        inline static constexpr bool are_scalar_measurements_v = are_scalar_measurements<MEAS_TYPEs...>::value;
+        
+        template <typename... UMEAS_TYPEs>
+        struct are_scalar_umeasurements : std::conjunction<is_scalar_umeasurement<UMEAS_TYPEs>...> {};
+
+        template <typename... UMEAS_TYPEs>
+        inline static constexpr bool are_scalar_umeasurements_v = are_scalar_umeasurements<UMEAS_TYPEs...>::value;
+        
         template <typename... CMEAS_TYPEs>
         struct are_scalar_cmeasurements : std::conjunction<is_scalar_cmeasurement<CMEAS_TYPEs>...> {};
 

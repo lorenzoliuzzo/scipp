@@ -15,76 +15,7 @@ namespace scipp::math {
     namespace op {
 
 
-        /// @brief Dot product of two vectors
-        template <typename VEC_TYPE1, typename VEC_TYPE2>
-            requires (geometry::are_vectors_v<VEC_TYPE1, VEC_TYPE2> && 
-                      geometry::have_same_dimension_v<VEC_TYPE1, VEC_TYPE2>)
-        constexpr auto dot(const VEC_TYPE1& v1, const VEC_TYPE2& v2) noexcept 
-            -> meta::multiply_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t> {
-            
-            meta::multiply_t<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t> result;
 
-            for (std::size_t i{}; i < VEC_TYPE1::dim; ++i) 
-                result += v1.data[i] * v2.data[i]; 
-
-            return result;
-
-        }
-
-
-        /// @brief Cross product of two vectors
-        template <typename VEC_TYPE1, typename VEC_TYPE2>
-            requires (geometry::are_vectors_v<VEC_TYPE1, VEC_TYPE2> && 
-                      geometry::have_same_dimension_v<VEC_TYPE1, VEC_TYPE2>)
-        constexpr auto cross(const VEC_TYPE1& v1, const VEC_TYPE2& v2) noexcept 
-            -> geometry::vector<meta::multiply<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t>, VEC_TYPE1::dim> {
-            
-            geometry::vector<meta::multiply<typename VEC_TYPE1::measurement_t, typename VEC_TYPE2::measurement_t>, VEC_TYPE1::dim> result;
-
-            for (std::size_t i{}; i < VEC_TYPE1::dim; ++i)
-                result.data[i] = v1[(i + 1) % VEC_TYPE1::dim] * v2[(i + 2) % VEC_TYPE1::dim] - 
-                                 v1[(i + 2) % VEC_TYPE1::dim] * v2[(i + 1) % VEC_TYPE1::dim]; 
-
-            return result;
-
-        }
-
-
-        /// @brief Get the norm of the vector
-        template <typename VEC_TYPE>
-            requires (geometry::is_vector_v<VEC_TYPE>)
-        constexpr typename VEC_TYPE::measurement_t norm(const VEC_TYPE& other) noexcept { 
-
-            if constexpr (VEC_TYPE::dim == 1) 
-                return other[0];
-
-            meta::square_t<typename VEC_TYPE::measurement_t> result;
-
-            for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
-                result += op::square(other.data[i]);
-
-            return op::sqrt(result);
-
-        }
-
-
-        /// @brief Get the norm squared of the vector
-        template <typename VEC_TYPE>
-            requires (geometry::is_vector_v<VEC_TYPE>)
-        constexpr auto norm2(const VEC_TYPE& other) noexcept 
-            -> meta::square_t<typename VEC_TYPE::measurement_t> { 
-
-            if constexpr (VEC_TYPE::dim == 1) 
-                return op::square(other[0]);
-
-            meta::square_t<typename VEC_TYPE::measurement_t> result;
-
-            for (std::size_t i{}; i < VEC_TYPE::dim; ++i) 
-                result += op::square(other.data[i]);
-
-            return result;
-            
-        }
 
 
         /// @brief Get the normalization of the vector

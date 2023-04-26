@@ -21,9 +21,9 @@ using namespace tools;
 
 template <typename MEAS_TYPE>
     requires (is_generic_measurement_v<MEAS_TYPE>)
-struct andrea : functions::unary_function<MEAS_TYPE, MEAS_TYPE> {
+struct andrea : meta::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
-    constexpr MEAS_TYPE operator()(const MEAS_TYPE& x) const noexcept override {
+    constexpr MEAS_TYPE f(const MEAS_TYPE& x) const noexcept override {
 
         return 2 * x + op::log(x) * op::square(x); 
 
@@ -34,9 +34,9 @@ struct andrea : functions::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC : functions::unary_function<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
+struct myFUNC : meta::unary_function<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
-    constexpr meta::square_t<typename VECTOR_TYPE::measurement_t> operator()(const VECTOR_TYPE& other) const noexcept override {
+    constexpr meta::square_t<typename VECTOR_TYPE::measurement_t> f(const VECTOR_TYPE& other) const noexcept override {
 
         return op::square(other.x()) + op::square(other.y());
 
@@ -47,9 +47,9 @@ struct myFUNC : functions::unary_function<meta::square_t<typename VECTOR_TYPE::m
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC2 : functions::unary_function<meta::invert_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
+struct myFUNC2 : meta::unary_function<meta::invert_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
-    constexpr meta::invert_t<typename VECTOR_TYPE::measurement_t> operator()(const VECTOR_TYPE& other) const noexcept override {
+    constexpr meta::invert_t<typename VECTOR_TYPE::measurement_t> f(const VECTOR_TYPE& other) const noexcept override {
 
         return (other.x() - other.y()) / (op::square(other.x()) + op::square(other.y()));
 

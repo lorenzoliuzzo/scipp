@@ -718,7 +718,7 @@ namespace scipp::geometry {
 
             /// @brief Get the determinant of the matrix
             constexpr auto determinant() const noexcept 
-                -> math::meta::power_t<measurement_t, columns> 
+                -> math::meta::pow_t<measurement_t, columns> 
                     requires (columns == rows) {
 
                 if constexpr (columns == 1)
@@ -743,7 +743,7 @@ namespace scipp::geometry {
 
             /// @brief Get the cofactor at row and column
             constexpr auto cofactor(const std::size_t& row_i, const std::size_t& col_j) const noexcept 
-                -> math::meta::power_t<measurement_t, columns - 1>
+                -> math::meta::pow_t<measurement_t, columns - 1>
                     requires (columns == rows) {
                 
                 auto submatrix = this->submatrix(row_i, col_j);
@@ -754,10 +754,10 @@ namespace scipp::geometry {
 
             /// @brief Get the adjoint matrix
             constexpr auto adjoint() const noexcept 
-                -> matrix<vector<math::meta::power_t<measurement_t, columns - 1>, columns>, rows> 
+                -> matrix<vector<math::meta::pow_t<measurement_t, columns - 1>, columns>, rows> 
                     requires (columns == rows) {
 
-                std::array<vector<math::meta::power_t<measurement_t, columns - 1>, columns>, rows> result;
+                std::array<vector<math::meta::pow_t<measurement_t, columns - 1>, columns>, rows> result;
                 for (std::size_t i{}; i < columns; ++i) 
                     for (std::size_t j{}; j < rows; ++j) 
                         result[i][j] = this->cofactor(j, i);

@@ -2,7 +2,7 @@
  * @file    math/calculus/interval.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-04-04
+ * @date    2023-04-26
  * 
  * @copyright Copyright (c) 2023
  */
@@ -13,27 +13,27 @@
 namespace scipp::math {
     
 
-    template <typename T>
-    struct is_ordinable : std::true_type {}; /// @todo
+    // template <typename T>
+    // concept ordinable { T x, y; x > y; y < x; }; /// @todo
 
-    template <typename T>
-    inline static constexpr bool is_ordinable_v = is_ordinable<T>::value; 
+    // template <typename T>
+    // inline static constexpr bool is_ordinable_v = is_ordinable<T>::value; 
 
 
     template <typename ARG_TYPE>
-        requires (is_ordinable_v<ARG_TYPE>)
-    struct interval : functions::unary_function<ARG_TYPE, double> {
+        // requires (is_ordinable_v<ARG_TYPE>)
+    struct interval {
 
 
-        using type = interval<ARG_TYPE>;
+        using _t = interval<ARG_TYPE>;
 
-        using arg_type = ARG_TYPE;
-
-
-        arg_type start, end;
+        using arg_t = ARG_TYPE;
 
 
-        constexpr interval(const arg_type& A, const arg_type& B) noexcept {
+        arg_t start, end;
+
+
+        constexpr interval(const arg_t& A, const arg_t& B) noexcept {
 
             if (start > end) {  
 
@@ -49,7 +49,7 @@ namespace scipp::math {
 
         }
             
-        constexpr interval(arg_type&& A, arg_type&& B) noexcept {
+        constexpr interval(arg_t&& A, arg_t&& B) noexcept {
 
             if (start > end) {
 
@@ -78,7 +78,7 @@ namespace scipp::math {
             end(std::move(other.end)) {}
 
 
-        constexpr arg_type operator()(const double& t) const override {
+        constexpr arg_t operator()(const double& t) const {
 
             if (t < 0.0 || t > 1.0) {
 
@@ -87,29 +87,26 @@ namespace scipp::math {
 
             }
 
-            return start + static_cast<physics::scalar_m>(t) * (end - start);
+            return start + t * (end - start);
 
         }
 
 
-        constexpr arg_type step(std::size_t N) const noexcept {
+        constexpr arg_t step(std::size_t N) const noexcept {
                 
-            return (end - start) / static_cast<physics::scalar_m>(N);
+            return (end - start) / static_cast<double>(N);
+    
+        }
+
+        template <std::size_t N>
+        constexpr arg_t step() const noexcept {
+                
+            return (end - start) / static_cast<double>(N);
     
         }
 
 
     };
-
-
-    template <typename T>
-    struct is_interval : std::false_type {};
-
-    template <typename ARG_TYPE>
-    struct is_interval<interval<ARG_TYPE>> : std::true_type {};
-
-    template <typename T>
-    concept is_interval_v = is_interval<T>::value;
 
     
 } // namespace scipp::math

@@ -86,9 +86,9 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE> && physics::is_umeasurement_v<typename VECTOR_TYPE::measurement_t>)
         constexpr auto variance(const VECTOR_TYPE& other) 
-            -> physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>> {
+            -> meta::square_t<typename VECTOR_TYPE::measurement_t> {
             
-            meta::invert_t<physics::measurement<op::base_square_t<typename VECTOR_TYPE::measurement_t::base>>> weights; 
+            meta::invert_t<meta::square_t<typename VECTOR_TYPE::measurement_t>> weights; 
             for (const auto& x : other.data) 
                 weights += x.weight(); 
             
@@ -115,7 +115,7 @@ namespace scipp::math {
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         inline constexpr auto stdev(const VECTOR_TYPE& other) noexcept 
-            -> physics::measurement<typename VECTOR_TYPE::measurement_t::base> {
+            -> typename VECTOR_TYPE::measurement_t {
 
             return op::sqrt(variance(other));
 
@@ -126,7 +126,8 @@ namespace scipp::math {
         /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        inline constexpr typename VECTOR_TYPE::measurement_t stdev_mean(const VECTOR_TYPE& other) noexcept {
+        inline constexpr auto stdev_mean(const VECTOR_TYPE& other) noexcept 
+            -> typename VECTOR_TYPE::measurement_t {
 
             return op::sqrt(variance(other)) / static_cast<physics::scalar_m>(VECTOR_TYPE::dim);
 
@@ -137,7 +138,8 @@ namespace scipp::math {
         /// @param other: vector of measurements
         template <typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
-        constexpr typename VECTOR_TYPE::measurement_t median(const VECTOR_TYPE& other) noexcept {
+        constexpr auto median(const VECTOR_TYPE& other) noexcept 
+            -> typename VECTOR_TYPE::measurement_t {
 
             VECTOR_TYPE copy(other); 
             if (!std::is_sorted(copy.data.begin(), copy.data.end())) 

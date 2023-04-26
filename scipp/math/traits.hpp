@@ -134,10 +134,47 @@ namespace scipp::math {
         template <typename T>
         inline static constexpr bool is_function_v = is_function<T>::value;
 
-        
-    // =============================================
-    // generic math functions
-    // =============================================
+
+
+        template <typename T>
+        struct is_number : std::false_type {}; 
+
+        template <typename T>
+        inline static constexpr bool is_number_v = is_number<T>::value; 
+
+        template <>
+        struct is_number<int> : std::true_type {};
+
+        template <>
+        struct is_number<float> : std::true_type {};
+
+        template <>
+        struct is_number<double> : std::true_type {};
+
+        template <>
+        struct is_number<long double> : std::true_type {};
+
+        template <>
+        struct is_number<unsigned int> : std::true_type {};
+
+        template <>
+        struct is_number<unsigned long> : std::true_type {};
+
+        template <>
+        struct is_number<unsigned long long> : std::true_type {};
+
+
+        template <typename T>
+        struct is_scalar : std::conditional_t<is_number_v<T> || 
+                                              physics::is_scalar_base_v<T> || 
+                                              physics::is_scalar_unit_v<T> || 
+                                              physics::is_scalar_measurement_v<T> ||
+                                              physics::is_scalar_umeasurement_v<T> ||
+                                              physics::is_scalar_cmeasurement_v<T>, std::true_type, std::false_type> {}; 
+
+        template <typename T>
+        inline static constexpr bool is_scalar_v = is_scalar<T>::value; 
+
 
     namespace op {
 
@@ -172,54 +209,107 @@ namespace scipp::math {
         
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T exp(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T log(const T&);
 
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T sin(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T cos(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T tan(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T sinh(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T cosh(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T tanh(const T&) noexcept;
 
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T asin(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T acos(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T atan(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr auto atan(const T&, const T&) noexcept; 
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T asinh(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T acosh(const T&) noexcept;
 
         template <typename T>
+            requires (is_scalar_v<T>)
         inline static constexpr T atanh(const T&) noexcept;
 
 
+        template <typename T>
+        inline static constexpr auto norm(const T&) noexcept; 
+
+        template <typename T>
+        inline static constexpr auto norm2(const T&) noexcept; 
+
+        template <typename T>
+        inline static constexpr auto normalize(const T&) noexcept; 
+
+
     } // namespace op
+
+
+    template <typename POINT_TYPE>
+    struct interval; 
+
+
+    template <typename T>
+    struct is_interval : std::false_type {};
+
+    template <typename ARG_TYPE>
+    struct is_interval<interval<ARG_TYPE>> : std::true_type {};
+
+    template <typename T>
+    inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+
+    template <typename POINT_TYPE>
+        requires (geometry::is_vector_v<POINT_TYPE> || physics::is_cmeasurement_v<POINT_TYPE>)
+    struct curve; 
+
+    template <typename T>
+    struct is_curve : std::false_type {};
+
+    template <typename POINT_TYPE>
+    struct is_curve<curve<POINT_TYPE>> : std::true_type {};
+
+    template <typename T>
+    inline static constexpr bool is_curve_v = is_curve<T>::value;
 
 
 } /// namespace scipp::math

@@ -247,16 +247,16 @@ namespace scipp::physics {
 
         /// @brief Type trait to check if a type is a measurement
         template <typename T>
-        struct is_cmeasurement : std::false_type{};
+        struct is_cmeasurement : std::false_type {};
 
         template <typename MEAS_TYPE>
-        struct is_cmeasurement<cmeasurement<MEAS_TYPE>> : std::true_type{};
+        struct is_cmeasurement<cmeasurement<MEAS_TYPE>> : std::true_type {};
 
         template <typename MEAS_TYPE>
         inline static constexpr bool is_cmeasurement_v = is_cmeasurement<MEAS_TYPE>::value;
 
         template <typename... MEAS_TYPES>
-        struct are_cmeasurements : std::conjunction<is_cmeasurement<MEAS_TYPES>...>{};
+        struct are_cmeasurements : std::conjunction<is_cmeasurement<MEAS_TYPES>...> {};
 
         template <typename... MEAS_TYPES>
         inline static constexpr bool are_cmeasurements_v = are_cmeasurements<MEAS_TYPES...>::value;
@@ -270,13 +270,13 @@ namespace scipp::physics {
         template <typename T>
         struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || is_cmeasurement_v<T>, 
                                                            std::true_type, 
-                                                           std::false_type>{};
+                                                           std::false_type> {};
 
         template <typename T>
         constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
 
         template <typename... MEAS_TYPES>
-        struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...>{};
+        struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...> {};
 
         template <typename... MEAS_TYPEs>
         constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;

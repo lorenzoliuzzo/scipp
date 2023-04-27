@@ -11,34 +11,6 @@
 
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
-
-
-    /// @brief Struct umeasurement represents a physical uncertaint measurement as two scalar values and a dimentional template meta-structure 
-    /// @tparam BASE: The base_quantity of the measurement
-    /// @see          measurement
-    template <typename MEAS_TYPE>
-        requires (is_measurement_v<MEAS_TYPE>)
-    struct umeasurement {
-
-
-        // ==============================================
-        // aliases
-        // ==============================================
-
-            using type = measurement<BASE_TYPE>; ///< The type of the measurement
-
-            using base = BASE_TYPE; ///< The base of the measurement
-
-
-        // ==============================================
-        // members
-        // ==============================================
-
-            MEAS_TYPE value; ///< The value of the measurement
-
-            MEAS_TYPE uncertainty; ///< The uncertainty of the measurement
-
-
             
 
     /// @brief Struct umeasurement represents a physical uncertaint measurement as two scalar values and a dimentional template meta-structure 
@@ -53,9 +25,9 @@ namespace scipp::physics {
         // aliases
         // ==============================================
 
-            using type = measurement<BASE_TYPE>; ///< The type of the measurement
+            using _t = measurement<BASE_TYPE>; ///< The type of the measurement
 
-            using base = BASE_TYPE; ///< The base of the measurement
+            using base_t = BASE_TYPE; ///< The base of the measurement
 
 
         // ==============================================
@@ -825,8 +797,8 @@ namespace scipp::physics {
 
                     }
 
-                    if (unit != base::to_string()) 
-                        throw std::runtime_error("Unit mismatch: expected " + base::to_string() + ", got " + unit);
+                    if (unit != base_t::to_string()) 
+                        throw std::runtime_error("Unit mismatch: expected " + base_t::to_string() + ", got " + unit);
 
                 }
 

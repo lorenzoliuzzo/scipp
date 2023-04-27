@@ -35,7 +35,7 @@ namespace scipp::math {
 
         constexpr interval(const arg_t& A, const arg_t& B) noexcept {
 
-            if (start > end) {  
+            if (A > B) {  
 
                 this->start = B; 
                 this->end = A; 
@@ -51,7 +51,7 @@ namespace scipp::math {
             
         constexpr interval(arg_t&& A, arg_t&& B) noexcept {
 
-            if (start > end) {
+            if (A > B) {
 
                 this->start = std::move(B); 
                 this->end = std::move(A); 

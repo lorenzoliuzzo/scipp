@@ -31,7 +31,6 @@ struct andrea : meta::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
 };
 
-
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
 struct myFUNC : meta::unary_function<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
@@ -73,8 +72,30 @@ struct myFUNC2 : meta::unary_function<meta::invert_t<typename VECTOR_TYPE::measu
 
 int main() {
 
+    meta::multiply_t<double, length_m> a(2.0); 
+    meta::multiply_t<length_m, double> b(1.0); 
+    print(a); 
+    print(b); 
 
-    interval I(1.0m, 10.0m); 
+
+    meta::divide_t<length_m, time_m> v; 
+    print(v); 
+
+    position2 p; 
+    auto x = p * 3.0m; 
+    print(p); 
+    print(x); 
+
+    meta::multiply_t<position2, length_m> c; 
+    print(c); 
+    meta::multiply_t<position2, double> c0; 
+    print(c0); 
+    meta::multiply_t<double, position2> c3; 
+    print(c3); 
+    meta::divide_t<position2, length_m> c2;
+    print(c2); 
+
+    interval I(scalar_m(1.0), scalar_m(10.0)); 
     print(I(0)); 
     print(I(1)); 
 
@@ -83,7 +104,7 @@ int main() {
     t.start(); 
     t.stop(); 
 
-    auto func = andrea<length_m>();
+    auto func = andrea<scalar_m>();
 
         print("testing the rectangle integration");
         auto rectangle100 = riemann<integration_method::rectangle, 100>(func, I); 
@@ -133,28 +154,31 @@ int main() {
     auto simpson0001 = riemann<integration_method::simpson>(func, I, 0.0001); 
     auto simpson00001 = riemann<integration_method::simpson>(func, I, 0.00001); 
     auto simpson000001 = riemann<integration_method::simpson>(func, I, 0.000001); 
-    auto simpson0000001 = riemann<integration_method::simpson>(func, I, 0.0000001); 
+    auto simpson000000001 = riemann<integration_method::simpson>(func, I, 0.000000001); 
     print("int 2x from 0 to 1, 0.001 precision", simpson001); 
     print("int 2x from 0 to 1, 0.0001 precision", simpson0001); 
     print("int 2x from 0 to 1, 0.00001 precision", simpson00001); 
     print("int 2x from 0 to 1, 0.000001 precision", simpson000001); 
-    print("int 2x from 0 to 1, 0.0000001 precision", simpson0000001); 
+    print("int 2x from 0 to 1, 0.000000001 precision", simpson000000001); 
 
     auto func2 = myFUNC<position2>();
 
-    // auto cframe = circumference(position2(), 1.m);
+    auto cframe = circumference(position2(), 1.m);
 
-    // print("testing the lebesque integration");
-    // auto lebesque100 = curvilinear(func2, cframe, 100); 
-    // auto lebesque1000 = curvilinear(func2, cframe, 1000); 
-    // auto lebesque10000 = curvilinear(func2, cframe, 10000); 
-    // auto lebesque100000 = curvilinear(func2, cframe, 100000); 
-    // auto lebesque1000000 = curvilinear(func2, cframe, 1000000); 
-    // print("int x * y on a circumference in the origin and radius 1.0m, 100 steps", lebesque100); 
-    // print("int x * y on a circumference in the origin and radius 1.0m, 1000 steps", lebesque1000); 
-    // print("int x * y on a circumference in the origin and radius 1.0m, 10000 steps", lebesque10000); 
-    // print("int x * y on a circumference in the origin and radius 1.0m, 100000 steps", lebesque100000); 
-    // print("int x * y on a circumference in the origin and radius 1.0m, 1000000 steps", lebesque1000000); 
+    print("length of the circumference", length(cframe));
+
+
+    print("testing the lebesque integration");
+    auto lebesque100 = curvilinear(func2, cframe); 
+    auto lebesque1000 = curvilinear(func2, cframe); 
+    auto lebesque10000 = curvilinear(func2, cframe); 
+    auto lebesque100000 = curvilinear(func2, cframe); 
+    auto lebesque1000000 = curvilinear(func2, cframe); 
+    print("int x * y on a circumference in the origin and radius 1.0, 100 steps", lebesque100); 
+    print("int x * y on a circumference in the origin and radius 1.0, 1000 steps", lebesque1000); 
+    print("int x * y on a circumference in the origin and radius 1.0, 10000 steps", lebesque10000); 
+    print("int x * y on a circumference in the origin and radius 1.0, 100000 steps", lebesque100000); 
+    print("int x * y on a circumference in the origin and radius 1.0, 1000000 steps", lebesque1000000); 
 
     // auto eframe = ellipse(position2(), 3.m, 1.m);
     // auto lebesque_100 = curvilinear(func2, eframe, 100); 
@@ -162,11 +186,11 @@ int main() {
     // auto lebesque_10000 = curvilinear(func2, eframe, 10000); 
     // auto lebesque_100000 = curvilinear(func2, eframe, 100000); 
     // auto lebesque_1000000 = curvilinear(func2, eframe, 1000000); 
-    // print("int x * y on an ellipse in the origin and a = 3.0m, b = 1.0 with 100 steps", lebesque_100); 
-    // print("int x * y on an ellipse in the origin and a = 3.0m, b = 1.0 with 1000 steps", lebesque_1000); 
-    // print("int x * y on an ellipse in the origin and a = 3.0m, b = 1.0 with 10000 steps", lebesque_10000); 
-    // print("int x * y on an ellipse in the origin and a = 3.0m, b = 1.0 with 100000 steps", lebesque_100000); 
-    // print("int x * y on an ellipse in the origin and a = 3.0m, b = 1.0 with 1000000 steps", lebesque_1000000); 
+    // print("int x * y on an ellipse in the origin and a = 3.0, b = 1.0 with 100 steps", lebesque_100); 
+    // print("int x * y on an ellipse in the origin and a = 3.0, b = 1.0 with 1000 steps", lebesque_1000); 
+    // print("int x * y on an ellipse in the origin and a = 3.0, b = 1.0 with 10000 steps", lebesque_10000); 
+    // print("int x * y on an ellipse in the origin and a = 3.0, b = 1.0 with 100000 steps", lebesque_100000); 
+    // print("int x * y on an ellipse in the origin and a = 3.0, b = 1.0 with 1000000 steps", lebesque_1000000); 
 
     // auto sframe = sphere(position3(), 1.m);
     // auto func3 = myFUNC<position3>();
@@ -176,11 +200,11 @@ int main() {
     // auto SPHERE10000 = curvilinear(func3, sframe, 10000); 
     // auto SPHERE100000 = curvilinear(func3, sframe, 100000); 
     // auto SPHERE1000000 = curvilinear(func3, sframe, 1000000); 
-    // print("int x * y on an sphere in the origin and r = 1.0m with 100 steps", SPHERE100); 
-    // print("int x * y on an sphere in the origin and r = 1.0m with 1000 steps", SPHERE1000); 
-    // print("int x * y on an sphere in the origin and r = 1.0m with 10000 steps", SPHERE10000); 
-    // print("int x * y on an sphere in the origin and r = 1.0m with 100000 steps", SPHERE100000); 
-    // print("int x * y on an sphere in the origin and r = 1.0m with 1000000 steps", SPHERE1000000); 
+    // print("int x * y on an sphere in the origin and r = 1.0 with 100 steps", SPHERE100); 
+    // print("int x * y on an sphere in the origin and r = 1.0 with 1000 steps", SPHERE1000); 
+    // print("int x * y on an sphere in the origin and r = 1.0 with 10000 steps", SPHERE10000); 
+    // print("int x * y on an sphere in the origin and r = 1.0 with 100000 steps", SPHERE100000); 
+    // print("int x * y on an sphere in the origin and r = 1.0 with 1000000 steps", SPHERE1000000); 
 
 
     return 0; 

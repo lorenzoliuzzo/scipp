@@ -41,7 +41,13 @@ int main() {
     scalar_m radius = 1.0;
     auto circ = circumference(cmeasurement<scalar_m>(), radius);
     print("circumference", circ(0));
+    print("circumference", circ(0.50));
     print("circumference", circ(1));
+
+    print(std::numeric_limits<double>::epsilon());
+    print(std::numeric_limits<long double>::epsilon());
+    print(std::numeric_limits<float>::epsilon());
+    print(sizeof(long double)); 
     // vector<scalar_m, 100> x_vec;
     // vector<scalar_m, 100> y_vec;
 

@@ -182,22 +182,11 @@ namespace scipp::math {
         // multiply types
         // ===================================================
 
-            template <typename T, typename... Ts>
-            struct multiply {
-
-                using _t = typename multiply<T, typename multiply<Ts...>::_t>::_t;
-
-            };
-
-            template <typename T>
-            struct multiply<T> {
-
-                using _t = T;
-
-            };
-
-            template <typename... Ts>
-            using multiply_t = typename multiply<Ts...>::_t;  
+            template <typename T, typename U>
+            struct multiply; 
+            
+            template <typename T, typename U>
+            using multiply_t = typename multiply<T, U>::_t;  
 
 
             // @brief Multiply two physics::base_quantity types
@@ -746,19 +735,6 @@ namespace scipp::math {
             using root_t = typename root<T, POWER>::_t;
 
 
-            template <typename T>    
-            struct sqrt_impl;
-
-            template <typename T>    
-            struct cbrt_impl;
-
-            template <typename T>
-            using sqrt_t = root_t<T, 2>;
-
-            template <typename T>
-            using cbrt_t = root_t<T, 3>;
-
-
             /// @brief Root power of a base_quantity
             template <typename BASE_TYPE, uint POWER>
                 requires (physics::is_base_v<BASE_TYPE>)
@@ -909,6 +885,34 @@ namespace scipp::math {
                 }
 
             };
+
+
+            template <typename T>    
+            struct sqrt_impl;
+
+            template <typename T>    
+            struct cbrt_impl;
+
+            template <typename T>
+            using sqrt_t = root_t<T, 2>;
+
+            template <typename T>
+            using cbrt_t = root_t<T, 3>;
+
+
+            template <typename MEAS_TYPE>
+                requires (physics::is_measurement_v<MEAS_TYPE>)
+            struct sqrt_impl<MEAS_TYPE> : unary_function<sqrt_t<MEAS_TYPE>, MEAS_TYPE> {
+
+                constexpr sqrt_t<MEAS_TYPE> f(const MEAS_TYPE& x) const noexcept override {
+
+                    return std::sqrt(x.value);
+
+                }
+
+            };
+
+
 
 
         // ====================================================

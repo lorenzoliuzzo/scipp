@@ -17,130 +17,144 @@ namespace scipp::math {
     // common traits
     // =============================================
 
+    namespace meta {
+
+        // =============================================
+        // unary function traits
+        // =============================================
+
+            template <typename RESULT_TYPE, typename ARG_TYPE>
+            struct unary_function; 
+            
+
+            template <typename T>
+            struct is_unary_function : std::false_type {};
+
+            template <typename RESULT_TYPE, typename ARG_TYPE>
+            struct is_unary_function<unary_function<RESULT_TYPE, ARG_TYPE>> : std::true_type {};
+
+            template <typename FUNC>
+            inline static constexpr bool is_unary_function_v = is_unary_function<typename FUNC::_t>::value; 
+
+
+        // =============================================
+        // binary function traits
+        // =============================================
+
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
+            struct binary_function; 
+            
+
+            template <typename T>
+            struct is_binary_function : std::false_type {};
+
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
+            struct is_binary_function<binary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_binary_function_v = is_binary_function<T>::value; 
+
+
+        // =============================================
+        // ternary function traits
+        // =============================================
+
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
+            struct ternary_function; 
+            
+
+            template <typename T>
+            struct is_ternary_function : std::false_type {};
+
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
+            struct is_ternary_function<ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2, ARG_TYPE3>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_ternary_function_v = is_ternary_function<T>::value; 
+
+
+        // =============================================
+        // nary function traits
+        // =============================================
+
+            template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs> 
+                requires (sizeof...(ARG_TYPEs) == DIM)
+            struct nary_function;
+
+
+            template <typename T>
+            struct is_nary_function : std::false_type {};
+
+            template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs>
+            struct is_nary_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
+            
+            template <typename T>
+            inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
+
+
+        // =============================================
+        // variadic function traits
+        // =============================================
+
+            template <typename RESULT_TYPE, typename... ARG_TYPES>
+            struct variadic_function;
+
+
+            template <typename T>
+            struct is_variadic_function : std::false_type {};
+
+            template <typename RESULT_TYPE, typename... ARG_TYPEs>
+            struct is_variadic_function<variadic_function<RESULT_TYPE, ARG_TYPEs...>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_variadic_function_v = is_variadic_function<T>::value; 
+
+
+        // =============================================
+        // generic function traits
+        // =============================================
+
+            template <typename T>
+            struct is_function : std::false_type {};
+
+            template <typename RESULT_TYPE, typename ARG_TYPE>
+            struct is_function<unary_function<RESULT_TYPE, ARG_TYPE>> : std::true_type {};
+
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
+            struct is_function<binary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>> : std::true_type {};
+            
+            template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
+            struct is_function<ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2, ARG_TYPE3>> : std::true_type {};
+
+            template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs>
+            struct is_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
+
+            template <typename RESULT_TYPE, typename... ARG_TYPEs>
+            struct is_function<variadic_function<RESULT_TYPE, ARG_TYPEs...>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_function_v = is_function<T>::value;
+
+
+    } // namespace meta
+
 
     // =============================================
-    // unary function traits
+    // number traits
     // =============================================
-
-        template <typename RESULT_TYPE, typename ARG_TYPE>
-        struct unary_function; 
-        
-
-        template <typename T>
-        struct is_unary_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, typename ARG_TYPE>
-        struct is_unary_function<unary_function<RESULT_TYPE, ARG_TYPE>> : public std::true_type {};
-
-        template <typename T>
-        inline static constexpr bool is_unary_function_v = is_unary_function<T>::value; 
-
-
-    // =============================================
-    // binary function traits
-    // =============================================
-
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
-        struct binary_function; 
-        
-
-        template <typename T>
-        struct is_binary_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
-        struct is_binary_function<binary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>> : public std::true_type {};
-
-        template <typename T>
-        inline static constexpr bool is_binary_function_v = is_binary_function<T>::value; 
-
-
-    // =============================================
-    // ternary function traits
-    // =============================================
-
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
-        struct ternary_function; 
-        
-
-        template <typename T>
-        struct is_ternary_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
-        struct is_ternary_function<ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2, ARG_TYPE3>> : public std::true_type {};
-
-        template <typename T>
-        inline static constexpr bool is_ternary_function_v = is_ternary_function<T>::value; 
-
-
-    // =============================================
-    // nary function traits
-    // =============================================
-
-        template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs> 
-            requires (sizeof...(ARG_TYPEs) == DIM)
-        struct nary_function;
-
-
-        template <typename T>
-        struct is_nary_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs>
-        struct is_nary_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : public std::true_type {};
-        
-        template <typename T>
-        inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
-
-
-    // =============================================
-    // variadic function traits
-    // =============================================
-
-        template <typename RESULT_TYPE, typename... ARG_TYPES>
-        struct variadic_function;
-
-
-        template <typename T>
-        struct is_variadic_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, typename... ARG_TYPEs>
-        struct is_variadic_function<variadic_function<RESULT_TYPE, ARG_TYPEs...>> : public std::true_type {};
-
-        template <typename T>
-        inline static constexpr bool is_variadic_function_v = is_variadic_function<T>::value; 
-
-
-    // =============================================
-    // generic function traits
-    // =============================================
-
-        template <typename T>
-        struct is_function : public std::false_type {};
-
-        template <typename RESULT_TYPE, typename ARG_TYPE>
-        struct is_function<unary_function<RESULT_TYPE, ARG_TYPE>> : public std::true_type {};
-
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
-        struct is_function<binary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>> : public std::true_type {};
-        
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
-        struct is_function<ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2, ARG_TYPE3>> : public std::true_type {};
-
-        template <typename RESULT_TYPE, std::size_t DIM, typename... ARG_TYPEs>
-        struct is_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : public std::true_type {};
-
-        template <typename RESULT_TYPE, typename... ARG_TYPEs>
-        struct is_function<variadic_function<RESULT_TYPE, ARG_TYPEs...>> : public std::true_type {};
-
-        template <typename T>
-        inline static constexpr bool is_function_v = is_function<T>::value;
-
-
 
         template <typename T>
         struct is_number : std::false_type {}; 
 
         template <typename T>
         inline static constexpr bool is_number_v = is_number<T>::value; 
+
+        template <typename... Ts>
+        struct are_numbers : std::conjunction<is_number<Ts>...> {}; 
+
+        template <typename... Ts>
+        inline static constexpr bool are_numbers_v = are_numbers<Ts...>::value; 
+
 
         template <>
         struct is_number<int> : std::true_type {};
@@ -309,7 +323,31 @@ namespace scipp::math {
     struct is_curve<curve<POINT_TYPE>> : std::true_type {};
 
     template <typename T>
-    inline static constexpr bool is_curve_v = is_curve<T>::value;
+    inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
+
+
+    namespace integrals {
+
+
+        enum integration_method {
+
+            rectangle = 0,
+            trapexoid = 1, 
+            midpoint = 2, 
+            simpson = 3,
+            // MC = 4
+            
+        }; 
+
+
+        template <typename FUNCTION_TYPE, std::size_t steps> 
+            requires (meta::is_unary_function_v<FUNCTION_TYPE>)
+        inline static constexpr auto curvilinear(const FUNCTION_TYPE&, 
+                                                 const curve<typename FUNCTION_TYPE::arg_t>&,
+                                                 double); 
+
+
+    } // namespace integrals
 
 
 } /// namespace scipp::math

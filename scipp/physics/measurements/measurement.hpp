@@ -381,7 +381,7 @@ namespace scipp::physics {
             /// @note The denominator must not be zero
             template <typename NUMBER_TYPE> 
                 requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator/(const NUMBER_TYPE& other) const noexcept { 
+            constexpr measurement operator/(const NUMBER_TYPE& other) const { 
                 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");
@@ -394,7 +394,7 @@ namespace scipp::physics {
             /// @note The denominator must not be zero
             template <typename NUMBER_TYPE> 
                 requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator/(NUMBER_TYPE&& other) const noexcept { 
+            constexpr measurement operator/(NUMBER_TYPE&& other) const { 
                 
                 if (static_cast<double>(other) == 0.0) 
                     throw std::runtime_error("Cannot divide a measurement by zero");

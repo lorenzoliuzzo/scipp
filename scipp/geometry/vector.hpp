@@ -329,7 +329,9 @@ namespace scipp::geometry {
 
 
             /// @brief Multiply this vector by a scalar measurement
-            constexpr vector& operator*=(const physics::scalar_m& other) noexcept {
+            template <typename SCALAR_TYPE>
+                requires (math::is_scalar_v<SCALAR_TYPE>)
+            constexpr vector& operator*=(const SCALAR_TYPE& other) noexcept {
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -341,7 +343,9 @@ namespace scipp::geometry {
             }
 
             /// @brief Multiply this vector by a scalar measurement
-            constexpr vector& operator*=(physics::scalar_m&& other) noexcept {
+            template <typename SCALAR_TYPE>
+                requires (math::is_scalar_v<SCALAR_TYPE>)
+            constexpr vector& operator*=(SCALAR_TYPE&& other) noexcept {
 
                 std::transform(std::execution::par,
                                this->data.begin(), this->data.end(), 
@@ -354,9 +358,11 @@ namespace scipp::geometry {
 
 
             /// @brief Divide this vector by a scalar measurement
-            constexpr vector& operator/=(const physics::scalar_m& other) {
+            template <typename SCALAR_TYPE>
+                requires (math::is_scalar_v<SCALAR_TYPE>)
+            constexpr vector& operator/=(const SCALAR_TYPE& other) {
 
-                if (other == physics::scalar_m::zero) 
+                if (other == SCALAR_TYPE{}) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
 
                 std::transform(std::execution::par,
@@ -369,9 +375,11 @@ namespace scipp::geometry {
             }
 
             /// @brief Divide this vector by a scalar measurement
-            constexpr vector& operator/=(physics::scalar_m&& other) {
+            template <typename SCALAR_TYPE>
+                requires (math::is_scalar_v<SCALAR_TYPE>)
+            constexpr vector& operator/=(SCALAR_TYPE&& other) {
 
-                if (other == physics::scalar_m::zero) 
+                if (other == SCALAR_TYPE{}) 
                     throw std::invalid_argument("Cannot divide a vector by zero");
                 
                 std::transform(std::execution::par,
@@ -386,9 +394,9 @@ namespace scipp::geometry {
 
             /// @brief Multiplicate by a scalar
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept
-                -> vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
+                -> math::meta::multiply_t<vector, OTHER_MEAS_TYPE> {
 
                 std::array<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
@@ -403,9 +411,9 @@ namespace scipp::geometry {
 
             /// @brief Multiplicate by a scalar
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept
-                -> vector<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
+                -> math::meta::multiply_t<vector, OTHER_MEAS_TYPE> {
 
                 std::array<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
@@ -420,11 +428,11 @@ namespace scipp::geometry {
 
             /// @brief Divide a vector by a measurement 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(const OTHER_MEAS_TYPE& other) const
-                -> vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
+                -> math::meta::divide_t<vector, OTHER_MEAS_TYPE> {
 
-                if (other == measurement_t::zero) 
+                if (other == OTHER_MEAS_TYPE{}) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
                 std::array<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
@@ -440,11 +448,11 @@ namespace scipp::geometry {
 
             /// @brief Divide a vector by a measurement 
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             constexpr auto operator/(OTHER_MEAS_TYPE&& other) const
-                -> vector<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, dim> {
+                -> math::meta::divide_t<vector, OTHER_MEAS_TYPE> {
                 
-                if (other == OTHER_MEAS_TYPE::zero) 
+                if (other == OTHER_MEAS_TYPE{}) 
                     throw std::invalid_argument("Cannot divide a vector by a zero measurement");
 
                 std::array<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
@@ -461,11 +469,11 @@ namespace scipp::geometry {
 
             /// @brief Multiply a measureent by a vector
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator*(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept
-                -> vector<math::meta::multiply_t<OTHER_MEAS_TYPE, measurement_t>, dim> {
+                -> math::meta::multiply_t<vector, OTHER_MEAS_TYPE> {
 
-                std::array<math::meta::multiply_t<OTHER_MEAS_TYPE, measurement_t>, dim> result;
+                std::array<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>, dim> result;
 
                 std::transform(std::execution::par,
                                vec.data.begin(), vec.data.end(), 
@@ -478,9 +486,9 @@ namespace scipp::geometry {
 
             /// @brief Divide a measurement by a vector
             template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
+                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept
-                -> vector<math::meta::divide_t<OTHER_MEAS_TYPE, measurement_t>, dim> {
+                -> math::meta::divide_t<OTHER_MEAS_TYPE, vector> {
                 
                 std::array<math::meta::divide_t<OTHER_MEAS_TYPE, measurement_t>, dim> result;
 

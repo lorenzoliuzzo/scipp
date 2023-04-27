@@ -61,7 +61,7 @@
     /// ---------------------------------------------------------------
        
         #include "physics/measurements/measurement.hpp"
-        // #include "physics/measurements/umeasurement.hpp"
+        #include "physics/measurements/umeasurement.hpp"
         #include "physics/measurements/cmeasurement.hpp"
         #include "physics/measurements/scalars.hpp"
 
@@ -114,7 +114,7 @@
 
     /// ---------------------------------------------------------------
 
-        #include "geometry/curve_types.hpp"
+        // #include "geometry/curve_types.hpp"
     //     // #include "geometry/line.hpp"
     //     // #include "geometry/linspace.hpp"
 

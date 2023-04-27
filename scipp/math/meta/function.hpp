@@ -100,9 +100,14 @@ namespace scipp::math {
             using arg_t = std::tuple<ARG_TYPEs...>;
 
 
-            virtual ~nary_function() = default;
+            virtual constexpr result_t f(const ARG_TYPEs&... x) const = 0;
 
-            constexpr result_t operator()(const arg_t& x) const {} 
+
+            inline constexpr result_t operator()(const ARG_TYPEs&... x) const { 
+
+                return f(x...); 
+            
+            }
 
 
         };
@@ -128,13 +133,13 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct identity : public unary_function<T, T> {
+        struct identity : unary_function<T, T> {
 
             using result_t = T;
 
             using arg_t = T;
 
-            constexpr T operator()(const T& x) const noexcept override { 
+            constexpr T f(const T& x) const noexcept override { 
                 
                 return x; 
                 
@@ -143,7 +148,23 @@ namespace scipp::math {
         };
 
 
-    } // namespace functions
+        template <typename T>
+        struct one : unary_function<int, T> {
+
+            using result_t = int;
+
+            using arg_t = T;
+
+            constexpr result_t f([[maybe_unused]] const arg_t&) const noexcept override { 
+                
+                return 1; 
+                
+            }
+
+        };
+
+
+    } // namespace meta
 
 
 } // namespace scipp::math

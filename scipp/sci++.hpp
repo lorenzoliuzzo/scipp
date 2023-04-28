@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
  * @note    It is also include 'matplotlibcpp' as plotting library
- * @date    2023-04-26
+ * @date    2023-04-28
  * 
  * @copyright Copyright (c) 2023
  */
@@ -34,6 +34,10 @@
         #include <sstream>
         // #include <thread> // maybe not needed
         #include <vector>
+
+
+        #include <external/matplotlibcpp.h>
+        namespace plt = matplotlibcpp;
 
 
     /// ===============================================================
@@ -96,6 +100,13 @@
     
     /// ---------------------------------------------------------------
 
+        #include "math/polynomials/hermite.hpp"
+        #include "math/polynomials/legendre.hpp"
+        #include "math/polynomials/chebyshev.hpp"
+        // #include "math/polynomials/laguerre.hpp"
+
+    /// ---------------------------------------------------------------
+
     //     #include "math/autodiff.hpp"
     //     #include "math/calculus/derivative.hpp" // @todo
 
@@ -106,7 +117,8 @@
 
     /// ---------------------------------------------------------------
 
-        #include "math/calculus/integrals.hpp"  
+        #include "math/calculus/integrals/integrals.hpp"
+        #include "math/calculus/integrals/gauss.hpp"  
 
     /// ---------------------------------------------------------------
 
@@ -124,12 +136,9 @@
 
     /// ---------------------------------------------------------------
 
-    // //     #include "math/polynomial/hermite.hpp"
-
-    /// ---------------------------------------------------------------
-
         #include "tools/io.hpp"
         #include "tools/timer.hpp"
+        #include "tools/plot.hpp"
         // #include "tools/bench.hpp"
 
 #endif

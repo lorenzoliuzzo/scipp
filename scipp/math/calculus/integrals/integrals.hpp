@@ -315,40 +315,108 @@ namespace scipp::math {
         }
 
 
-        // template <std::size_t steps = 1000, typename CURVE_TYPE> 
-        //     requires (math::is_curve_v<CURVE_TYPE>)
-        // static constexpr auto length(const CURVE_TYPE& curve, physics::scalar_m incr_der = 1.e-6) noexcept 
-        //     -> typename CURVE_TYPE::point_type::measurement_t {
-
-        //     typename CURVE_TYPE::point_type::measurement_t total_sum; 
-
-        //     // auto d_curve = total_derivative(curve); // @todo
-        //     for (std::size_t i{}; i < steps; ++i) {
-
-        //         physics::scalar_m t = static_cast<double>(i) / static_cast<double>(steps);
-        //         total_sum += op::norm((curve(t + incr_der) - curve(t)) / incr_der);
-
-        //     }
-
-        //     return total_sum / static_cast<double>(steps);        
-
-        // }
 
 
-        // template <typename FUNCTION_TYPE> 
-        //     requires (meta::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        // static constexpr auto volumetric(const FUNCTION_TYPE& f, 
-        //                                  const curve<typename FUNCTION_TYPE::arg_t>& curve,
-        //                                  std::size_t steps = 1000, 
-        //                                  physics::scalar_m incr_der = 1.e-6) 
+// # compute the n smallest eigenvalues of the symmetric tridiagonal matrix H
+// # (defined from b as in eigpoly) using a Newton iteration
+// # on det(H - lambda I).  Unlike eig, handles BigFloat.
+// function eignewt(b,m,n)
+//     # get initial guess from eig on Float64 matrix
+//     H = SymTridiagonal(zeros(m), Float64[ b[i] for i in 1:m-1 ])
+//     lambda0 = sort(eigvals(H))
 
-        //     -> meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
+//     lambda = Array{eltype(b)}(undef, n)
+//     for i = 1:n
+//         lambda[i] = lambda0[i]
+//         for k = 1:1000
+//             (p,pderiv) = eigpoly(b,lambda[i],m)
+//             δλ = p / pderiv # may be NaN or Inf if pderiv underflows to 0.0
+//             if isfinite(δλ)
+//                 lambda[i] -= δλ
+//                 if abs(δλ) ≤ 10 * eps(lambda[i])
+//                     # do one final Newton iteration for luck and profit:
+//                     δλ = (/)(eigpoly(b,lambda[i],m)...) # = p / pderiv
+//                     isfinite(δλ) && (lambda[i] -= δλ)
+//                 end
+//             else
+//                 break
+//             end
+//         end
+//     end
+//     return lambda
 
-        //     meta::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
+// # given an eigenvalue z and the matrix H(b) from above, return
+// # the corresponding eigenvector, normalized to 1.
+// function eigvec1(b,z::Number,m=length(b)+1)
+//     # "cheat" and use the fact that our eigenvector v must have a
+//     # nonzero first entries (since it is a quadrature weight), so we
+//     # can set v[1] = 1 to solve for the rest of the components:.
+//     v = Array{eltype(b)}(undef, m)
+//     v[1] = 1
+//     if m > 1
+//         s = v[1]
+//         v[2] = z * v[1] / b[1]
+//         s += v[2]^2
+//         for i = 3:m
+//             v[i] = - (b[i-2]*v[i-2] - z*v[i-1]) / b[i-1]
+//             s += v[i]^2
+//         end
+//         rmul!(v, 1 / sqrt(s))
+//     end
+//     return v
 
 
 
-        // }
+//         template <std::size_t N, typename FUNCTION_TYPE>
+//             requires (is_function_v<FUNCTION_TYPE>)
+//         inline static constexpr auto gauss_points(const FUNCTION_TYPE& func) noexcept {
+
+//             using result_t = std::pair<geometry::vector<typename FUNCTION_TYPE::result_t, N>, 
+//                                        geometry::vector<typename FUNCTION_TYPE::arg_t, N>; 
+
+//             result_t result;
+            
+//             for (std::size_t i{}; i < N - 1; ++i)
+//                 result[0][i] = static_cast<double>(i) / op::sqrt(4.0 * op::square(i) - 1.0); 
+
+//             auto x = eigen_newton(b, N, N); 
+            
+//             for (std::size_t i{}; i < N; ++i)
+//                 result[1][i] = 2.0 * op::square(eigein_vec1(b, x[i])[1]); 
+
+//             return result; 
+
+//         }
+        
+
+//         template <std::size_t N, typename FUNCTION_TYPE>
+//             requires (is_function_v<FUNCTION_TYPE>)
+//         inline static constexpr auto gauss_points(const FUNCTION_TYPE& func, 
+//                                                   const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept {
+
+//             using result_t = std::pair<geometry::vector<typename FUNCTION_TYPE::result_t, N>, 
+//                                        geometry::vector<typename FUNCTION_TYPE::arg_t, N>; 
+
+//             typename FUNCTION_TYPE::arg_t h = (I.end - I.start) / 2.;
+//             result_t gauss_mat = gauss_points<N>(func); 
+//             gauss_mat[0] = result_t(I.start) + (gauss_mat[0] + result_t::one) * h;
+//             gauss_mat[1] *= op::abs(h)
+            
+//             return gauss_mat;
+
+//         }
+
+
+//         template <std::size_t N, typename FUNCTION_TYPE>
+//             requires (is_function_v<FUNCTION_TYPE>)
+//         inline static constexpr auto gauss(const FUNCTION_TYPE& func, 
+//                                            const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept {
+
+//             auto gauss_mat = gauss_points<N>(func, I);
+//             return op::dot(gauss_mat[0], gauss_mat[1]);
+
+//         }
+                                        
 
 
 

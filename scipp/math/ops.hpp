@@ -264,6 +264,18 @@ namespace scipp::math {
         }
 
 
+        template <typename NUMBER_TYPE>
+            requires (is_number_v<NUMBER_TYPE>)
+        inline static constexpr NUMBER_TYPE factorial(NUMBER_TYPE x) noexcept {
+
+            if (x == 0) 
+                return 1;
+
+            return x * factorial(x - 1);
+
+        };
+
+
     } // namespace op
 
 

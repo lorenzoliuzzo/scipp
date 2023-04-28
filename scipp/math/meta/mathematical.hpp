@@ -1802,21 +1802,6 @@ namespace scipp::math {
             };
 
 
-        // template <std::size_t N>
-        // struct factorial : unary_function<physics::scalar_m, physics::scalar_m> {
-
-        //     constexpr physics::scalar_m operator()(const physics::scalar_m& x) const noexcept override {
-
-        //         if constexpr (N == 0) 
-        //             return 1;
-        //         else
-        //             return N * factorial<N - 1>(x);
-
-        //     }
-
-        // };
-
-
     } // namespace functions
     
 

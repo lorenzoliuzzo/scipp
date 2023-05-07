@@ -391,7 +391,7 @@ namespace scipp::physics {
             template <typename UMEAS_TYPE> 
                 requires (is_umeasurement_v<UMEAS_TYPE>)
             constexpr auto operator*=(const UMEAS_TYPE& other) noexcept 
-                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE>& { 
+                -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
                 double result = this->value * other.value;
                 double runc1 = this->uncertainty / this->value;
@@ -410,7 +410,7 @@ namespace scipp::physics {
             template <typename UMEAS_TYPE> 
                 requires (is_umeasurement_v<UMEAS_TYPE>)
             constexpr auto operator*=(UMEAS_TYPE&& other) noexcept 
-                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE>& { 
+                -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
                 double result = this->value * std::move(other.value);
                 double runc1 = this->uncertainty / this->value;
@@ -428,7 +428,7 @@ namespace scipp::physics {
             template <typename MEAS_TYPE> 
                 requires (is_measurement_v<MEAS_TYPE>)
             constexpr auto operator*=(const MEAS_TYPE& other) noexcept 
-                -> math::meta::multiply_t<umeasurement, MEAS_TYPE>& { 
+                -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
                 this->value *= other.value;
                 this->uncertainty *= std::fabs(other.value);
@@ -441,7 +441,7 @@ namespace scipp::physics {
             template <typename MEAS_TYPE> 
                 requires (is_measurement_v<MEAS_TYPE>)
             constexpr auto operator*=(MEAS_TYPE&& other) noexcept 
-                -> math::meta::multiply_t<umeasurement, MEAS_TYPE>& { 
+                -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
                 this->value *= std::move(other.value);
                 this->uncertainty *= std::fabs(std::move(other.value));
@@ -455,7 +455,7 @@ namespace scipp::physics {
             template <typename UMEAS_TYPE> 
                 requires (is_umeasurement_v<UMEAS_TYPE>)
             constexpr auto operator*(const UMEAS_TYPE& other) const noexcept 
-                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE> { 
+                -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = other.uncertainty / other.value;
@@ -471,7 +471,7 @@ namespace scipp::physics {
             template <typename UMEAS_TYPE> 
                 requires (is_umeasurement_v<UMEAS_TYPE>)
             constexpr auto operator*(UMEAS_TYPE&& other) const noexcept 
-                -> math::meta::multiply_t<umeasurement, UMEAS_TYPE> { 
+                -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
                 double runc1 = this->uncertainty / this->value;
                 double runc2 = std::move(other.uncertainty) / std::move(other.value);

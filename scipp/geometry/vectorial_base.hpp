@@ -15,7 +15,7 @@
 namespace scipp::geometry {
 
 
-    template <typename VEC_TYPE, std::size_t DIM>
+    template <typename VEC_TYPE, size_t DIM>
         requires (is_vector_v<VEC_TYPE>)
     struct vectorial_base {
 
@@ -29,7 +29,7 @@ namespace scipp::geometry {
         using measurement_t = typename vector_t::measurement_t;
 
 
-        static inline constexpr std::size_t dim = DIM;
+        static inline constexpr size_t dim = DIM;
 
 
         data_t data;
@@ -81,7 +81,7 @@ namespace scipp::geometry {
         }
 
 
-        constexpr const vector_t& operator[](const std::size_t index) const noexcept {
+        constexpr const vector_t& operator[](const size_t index) const noexcept {
 
             return data[index];
 
@@ -90,7 +90,7 @@ namespace scipp::geometry {
 
         constexpr bool is_normalized() const noexcept {
 
-            for (std::size_t i{}; i < dim; ++i) 
+            for (size_t i{}; i < dim; ++i) 
                 if (math::op::norm(this->data.column(i)) != measurement_t::one)
                     return false;
 
@@ -104,7 +104,7 @@ namespace scipp::geometry {
             if (!this->is_normalized()) {
 
                 data_t result; 
-                for (std::size_t i{}; i < dim; ++i) 
+                for (size_t i{}; i < dim; ++i) 
                     result[i] = math::op::normalize(data[i]);
 
                 return result;
@@ -132,7 +132,7 @@ namespace scipp::geometry {
     }; // struct base
 
 
-    // template <typename VEC_TYPE, std::size_t DIM>
+    // template <typename VEC_TYPE, size_t DIM>
     //     requires (is_vector_v<VEC_TYPE>)
     // struct onb : public vectorial_base<VEC_TYPE, DIM> {
 
@@ -146,13 +146,13 @@ namespace scipp::geometry {
     //     // using measurement_t = typename VEC_TYPE::measurement_type;
 
 
-    //     // static inline constexpr std::size_t dim = DIM;
+    //     // static inline constexpr size_t dim = DIM;
 
     //     // data_t data;
 
     //     constexpr onb(const base_t& other) {
 
-    //         for (std::size_t i{}; i < DIM; ++i)
+    //         for (size_t i{}; i < DIM; ++i)
     //             if (math::op::norm(other.data.column(i)) != base_t::measurement_t::one)
     //                 throw std::invalid_argument("Cannot initializate an orthonormal basis with non normalized vectors");
         
@@ -163,7 +163,7 @@ namespace scipp::geometry {
 
     //     constexpr onb(base_t&& other) {
 
-    //         for (std::size_t i{}; i < DIM; ++i)
+    //         for (size_t i{}; i < DIM; ++i)
     //             if (math::op::norm(other.data.column(i)) != base_t::measurement_t::one)
     //                 throw std::invalid_argument("Cannot initializate an orthonormal basis with non normalized vectors");
             
@@ -179,7 +179,7 @@ namespace scipp::geometry {
     //     //         throw std::invalid_argument("Cannot initializate an vectorial base with matrix of linear dependent vectors");
 
     //     //     else
-    //     //         for (std::size_t i{}; i < DIM; ++i)
+    //     //         for (size_t i{}; i < DIM; ++i)
     //     //             if (math::op::norm(other.column(i)) != base_t::measurement_t::one)
     //     //                 throw std::invalid_argument("Cannot initializate an orthonormal basis with non normalized vectors");
             
@@ -194,7 +194,7 @@ namespace scipp::geometry {
     //     //         throw std::invalid_argument("Cannot initializate an vectorial base with matrix of linear dependent vectors");
 
     //     //     else
-    //     //         for (std::size_t i{}; i < DIM; ++i)
+    //     //         for (size_t i{}; i < DIM; ++i)
     //     //             if (math::op::norm(other.column(i)) != base_t::measurement_t::one)
     //     //                 throw std::invalid_argument("Cannot initializate an orthonormal basis with non normalized vectors");
             

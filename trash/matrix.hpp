@@ -24,9 +24,9 @@
         // members
         // ===========================================================            
 
-            inline static constexpr std::size_t rows = common_dimension_v<VECTOR_TYPES...>;
+            inline static constexpr size_t rows = common_dimension_v<VECTOR_TYPES...>;
 
-            inline static constexpr std::size_t columns = COLUMNS;
+            inline static constexpr size_t columns = COLUMNS;
 
             types_tuple_t<columns, VECTOR_TYPES...> data; 
 
@@ -126,7 +126,7 @@
 
 
             /// @brief Get the column at index
-            template <std::size_t index>
+            template <size_t index>
                 requires (index < columns)
             constexpr auto& column() {
                                     
@@ -135,7 +135,7 @@
             }
 
             /// @brief Get the column at index
-            template <std::size_t index>
+            template <size_t index>
                 requires (index < columns)
             constexpr auto& column() const {
 
@@ -148,7 +148,7 @@
 
 
             /// @brief Get the row at index
-            template <std::size_t index>
+            template <size_t index>
                 requires (index < rows && are_same_vectors_v<VECTOR_TYPES...>)
             constexpr auto row() const 
                 -> vector<std::common_type_t<typename VECTOR_TYPES::measurement_t...>, columns> {
@@ -163,7 +163,7 @@
 
 
             /// @brief Get the element at row and column
-            template <std::size_t row_i, std::size_t col_j>
+            template <size_t row_i, size_t col_j>
                 requires (row_i < rows && col_j < columns)
             constexpr auto& element() noexcept {
 
@@ -172,7 +172,7 @@
             }
 
             /// @brief Get the element at row and column
-            template <std::size_t row_i, std::size_t col_j>
+            template <size_t row_i, size_t col_j>
                 requires (row_i < rows && col_j < columns)
             constexpr auto& element() const noexcept { 
 
@@ -347,9 +347,9 @@
             template <typename MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<MEAS_TYPE>)
             constexpr auto operator*(const MEAS_TYPE& other) const noexcept 
-                -> matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> {
+                -> matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> {
 
-                matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
+                matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
 
                 std::apply(
                     [&](const auto&... components) -> void {
@@ -366,9 +366,9 @@
             template <typename MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<MEAS_TYPE>)
             constexpr auto operator*(MEAS_TYPE&& other) const noexcept 
-                -> matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> {
+                -> matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> {
 
-                matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
+                matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
 
                 std::apply(
                     [&](const auto&... components) -> void {
@@ -424,7 +424,7 @@
                 requires (physics::is_generic_measurement_v<MEAS_TYPE>)
             friend constexpr auto operator*(const MEAS_TYPE& value, const matrix& mat) noexcept {
 
-                matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
+                matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
 
                 std::apply(
                     [&](const auto&... components) -> void {
@@ -440,7 +440,7 @@
                 requires (physics::is_generic_measurement_v<MEAS_TYPE>)
             friend constexpr auto operator/(const MEAS_TYPE& value, const matrix& mat) noexcept {
 
-                matrix<columns, vector<math::meta::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
+                matrix<columns, vector<math::multiply_t<typename VECTOR_TYPES::measurement_t, MEAS_TYPE>, rows>...> result; 
 
                 std::apply(
                     [&](const auto&... components) -> void {
@@ -453,7 +453,7 @@
             }
 
 
-            template <std::size_t INDEX, typename VECTOR_TYPE>
+            template <size_t INDEX, typename VECTOR_TYPE>
                 requires (geometry::is_vector_v<VECTOR_TYPE> && VECTOR_TYPE::dim == rows && INDEX < rows)
             constexpr auto row_vector_product(const VECTOR_TYPE& other) const noexcept {
                 
@@ -469,7 +469,7 @@
                 
                 using common_type = std::common_type_t<typename VECTOR_TYPES::measurement_t...>;
 
-                vector<math::meta::multiply_t<common_type, typename VECTOR_TYPE::measurement_t>, rows> result;
+                vector<math::multiply_t<common_type, typename VECTOR_TYPE::measurement_t>, rows> result;
 
                 // std::apply([&](auto i) {
                 //     result[i] = dot(this->row<i>(), other);
@@ -509,7 +509,7 @@
 
 
             // /// @brief Multiplicate this matrix by a vector
-            // template <std::size_t COL_INDEX, typename VECTOR_TYPE>
+            // template <size_t COL_INDEX, typename VECTOR_TYPE>
             //     requires (geometry::is_vector_v<VECTOR_TYPE> && VECTOR_TYPE::dim == rows)
             // constexpr auto column_vector_product(const VECTOR_TYPE& other) const noexcept 
             //     -> typename VECTOR_TYPE::measurement_t {
@@ -518,12 +518,12 @@
 
             // }
 
-            // template <typename VECTOR_TYPE, std::size_t... COLS>
+            // template <typename VECTOR_TYPE, size_t... COLS>
             //     requires (geometry::is_vector_v<VECTOR_TYPE> && VECTOR_TYPE::dim == rows)
             // constexpr auto matrix_vector_product_impl(const VECTOR_TYPE& other, std::index_sequence<COLS...>) const noexcept 
-            //     -> vector<math::meta::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>, rows> {
+            //     -> vector<math::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>, rows> {
 
-            //     using result_measurement_t = math::meta::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>;
+            //     using result_measurement_t = math::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>;
 
             //     return vector<result_measurement_t, rows>{column_vector_product<COLS>(other)...};
             // }
@@ -531,7 +531,7 @@
             // template <typename VECTOR_TYPE>
             //     requires (geometry::is_vector_v<VECTOR_TYPE> && VECTOR_TYPE::dim == rows)
             // constexpr auto operator*(const VECTOR_TYPE& other) const noexcept 
-            //     -> vector<math::meta::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>, rows> {
+            //     -> vector<math::multiply_t<std::common_type_t<typename VECTOR_TYPES::measurement_t..., typename VECTOR_TYPE::measurement_t>, typename VECTOR_TYPE::dim>, rows> {
 
             //     return matrix_vector_product_impl(other, std::make_index_sequence<columns>{});
 

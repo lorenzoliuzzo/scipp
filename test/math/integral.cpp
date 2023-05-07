@@ -21,7 +21,7 @@ using namespace tools;
 
 template <typename MEAS_TYPE>
     requires (is_generic_measurement_v<MEAS_TYPE>)
-struct andrea : meta::unary_function<MEAS_TYPE, MEAS_TYPE> {
+struct andrea : unary_function<MEAS_TYPE, MEAS_TYPE> {
 
     constexpr MEAS_TYPE f(const MEAS_TYPE& x) const noexcept override {
 
@@ -33,7 +33,7 @@ struct andrea : meta::unary_function<MEAS_TYPE, MEAS_TYPE> {
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC : meta::unary_function<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
+struct myFUNC : unary_function<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
     constexpr meta::square_t<typename VECTOR_TYPE::measurement_t> f(const VECTOR_TYPE& other) const noexcept override {
 
@@ -46,7 +46,7 @@ struct myFUNC : meta::unary_function<meta::square_t<typename VECTOR_TYPE::measur
 
 template <typename VECTOR_TYPE>
     requires (is_vector_v<VECTOR_TYPE>)
-struct myFUNC2 : meta::unary_function<meta::invert_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
+struct myFUNC2 : unary_function<meta::invert_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE> {
 
     constexpr meta::invert_t<typename VECTOR_TYPE::measurement_t> f(const VECTOR_TYPE& other) const noexcept override {
 
@@ -72,8 +72,8 @@ struct myFUNC2 : meta::unary_function<meta::invert_t<typename VECTOR_TYPE::measu
 
 int main() {
 
-    meta::multiply_t<double, length_m> a(2.0); 
-    meta::multiply_t<length_m, double> b(1.0); 
+    multiply_t<double, length_m> a(2.0); 
+    multiply_t<length_m, double> b(1.0); 
     print(a); 
     print(b); 
 
@@ -86,11 +86,11 @@ int main() {
     print(p); 
     print(x); 
 
-    meta::multiply_t<position2, length_m> c; 
+    multiply_t<position2, length_m> c; 
     print(c); 
-    meta::multiply_t<position2, double> c0; 
+    multiply_t<position2, double> c0; 
     print(c0); 
-    meta::multiply_t<double, position2> c3; 
+    multiply_t<double, position2> c3; 
     print(c3); 
     meta::divide_t<position2, length_m> c2;
     print(c2); 

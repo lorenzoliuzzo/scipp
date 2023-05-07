@@ -13,12 +13,12 @@ namespace scipp::tools {
 
 
     template <typename FUNC_TYPE>
-        requires (math::meta::is_unary_function_v<FUNC_TYPE>)
+        requires (math::is_unary_function_v<FUNC_TYPE>)
     void plot(const FUNC_TYPE& func, const math::interval<typename FUNC_TYPE::arg_t>& I, uint points) noexcept {
 
         std::vector<double> x(points), y(points);
         auto incr = (I.end - I.start) / static_cast<double>(points);
-        for (std::size_t i = 0; i < points; ++i) {
+        for (size_t i = 0; i < points; ++i) {
             x[i] = I.start + i * incr;
             y[i] = func(x[i]);
         }
@@ -28,12 +28,12 @@ namespace scipp::tools {
     }
 
     template <typename FUNC_TYPE>
-        requires (math::meta::is_unary_function_v<FUNC_TYPE>)
+        requires (math::is_unary_function_v<FUNC_TYPE>)
     void plot(const FUNC_TYPE& func, const math::interval<typename FUNC_TYPE::arg_t>& I, uint points, std::string label) noexcept {
 
         std::vector<double> x(points), y(points);
         auto incr = (I.end - I.start) / static_cast<double>(points);
-        for (std::size_t i = 0; i < points; ++i) {
+        for (size_t i = 0; i < points; ++i) {
             x[i] = I.start + i * incr;
             y[i] = func(x[i]);
         }

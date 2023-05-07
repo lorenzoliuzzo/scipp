@@ -29,16 +29,16 @@ int main(int argc, char** argv) {
 
     timer sw; 
 
-    std::size_t max_index = std::atoi(argv[1]);
+    size_t max_index = std::atoi(argv[1]);
     auto x_values = linspace<100>(static_cast<scalar_m>(std::atof(argv[2])), 
                                   static_cast<scalar_m>(std::atof(argv[3])));
         
-    for (std::size_t i = 0; i < max_index; ++i) {
+    for (size_t i = 0; i < max_index; ++i) {
 
         vector<scalar_m, x_values.dim> v;    
 
         sw.start();
-        for (std::size_t j = 0; j < x_values.dim; ++j)
+        for (size_t j = 0; j < x_values.dim; ++j)
             v[j] = hermite(i, x_values[j].value); 
         sw.stop();
 

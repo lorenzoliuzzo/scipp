@@ -92,13 +92,13 @@ namespace scipp::math {
         }
 
 
-        constexpr arg_t step(std::size_t N) const noexcept {
+        constexpr arg_t step(size_t N) const noexcept {
                 
             return (end - start) / static_cast<double>(N);
     
         }
 
-        template <std::size_t N>
+        template <size_t N>
         constexpr arg_t step() const noexcept {
                 
             return (end - start) / static_cast<double>(N);

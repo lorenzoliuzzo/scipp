@@ -14,7 +14,7 @@ namespace scipp::math {
 
     template <typename POINT_TYPE>      
         requires (geometry::is_vector_v<POINT_TYPE> || physics::is_cmeasurement_v<POINT_TYPE>)
-    struct curve : virtual meta::nary_function<POINT_TYPE, POINT_TYPE::dim - 1, double> {
+    struct curve : virtual nary_function<POINT_TYPE, POINT_TYPE::dim - 1, double> {
 
 
         using _t = curve<POINT_TYPE>;
@@ -24,7 +24,7 @@ namespace scipp::math {
         using args_t = std::array<double, POINT_TYPE::dim - 1>;
 
 
-        inline static constexpr std::size_t dimension = POINT_TYPE::dim - 1;
+        inline static constexpr size_t dimension = POINT_TYPE::dim - 1;
 
 
         // template <typename... PARAMs>
@@ -68,7 +68,16 @@ namespace scipp::math {
 
     }; // struct curve 
         
-        
+
+    template <typename T>
+    struct is_curve : std::false_type {};
+
+    template <typename POINT_TYPE>
+    struct is_curve<curve<POINT_TYPE>> : std::true_type {};
+
+    template <typename T>
+    inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
+
 
     template <typename POINT_TYPE>
         requires (POINT_TYPE::dim == 2)

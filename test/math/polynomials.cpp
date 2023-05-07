@@ -15,6 +15,7 @@
 using namespace scipp; 
 using namespace math; 
 using namespace polynomials;
+using namespace geometry;
 using namespace tools;
 
 
@@ -26,7 +27,7 @@ void hermite_polynomials() {
     auto hermite3 = hermite<3>(); 
     auto hermite4 = hermite<4>(); 
     auto hermite5 = hermite<5>(); 
-    auto hermite6 = hermite<6>(); 
+    // auto hermite6 = hermite<6>(); 
 
     plot(hermite0, interval(-5., 5.), 1000, "hermite0");
     plot(hermite1, interval(-5., 5.), 1000, "hermite1");
@@ -34,7 +35,7 @@ void hermite_polynomials() {
     plot(hermite3, interval(-5., 5.), 1000, "hermite3");
     plot(hermite4, interval(-5., 5.), 1000, "hermite4");
     plot(hermite5, interval(-5., 5.), 1000, "hermite5");
-    plot(hermite6, interval(-5., 5.), 1000, "hermite6");
+    // plot(hermite6, interval(-5., 5.), 1000, "hermite6");
     plt::legend();
     plt::title("Hermite polynomials"); 
     plt::show(); 
@@ -83,7 +84,7 @@ void chebyshev_polynomials() {
     plot(chebyshev2, interval(-1., 1.), 1000, "chebyshev2");
     plot(chebyshev3, interval(-1., 1.), 1000, "chebyshev3");
     plot(chebyshev4, interval(-1., 1.), 1000, "chebyshev4");
-    // plot(chebyshev5, interval(-1., 1.), 1000, "chebyshev5");
+    plot(chebyshev5, interval(-1., 1.), 1000, "chebyshev5");
     // plot(chebyshev6, interval(-1., 1.), 1000, "chebyshev6");
     plt::legend();
     plt::title("chebyshev polynomials of 1st type"); 
@@ -113,8 +114,23 @@ void chebyshev_polynomials() {
 
 
 int main() {
+    
+    // hermite_polynomials();
+    // legendre_polynomials();
+    // chebyshev_polynomials();
 
-    chebyshev_polynomials();
+
+    // test the find_roots function
+    auto coeff = make_vector<double>(-9.0, 0.0, 1.0); // increasing power
+
+    // std::complex<double> x = 1.0; 
+    // auto eval = eval_polynomial(coeff, x); 
+    // print("eval", eval);
+
+    auto roots = roots_newton(coeff);
+
+    for (auto root : roots.data) 
+        std::cout << "root: " << root << std::endl; 
 
     return 0; 
 

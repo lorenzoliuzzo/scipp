@@ -106,7 +106,7 @@ namespace scipp::math {
         // }; // struct derivative
 
 
-        // template <std::size_t ORDER>
+        // template <size_t ORDER>
         // struct auto_derivative {
 
         //     template <typename FUNCTION, typename... DERIV_TYPES>

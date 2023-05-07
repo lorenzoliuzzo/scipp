@@ -67,7 +67,7 @@ int main() {
     matrix<position3, 200> s_pts;
     
 
-    for (std::size_t i{}; i < 200; ++i) {
+    for (size_t i{}; i < 200; ++i) {
 
         angles[i] = static_cast<double>(i) / 200.;
         circle_pts.column(i) = c(angles[i]);
@@ -114,7 +114,7 @@ int main() {
 
     // auto s_pts = linspace<50>(s);
 
-    // for (std::size_t i{}; i < s_pts.columns; ++i)
+    // for (size_t i{}; i < s_pts.columns; ++i)
     //     print(std::to_string(i), s_pts.column(i)); 
 
 

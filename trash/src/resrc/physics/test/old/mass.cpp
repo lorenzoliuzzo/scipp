@@ -19,9 +19,9 @@ int main(int argc, char** argv) {
     mass_system sys2D(position(10 * m, 10 * m));
     tools::random_generator rg; 
 
-    std::size_t N = std::atoi(argv[1]);
+    size_t N = std::atoi(argv[1]);
 
-    for (std::size_t i{}; i < N; i++) 
+    for (size_t i{}; i < N; i++) 
         sys2D.add_mass(mass(rg.unif(100000., 10000000) * kg, 
                        position(rg.unif(-1000, 1000) * km, rg.unif(-1000, 1000) * km), 
                        linear_velocity(rg.unif(-5, 5) * km_s, rg.unif(-5, 5) * km_s))); 
@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
     // }
 
     // mass_system<3> sys3D; 
-    // for (std::size_t i{}; i < N; i++) 
+    // for (size_t i{}; i < N; i++) 
     //     sys3D.add_mass(mass(rg.unif(100., 10000) * kg, position(rg.unif(-10, 10) * km, rg.unif(-10, 10) * km, rg.unif(-10, 10) * km))); 
 
     // sys3D.baricenter().print(); 

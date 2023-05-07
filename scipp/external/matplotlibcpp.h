@@ -416,7 +416,7 @@ PyObject* get_array(const std::vector<Numeric>& v)
 inline PyObject * get_array(const std::vector<std::string>& strings)
 {
   PyObject* list = PyList_New(strings.size());
-  for (std::size_t i = 0; i < strings.size(); ++i) {
+  for (size_t i = 0; i < strings.size(); ++i) {
     PyList_SetItem(list, i, PyString_FromString(strings[i].c_str()));
   }
   return list;
@@ -427,7 +427,7 @@ template<typename Numeric>
 PyObject* get_listlist(const std::vector<std::vector<Numeric>>& ll)
 {
   PyObject* listlist = PyList_New(ll.size());
-  for (std::size_t i = 0; i < ll.size(); ++i) {
+  for (size_t i = 0; i < ll.size(); ++i) {
     PyList_SetItem(listlist, i, get_array(ll[i]));
   }
   return listlist;
@@ -1270,7 +1270,7 @@ bool bar(const std::vector<Numeric> &               y,
   detail::_interpreter::get();
 
   std::vector<T> x;
-  for (std::size_t i = 0; i < y.size(); i++) { x.push_back(i); }
+  for (size_t i = 0; i < y.size(); i++) { x.push_back(i); }
 
   return bar(x, y, ec, ls, lw, keywords);
 }

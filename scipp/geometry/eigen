@@ -1,0 +1,42 @@
+#include <cmath>
+#include <limits>
+#include <vector>
+
+using matrix = std::vector<std::vector<double>>;
+using vector = std::vector<double>;
+
+// Power iteration algorithm
+void power_iteration(const matrix& A, vector& x, double& lambda, int max_iterations, double tolerance) {
+    int iterations = 0;
+    int n = A.size();
+    double diff = std::numeric_limits<double>::max();
+
+    while (iterations < max_iterations && diff > tolerance) {
+        // Store the previous x for comparison
+        vector x_prev = x;
+
+        // Multiply A by x
+        x = matrix_vector_multiply(A, x);
+
+        // Calculate the norm of the resulting vector
+        double norm = vector_norm(x);
+
+        // Normalize the vector
+        for (int i = 0; i < n; i++) {
+            x[i] /= norm;
+        }
+
+        // Calculate the eigenvalue estimate
+        lambda = vector_dot_product(x, x_prev) / vector_dot_product(x_prev, x_prev);
+
+        // Calculate the difference between the previous and current x
+        diff = vector_norm(vector_subtract(x, x_prev));
+
+        // Increment the iteration counter
+        iterations++;
+    }
+}
+
+
+
+

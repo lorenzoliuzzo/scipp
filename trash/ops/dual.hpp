@@ -41,7 +41,7 @@ namespace scipp::math {
         }
 
 
-        template <typename MEAS_TYPE, std::size_t POWER>
+        template <typename MEAS_TYPE, size_t POWER>
             requires (is_dual_measurement_v<MEAS_TYPE>)
         static inline constexpr auto pow(const MEAS_TYPE& other) noexcept 
             -> dual<meta::pow_t<typename MEAS_TYPE::measurement_t, POWER>> {

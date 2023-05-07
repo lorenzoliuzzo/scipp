@@ -21,8 +21,8 @@ using namespace geometry;
 int main() {
 
 
-    // std::cout << meta::multiply_t<units::metre, units::second>::to_string() << " -> m s" << std::endl;
-    // std::cout << meta::multiply_t<units::metre, units::second, units::second>::to_string() << " -> m s^2" << std::endl;
+    // std::cout << multiply_t<units::metre, units::second>::to_string() << " -> m s" << std::endl;
+    // std::cout << multiply_t<units::metre, units::second, units::second>::to_string() << " -> m s^2" << std::endl;
     // std::cout << meta::divide_t<units::second, units::second>::to_string() << " -> " << std::endl;
     // std::cout << meta::pow_t<units::metre, 3>::to_string() << " -> m^3" << std::endl;
     // std::cout << meta::pow_t<units::metre, 2>::to_string() << " -> m^2" << std::endl;

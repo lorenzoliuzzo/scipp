@@ -39,7 +39,7 @@ namespace scipp::math {
 
             geometry::vector<meta::invert_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
-            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+            for (size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result.data[i] = op::inv(vec.data[i]);
 
             return result;
@@ -55,7 +55,7 @@ namespace scipp::math {
 
             VECTOR_TYPE result;
 
-            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+            for (size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result.data[i] = op::abs(vec.data[i]);
 
             return result;
@@ -73,7 +73,7 @@ namespace scipp::math {
 
         //     geometry::vector<auto, VECTOR_TYPE::dim> result;
 
-        //     for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+        //     for (size_t i{}; i < VECTOR_TYPE::dim; ++i) 
         //         result.data[i] = op::pow<POWER>(vec.data[i]);
 
         //     return result;
@@ -91,7 +91,7 @@ namespace scipp::math {
 
         //     vector<units::base_invert_t<BASE>, DIM> result;
 
-        //     for (std::size_t i{}; i < DIM; ++i) 
+        //     for (size_t i{}; i < DIM; ++i) 
         //         result[i] = op::abs(vec[i]);
 
         //     return result;
@@ -110,7 +110,7 @@ namespace scipp::math {
 
         // //     vector<units::base_pow_t<BASE, power>, DIM> result;
 
-        // //     for (std::size_t i{}; i < DIM; ++i) 
+        // //     for (size_t i{}; i < DIM; ++i) 
         // //         result[i] = op::pow(vec[i], power);
 
         // //     return result;
@@ -130,7 +130,7 @@ namespace scipp::math {
 
             std::array<meta::square_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
-            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+            for (size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result[i] = op::square(vec.data[i]);
 
             return result;
@@ -144,7 +144,7 @@ namespace scipp::math {
 
             std::array<meta::sqrt_t<typename VECTOR_TYPE::measurement_t>, VECTOR_TYPE::dim> result;
 
-            for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) 
+            for (size_t i{}; i < VECTOR_TYPE::dim; ++i) 
                 result[i] = op::sqrt(vec.data[i]);
 
             return result;
@@ -161,7 +161,7 @@ namespace scipp::math {
 
         //     vector<units::base_pow_t<BASE, 3>, DIM> result;
 
-        //     for (std::size_t i{}; i < DIM; ++i) 
+        //     for (size_t i{}; i < DIM; ++i) 
         //         result[i] = op::cube(vec[i]);
 
         //     return result;
@@ -179,7 +179,7 @@ namespace scipp::math {
 
         //     vector<units::base_root_t<BASE, 2>, DIM> result;
 
-        //     for (std::size_t i{}; i < DIM; ++i) 
+        //     for (size_t i{}; i < DIM; ++i) 
         //         result[i] = op::sqrt(vec[i]);
 
         //     return result;
@@ -197,7 +197,7 @@ namespace scipp::math {
 
         //     vector<units::base_root_t<BASE, 3>, DIM> result;
 
-        //     for (std::size_t i{}; i < DIM; ++i) 
+        //     for (size_t i{}; i < DIM; ++i) 
         //         result[i] = op::cbrt(vec[i]);
 
         //     return result;

@@ -3,7 +3,7 @@
     // struct types_tuple {
 
     //     using type = std::tuple<Ts...>;
-    //     using size = std::integral_constant<std::size_t, N>;
+    //     using size = std::integral_constant<size_t, N>;
 
     // };
 
@@ -12,7 +12,7 @@
     // template <size_t N, typename T>
     // struct types_tuple<N, T> {
 
-    //     template <std::size_t... Is>
+    //     template <size_t... Is>
     //     static auto create_tuple(std::index_sequence<Is...>) {
 
     //         // Create a tuple with N copies of T
@@ -21,7 +21,7 @@
     //     }
 
     //     using type = decltype(create_tuple(std::make_index_sequence<N>{}));
-    //     using size = std::integral_constant<std::size_t, N>;
+    //     using size = std::integral_constant<size_t, N>;
 
     // };
 

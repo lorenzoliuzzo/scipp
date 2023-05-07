@@ -12,7 +12,7 @@
 namespace scipp::math {
 
 
-    inline static constexpr std::size_t factorial(std::size_t n) noexcept {
+    inline static constexpr size_t factorial(size_t n) noexcept {
 
         if (n == 0) 
             return 1;
@@ -23,7 +23,7 @@ namespace scipp::math {
     }
 
 
-    inline static constexpr std::size_t binomial_coeff(std::size_t i, std::size_t j) noexcept {
+    inline static constexpr size_t binomial_coeff(size_t i, size_t j) noexcept {
 
         if (j > i) 
             return 0;
@@ -286,7 +286,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const dual<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
 
                 return {this->val * other.val, this->val * other.eps + this->eps * other.val};
 
@@ -296,7 +296,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(dual<OTHER_MEAS_TYPE>&& other) const noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
 
                 return {this->val * std::move(other.val), this->val * std::move(other.eps) + this->eps * std::move(other.val)};
 
@@ -397,7 +397,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*=(const OTHER_MEAS_TYPE& other) noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
                 
                 this->val *= other;
                 this->eps *= other;
@@ -410,7 +410,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_measurement_v<OTHER_MEAS_TYPE> && physics::is_scalar_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*=(OTHER_MEAS_TYPE&& other) noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>>& {
                 
                 this->val *= std::move(other);
                 this->eps *= std::move(other);
@@ -495,7 +495,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                     
                 return {this->val * other, this->eps * other};
         
@@ -504,7 +504,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept 
-                -> dual<meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> dual<multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                     
                 return {this->val * std::move(other), this->eps * std::move(other)};
         
@@ -539,7 +539,7 @@ namespace scipp::math {
             template <typename OTHER_MEAS_TYPE>
                 requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator*(const OTHER_MEAS_TYPE& other, const dual<measurement_t>& other_dual) noexcept 
-                -> dual<meta::multiply_t<OTHER_MEAS_TYPE, measurement_t>> {
+                -> dual<multiply_t<OTHER_MEAS_TYPE, measurement_t>> {
                     
                 return {other_dual.val * other, other_dual.eps * other};
         
@@ -581,7 +581,7 @@ namespace scipp::math {
 
 
     /// @brief dual numbers with order N
-    template <typename MEAS_TYPE, std::size_t N>    
+    template <typename MEAS_TYPE, size_t N>    
         requires (physics::is_measurement_v<MEAS_TYPE>)
     struct dual_n {
         
@@ -600,7 +600,7 @@ namespace scipp::math {
 
 
             /// @brief order of the dual number
-            inline static constexpr std::size_t order = N;
+            inline static constexpr size_t order = N;
 
 
         // ==============================================
@@ -698,8 +698,8 @@ namespace scipp::math {
             constexpr dual_n operator*(const dual_n& other) const noexcept {
 
                 derivative_t tmp; 
-                for (std::size_t i{}; i < order; ++i)
-                    for (std::size_t j{}; j < order; ++j)
+                for (size_t i{}; i < order; ++i)
+                    for (size_t j{}; j < order; ++j)
                         if (i + j < order)
                             tmp[i + j] += this->der[i] * other.der[j] * binomial_coeff(i + j, i);
                             
@@ -712,8 +712,8 @@ namespace scipp::math {
             constexpr dual_n operator*(dual_n&& other) const noexcept {
 
                 derivative_t tmp; 
-                for (std::size_t i{}; i < order; ++i)
-                    for (std::size_t j{}; j < order; ++j)
+                for (size_t i{}; i < order; ++i)
+                    for (size_t j{}; j < order; ++j)
                         if (i + j < order)
                             tmp[i + j] += this->der[i] * std::move(other.der[j]) * binomial_coeff(i + j, i);
                             
@@ -729,8 +729,8 @@ namespace scipp::math {
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
 
                 derivative_t tmp; 
-                for (std::size_t i{}; i < order; ++i)
-                    for (std::size_t j{}; j < order; ++j)
+                for (size_t i{}; i < order; ++i)
+                    for (size_t j{}; j < order; ++j)
                         if (i + j < order)
                             tmp[i + j] += this->der[i] * other.der[j] * binomial_coeff(i + j, i);
                             
@@ -746,8 +746,8 @@ namespace scipp::math {
                     throw std::runtime_error("Cannot divide a dual number by a zero measurement");
 
                 derivative_t tmp; 
-                for (std::size_t i{}; i < order; ++i)
-                    for (std::size_t j{}; j < order; ++j)
+                for (size_t i{}; i < order; ++i)
+                    for (size_t j{}; j < order; ++j)
                         if (i + j < order)
                             tmp[i + j] += this->der[i] * std::move(other.der[j]) * binomial_coeff(i + j, i);
                             

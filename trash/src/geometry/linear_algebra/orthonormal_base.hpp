@@ -23,9 +23,9 @@ namespace scipp {
             /**
              * @brief Class to represent an orthonormal base of a vectorial space as a matrix of l.i. normalized vectors
              * 
-             * @tparam DIM: std::size_t dimesion of the vectorial space
+             * @tparam DIM: size_t dimesion of the vectorial space
              */
-            template <std::size_t DIM>
+            template <size_t DIM>
             class orthonormal_base : public base<DIM> {
 
                 
@@ -168,13 +168,13 @@ namespace scipp {
              * 
              * @return orthonormal_base<DIM> 
              */
-            template <std::size_t DIM>
+            template <size_t DIM>
             constexpr orthonormal_base<DIM> extract_orthonormal_base(const matrix<DIM, DIM>& system) noexcept {
 
                 matrix<DIM, DIM> ortho_base(system); 
 
-                for (std::size_t i{}; i < DIM; ++i)
-                    for (std::size_t j{1}; j < i; ++j)
+                for (size_t i{}; i < DIM; ++i)
+                    for (size_t j{1}; j < i; ++j)
                         ortho_base[i] -= system[j].projection(system[i]);
 
                 base<DIM> base(ortho_base);

@@ -2,7 +2,7 @@
  * @file    physics/measurements/unit.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the unit struct and its type traits.
- * @date    2023-04-25
+ * @date    2023-05-06
  * 
  * @copyright Copyright (c) 2023
  */
@@ -93,38 +93,59 @@ namespace scipp::physics {
             }
 
 
-            /// @brief Convert a value from the base unit to another unit 
-            template <typename OTHER_UNIT> 
-                requires(is_same_base_v<base_t, typename OTHER_UNIT::base_t>)
-            static inline constexpr double convert(const double val, const OTHER_UNIT&) noexcept {
+            // /// @brief Convert a value from the base unit to another unit 
+            // template <typename OTHER_UNIT> 
+            //     requires(is_same_base_v<base_t, typename OTHER_UNIT::base_t>)
+            // static inline constexpr double convert(const double val, const OTHER_UNIT&) noexcept {
 
-                return val * mult / OTHER_UNIT::mult; 
+            //     return val * mult / OTHER_UNIT::mult; 
 
-            }
+            // }
 
 
     }; // struct unit
 
 
-    /// @brief Perform a multiplication between unit objects
+    /// @brief Multiply two units
     template <typename UNIT1, typename UNIT2> 
         requires (are_units_v<UNIT1, UNIT2>)
-    constexpr auto operator*(const UNIT1&, const UNIT2&) noexcept 
-        -> math::meta::multiply_t<UNIT1, UNIT2> {
+    inline constexpr auto operator*(const UNIT1&, const UNIT2&) noexcept 
+        -> math::functions::multiply_t<UNIT1, UNIT2> {
 
         return {}; 
         
     } 
 
-    /// @brief Perform a division between unit objects
+    /// @brief Division two units
     template <typename UNIT1, typename UNIT2> 
         requires (are_units_v<UNIT1, UNIT2>)
-    constexpr auto operator/(const UNIT1&, const UNIT2&) noexcept 
-        -> math::meta::divide_t<UNIT1, UNIT2> {
+    inline constexpr auto operator/(const UNIT1&, const UNIT2&) noexcept 
+        -> math::functions::divide_t<UNIT1, UNIT2> {
         
         return {}; 
         
     } 
 
+
+    /// @brief Multiply a double with an unit to get a measurement
+    template <typename NUMBER_TYPE, typename UNIT_TYPE> 
+        requires (math::is_number_v<NUMBER_TYPE> && is_unit_v<UNIT_TYPE>)
+    inline constexpr auto operator*(const NUMBER_TYPE& val, const UNIT_TYPE&) noexcept
+        -> measurement<typename UNIT_TYPE::base_t> { 
+        
+        return static_cast<double>(val) * UNIT_TYPE::mult; 
+        
+    }
+    
+    /// @brief Multiply a double with an unit to get a measurement
+    template <typename NUMBER_TYPE, typename UNIT_TYPE> 
+        requires (math::is_number_v<NUMBER_TYPE> && is_unit_v<UNIT_TYPE>)
+    inline constexpr auto operator*(NUMBER_TYPE&& val, const UNIT_TYPE&) noexcept
+        -> measurement<typename UNIT_TYPE::base_t> { 
+        
+        return std::move(static_cast<double>(val)) * UNIT_TYPE::mult; 
+        
+    }
+    
 
 } // namespace scipp::physics 

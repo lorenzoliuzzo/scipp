@@ -34,11 +34,11 @@ namespace scipp::geometry {
             std::tuple<TYPES...> data_; ///< The matrix data
 
 
-            static inline constexpr std::size_t rows = common_dimention_v<TYPES...>;
+            static inline constexpr size_t rows = common_dimention_v<TYPES...>;
 
-            static inline constexpr std::size_t columns = COLUMNS;
+            static inline constexpr size_t columns = COLUMNS;
 
-            static inline constexpr std::size_t size = rows * columns;
+            static inline constexpr size_t size = rows * columns;
 
 
         // ===========================================================
@@ -91,7 +91,7 @@ namespace scipp::geometry {
             }
 
 
-            template <std::size_t index>
+            template <size_t index>
             inline constexpr auto get_row() noexcept -> decltype(std::get<index>(data_))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
@@ -100,7 +100,7 @@ namespace scipp::geometry {
             }
 
 
-            template <std::size_t index>
+            template <size_t index>
             inline constexpr auto get_column() noexcept -> decltype(std::get<index>(data_))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
@@ -109,7 +109,7 @@ namespace scipp::geometry {
             }
 
 
-            template <std::size_t index>
+            template <size_t index>
             inline constexpr auto get_column() const noexcept -> const decltype(std::get<index>(data_))& {
                 
                 static_assert(index < COLUMNS, "Index out of bounds");
@@ -283,7 +283,7 @@ namespace scipp::geometry {
     // RESULT gauss_elimination(const MATRIX& A, const VECTOR& b) {
 
 
-    //     static constexpr std::size_t DIM = VECTOR::dimension;
+    //     static constexpr size_t DIM = VECTOR::dimension;
 
     //     if (A.rows != DIM || A.columns != DIM)
     //         throw std::invalid_argument("The matrix A must be a square matrix");
@@ -295,14 +295,14 @@ namespace scipp::geometry {
     //     matrix A_b = A.augment(b);
     //     RESULT x;
 
-    //     for (std::size_t k{}; k < DIM; k++) {
+    //     for (size_t k{}; k < DIM; k++) {
 
     //         // Elimination of variables
-    //         for (std::size_t i{k + 1}; i < DIM; i++) {
+    //         for (size_t i{k + 1}; i < DIM; i++) {
 
     //             auto factor = A_b(i, k) / A_b(k, k);
 
-    //             for (std::size_t j{k}; j < DIM + 1; j++) 
+    //             for (size_t j{k}; j < DIM + 1; j++) 
     //                 A_b(i, j) -= factor * A_b(k, j);
 
     //         }
@@ -310,11 +310,11 @@ namespace scipp::geometry {
     //     }
 
     //     // Back substitution
-    //     for (std::size_t i{DIM - 1}; i >= 0; i--) {
+    //     for (size_t i{DIM - 1}; i >= 0; i--) {
 
     //         x[i] = A_b(i, DIM) / A_b(i, i);
 
-    //         for (std::size_t j{i + 1}; j < DIM; j++) 
+    //         for (size_t j{i + 1}; j < DIM; j++) 
     //             x[i] -= A_b(i, j) * x[j] / A_b(i, i);
 
     //     }
@@ -327,13 +327,13 @@ namespace scipp::geometry {
     //     matrix<DIM, DIM + 1> A_b = A.augmented(b); 
     //     vector<DIM> x;
 
-    //     for (std::size_t k{}; k < DIM; k++) {
+    //     for (size_t k{}; k < DIM; k++) {
             
-    //         std::size_t pivot{k};
+    //         size_t pivot{k};
     //         measurement maxPivot;
 
     //         // Find the best pivot
-    //         for (std::size_t i{k}; i < DIM; i++) 
+    //         for (size_t i{k}; i < DIM; i++) 
     //             if (abs(A_b(i, k) > maxPivot)) {
 
     //                 maxPivot = abs(A_b(i, k));
@@ -343,15 +343,15 @@ namespace scipp::geometry {
 
     //         // Swap rows k and p
     //         if (pivot != k)
-    //             for (std::size_t i{k}; i < DIM + 1; i++)
+    //             for (size_t i{k}; i < DIM + 1; i++)
     //                 std::swap(A_b(pivot, i), A_b(k, i));
 
     //         // Elimination of variables
-    //         for (std::size_t i{k + 1}; i < DIM; i++) {
+    //         for (size_t i{k + 1}; i < DIM; i++) {
 
     //             measurement factor = A_b(i, k) / A_b(k, k);
 
-    //             for (std::size_t j{k}; j < DIM + 1; j++)
+    //             for (size_t j{k}; j < DIM + 1; j++)
     //                 A_b(i, j) -= factor * A_b(k, j);
 
     //         }
@@ -362,7 +362,7 @@ namespace scipp::geometry {
     //     for (long int k = DIM - 1; k >= 0; k--) {
 
     //         measurement sum = A_b(k, DIM);
-    //         for (std::size_t j = k + 1; j < DIM; j++)
+    //         for (size_t j = k + 1; j < DIM; j++)
     //             sum -= A_b(k, j) * x[j];
 
     //         x[k] = sum / A_b(k, k);
@@ -375,7 +375,7 @@ namespace scipp::geometry {
 
 
     // /// @brief Solve the linear system Ax = b with the Gauss-Jordan elimination method
-    // template <std::size_t DIM, std::size_t rows, std::size_t cols>
+    // template <size_t DIM, size_t rows, size_t cols>
     // vector<DIM> gauss_jordan_elimination(const matrix<rows, cols>& A, const vector<DIM>& b) {
 
     //     matrix<rows, cols + 1> A_b = A.augmented(b);
@@ -385,23 +385,23 @@ namespace scipp::geometry {
     //     // partial pivoting
     //     for (int i = DIM - 1; i > 0; i--) 
     //         if (abs(A_b(i - 1, 0)) < abs(A_b(i, 0)))
-    //             for (std::size_t j{}; j <= DIM; j++) 
+    //             for (size_t j{}; j <= DIM; j++) 
     //                 std::swap(A_b(i - 1, j), A_b(i, j));
 
     //     // gauss elimination
-    //     for (std::size_t j{}; j < DIM; j++) 
-    //         for (std::size_t i{}; i < DIM; i++) 
+    //     for (size_t j{}; j < DIM; j++) 
+    //         for (size_t i{}; i < DIM; i++) 
     //             if (i != j) {
 
     //                 element = A_b(i, j) / A_b(j, j);
                     
-    //                 for (std::size_t k{}; k <= DIM; k++) 
+    //                 for (size_t k{}; k <= DIM; k++) 
     //                     A_b(i, k) -= element * A_b(j, k);
 
     //             }
 
     //     // diagonal elements
-    //     for (std::size_t i{}; i < DIM; i++) 
+    //     for (size_t i{}; i < DIM; i++) 
     //         result[i] = A_b(i, DIM) / A_b(i, i);
 
     //     return result;
@@ -422,22 +422,22 @@ namespace scipp::geometry {
             // }
 
 
-            // constexpr auto operator[](const std::size_t index) const noexcept {
+            // constexpr auto operator[](const size_t index) const noexcept {
             //     return m_vectors[index];
             // }
 
 
-            // constexpr auto operator[](const std::size_t index) noexcept {
+            // constexpr auto operator[](const size_t index) noexcept {
             //     return m_vectors[index];
             // }
 
 
-            // constexpr auto operator()(const std::size_t row, const std::size_t column) const noexcept {
+            // constexpr auto operator()(const size_t row, const size_t column) const noexcept {
             //     return m_vectors[column][row];
             // }
 
 
-            // constexpr auto operator()(const std::size_t row, const std::size_t column) noexcept {
+            // constexpr auto operator()(const size_t row, const size_t column) noexcept {
             //     return m_vectors[column][row];
             // }
 

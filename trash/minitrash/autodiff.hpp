@@ -7,7 +7,7 @@
 namespace scipp::math {
 
 
-	template <typename MEAS_TYPE, std::size_t DIM>	
+	template <typename MEAS_TYPE, size_t DIM>	
 		requires (physics::is_measurement_v<MEAS_TYPE>)
 	struct var {
 	
@@ -18,7 +18,7 @@ namespace scipp::math {
 		
 		
 		// members
-		inline static constexpr std::size_t order = DIM; 
+		inline static constexpr size_t order = DIM; 
 		
 		measurement_t val; // value
 		
@@ -72,7 +72,7 @@ namespace scipp::math {
 	
 	
 	
-	template <typename MEAS_TYPE, std::size_t DIM>
+	template <typename MEAS_TYPE, size_t DIM>
 		requires (physics::is_measurement_v<MEAS_TYPE>)
 	struct correlation_model {
 	
@@ -83,7 +83,7 @@ namespace scipp::math {
 		
 		
 		// members
-		inline static constexpr std::size_t n_input = DIM; 
+		inline static constexpr size_t n_input = DIM; 
 		
 		geometry::matrix<geometry::vector<measurement_t, DIM>, DIM> r; // correlation coefficients
 		
@@ -95,7 +95,7 @@ namespace scipp::math {
 			
 			
 		// other methods
-		constexpr auto variable(std::size_t i, const measurement_t& value, const measurement_t& uncert = measurement_t::one) const
+		constexpr auto variable(size_t i, const measurement_t& value, const measurement_t& uncert = measurement_t::one) const
 			-> var<measurement_t, DIM> {
 			
 			if (uncert < measurement_t::zero)	
@@ -108,7 +108,7 @@ namespace scipp::math {
 			
 		}
 				
-		constexpr auto constant(std::size_t i, const measurement_t& value) const noexcept 
+		constexpr auto constant(size_t i, const measurement_t& value) const noexcept 
 			-> var<measurement_t, DIM> {
 			
 			var<measurement_t, DIM> tmp;
@@ -117,7 +117,7 @@ namespace scipp::math {
 			
 		}
 		
-		constexpr void setCorrelation(std::size_t i, std::size_t j, const measurement_t& rho) noexcept {
+		constexpr void setCorrelation(size_t i, size_t j, const measurement_t& rho) noexcept {
 		
 			r.element(i, j) = r.element(i, j) = rho;
 			

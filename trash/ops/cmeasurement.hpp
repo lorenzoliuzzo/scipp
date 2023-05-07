@@ -25,7 +25,7 @@ namespace scipp::math {
 
             template <typename MEAS_TYPE1, typename MEAS_TYPE2>
                 requires (physics::are_cmeasurements_v<MEAS_TYPE1, MEAS_TYPE2>)
-            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : physics::cmeasurement<meta::multiply_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
+            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : physics::cmeasurement<multiply_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
 
             template <typename MEAS_TYPE1, typename MEAS_TYPE2>
                 requires (physics::are_cmeasurements_v<MEAS_TYPE1, MEAS_TYPE2>)

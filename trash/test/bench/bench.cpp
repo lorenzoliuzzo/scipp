@@ -16,7 +16,7 @@
 using namespace scipp; 
 
 
-std::vector<double> bench_double_sum(const std::size_t& n) {
+std::vector<double> bench_double_sum(const size_t& n) {
 
     double a = std::rand() % 10000 + 1;
     double b = std::rand() % 10000 + 1;
@@ -29,7 +29,7 @@ std::vector<double> bench_double_sum(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_double_prod(const std::size_t& n) {
+std::vector<double> bench_double_prod(const size_t& n) {
 
     double a = std::rand() % 10000 + 1;
     double b = std::rand() % 10000 + 1;
@@ -42,7 +42,7 @@ std::vector<double> bench_double_prod(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_double_div(const std::size_t& n) {
+std::vector<double> bench_double_div(const size_t& n) {
 
     double a = std::rand() % 10000 + 1;
     double b = std::rand() % 10000 + 1;
@@ -56,7 +56,7 @@ std::vector<double> bench_double_div(const std::size_t& n) {
 }
 
 
-std::vector<double> bench_measurement_sum(const std::size_t& n) {
+std::vector<double> bench_measurement_sum(const size_t& n) {
 
     measurement a = (std::rand() % 10000 + 1) * N;
     measurement b = (std::rand() % 10000 + 1) * N;
@@ -70,7 +70,7 @@ std::vector<double> bench_measurement_sum(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_measurement_prod(const std::size_t& n) {
+std::vector<double> bench_measurement_prod(const size_t& n) {
 
     measurement a = (std::rand() % 10000 + 1) * N;
     measurement b = (std::rand() % 10000 + 1) * N;
@@ -85,7 +85,7 @@ std::vector<double> bench_measurement_prod(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_measurement_div(const std::size_t& n) {
+std::vector<double> bench_measurement_div(const size_t& n) {
 
     measurement a = (std::rand() % 10000 + 1) * N;
     measurement b = (std::rand() % 10000 + 1) * N;
@@ -100,7 +100,7 @@ std::vector<double> bench_measurement_div(const std::size_t& n) {
 
 
 
-std::vector<double> bench_meta_measurement_sum(const std::size_t& n) {
+std::vector<double> bench_meta_measurement_sum(const size_t& n) {
 
     meta_measurement a(std::rand() % 10000 + 1, meta_units::__units::N);
     meta_measurement b(std::rand() % 10000 + 1, meta_units::__units::N);
@@ -117,7 +117,7 @@ std::vector<double> bench_meta_measurement_sum(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_meta_measurement_prod(const std::size_t& n) {
+std::vector<double> bench_meta_measurement_prod(const size_t& n) {
 
     meta_measurement a(std::rand() % 10000 + 1, meta_units::__units::N);
     meta_measurement b(std::rand() % 10000 + 1, meta_units::__units::N);
@@ -131,7 +131,7 @@ std::vector<double> bench_meta_measurement_prod(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_meta_measurement_div(const std::size_t& n) {
+std::vector<double> bench_meta_measurement_div(const size_t& n) {
 
     meta_measurement a(std::rand() % 10000 + 1, meta_units::__units::N);
     meta_measurement b(std::rand() % 10000 + 1, meta_units::__units::N);
@@ -145,7 +145,7 @@ std::vector<double> bench_meta_measurement_div(const std::size_t& n) {
 }
 
 
-std::vector<double> bench_umeasurement_sum(const std::size_t& n) {
+std::vector<double> bench_umeasurement_sum(const size_t& n) {
 
     umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
@@ -158,7 +158,7 @@ std::vector<double> bench_umeasurement_sum(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_umeasurement_prod(const std::size_t& n) {
+std::vector<double> bench_umeasurement_prod(const size_t& n) {
 
     umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
@@ -171,7 +171,7 @@ std::vector<double> bench_umeasurement_prod(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_umeasurement_div(const std::size_t& n) {
+std::vector<double> bench_umeasurement_div(const size_t& n) {
 
     umeasurement a = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
     umeasurement b = ((std::rand() % 10000 + 1) * N, (std::rand() % 100 + 1) * N);
@@ -185,7 +185,7 @@ std::vector<double> bench_umeasurement_div(const std::size_t& n) {
 }
 
 
-std::vector<double> bench_double_sin(const std::size_t& n) {
+std::vector<double> bench_double_sin(const size_t& n) {
 
     double a = (std::rand() % 10000 + 1); 
 
@@ -197,7 +197,7 @@ std::vector<double> bench_double_sin(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_measurement_sin(const std::size_t& n) {
+std::vector<double> bench_measurement_sin(const size_t& n) {
 
     measurement a = (std::rand() % 10000 + 1) * rad;
 
@@ -209,7 +209,7 @@ std::vector<double> bench_measurement_sin(const std::size_t& n) {
 
 }
 
-std::vector<double> bench_umeasurement_sin(const std::size_t& n) {
+std::vector<double> bench_umeasurement_sin(const size_t& n) {
 
     umeasurement a = ((std::rand() % 10000 + 1) * rad, (std::rand() % 100 + 1) * rad);
 

@@ -12,7 +12,7 @@
 namespace scipp::physics {
 
 
-    template <std::size_t DIM>
+    template <size_t DIM>
     class reference_system {
 
 

@@ -15,7 +15,7 @@
 namespace scipp::geometry {
 
 
-    template <typename T, std::size_t DIM>
+    template <typename T, size_t DIM>
     struct vectorial_space {
 
     }; // struct vectorial_space

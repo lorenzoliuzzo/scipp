@@ -22,7 +22,7 @@ using namespace tools;
 namespace plt = matplotlibcpp;
 
 
-// struct complex_cosh : meta::unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
+// struct complex_cosh : unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
 
     
 //     constexpr cmeasurement<scalar_m> f(const cmeasurement<scalar_m>& x) const noexcept override {
@@ -51,7 +51,7 @@ int main() {
     // vector<scalar_m, 100> x_vec;
     // vector<scalar_m, 100> y_vec;
 
-    // for (std::size_t i = 0; i < 100; ++i) {
+    // for (size_t i = 0; i < 100; ++i) {
 
     //     auto p = circ(static_cast<double>(i) / 100.0);
     //     x_vec[i] = p.real;
@@ -67,7 +67,7 @@ int main() {
     // vector<scalar_m, 2> p0;
     // auto circ2 = circumference(p0, radius);
 
-    // for (std::size_t i = 0; i < 100; ++i) {
+    // for (size_t i = 0; i < 100; ++i) {
 
     //     auto p = circ2(static_cast<double>(i) / 100.0);
     //     x_vec[i] = p[0];

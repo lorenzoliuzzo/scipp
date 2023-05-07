@@ -23,10 +23,10 @@ int main(int argc, char **argv) {
     tools::random_generator rg;
     reference_system<3> RS(position(0 * m, 0 * m, 0 * m));
 
-    std::size_t n = std::atoi(argv[1]);
+    size_t n = std::atoi(argv[1]);
     std::vector<double> x(n), y(n), z(n);
     
-    for (std::size_t i{}; i < n; i++) {
+    for (size_t i{}; i < n; i++) {
 
         RS.add(position<3>(rg.unif(-10, 10) * m, rg.unif(-10, 10) * m, rg.unif(-10, 10) * m)); 
         x[i] = (RS[i].x().value()); 

@@ -44,7 +44,7 @@ namespace scipp {
         * 
         * @return vector<DIM> 
         */
-    template <std::size_t DIM, std::size_t rows, std::size_t cols>
+    template <size_t DIM, size_t rows, size_t cols>
     vector<DIM> solve_matrix(const matrix<rows, cols>& A, const vector<DIM>& b, matrix_solver_methods method) {
 
         switch (method) {
@@ -71,7 +71,7 @@ namespace scipp {
 
 
     /// @brief Solve the linear system Ax = b with the Gauss elimination method
-    template <std::size_t DIM, std::size_t rows, std::size_t cols>
+    template <size_t DIM, size_t rows, size_t cols>
     vector<DIM> gauss_elimination(const matrix<rows, cols>& A, const vector<DIM>& b) {
 
         static_assert(cols >= DIM, "The matrix must have at least as many columns as the vector dimesion");
@@ -79,13 +79,13 @@ namespace scipp {
         matrix<DIM, DIM + 1> A_b = A.augmented(b); 
         vector<DIM> x;
 
-        for (std::size_t k{}; k < DIM; k++) {
+        for (size_t k{}; k < DIM; k++) {
             
-            std::size_t pivot{k};
+            size_t pivot{k};
             measurement maxPivot;
 
             // Find the best pivot
-            for (std::size_t i{k}; i < DIM; i++) 
+            for (size_t i{k}; i < DIM; i++) 
                 if (abs(A_b(i, k) > maxPivot)) {
 
                     maxPivot = abs(A_b(i, k));
@@ -95,15 +95,15 @@ namespace scipp {
 
             // Swap rows k and p
             if (pivot != k)
-                for (std::size_t i{k}; i < DIM + 1; i++)
+                for (size_t i{k}; i < DIM + 1; i++)
                     std::swap(A_b(pivot, i), A_b(k, i));
 
             // Elimination of variables
-            for (std::size_t i{k + 1}; i < DIM; i++) {
+            for (size_t i{k + 1}; i < DIM; i++) {
 
                 measurement factor = A_b(i, k) / A_b(k, k);
 
-                for (std::size_t j{k}; j < DIM + 1; j++)
+                for (size_t j{k}; j < DIM + 1; j++)
                     A_b(i, j) -= factor * A_b(k, j);
 
             }
@@ -114,7 +114,7 @@ namespace scipp {
         for (long int k = DIM - 1; k >= 0; k--) {
 
             measurement sum = A_b(k, DIM);
-            for (std::size_t j = k + 1; j < DIM; j++)
+            for (size_t j = k + 1; j < DIM; j++)
                 sum -= A_b(k, j) * x[j];
 
             x[k] = sum / A_b(k, k);
@@ -127,7 +127,7 @@ namespace scipp {
 
 
     /// @brief Solve the linear system Ax = b with the Gauss-Jordan elimination method
-    template <std::size_t DIM, std::size_t rows, std::size_t cols>
+    template <size_t DIM, size_t rows, size_t cols>
     vector<DIM> gauss_jordan_elimination(const matrix<rows, cols>& A, const vector<DIM>& b) {
 
         matrix<rows, cols + 1> A_b = A.augmented(b);
@@ -137,23 +137,23 @@ namespace scipp {
         // partial pivoting
         for (int i = DIM - 1; i > 0; i--) 
             if (abs(A_b(i - 1, 0)) < abs(A_b(i, 0)))
-                for (std::size_t j{}; j <= DIM; j++) 
+                for (size_t j{}; j <= DIM; j++) 
                     std::swap(A_b(i - 1, j), A_b(i, j));
 
         // gauss elimination
-        for (std::size_t j{}; j < DIM; j++) 
-            for (std::size_t i{}; i < DIM; i++) 
+        for (size_t j{}; j < DIM; j++) 
+            for (size_t i{}; i < DIM; i++) 
                 if (i != j) {
 
                     element = A_b(i, j) / A_b(j, j);
                     
-                    for (std::size_t k{}; k <= DIM; k++) 
+                    for (size_t k{}; k <= DIM; k++) 
                         A_b(i, k) -= element * A_b(j, k);
 
                 }
 
         // diagonal elements
-        for (std::size_t i{}; i < DIM; i++) 
+        for (size_t i{}; i < DIM; i++) 
             result[i] = A_b(i, DIM) / A_b(i, i);
 
         return result;

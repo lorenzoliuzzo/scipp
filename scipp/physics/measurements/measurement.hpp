@@ -25,9 +25,9 @@ namespace scipp::physics {
         // aliases
         // ==============================================
 
-            using _t = measurement<BASE_TYPE>; ///< The type of the measurement
-
             using base_t = BASE_TYPE; ///< The base of the measurement
+
+            using _t = measurement<base_t>; ///< The type of the measurement
 
 
         // ==============================================
@@ -135,33 +135,35 @@ namespace scipp::physics {
             }
 
 
-            /// @brief Add a measurement to the current measurement
-            constexpr measurement& operator+=(const measurement& other) noexcept { 
+            /// @brief Increment operator
+            template <typename T>
+            constexpr auto operator+=(const T& other) noexcept { 
                 
-                this->value += other.value;
-                return *this;  
-                
-            }
-
-            /// @brief Add a measurement to the current measurement
-            constexpr measurement& operator+=(measurement&& other) noexcept { 
-                
-                this->value += std::move(other.value);
-                return *this;  
+                return math::op::add(*this, other);  
                 
             }
 
-            /// @brief Add two measurements
-            constexpr measurement operator+(const measurement& other) const noexcept { 
+            /// @brief Increment operator
+            template <typename T>
+            constexpr auto operator+=(T&& other) noexcept { 
                 
-                return this->value + other.value; 
+                return math::op::add(*this, std::move(other));  
                 
             }
 
-            /// @brief Add two measurements
-            constexpr measurement operator+(measurement&& other) const noexcept { 
+            /// @brief Addition operator
+            template <typename T>
+            constexpr auto operator+(const T& other) const noexcept { 
                 
-                return this->value + std::move(other.value); 
+                return math::op::add(*this, other);
+                
+            }
+
+            /// @brief Addition operator
+            template <typename T>
+            constexpr auto operator+(T&& other) const noexcept { 
+                
+                return math::op::add(*this, std::move(other));
                 
             }
 
@@ -308,101 +310,35 @@ namespace scipp::physics {
             }
 
 
-            /// @brief Multiply two measurements
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator*(const MEAS_TYPE& other) const noexcept 
-                -> math::meta::multiply_t<measurement, MEAS_TYPE> { 
+            template <typename T> 
+            constexpr auto operator*(const T& other) const noexcept { 
                 
-                return this->value * other.value; 
+                return math::op::mult(*this, other);
                 
             }
 
-            /// @brief Multiply two measurements
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator*(MEAS_TYPE&& other) const noexcept 
-                -> math::meta::multiply_t<measurement, MEAS_TYPE> { 
-                
-                return this->value * std::move(other.value); 
+            template <typename T> 
+            constexpr auto operator*(T&& other) const noexcept { 
+
+                return math::op::mult(*this, std::move(other));
                 
             }
 
 
-            /// @brief Multiply this measurement and a scalar
-            template <typename NUMBER_TYPE> 
-                requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator*(const NUMBER_TYPE& other) const noexcept { 
-                
-                return this->value * static_cast<double>(other); 
+            template <typename T> 
+            constexpr auto operator/(const T& other) const { 
+
+                return math::op::div(*this, other);
                 
             }
 
-            /// @brief Multiply this measurement and a scalar
-            template <typename NUMBER_TYPE> 
-                requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator*(NUMBER_TYPE&& other) const noexcept { 
-                
-                return this->value * std::move(static_cast<double>(other)); 
+            template <typename T> 
+            constexpr auto operator/(T&& other) const noexcept { 
+
+                return math::op::div(*this, std::move(other));
                 
             }
-
-
-            /// @brief Divide two measurements
-            /// @note The denominator must not be zero
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator/(const MEAS_TYPE& other) const 
-                -> math::meta::divide_t<measurement, MEAS_TYPE> { 
-
-                if (other.value == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by a zero measurement");
-
-                return this->value / other.value; 
-                
-            }
-
-            /// @brief Divide two measurements
-            /// @note The denominator must not be zero
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator/(MEAS_TYPE&& other) const 
-                -> math::meta::divide_t<measurement, MEAS_TYPE> { 
-
-                if (other.value == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by a zero measurement");
-
-                return this->value / std::move(other.value); 
-                
-            }            
             
-
-            /// @brief Divide this measurement and a scalar
-            /// @note The denominator must not be zero
-            template <typename NUMBER_TYPE> 
-                requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator/(const NUMBER_TYPE& other) const { 
-                
-                if (static_cast<double>(other) == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                return this->value / static_cast<double>(other); 
-                
-            }
-
-            /// @brief Divide this measurement and a scalar
-            /// @note The denominator must not be zero
-            template <typename NUMBER_TYPE> 
-                requires (math::is_number_v<NUMBER_TYPE>)
-            constexpr measurement operator/(NUMBER_TYPE&& other) const { 
-                
-                if (static_cast<double>(other) == 0.0) 
-                    throw std::runtime_error("Cannot divide a measurement by zero");
-
-                return this->value / std::move(static_cast<double>(other)); 
-                
-            }
-
 
             /// @brief Check if this measurement is equal to another measurement
             constexpr bool operator==(const measurement& other) const noexcept {

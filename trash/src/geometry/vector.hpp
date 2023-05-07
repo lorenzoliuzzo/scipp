@@ -16,7 +16,7 @@ namespace scipp::geometry {
     /// @tparam DIM: The dimension of the vector
     /// @tparam MEAS_TYPES: The types of the measurements of the vector components
     /// @see physics::measurement
-    template <std::size_t DIM, typename... MEAS_TYPES> 
+    template <size_t DIM, typename... MEAS_TYPES> 
         requires (physics::are_measurements_v<MEAS_TYPES...>) 
     struct vector2 {
 
@@ -36,7 +36,7 @@ namespace scipp::geometry {
 
 
             inline static constexpr 
-                std::size_t dim = DIM; ///< The dimension of the vector
+                size_t dim = DIM; ///< The dimension of the vector
 
 
         // ===========================================================
@@ -220,9 +220,9 @@ namespace scipp::geometry {
         // ===========================================================
 
             /// @brief Get a const reference to the i-th element of the vector
-            /// @tparam INDEX: std::size_t
+            /// @tparam INDEX: size_t
             /// @return const std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>&
-            template <std::size_t INDEX> 
+            template <size_t INDEX> 
                 requires (INDEX < DIM)
             constexpr 
                 auto get() 
@@ -236,9 +236,9 @@ namespace scipp::geometry {
 
 
             /// @brief Get a reference to the i-th element of the vector
-            /// @tparam INDEX: std::size_t
+            /// @tparam INDEX: size_t
             /// @return std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>&
-            template <std::size_t INDEX> 
+            template <size_t INDEX> 
                 requires (INDEX < DIM)
             constexpr 
                 auto get() 
@@ -398,19 +398,19 @@ namespace scipp::geometry {
     vector2(MEAS_TYPES&&... measurements) 
         -> vector2<sizeof...(measurements), MEAS_TYPES...>;
 
-    template <std::size_t DIM, typename MEAS_TYPE> 
+    template <size_t DIM, typename MEAS_TYPE> 
         requires (scipp::physics::is_measurement_v<MEAS_TYPE>)
     vector2(const std::array<MEAS_TYPE, DIM>&) 
         -> vector2<DIM, MEAS_TYPE>;
 
 
-    // template <std::size_t DIM, typename MEAS_TYPE> 
+    // template <size_t DIM, typename MEAS_TYPE> 
     //     requires (scipp::physics::is_measurement_v<MEAS_TYPE>)
     // vector2(std::array<MEAS_TYPE, DIM>&) 
     //     -> vector2<DIM, MEAS_TYPE>;
 
 
-    // template <std::size_t DIM, typename MEAS_TYPE> 
+    // template <size_t DIM, typename MEAS_TYPE> 
     //     requires (scipp::physics::is_measurement_v<MEAS_TYPE>)
     // vector2(std::array<MEAS_TYPE, DIM>&&) 
     //     -> vector2<DIM, MEAS_TYPE>;
@@ -445,7 +445,7 @@ namespace scipp::geometry {
     template <typename T>
     struct is_vector2 : std::false_type {};
 
-    template <std::size_t DIM, typename... MEAS_TYPES> 
+    template <size_t DIM, typename... MEAS_TYPES> 
         requires (physics::are_measurements_v<MEAS_TYPES...>)
     struct is_vector2<vector2<DIM, MEAS_TYPES...>> : std::true_type {};
 
@@ -473,7 +473,7 @@ namespace scipp::geometry {
     // template <typename... VECTORS>
     // struct is_omogeneous : std::false_type {};
 
-    // template <std::size_t DIM, typename... MEAS_TYPES> 
+    // template <size_t DIM, typename... MEAS_TYPES> 
         // requires (physics::are_measurements_v<MEAS_TYPES...>)
     // struct is_omogeneous<vector2<DIM, MEAS_TYPES...>> : physics::have_same_base<MEAS_TYPES...> {};
 
@@ -481,7 +481,7 @@ namespace scipp::geometry {
     // constexpr bool is_omogeneous_v = is_omogeneous<VECTORS...>::value;
 
 
-    template <typename BASE, std::size_t DIM>
+    template <typename BASE, size_t DIM>
         requires (physics::is_base_v<BASE>)
     struct vector {
 
@@ -592,13 +592,13 @@ namespace scipp::geometry {
             /**
              * @brief Access the i-th element of the vector
              * 
-             * @param index: std::size_t
+             * @param index: size_t
              * 
              * @return constexpr value_type
              * 
              * @note: index must be in the range [0, DIM)
              */
-            constexpr const value_type& operator[](const std::size_t& index) const { 
+            constexpr const value_type& operator[](const size_t& index) const { 
                 
                 if (index >= DIM) 
                     throw std::out_of_range("Cannot access a vector with an index out of range");
@@ -611,13 +611,13 @@ namespace scipp::geometry {
             /**
              * @brief Access the i-th element of the vector
              * 
-             * @param index: std::size_t 
+             * @param index: size_t 
              * 
              * @return constexpr value_type& 
              * 
              * @note: index must be in the range [0, DIM)
              */
-            constexpr value_type& operator[](const std::size_t& index) 
+            constexpr value_type& operator[](const size_t& index) 
         { 
                 
                 if (index >= DIM) 
@@ -636,7 +636,7 @@ namespace scipp::geometry {
             constexpr bool operator==(const vector& other) const noexcept 
             {
 
-                for (std::size_t i{}; i < DIM; ++i)
+                for (size_t i{}; i < DIM; ++i)
                     if (this->data_[i] != other.data_[i]) 
                         return false;
                 
@@ -656,7 +656,7 @@ namespace scipp::geometry {
             constexpr bool operator!=(const vector& other) const noexcept 
             {
 
-                for (std::size_t i{}; i < DIM; ++i) 
+                for (size_t i{}; i < DIM; ++i) 
                     if (this->data_[i] != other.data_[i]) 
                         return true;
 
@@ -707,7 +707,7 @@ namespace scipp::geometry {
             {
 
                 os << "(\t";
-                for (std::size_t i{}; i < DIM; ++i) 
+                for (size_t i{}; i < DIM; ++i) 
                     os << vec[i] << "\t\t";
                 os << ")\n";
 
@@ -794,7 +794,7 @@ namespace scipp::geometry {
             {
                 
                 std::cout << "( ";
-                for (std::size_t i{}; i < DIM; ++i) 
+                for (size_t i{}; i < DIM; ++i) 
                     std::cout << this->data_[i] << ((i < DIM - 1) ? ", " : " )\n"); 
 
             }
@@ -805,7 +805,7 @@ namespace scipp::geometry {
             {
                 
                 std::cout << "( ";
-                for (std::size_t i{}; i < DIM; ++i) 
+                for (size_t i{}; i < DIM; ++i) 
             {
 
                     this->data_[i].print(units, false); 
@@ -822,7 +822,7 @@ namespace scipp::geometry {
 
             std::array<physics::measurement<BASE>, DIM> data_;
 
-            inline static constexpr std::size_t dimension = DIM;
+            inline static constexpr size_t dimension = DIM;
 
 
     }; // struct vector
@@ -838,7 +838,7 @@ namespace scipp::geometry {
     template <typename T>
     struct is_vector : std::false_type {};
 
-    template <typename BASE, std::size_t DIM> 
+    template <typename BASE, size_t DIM> 
         requires (physics::units::is_base_v<BASE> && (DIM > 0))
     struct is_vector<vector<BASE, DIM>> : std::true_type {};
 

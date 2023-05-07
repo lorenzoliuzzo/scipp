@@ -13,26 +13,7 @@
 namespace scipp::physics {
 
 
-    /// @brief Multiply a double with an unit to get a measurement
-    template <typename NUMBER_TYPE, typename UNIT_TYPE> 
-        requires (math::is_number_v<NUMBER_TYPE> && is_unit_v<UNIT_TYPE>)
-    inline constexpr auto operator*(const NUMBER_TYPE& val, const UNIT_TYPE&) noexcept
-        -> measurement<typename UNIT_TYPE::base_t> { 
-        
-        return static_cast<double>(val) * UNIT_TYPE::mult; 
-        
-    }
-    
-    /// @brief Multiply a double with an unit to get a measurement
-    template <typename NUMBER_TYPE, typename UNIT_TYPE> 
-        requires (math::is_number_v<NUMBER_TYPE> && is_unit_v<UNIT_TYPE>)
-    inline constexpr auto operator*(NUMBER_TYPE&& val, const UNIT_TYPE&) noexcept
-        -> measurement<typename UNIT_TYPE::base_t> { 
-        
-        return std::move(static_cast<double>(val)) * UNIT_TYPE::mult; 
-        
-    }
-    
+
     
     /// @brief Divide a double with an unit to get a measurement
     template <typename NUMBER_TYPE, typename UNIT_TYPE> 

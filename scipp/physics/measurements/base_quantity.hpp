@@ -2,7 +2,7 @@
  * @file    physics/measurements/base_quantity.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the base_quantity struct and its type traits.
- * @date    2023-04-25
+ * @date    2023-05-06
  * 
  * @copyright Copyright (c) 2023
  */
@@ -22,8 +22,7 @@ namespace scipp::physics {
     /// @tparam ELETTRIC_CURRENT: power of elettric current          
     /// @tparam LUMINOUS_INTENSITY: power of luminous intensity
     /// @note the powers are all integers                            
-    template <int LENGTH, int TIME, int MASS, int TEMPERATURE, 
-              int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY> 
+    template <int LENGTH, int TIME, int MASS, int TEMPERATURE, int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY> 
     struct base_quantity {
 
 
@@ -31,8 +30,7 @@ namespace scipp::physics {
         // aliases
         // =============================================
 
-            using _t = base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, 
-                                     SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>; //< type of the base_quantity
+            using _t = base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>; //< type of the base_quantity
 
 
         // =============================================

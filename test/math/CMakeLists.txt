@@ -4,6 +4,9 @@
 add_executable(polynomials polynomials.cpp)
 target_link_libraries(polynomials ${PROJECT_NAME} python3.10)
 
+add_executable(gauss gauss.cpp)
+target_link_libraries(gauss ${PROJECT_NAME} python3.10)
+
 
 # add_executable(function function.cpp)
 # target_link_libraries(function ${PROJECT_NAME} python3.10)

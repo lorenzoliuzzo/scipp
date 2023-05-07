@@ -19,14 +19,14 @@ using namespace physics;
 
 int main(int argc, char **argv) {
 
-    std::size_t n = std::atoi(argv[1]);
+    size_t n = std::atoi(argv[1]);
     tools::random_generator rg; 
 
     TApplication app{"app", 0, 0};
     TGraph2D graph{};
     TCanvas c("c", "Graph2D example", 0, 0, 600, 600);
 
-    for (std::size_t i{}; i < n; i++) 
+    for (size_t i{}; i < n; i++) 
         graph.SetPoint(i, rg.unif(-10, 10), rg.unif(-10, 10), rg.unif(-10, 10));
 
     c.cd();

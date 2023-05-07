@@ -32,7 +32,7 @@ int main() {
     vector<scalar_m, 100> expected_df_values;
 
     scalar_m increment = 2.0 * math::constants::pi / 100.0;
-    std::size_t i{}; 
+    size_t i{}; 
     for (scalar_m x{increment}; x < 2.0 * math::constants::pi; x += increment, ++i) {
 
         x_values[i] = x;

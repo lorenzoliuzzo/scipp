@@ -20,7 +20,7 @@ namespace scipp::tools {
      * 
      * @return time_um
      */
-    time_um bench(const std::size_t& n, std::function<void()> func) {
+    time_um bench(const size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
@@ -30,7 +30,7 @@ namespace scipp::tools {
 
         times.reserve(n); 
 
-        for (std::size_t i{}; i < n; ++i) {
+        for (size_t i{}; i < n; ++i) {
 
             stopwatch.start();
             func();
@@ -52,7 +52,7 @@ namespace scipp::tools {
      * 
      * @return time_um
      */
-    time_um cpu_bench(const std::size_t& n, std::function<void()> func) {
+    time_um cpu_bench(const size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
@@ -62,7 +62,7 @@ namespace scipp::tools {
 
         times.reserve(n); 
 
-        for (std::size_t i{}; i < n; ++i) {
+        for (size_t i{}; i < n; ++i) {
 
             stopwatch.start();
             func();
@@ -84,7 +84,7 @@ namespace scipp::tools {
      * 
      * @return time_um
      */
-    time_um omp_bench(const std::size_t& n, std::function<void()> func) {
+    time_um omp_bench(const size_t& n, std::function<void()> func) {
 
         if (n == 0)
             throw std::runtime_error("Error: n must be greater than 0");
@@ -94,7 +94,7 @@ namespace scipp::tools {
 
         times.reserve(n); 
 
-        for (std::size_t i{}; i < n; ++i) {
+        for (size_t i{}; i < n; ++i) {
 
             stopwatch.start();
             func();

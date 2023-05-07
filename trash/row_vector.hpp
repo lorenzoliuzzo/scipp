@@ -16,7 +16,7 @@ namespace scipp::geometry {
     /// @tparam DIM: The dimension of the vector
     /// @tparam MEAS_TYPES: The types of the measurements of the vector components
     /// @see physics::measurement
-    template <std::size_t DIM, typename... MEAS_TYPES> 
+    template <size_t DIM, typename... MEAS_TYPES> 
         requires (physics::are_measurements_v<MEAS_TYPES...>) 
     struct row_vector {
 
@@ -35,7 +35,7 @@ namespace scipp::geometry {
             std::tuple<MEAS_TYPES...> data_; ///< The data of the vector
 
 
-            inline static constexpr std::size_t dim = DIM; ///< The dimension of the vector
+            inline static constexpr size_t dim = DIM; ///< The dimension of the vector
 
 
         // ===========================================================
@@ -201,9 +201,9 @@ namespace scipp::geometry {
         // ===========================================================
 
             /// @brief Get a const reference to the i-th element of the vector
-            /// @tparam INDEX: std::size_t
+            /// @tparam INDEX: size_t
             /// @return const std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>&
-            template <std::size_t INDEX> 
+            template <size_t INDEX> 
                 requires (INDEX < DIM)
             constexpr auto get() const noexcept 
                 -> const std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>& {
@@ -214,9 +214,9 @@ namespace scipp::geometry {
 
 
             /// @brief Get a reference to the i-th element of the vector
-            /// @tparam INDEX: std::size_t
+            /// @tparam INDEX: size_t
             /// @return std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>&
-            template <std::size_t INDEX> 
+            template <size_t INDEX> 
                 requires (INDEX < DIM)
             constexpr auto get() noexcept 
                 -> std::tuple_element_t<INDEX, std::tuple<MEAS_TYPES...>>& {
@@ -336,11 +336,11 @@ namespace scipp::geometry {
 
 
     // /// @brief traspose a column vector into a row vector
-    // /// @tparam DIM: std::size_t
+    // /// @tparam DIM: size_t
     // /// @tparam MEAS_TYPES: typename...
     // /// @param vec: column_vector<DIM, MEAS_TYPES...> as l-value const reference
     // /// @return row_vector<DIM, MEAS_TYPES...>
-    // template <std::size_t DIM, typename MEAS_TYPE>
+    // template <size_t DIM, typename MEAS_TYPE>
     //     requires (physics::is_measurement_v<MEAS_TYPE> || physics::is_umeasurement_v<MEAS_TYPE>)
     // constexpr auto transpose(const vector<MEAS_TYPE, DIM>& vec) noexcept
     //     -> row_vector<DIM, MEAS_TYPE> {
@@ -360,7 +360,7 @@ namespace scipp::geometry {
     // }
 
 
-    // template <std::size_t DIM, typename... MEAS_TYPES>
+    // template <size_t DIM, typename... MEAS_TYPES>
     //     requires (physics::are_measurements_v<MEAS_TYPES>)
     // constexpr auto operator+(const row_vector<DIM, MEAS_TYPES...>& lhs, const row_vector<DIM, MEAS_TYPES...>& rhs) noexcept 
     //     -> row_vector<DIM, physics::add_each_t<MEAS_TYPES...>> {

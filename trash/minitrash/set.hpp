@@ -15,7 +15,7 @@
 namespace scipp::geometry {
     
     
-    template <typename T, std::size_t DIM>
+    template <typename T, size_t DIM>
     struct finite_set {
 
 
@@ -25,7 +25,7 @@ namespace scipp::geometry {
 
         using arg_type = T; 
 
-        inline static constexpr std::size_t dimension = DIM;
+        inline static constexpr size_t dimension = DIM;
 
 
         data_type data; 
@@ -49,13 +49,13 @@ namespace scipp::geometry {
             data(std::move(other.data)) {}
 
 
-        constexpr arg_type& operator[](const std::size_t& i) const noexcept {
+        constexpr arg_type& operator[](const size_t& i) const noexcept {
 
             return data[i];
 
         }
 
-        constexpr arg_type& operator[](const std::size_t& i) noexcept {
+        constexpr arg_type& operator[](const size_t& i) noexcept {
 
             return data[i];
 
@@ -152,7 +152,7 @@ namespace scipp::geometry {
     }; 
 
 
-    template <typename T, std::size_t DIM, typename PROPERTY>
+    template <typename T, size_t DIM, typename PROPERTY>
     struct finite_set {
 
         using type = finite_set<T, DIM, PROPERTY>; 
@@ -160,7 +160,7 @@ namespace scipp::geometry {
         using arg_type = T; 
 
 
-        inline static constexpr std::size_t dimension = DIM;
+        inline static constexpr size_t dimension = DIM;
 
 
         data_type data;
@@ -179,14 +179,14 @@ namespace scipp::geometry {
             data(std::move(data)), property(std::move(property)) {}
 
 
-        constexpr T operator[](const std::size_t& i) const noexcept {
+        constexpr T operator[](const size_t& i) const noexcept {
 
             return data[i];
 
         }
 
 
-        constexpr T& operator[](const std::size_t& i) noexcept {
+        constexpr T& operator[](const size_t& i) noexcept {
 
             return data[i];
 
@@ -196,13 +196,13 @@ namespace scipp::geometry {
     }
 
 
-    template <typename INTERVAL_TYPE, std::size_t N>    
+    template <typename INTERVAL_TYPE, size_t N>    
         requires (is_interval_v<INTERVAL_TYPE>)
     constexpr finite_set<typename INTERVAL_TYPE::arg_type, N> linspace(const INTERVAL_TYPE& other) noexcept {
 
         const typename INTERVAL_TYPE::arg_type increment = math::op::abs(other.end - other.start) / static_cast<physics::scalar_m>(N); 
         std::array<typename INTERVAL_TYPE::arg_type, N> result; 
-        for (std::size_t i{}; i < N; ++i)   
+        for (size_t i{}; i < N; ++i)   
             result[i] = other.start + static_cast<physics::scalar_m>(i) * increment;
 
         return result;  

@@ -23,9 +23,9 @@ namespace scipp {
             /**
              * @brief Class to represent a base of a vectorial space as a matrix of l.i. vectors
              * 
-             * @tparam DIM: std::size_t dimesion of the vectorial space
+             * @tparam DIM: size_t dimesion of the vectorial space
              */
-            template <std::size_t DIM>
+            template <size_t DIM>
             class base : public matrix<DIM, DIM> {
 
                 
@@ -41,7 +41,7 @@ namespace scipp {
 
                         matrix<DIM, DIM>() {
 
-                            for (std::size_t i = 0; i < DIM; ++i) 
+                            for (size_t i = 0; i < DIM; ++i) 
                                 this->element(i, i) = measurement(1.);
 
                         }
@@ -156,11 +156,11 @@ namespace scipp {
                     /**
                      * @brief Access a vector of the base
                      * 
-                     * @param i: std::size_t 
+                     * @param i: size_t 
                      * 
                      * @return constexpr vector<DIM>
                      */
-                    constexpr vector<DIM> operator[](const std::size_t& i) const {
+                    constexpr vector<DIM> operator[](const size_t& i) const {
                         
                         if (i > DIM) 
                             throw std::out_of_range("Cannot access a vector element of the base with an index out of range");
@@ -182,7 +182,7 @@ namespace scipp {
                     friend std::ostream& operator<<(std::ostream& os, const base& base) noexcept {
 
                         os << "base: < ";
-                        for (std::size_t i{}; i < DIM; ++i)
+                        for (size_t i{}; i < DIM; ++i)
                             os << base[i] << ((i != DIM - 1) ? ", ": " >\n"); 
                         
                         return os;
@@ -193,9 +193,9 @@ namespace scipp {
                     /**
                      * @brief Get the dimesion of the space
                      * 
-                     * @return std::size_t 
+                     * @return size_t 
                      */
-                    static constexpr std::size_t dimesions() {
+                    static constexpr size_t dimesions() {
 
                         return DIM; 
 
@@ -205,7 +205,7 @@ namespace scipp {
                     /// @brief Check if the base is normalized
                     constexpr bool is_normalized() const noexcept {
 
-                        for (std::size_t i{}; i < DIM; ++i) 
+                        for (size_t i{}; i < DIM; ++i) 
                             if (!this->column(i).is_normalized()) 
                                 return false; 
 
@@ -224,7 +224,7 @@ namespace scipp {
                         if (!this->is_normalized()) {
 
                             matrix<DIM, DIM> ortho_normal(this->data());
-                            for (std::size_t i{}; i < DIM; ++i) 
+                            for (size_t i{}; i < DIM; ++i) 
                                 if (!this->column(i).is_normalized()) 
                                     ortho_normal[i] /= this->column(i).norm(); 
 
@@ -255,7 +255,7 @@ namespace scipp {
                     void print() const noexcept {
 
                         std::cout << "base: < ";
-                        for (std::size_t i{}; i < DIM; ++i)
+                        for (size_t i{}; i < DIM; ++i)
                             std::cout << this->element(i) << ((i != DIM - 1) ? ", ": " >\n"); 
                         
                     }
@@ -282,13 +282,13 @@ namespace scipp {
              * 
              * @return base<DIM> 
              */
-            template <std::size_t DIM>
+            template <size_t DIM>
             constexpr base<DIM> extract_orthogonal_base(const matrix<DIM, DIM>& system) noexcept {
 
                 matrix<DIM, DIM> ortho_base(system); 
 
-                for (std::size_t i{}; i < DIM; ++i)
-                    for (std::size_t j{1}; j < i; ++j)
+                for (size_t i{}; i < DIM; ++i)
+                    for (size_t j{1}; j < i; ++j)
                         ortho_base[i] -= system[j].projection(system[i]);
 
                 return ortho_base; 

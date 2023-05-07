@@ -19,7 +19,7 @@ using namespace geometry;
 using namespace tools; 
 
 
-struct func : functions::unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
+struct func : unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
 
     constexpr cmeasurement<scalar_m> operator()(const cmeasurement<scalar_m>& x) const override {
 
@@ -42,14 +42,14 @@ int main() {
     std::cout << op::square(-3 * units::mm) << '\n';  
 
 
-    std::cout << meta::multiply_t<length_m>() << '\n';
-    std::cout << meta::multiply_t<length_m, length_m, time_m>() << '\n';
+    std::cout << multiply_t<length_m>() << '\n';
+    std::cout << multiply_t<length_m, length_m, time_m>() << '\n';
     std::cout << meta::divide_t<length_m, time_m>() << '\n';
     std::cout << meta::cube_t<length_m>() << '\n';
     std::cout << meta::invert_t<length_m>() << '\n';
 
 
-    std::cout << meta::multiply_t<cmeasurement<length_m>, cmeasurement<time_m>, time_m>() << '\n';
+    std::cout << multiply_t<cmeasurement<length_m>, cmeasurement<time_m>, time_m>() << '\n';
 
     auto f = func(); 
     cmeasurement<scalar_m> x(1.0, 1.0);

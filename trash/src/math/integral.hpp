@@ -29,7 +29,7 @@ namespace scipp::math {
                 scalar total_sum = 0.0;
 
                 #pragma omp parallel for
-                for (std::size_t i = 0; i < steps; ++i)
+                for (size_t i = 0; i < steps; ++i)
                     #pragma omp critical
                     total_sum += f(from_a + (i + 0.5) * increment); 
 
@@ -48,7 +48,7 @@ namespace scipp::math {
                 auto total_sum = f(from_a);
 
                 #pragma omp parallel for
-                for (std::size_t i = 1; i < steps; ++i)
+                for (size_t i = 1; i < steps; ++i)
                     #pragma omp critical
                     total_sum += f(from_a + (i + 0.5) * increment); 
 
@@ -65,7 +65,7 @@ namespace scipp::math {
 
                                                         
                 measurement<UB * UB2> integral, old_integral_1, old_integral_2, old_integral_3, error;
-                std::size_t steps = 1;
+                size_t steps = 1;
 
                 #pragma omp parallel 
                 {

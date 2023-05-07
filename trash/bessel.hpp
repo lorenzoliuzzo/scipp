@@ -12,7 +12,7 @@
 namespace scipp::math {
 
 
-    template <std::size_t N>
+    template <size_t N>
     struct bessel_integral_function1 : public binary_function<physics::scalar_m, physics::scalar_m> {
 
 
@@ -26,7 +26,7 @@ namespace scipp::math {
     };
     
 
-    template <std::size_t N, typename T1, typename T2, typename T3 = T2>
+    template <size_t N, typename T1, typename T2, typename T3 = T2>
     struct bessel_integral_function2 : public binary_function<T1, T2, T3> {
 
 
@@ -40,7 +40,7 @@ namespace scipp::math {
     };
     
 
-    template <std::size_t N>
+    template <size_t N>
     inline static constexpr physics::scalar_m J_n(const physics::scalar_m& x) noexcept {
 
         return integrals::riemann(bessel_integral_function1<N>(), x, 0, constants::pi, 10000) / constants::pi;
@@ -52,7 +52,7 @@ namespace scipp::math {
 
     
     // requires (physics::are_same_measurements_v<math::op::measurements_prod_t<T1, T2>, T3>)
-    inline static constexpr physics::scalar_m bessel_next(const std::size_t& N, 
+    inline static constexpr physics::scalar_m bessel_next(const size_t& N, 
                                                           const physics::angle_m& x, 
                                                           const physics::scalar_m& J_n_minus_1, 
                                                           const physics::scalar_m& J_n_minus_2) noexcept {
@@ -62,7 +62,7 @@ namespace scipp::math {
     }
 
     
-    template <std::size_t N>
+    template <size_t N>
     constexpr auto bessel(const physics::angle_m& x) noexcept {
 
         physics::scalar_m p0 = J_n<0>(x); 
@@ -74,7 +74,7 @@ namespace scipp::math {
         else if constexpr (N == 1)
             return p1; 
 
-        else for (std::size_t index = 2; index < N; ++index) {
+        else for (size_t index = 2; index < N; ++index) {
 
             std::swap(p0, p1); 
             p1 = bessel_next(index, x, p0, p1); 
@@ -86,7 +86,7 @@ namespace scipp::math {
     }
 
 
-    constexpr physics::scalar_m bessel(std::size_t N, const physics::angle_m& x) noexcept {
+    constexpr physics::scalar_m bessel(size_t N, const physics::angle_m& x) noexcept {
         
 
         physics::scalar_m p0 = J_n<0>(x); 
@@ -98,7 +98,7 @@ namespace scipp::math {
         else if (N == 1)
             return p1; 
         
-        else for (std::size_t index = 2; index < N; ++index) {
+        else for (size_t index = 2; index < N; ++index) {
 
             std::swap(p0, p1); 
             p1 = bessel_next(index, x, p0, p1); 
@@ -110,7 +110,7 @@ namespace scipp::math {
     }
 
 
-    // template <std::size_t N>
+    // template <size_t N>
     // static std::pair<double, double> hermite_polynomial(const double& x) noexcept {
         
 

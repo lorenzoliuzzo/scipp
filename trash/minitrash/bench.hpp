@@ -20,7 +20,7 @@ namespace scipp::tools {
      * 
      * @return physics::time_um
      */
-    template <std::size_t N>
+    template <size_t N>
     physics::time_um bench(const std::function<void(void)>& func) {
 
         timer stopwatch;
@@ -51,13 +51,13 @@ namespace scipp::tools {
     //  * 
     //  * @return physics::time_um
     //  */
-    // template <std::size_t N>
+    // template <size_t N>
     // physics::time_um omp_bench(std::function<void()> func) {
 
     //     omp_timer stopwatch;
     //     geometry::vector<physics::time_m, N> times;
 
-    //     for (std::size_t i{}; i < N; ++i) {
+    //     for (size_t i{}; i < N; ++i) {
 
     //         stopwatch.start();
     //         func();
@@ -79,7 +79,7 @@ namespace scipp::tools {
     //  * 
     //  * @return physics::time_um
     //  */
-    // physics::time_um cpu_bench(const std::size_t& n, std::function<void()> func) {
+    // physics::time_um cpu_bench(const size_t& n, std::function<void()> func) {
 
     //     if (n == 0)
     //         throw std::runtime_error("Error: n must be greater than 0");
@@ -89,7 +89,7 @@ namespace scipp::tools {
 
     //     times.reserve(n); 
 
-    //     for (std::size_t i{}; i < n; ++i) {
+    //     for (size_t i{}; i < n; ++i) {
 
     //         stopwatch.start();
     //         func();

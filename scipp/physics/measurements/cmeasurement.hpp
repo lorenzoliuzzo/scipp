@@ -14,7 +14,7 @@ namespace scipp::physics {
 
 
     template <typename MEAS_TYPE>   
-        requires (is_measurement_v<MEAS_TYPE> || is_umeasurement_v<MEAS_TYPE>)
+        requires (math::is_number_v<MEAS_TYPE> || is_measurement_v<MEAS_TYPE> || is_umeasurement_v<MEAS_TYPE>)  
     struct cmeasurement {
 
 
@@ -38,7 +38,14 @@ namespace scipp::physics {
             measurement_t imag;
 
 
-            inline static constexpr std::size_t dim = 2;
+            inline static constexpr size_t dim = 2;
+
+
+            inline static constexpr cmeasurement zero = cmeasurement{0.0}; ///< The zero measurement
+
+            inline static constexpr cmeasurement one = cmeasurement{1.0}; ///< The one measurement
+
+            inline static constexpr cmeasurement i = cmeasurement{0.0, 1.0}; ///< The one measurement
 
 
         // ==============================================
@@ -58,6 +65,26 @@ namespace scipp::physics {
             constexpr cmeasurement(cmeasurement&& other) noexcept :
 
                 real(std::move(other.real)), imag(std::move(other.imag)) {}
+
+
+            constexpr cmeasurement(double&& real) noexcept :
+
+                real(std::move(real)), imag{} {}
+
+
+            constexpr cmeasurement(const double& real) noexcept :
+
+                real(real), imag{} {}
+
+
+            constexpr cmeasurement(double&& real, double&& imag) noexcept :
+
+                real(std::move(real)), imag{std::move(imag)} {}
+
+
+            constexpr cmeasurement(const double& real, const double& imag) noexcept :
+
+                real(real), imag{imag} {}
 
 
             constexpr cmeasurement(const measurement_t& real, const measurement_t& imag) noexcept : 
@@ -304,14 +331,9 @@ namespace scipp::physics {
 
             template <typename OTHER_MEAS_TYPE>
                 requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(const cmeasurement<OTHER_MEAS_TYPE>& other) const noexcept 
-                -> cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
-                
-                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
-                result.real = this->real * other.real - this->imag * other.imag;
-                result.imag = this->real * other.imag + this->imag * other.real;
+            constexpr auto operator*(const cmeasurement<OTHER_MEAS_TYPE>& other) const noexcept {
 
-                return result;
+                return math::op::mult(*this, other);
 
             }
 
@@ -319,9 +341,9 @@ namespace scipp::physics {
             template <typename OTHER_MEAS_TYPE>
                 requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
             constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
+                -> cmeasurement<math::functions::multiply_t<measurement_t, OTHER_MEAS_TYPE>> {
                 
-                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::functions::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = this->real * other;
                 result.imag = this->real * other;
 
@@ -329,12 +351,28 @@ namespace scipp::physics {
 
             }
 
-            template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator/(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> cmeasurement<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>> {
+            template <typename OTHER_CMEAS_TYPE>
+                requires (is_cmeasurement_v<OTHER_CMEAS_TYPE>)
+            constexpr auto operator/(const OTHER_CMEAS_TYPE& other) const 
+                -> math::functions::divide_t<cmeasurement, OTHER_CMEAS_TYPE> {
                 
-                cmeasurement<math::meta::divide_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                auto denom = math::op::norm(other);
+                if (denom == OTHER_CMEAS_TYPE::measurement_t::zero) 
+                    throw std::runtime_error("Division by zero!");
+
+                return ((*this) * other.conj()) / denom;
+
+            }
+
+            template <typename OTHER_MEAS_TYPE>
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
+            constexpr auto operator/(const OTHER_MEAS_TYPE& other) const 
+                -> math::functions::divide_t<cmeasurement, OTHER_MEAS_TYPE> {
+                
+                if (other == OTHER_MEAS_TYPE{})
+                    throw std::runtime_error("Division by zero!");
+
+                math::functions::divide_t<cmeasurement, OTHER_MEAS_TYPE> result; 
                 result.real = this->real / other;
                 result.imag = this->real / other;
 
@@ -344,10 +382,10 @@ namespace scipp::physics {
 
 
             template <typename OTHER_MEAS_TYPE>
-                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
-            friend constexpr cmeasurement<math::meta::multiply_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const cmeasurement<MEAS_TYPE>& other_c) noexcept {
+                requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
+            friend constexpr cmeasurement<math::functions::multiply_t<OTHER_MEAS_TYPE, MEAS_TYPE>> operator*(const OTHER_MEAS_TYPE& other, const cmeasurement<MEAS_TYPE>& other_c) noexcept {
                 
-                cmeasurement<math::meta::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
+                cmeasurement<math::functions::multiply_t<measurement_t, OTHER_MEAS_TYPE>> result; 
                 result.real = other * other_c.real;
                 result.imag = other * other_c.imag;
 
@@ -358,7 +396,7 @@ namespace scipp::physics {
             template <typename OTHER_MEAS_TYPE>
                 requires (is_measurement_v<OTHER_MEAS_TYPE> || is_umeasurement_v<OTHER_MEAS_TYPE>)
             friend constexpr auto operator/(const OTHER_MEAS_TYPE& other, const cmeasurement<MEAS_TYPE>& other_c) noexcept 
-                -> cmeasurement<math::meta::divide_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
+                -> cmeasurement<math::functions::divide_t<OTHER_MEAS_TYPE, MEAS_TYPE>> {
 
                 return cmeasurement<OTHER_MEAS_TYPE>(other) / other_c;
 
@@ -402,12 +440,23 @@ namespace scipp::physics {
             }         
 
 
+            constexpr cmeasurement conj() const noexcept {
+
+                return { this->real, -this->imag };
+
+            }
+
             constexpr cmeasurement conj() noexcept {
 
                 return { this->real, -this->imag };
 
             }
 
+            constexpr auto abs() const noexcept {
+                
+                return math::op::abs(*this);
+
+            }
 
             constexpr auto arg() const noexcept {
                 

@@ -15,7 +15,7 @@ namespace scipp::math {
     namespace polynomials {
 
 
-        template <std::size_t order>
+        template <size_t order>
         struct hermite : meta::unary_function<double, double> {
 
 
@@ -41,7 +41,7 @@ namespace scipp::math {
 
                 else {
 
-                    for (std::size_t index = 2; index <= order; ++index) {
+                    for (size_t index = 2; index <= order; ++index) {
 
                         std::swap(p0, p1); 
                         p1 = hermite_next(index, x, p0, p1); 

@@ -58,6 +58,25 @@ namespace scipp::tools {
 
     }
 
+
+    /// @brief Print a measurement with a description
+    template <typename PREFIX_TYPE, typename MEAS_TYPE>
+        requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
+    inline static constexpr void print(const MEAS_TYPE& other) noexcept {
+
+        double fixed_precision;
+
+        if constexpr (PREFIX_TYPE::num < PREFIX_TYPE::den)
+            fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
+        else
+            fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den));
+
+        std::cout.precision(fixed_precision);
+        std::cout << std::fixed << other << std::defaultfloat << '\n';
+        std::cout.precision(6);
+
+    }
+
     
     /// @brief Print the measurement with a specific unit of measure 
     /// @note The unit must be of the same base of the measurement
@@ -243,7 +262,7 @@ namespace scipp::tools {
     inline static constexpr void print(const VECTOR_TYPE& other) noexcept {
 
         std::cout << "[ "; 
-        for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i)
+        for (size_t i{}; i < VECTOR_TYPE::dim; ++i)
             std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
 
     }
@@ -254,7 +273,7 @@ namespace scipp::tools {
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other) noexcept {
 
         std::cout << description << ": [ "; 
-        for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i)
+        for (size_t i{}; i < VECTOR_TYPE::dim; ++i)
             std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
 
     }
@@ -269,7 +288,7 @@ namespace scipp::tools {
     inline static constexpr void print(const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << "[ "; 
-        for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) {
+        for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
             print(other.data[i], units, false); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
         }
@@ -285,7 +304,7 @@ namespace scipp::tools {
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
         std::cout << description << ": [ "; 
-        for (std::size_t i{}; i < VECTOR_TYPE::dim; ++i) {
+        for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
             print(other.data[i], units, false); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
         }
@@ -298,7 +317,7 @@ namespace scipp::tools {
         requires (geometry::is_matrix_v<MATRIX_TYPE>)
     inline static constexpr void print(const MATRIX_TYPE& other) noexcept {
 
-        for (std::size_t i{}; i < MATRIX_TYPE::columns; ++i)
+        for (size_t i{}; i < MATRIX_TYPE::columns; ++i)
             print(other.data[i]); 
 
     }
@@ -310,7 +329,7 @@ namespace scipp::tools {
     inline static constexpr void print(const std::string& description, const MATRIX_TYPE& other) noexcept {
 
         std::cout << description << ":\n"; 
-        for (std::size_t i{}; i < MATRIX_TYPE::columns; ++i)
+        for (size_t i{}; i < MATRIX_TYPE::columns; ++i)
             print(other.data[i]); 
 
     }
@@ -333,7 +352,7 @@ namespace scipp::tools {
     // inline static constexpr void print(const std::string& description, const MATRIX_TYPE& other) noexcept {
 
     //     std::cout << description << ": [ "; 
-    //     for (std::size_t i{}; i < MATRIX_TYPE::dim; ++i)
+    //     for (size_t i{}; i < MATRIX_TYPE::dim; ++i)
     //         std::cout << other.data[i] << ((i < MATRIX_TYPE::dim - 1) ? ", " : " ]\n"); 
 
     // }
@@ -374,7 +393,7 @@ namespace scipp::tools {
     }
 
 
-    template <typename MEAS_TYPE, std::size_t DIM>
+    template <typename MEAS_TYPE, size_t DIM>
         requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     geometry::vector<MEAS_TYPE, DIM> read_measurements(const std::string& file) {
 
@@ -384,7 +403,7 @@ namespace scipp::tools {
         if (infile.fail())  
             throw std::runtime_error("Error! Cannot read file: " + file); 
 
-        else for (std::size_t i{}; i < DIM; ++i) 
+        else for (size_t i{}; i < DIM; ++i) 
             infile >> vector[i];
 
         return vector;      

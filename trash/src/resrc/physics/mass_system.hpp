@@ -17,7 +17,7 @@ namespace scipp::physics {
      * 
      * @tparam T: mass type
      */
-    template <std::size_t DIM>
+    template <size_t DIM>
     class mass_system : public reference_system<DIM> {
 
 

@@ -12,26 +12,26 @@
 namespace scipp::physics {
 
 
-    template <std::size_t DIM> 
+    template <size_t DIM> 
     using position = geometry::vector<length_m, DIM>; 
 
     using position2 = position<2>;
     using position3 = position<3>;
 
-    // template <std::size_t DIM>
+    // template <size_t DIM>
     // using uposition = geometry::vector<length_um, DIM>;
 
     // using uposition2 = uposition<2>;
     // using uposition3 = uposition<3>;
 
 
-    template <std::size_t DIM> 
-    using lin_velocity = geometry::vector<math::meta::divide_t<length_m, time_m>, DIM>; 
+    template <size_t DIM> 
+    using lin_velocity = geometry::vector<velocity_m, DIM>; 
 
     using lin_velocity2 = lin_velocity<2>;
     using lin_velocity3 = lin_velocity<3>;
 
-    // template <std::size_t DIM> 
+    // template <size_t DIM> 
     // using ulin_velocity = geometry::vector<math::meta::divide_t<length_um, time_um>, DIM>; 
 
     // using ulin_velocity2 = ulin_velocity<2>;

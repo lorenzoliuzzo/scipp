@@ -155,7 +155,7 @@ void autodiff() {
 }
 
 
-template <std::size_t N>
+template <size_t N>
 struct dual_n_func : unary_function<dual_n<physics::scalar_m, N>, dual_n<physics::scalar_m, N>> {
     
     constexpr dual_n<physics::scalar_m, N> operator()(const dual_n<physics::scalar_m, N>& x) const noexcept override {
@@ -177,7 +177,7 @@ int main() {
     dual_n<scalar_m, 3> x(3.0, {1.0, 0.0, 0.0}); 
     
     print("value", x.val);
-    for (std::size_t i{}; i < 3; ++i) 
+    for (size_t i{}; i < 3; ++i) 
         print("order " + std::to_string(i), x.der[i]);
     
 
@@ -185,7 +185,7 @@ int main() {
     auto y = f(x);
 
     print("value", y.val);
-    for (std::size_t i{}; i < 3; ++i) 
+    for (size_t i{}; i < 3; ++i) 
         print("order " + std::to_string(i), y.der[i]);
     
 

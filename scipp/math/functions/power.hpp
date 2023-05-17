@@ -89,10 +89,10 @@ namespace scipp::math {
         /// @brief power a measurement
         template <size_t POWER, typename MEAS_TYPE>
             requires (physics::is_measurement_v<MEAS_TYPE>)
-        struct power<POWER, MEAS_TYPE> : unary_function<MEAS_TYPE, physics::measurement<power_t<POWER, typename MEAS_TYPE::base_t>>> {
+        struct power<POWER, MEAS_TYPE> : unary_function<MEAS_TYPE, physics::measurement<power_t<POWER, typename MEAS_TYPE::base_t>, typename MEAS_TYPE::value_t>> {
 
 
-            using result_t = physics::measurement<power_t<POWER, typename MEAS_TYPE::base_t>>;                                             
+            using result_t = physics::measurement<power_t<POWER, typename MEAS_TYPE::base_t>, typename MEAS_TYPE::value_t>;                                             
 
 
             inline static constexpr result_t f(const MEAS_TYPE& x) noexcept {

@@ -58,16 +58,17 @@ namespace scipp::math {
         };
 
 
-        template <typename T>
-            requires (physics::is_measurement_v<T>)
-        struct add<T> : binary_function<T, T, T> {
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::are_same_measurement_v<ARG_TYPE1, ARG_TYPE2>)
+        struct add<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, 
+                                        physics::measurement<typename ARG_TYPE1::base_t, decltype(static_cast<typename ARG_TYPE1::value_t>(1.0) + static_cast<typename ARG_TYPE2::value_t>(1.0))>> {
 
 
-            using result_t = T;
+            using result_t = physics::measurement<typename ARG_TYPE1::base_t, decltype(static_cast<typename ARG_TYPE1::value_t>(1.0) + static_cast<typename ARG_TYPE2::value_t>(1.0))>;
 
-            using first_arg_t = T;
+            using first_arg_t = ARG_TYPE1;
 
-            using second_arg_t = T;
+            using second_arg_t = ARG_TYPE2;
 
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept { 
@@ -169,14 +170,6 @@ namespace scipp::math {
             
             }
 
-
-            inline static constexpr result_t f(first_arg_t& x, const second_arg_t& y) noexcept { 
-
-                x += static_cast<first_arg_t>(y);
-                return x;
-            
-            }
-
         
         };
 
@@ -196,7 +189,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept { 
 
-                return x + static_cast<first_arg_t>(y);;   
+                return x + static_cast<first_arg_t>(y);   
             
             }
 
@@ -226,7 +219,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
 
-                return static_cast<ARG_TYPE2>(x) + y;
+                return static_cast<second_arg_t>(x) + y;
 
             }
 
@@ -248,10 +241,18 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
 
-                return x + static_cast<first_arg_t>(y);
+                return {x.value + y.value, x.uncertainty}; 
 
             }
             
+
+            inline static constexpr result_t f(first_arg_t& x, const second_arg_t& y) noexcept {
+
+                x.value += y.value;
+                return x;
+
+            }
+
 
         };
 
@@ -270,7 +271,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
 
-                return static_cast<ARG_TYPE2>(x) + y;
+                return static_cast<second_arg_t>(x) + y;
 
             }
 
@@ -292,10 +293,18 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
 
-                return x + static_cast<first_arg_t>(y);
+                return {x.real + y.value, x.imag};
 
             }
             
+
+            inline static constexpr result_t f(first_arg_t& x, const second_arg_t& y) noexcept {
+                
+                x.real += y.value;
+                return x;
+
+            }
+
 
         };
 
@@ -371,40 +380,6 @@ namespace scipp::math {
 
         
         };
-
-
-        // template <typename ARG_TYPE1, typename ARG_TYPE2>
-        //     requires (geometry::are_same_vectors_v<ARG_TYPE1, ARG_TYPE2>)
-        // struct add<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1> {
-
-
-        //     using result_t = ARG_TYPE1;
-
-        //     using first_arg_t = ARG_TYPE1;
-
-        //     using second_arg_t = ARG_TYPE2;
-
-
-        //     inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
-
-        //         result_t result; 
-        //         std::transform(std::execution::par,
-        //                        x.data.begin(), x.data.end(), 
-        //                        y.data.begin(), 
-        //                        result.data.begin(), 
-        //                        std::plus<typename result_t::value_t>());
-
-        //         return result;
-
-        //     }
-
-        
-        // };
-
-
-
-
-
 
 
     } // namespace functions

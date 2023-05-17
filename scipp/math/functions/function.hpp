@@ -52,7 +52,7 @@ namespace scipp::math {
             using second_arg_t = ARG_TYPE2;
 
 
-            inline static constexpr result_t f(const first_arg_t&, const second_arg_t&) noexcept;
+            inline static constexpr result_t f(const first_arg_t&, const second_arg_t&);
 
 
             constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y) const { 
@@ -83,6 +83,9 @@ namespace scipp::math {
             virtual ~ternary_function() = default;
 
 
+            inline static constexpr result_t f(const first_arg_t&, const second_arg_t&, const third_arg_t&);
+
+
             constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y, const third_arg_t& z) const { 
 
                 return f(x, y, z); 
@@ -105,7 +108,10 @@ namespace scipp::math {
             using arg_t = std::tuple<ARG_TYPEs...>;
 
 
-            virtual constexpr result_t f(const ARG_TYPEs&... x) const = 0;
+            virtual ~nary_function() = default;
+
+
+            inline static constexpr result_t f(const ARG_TYPEs&... x);
 
 
             constexpr result_t operator()(const ARG_TYPEs&... x) const { 

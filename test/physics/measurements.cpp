@@ -1,36 +1,56 @@
 /**
- * @file    measurements.cpp
+ * @file    test/physics/measurements.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-03-22
+ * @date    2023-05-06
  * 
  * @copyright Copyright (c) 2023
  */
 
 
+
 #include "sci++.hpp"
 
-using namespace scipp; 
-using namespace physics; 
-using namespace physics::units; 
+
+using namespace scipp;
 using namespace tools; 
+using namespace physics;
+using namespace physics::units; 
+using namespace math; 
 
 
 int main() {
 
 
-    static_assert(are_same_measurement_v<length_m, length_m>);
-    static_assert(are_same_measurement_v<length_m, length_m, length_m>);
+    scalar_m z = 0.5; 
+    print(z); 
+    print(z += 0.5);
+    print(z);
 
-    constexpr measurement x = 3.54 * m; 
-    constexpr measurement y = 1.5 * mm;
-    umeasurement k(x, y);   
+    z += 0.5;
+    print(z);
 
-    std::cout << x << '\n';
-    std::cout << y << '\n';
-    std::cout << k << '\n'; 
+    auto x = 3.14m; 
+    print(x); 
 
-    print(y, um); 
+    auto y = 1.0m;
+    print(y); 
+
+    y += x; 
+    print(y); 
+
+    y += 0.5m;
+    print(y);
+
+
+    print(x + y); 
+    print(x * y); 
+    print(x * -1.5m); 
+    print(op::square(x)); 
+    print(op::cube(x)); 
+    
+    // print(x / y); 
+
 
     return 0; 
 

@@ -1,5 +1,5 @@
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/geometry)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/traits)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/geometry)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/math)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/physics)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/plot)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/bench)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tools)

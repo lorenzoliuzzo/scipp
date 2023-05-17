@@ -83,13 +83,35 @@ namespace scipp::math {
         };
 
 
+        /// @brief Invert a number
+        template <typename T>
+            requires (is_number_v<T>)
+        struct invert<T> : unary_function<T, double> {
+
+
+            using result_t = double;                                             
+
+
+            inline static constexpr result_t f(const T& x) {
+
+                if (x == T{})
+                    throw std::runtime_error("Cannot invert zero");
+                    
+                return 1.0 / x;
+
+            }       
+
+
+        };
+
+
         /// @brief Invert a measurement
         template <typename MEAS_TYPE>
             requires (physics::is_measurement_v<MEAS_TYPE>)
-        struct invert<MEAS_TYPE> : unary_function<MEAS_TYPE, physics::measurement<invert_t<typename MEAS_TYPE::base_t>>> {
+        struct invert<MEAS_TYPE> : unary_function<MEAS_TYPE, physics::measurement<invert_t<typename MEAS_TYPE::base_t>, decltype(1.0 / typename MEAS_TYPE::value_t{1.0})>> {
 
 
-            using result_t = physics::measurement<invert_t<typename MEAS_TYPE::base_t>>;                                             
+            using result_t = physics::measurement<invert_t<typename MEAS_TYPE::base_t>, decltype(1.0 / typename MEAS_TYPE::value_t{1.0})>;                                             
 
 
             inline static constexpr result_t f(const MEAS_TYPE& x) {

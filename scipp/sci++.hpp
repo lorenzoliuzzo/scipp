@@ -20,7 +20,6 @@
         #include <algorithm>
         #include <array> /// geometry::vector, geometry::matrix
         #include <concepts> 
-        #include <complex>
         #include <chrono> /// tools::timer
         #include <cmath>
         #include <execution>
@@ -31,16 +30,15 @@
         // #include <numeric> // maybe not needed
         // #include <omp.h> // maybe not needed
         #include <ratio> /// physics::prefix
-        #include <set>
+        // #include <set>
         #include <string>
         #include <sstream>
         // #include <thread> // maybe not needed
-        #include <variant>
-        #include <vector>
+        // #include <vector>
 
 
-        #include "external/matplotlibcpp.h"
-        namespace plt = matplotlibcpp;
+        // #include "external/matplotlibcpp.h"
+        // namespace plt = matplotlibcpp;
 
 
     /// ===============================================================
@@ -59,25 +57,27 @@
         /// @brief math/functions
         /// ---------------------------------------------------------------
 
-            #include "math/ops.hpp"
+            #include "math/functions/mathematical.hpp"
+            #include "math/functions/operators.hpp"
 
             #include "math/functions/function.hpp"
             #include "math/functions/add.hpp" /// ok
             #include "math/functions/subtract.hpp" /// ok
             #include "math/functions/multiply.hpp" /// @todo vector multiplication among matrix
             #include "math/functions/divide.hpp" 
+            #include "math/functions/negate.hpp"
             #include "math/functions/invert.hpp" /// @done
             #include "math/functions/power.hpp" /// @done
             #include "math/functions/root.hpp" 
             // #include "math/meta/compose.hpp" /// @todo 
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
 
 
-        // /// ---------------------------------------------------------------
-        // /// @brief physics/measurements
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
+        /// @brief physics/measurements
+        /// ---------------------------------------------------------------
         
             #include "physics/measurements/base_quantity.hpp" /// @done
             #include "physics/measurements/unit.hpp" /// @ok check if necessary convert() function
@@ -101,12 +101,12 @@
 
         // /// ---------------------------------------------------------------
 
-            #include "geometry/vector.hpp"
-            #include "geometry/matrix.hpp"
+            // #include "geometry/vector.hpp"
+            // #include "geometry/matrix.hpp"
 
         // /// ---------------------------------------------------------------
 
-            #include "physics/vector_types.hpp"
+            // #include "physics/vector_types.hpp"
         //     // #include "physics/matrix_types.hpp" // @todo
 
         // /// ---------------------------------------------------------------

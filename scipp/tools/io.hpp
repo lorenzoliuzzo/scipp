@@ -263,7 +263,7 @@ namespace scipp::tools {
 
         std::cout << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i)
-            std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
+            std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n");
 
     }
 
@@ -395,9 +395,9 @@ namespace scipp::tools {
 
     template <typename MEAS_TYPE, size_t DIM>
         requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-    geometry::vector<MEAS_TYPE, DIM> read_measurements(const std::string& file) {
+    geometry::column_vector<MEAS_TYPE, DIM> read_measurements(const std::string& file) {
 
-        geometry::vector<MEAS_TYPE, DIM> vector; 
+        geometry::column_vector<MEAS_TYPE, DIM> vector; 
 
         std::ifstream infile(file);
         if (infile.fail())  

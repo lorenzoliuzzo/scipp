@@ -2,7 +2,7 @@
  * @file    traits/math.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::math namespace
- * @date    2023-05-05
+ * @date    2023-05-17
  * 
  * @copyright Copyright (c) 2023
  */
@@ -127,6 +127,13 @@ namespace scipp::math {
         using subtract_t = typename subtract<ARG_TYPE1, ARG_TYPE2>::result_t;
 
 
+        template <typename ARG_TYPE>
+        struct negate; 
+
+        template <typename ARG_TYPE>
+        using negate_t = ARG_TYPE;
+
+
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         struct multiply; 
 
@@ -180,60 +187,20 @@ namespace scipp::math {
 
 
     // =============================================
-    // variadic function traits
+    // calculus traits
     // =============================================
 
-        // template <typename RESULT_TYPE, typename... ARG_TYPES>
-        // struct variadic_function;
+        template <typename T>
+        struct interval; 
 
+        template <typename T>
+        struct is_interval : std::false_type {};
 
-        // template <typename T>
-        // struct is_variadic_function : std::false_type {};
+        template <typename T>
+        struct is_interval<interval<T>> : std::true_type {};
 
-        // template <typename RESULT_TYPE, typename... ARG_TYPEs>
-        // struct is_variadic_function<variadic_function<RESULT_TYPE, ARG_TYPEs...>> : std::true_type {};
-
-        // template <typename T>
-        // inline static constexpr bool is_variadic_function_v = is_variadic_function<T>::value; 
-
-
-    // =============================================
-    // function traits
-    // =============================================
-
-        // template <typename T>
-        // struct is_function : std::false_type {};
-
-        // template <typename RESULT_TYPE, typename ARG_TYPE>
-        // struct is_function<meta::unary_function<RESULT_TYPE, ARG_TYPE>> : std::true_type {};
-
-        // template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2>
-        // struct is_function<meta::binary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>> : std::true_type {};
-        
-        // template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
-        // struct is_function<meta::ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2, ARG_TYPE3>> : std::true_type {};
-
-        // template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs>
-        // struct is_function<meta::nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
-
-        // // template <typename RESULT_TYPE, typename... ARG_TYPEs>
-        // // struct is_function<meta::variadic_function<RESULT_TYPE, ARG_TYPEs...>> : std::true_type {};
-
-        // template <typename T>
-        // inline static constexpr bool is_function_v = is_function<T>::value;
-
-
-    template <typename T>
-    struct interval; 
-
-    template <typename T>
-    struct is_interval : std::false_type {};
-
-    template <typename T>
-    struct is_interval<interval<T>> : std::true_type {};
-
-    template <typename T>
-    inline static constexpr bool is_interval_v = is_interval<T>::value;
+        template <typename T>
+        inline static constexpr bool is_interval_v = is_interval<T>::value;
 
 
 } /// namespace scipp::math

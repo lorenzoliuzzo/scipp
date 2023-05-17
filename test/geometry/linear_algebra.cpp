@@ -1,51 +1,52 @@
 /**
- * @file    test/linear_algebra.cpp
+ * @file    test/traits.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-04-10
+ * @date    2023-05-06
  * 
  * @copyright Copyright (c) 2023
  */
 
 
+
 #include "sci++.hpp"
-#include <cassert>
 
 
-using namespace scipp; 
-using namespace geometry; 
-using namespace physics; 
-using namespace physics::units; 
-using namespace math; 
-using namespace tools;
+using namespace scipp;
+using namespace tools; 
+using namespace physics;
+using namespace geometry;
+using namespace math;
 
 
 int main() {
 
+    auto p1 = position3(1.0m, 2.0m, 3.0m);
+    auto p2 = vector<cmeasurement<length_m>, 3, false>(cmeasurement<length_m>(1.0m, -1.0m), cmeasurement<length_m>(2.0m), cmeasurement<length_m>(3.0m));
+    auto p3 = row_vector<time_m, 3>(1.0 * units::s, 2.0 * units::s, 3.0 * units::s);
 
-    auto mat = make_matrix<position3, 3>(position3(2.0m, 0.0m, 0.0m), position3(0.0m, 1.0m, 0.0m), position3(0.0m, 0.0m, 1.0m));
+    static_assert(are_same_vectors_v<decltype(p1), position3>);
+    static_assert(are_same_base_v<decltype(p2)::base_t, position3::base_t>);
+    static_assert(is_vector_v<decltype(p2)>); 
 
-    print("id3", matrix<position3, 3>::identity());
-    print("mat", mat); 
-    print("det", mat.determinant());
+    static_assert(is_column_vector_v<decltype(p1)>);
+    static_assert(is_row_vector_v<decltype(p3)>);
+    // auto f = functions::multiply<decltype(p1), decltype(p2)>{};
 
-    vectorial_base base(mat); 
-    print("base", base.data);
-    // assert(base.is_normalized());
+    print(p1); 
+    print(p2);
+    print(op::mult(p1, p3));
+    print(op::mult(p3, p1));
+    print(p1 * 1.0m); 
 
+    print(p1 + p1);
+    print(p1 + p2);
 
-    // auto ld_mat = make_matrix<position3, 3>(position3(0.0m, 2.0m, 0.0m), position3(0.0m, 1.0m, 0.0m), position3(0.0m, 0.0m, 1.0m));
-    // vectorial_base base2(ld_mat); 
-    // print("base", base2.data);
-
-
-    auto x = base.from_base(position3(3.0m, 4.0m, 5.5m));
-    print("x", x);
-
-    auto y = base.to_base(x);
-    print("y", y);
+    
 
 
     return 0;
 
 }
+
+

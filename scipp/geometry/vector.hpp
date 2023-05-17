@@ -28,7 +28,7 @@ namespace scipp::geometry {
 
             using value_t = MEAS_TYPE;
 
-            using base_t = typename MEAS_TYPE::base_t; 
+            using base_t = std::conditional_t<math::is_number_v<MEAS_TYPE>, physics::units::scalar, typename MEAS_TYPE::base_t>; 
             
             using data_t = std::array<MEAS_TYPE, DIM>;
 

@@ -12,6 +12,7 @@
 /// @brief physics namespace contains all the classes and functions of the physics library
 namespace scipp::physics {
 
+
     /// =============================================
     /// @brief base_quantity traits
     /// =============================================
@@ -29,7 +30,7 @@ namespace scipp::physics {
         struct is_base<base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>> : std::true_type {};
             
         template <typename T>
-        constexpr bool is_base_v = is_base<T>::value;
+        inline static constexpr bool is_base_v = is_base<T>::value;
 
         /// @brief Type trait to check if a list of types are base_quantities
         template <typename... Ts>
@@ -55,14 +56,14 @@ namespace scipp::physics {
                                                                BASE1::luminous_intensity == BASE2::luminous_intensity> {};
 
         template <typename BASE1, typename BASE2>
-        constexpr bool is_same_base_v = is_same_base<BASE1, BASE2>::value;
+        inline static constexpr bool is_same_base_v = is_same_base<BASE1, BASE2>::value;
 
         /// @brief Type trait to check if a list of base_quantity types are the same
         template <typename BASE, typename... OTHER_BASEs> 
         struct are_same_base : std::conjunction<is_same_base<BASE, OTHER_BASEs>...> {};
 
         template <typename BASE, typename... OTHER_BASEs>
-        constexpr bool are_same_base_v = are_same_base<BASE, OTHER_BASEs...>::value;
+        inline static constexpr bool are_same_base_v = are_same_base<BASE, OTHER_BASEs...>::value;
 
 
         template <typename BASE, int POWER>
@@ -80,7 +81,7 @@ namespace scipp::physics {
                                                                 BASE::luminous_intensity % POWER == 0> {};
 
         template <typename BASE, int POWER>
-        constexpr bool has_valid_root_v = has_valid_root<BASE, POWER>::value;
+        inline static constexpr bool has_valid_root_v = has_valid_root<BASE, POWER>::value;
 
 
     /// =============================================
@@ -108,7 +109,6 @@ namespace scipp::physics {
             requires (are_prefix_v<T1, T2>)
         struct is_same_prefix : std::bool_constant<T1::num == T2::num && T1::den == T2::den> {};
     
-
         template <typename T1, typename T2>
         inline static constexpr bool is_same_prefix_v = is_same_prefix<T1, T2>::value;
     
@@ -143,10 +143,9 @@ namespace scipp::physics {
         struct is_same_unit : std::false_type {};
 
         template <typename T1, typename T2>
-            requires (are_units_v<T1, T2> &&
-                      is_same_base_v<typename T1::base_t, typename T2::base_t> &&
-                      std::ratio_equal_v<typename T1::prefix_t, typename T2::prefix_t>)
-        struct is_same_unit<T1, T2> : std::true_type {};
+            requires (are_units_v<T1, T2>)
+        struct is_same_unit<T1, T2> : std::bool_constant<is_same_base_v<typename T1::base_t, typename T2::base_t> &&
+                                                         std::ratio_equal_v<typename T1::prefix_t, typename T2::prefix_t>> {};
 
         template <typename T1, typename T2>
         inline constexpr bool is_same_unit_v = is_same_unit<T1, T2>::value;
@@ -156,7 +155,7 @@ namespace scipp::physics {
         struct are_same_unit : std::conjunction<is_same_unit<T, Ts>...> {};
 
         template <typename T, typename... Ts>
-        constexpr bool are_same_unit_v = are_same_unit<T, Ts...>::value;
+        inline static constexpr bool are_same_unit_v = are_same_unit<T, Ts...>::value;
 
         /// @brief Type trait to check if an unit type is prefixed
         template <typename UNIT_TYPE>
@@ -178,16 +177,17 @@ namespace scipp::physics {
     /// @brief measurement traits
     /// =============================================
 
-        template <typename BASE_TYPE> 
-            requires (is_base_v<BASE_TYPE>)  
+        template <typename BASE_TYPE, typename VALUE_TYPE> 
+            requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
         struct measurement;
+
 
         /// @brief Type trait to check if a type is a measurement
         template <typename T>
         struct is_measurement : std::false_type{};
 
-        template <typename BASE_TYPE>
-        struct is_measurement<measurement<BASE_TYPE>> : std::true_type{};
+        template <typename BASE_TYPE, typename VALUE_TYPE> 
+        struct is_measurement<measurement<BASE_TYPE, VALUE_TYPE>> : std::true_type{};
 
         template <typename MEAS_TYPE>
         inline static constexpr bool is_measurement_v = is_measurement<MEAS_TYPE>::value;
@@ -198,11 +198,11 @@ namespace scipp::physics {
         template <typename... MEAS_TYPES>
         inline static constexpr bool are_measurements_v = are_measurements<MEAS_TYPES...>::value;
 
+
         /// @brief Type trait to check if two measurement types are the same
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2> && 
-                      is_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>)
-        struct is_same_measurement : std::true_type {};
+            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>) 
+        struct is_same_measurement : is_same_base<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t> {};
 
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
         inline static constexpr bool is_same_measurement_v = is_same_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
@@ -279,13 +279,13 @@ namespace scipp::physics {
                                                            std::false_type> {};
 
         template <typename T>
-        constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
+        inline static constexpr bool is_generic_measurement_v = is_generic_measurement<T>::value;
 
         template <typename... MEAS_TYPES>
         struct are_generic_measurements : std::conjunction<is_generic_measurement<MEAS_TYPES>...> {};
 
         template <typename... MEAS_TYPEs>
-        constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
+        inline static constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
 
 
         /// @brief Type trait to check if two measurement types are the same

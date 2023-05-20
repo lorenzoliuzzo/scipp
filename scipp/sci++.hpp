@@ -2,8 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @note    It is also include 'matplotlibcpp' as plotting library
- * @date    2023-04-28
+ * @date    2023-05-20
  * 
  * @copyright Copyright (c) 2023
  */
@@ -17,13 +16,13 @@
     /// @brief std dependencies
     /// ===============================================================
 
-        #include <algorithm>
+        // #include <algorithm>
         #include <array> /// geometry::vector, geometry::matrix
         #include <concepts> 
         #include <chrono> /// tools::timer
         #include <cmath>
         #include <execution>
-        #include <fstream> 
+        #include <fstream> /// tools::io
         // #include <functional> // maybe not needed
         #include <iostream> /// tools::io
         #include <map> /// physics::prefix_map
@@ -31,8 +30,8 @@
         // #include <omp.h> // maybe not needed
         #include <ratio> /// physics::prefix
         // #include <set>
-        #include <string>
-        #include <sstream>
+        // #include <string> /// tools::io
+        #include <sstream> /// tools::io
         // #include <thread> // maybe not needed
         // #include <vector>
 
@@ -53,42 +52,43 @@
             #include "traits/physics.hpp"
             #include "traits/geometry.hpp"
 
+
         /// ---------------------------------------------------------------
         /// @brief math/functions
         /// ---------------------------------------------------------------
-
-            #include "math/functions/mathematical.hpp"
+            
+            #include "math/functions/operations.hpp"
             #include "math/functions/operators.hpp"
-
-            #include "math/functions/function.hpp"
-            #include "math/functions/add.hpp" /// ok
-            #include "math/functions/subtract.hpp" /// ok
-            #include "math/functions/multiply.hpp" /// @todo vector multiplication among matrix
+            #include "math/functions/add.hpp" 
+            #include "math/functions/subtract.hpp" 
+            #include "math/functions/multiply.hpp" 
             #include "math/functions/divide.hpp" 
             #include "math/functions/negate.hpp"
-            #include "math/functions/invert.hpp" /// @done
-            #include "math/functions/power.hpp" /// @done
+            #include "math/functions/modulo.hpp"
+            #include "math/functions/invert.hpp" 
+            #include "math/functions/power.hpp" 
             #include "math/functions/root.hpp" 
+            #include "math/functions/exponential.hpp"
+            #include "math/functions/logarithm.hpp"
+            // #include "math/functions/trigonometric.hpp"
+            // #include "math/functions/hyperbolic.hpp"
             // #include "math/meta/compose.hpp" /// @todo 
-
-        /// ---------------------------------------------------------------
-
-
+            
 
         /// ---------------------------------------------------------------
         /// @brief physics/measurements
         /// ---------------------------------------------------------------
         
-            #include "physics/measurements/base_quantity.hpp" /// @done
-            #include "physics/measurements/unit.hpp" /// @ok check if necessary convert() function
+            #include "physics/measurements/base_quantity.hpp" 
+            #include "physics/measurements/unit.hpp" 
         
             #include "physics/measurements/measurement.hpp"
             // #include "physics/measurements/umeasurement.hpp"
             #include "physics/measurements/cmeasurement.hpp"
-        //     #include "physics/measurements/scalars.hpp"
             
             #include "physics/measurements/types/units.hpp" 
             #include "physics/measurements/types/measurements.hpp" 
+
 
         // /// ---------------------------------------------------------------
             
@@ -163,14 +163,14 @@
 
         // /// ---------------------------------------------------------------
 
-        // /// ---------------------------------------------------------------
-        // /// @brief tools
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
+        /// @brief tools
+        /// ---------------------------------------------------------------
 
             #include "tools/io.hpp"
         //     #include "tools/timer.hpp"
         //     #include "tools/plot.hpp"
-        //     // #include "tools/bench.hpp"
+        //     #include "tools/bench.hpp"
 
 
 #endif

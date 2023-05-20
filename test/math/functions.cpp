@@ -31,7 +31,7 @@ int main() {
 
 
     auto a = measurement<metre, int>(3);
-    auto b = measurement<metre, double>(4);
+    auto b = measurement<metre>(4.6);
     auto c = a + b; 
     auto d = a + a; 
 
@@ -68,7 +68,10 @@ int main() {
     print(x - 3.0m);
     print(x * 3.0m);
 
-    // print(x / 3.0m);
+    print(op::abs(x));
+    print(op::square(x) * 2.0);
+    print(op::abs(cmeasurement(x, x)));
+    print(op::exp(-4.0));
 
 
     return 0; 

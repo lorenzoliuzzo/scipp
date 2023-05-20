@@ -13,8 +13,6 @@
 namespace scipp::physics {
 
 
-
-    
     /// @brief Divide a double with an unit to get a measurement
     template <typename NUMBER_TYPE, typename UNIT_TYPE> 
         requires (math::is_number_v<NUMBER_TYPE> && is_unit_v<UNIT_TYPE>)

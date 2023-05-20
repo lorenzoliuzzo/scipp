@@ -1,1 +1,0 @@
-/usr/bin/c++ -std=c++20 -O3 -g --pedantic -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096 -I/usr/local/lib/python3.10/site-packages/numpy/core/include CMakeFiles/functions.dir/functions.cpp.o -o functions  ../../libsci++.a 

@@ -328,7 +328,7 @@ namespace scipp::math {
                 std::for_each(std::execution::par, 
                               result.data.begin(), result.data.end(), 
                               [&](auto& elem) { 
-                                elem = op::sub(x.data[&elem - result.data.data()], y.data[&elem - result.data.data()]); 
+                                elem = x.data[&elem - result.data.data()] - y.data[&elem - result.data.data()]; 
                               });
 
                 return result;
@@ -354,7 +354,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept { 
 
                 result_t result;
-                std::transform(std::execution::par,
+                std::transform(std::execution::par, std::execution::par,
                                x.data.begin(), x.data.end(), 
                                y.data.begin(), 
                                result.data.begin(), 
@@ -367,7 +367,7 @@ namespace scipp::math {
 
             inline static constexpr result_t& f(first_arg_t& x, const second_arg_t& y) noexcept {
 
-                std::transform(std::execution::par,
+                std::transform(std::execution::par, std::execution::par,
                                x.data.begin(), x.data.end(), 
                                y.data.begin(), 
                                x.data.begin(), 

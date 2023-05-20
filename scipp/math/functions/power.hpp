@@ -156,7 +156,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const VECTOR_TYPE& x) {
 
                 result_t x_pow;
-                std::transform(x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
                 return x_pow;
 
             }

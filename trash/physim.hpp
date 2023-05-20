@@ -10811,7 +10811,7 @@ namespace math {
             }
 
 
-            measurement chi_sq(const std::vector<measurement>& v, 
+            measurement chi_square(const std::vector<measurement>& v, 
                                const std::vector<measurement>& expected) {
 
                 if (v.size() != expected.size()) 
@@ -10831,7 +10831,7 @@ namespace math {
                                         const std::vector<measurement>& expected, 
                                         const int& gdl) {
 
-                return chi_sq(v, expected) / gdl; 
+                return chi_square(v, expected) / gdl; 
 
             }
 

@@ -316,28 +316,34 @@ namespace scipp::physics {
         template <typename BASE_TYPE>
         inline static constexpr bool is_scalar_base_v = is_scalar_base<BASE_TYPE>::value;
 
+        template <typename T>
+        struct is_scalar_unit : std::false_type {};
 
-        template <typename UNIT_TYPE>
-        struct is_scalar_unit : std::conditional_t<is_unit_v<UNIT_TYPE> && is_scalar_base_v<typename UNIT_TYPE::base_t>, 
-                                                   std::true_type, 
-                                                   std::false_type> {};
-        template <typename UNIT_TYPE>
-        inline static constexpr bool is_scalar_unit_v = is_scalar_unit<UNIT_TYPE>::value;
+        template <typename T>
+            requires (is_unit_v<T>)
+        struct is_scalar_unit<T> : is_scalar_base<typename T::base_t> {};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_unit_v = is_scalar_unit<T>::value;
 
 
         template <typename T>
-        struct is_scalar_measurement : std::conditional_t<is_measurement_v<T> && is_scalar_base_v<typename T::base_t>, 
-                                                          std::true_type, 
-                                                          std::false_type> {};
+        struct is_scalar_measurement : std::false_type {};
+
+        template <typename T>
+            requires (is_measurement_v<T>)
+        struct is_scalar_measurement<T> : is_scalar_base<typename T::base_t> {};
 
         template <typename T>
         inline static constexpr bool is_scalar_measurement_v = is_scalar_measurement<T>::value;
 
 
         template <typename T>
-        struct is_scalar_umeasurement : std::conditional_t<is_umeasurement_v<T> && is_scalar_base_v<typename T::base_t>, 
-                                                           std::true_type, 
-                                                           std::false_type> {};
+        struct is_scalar_umeasurement : std::false_type {};
+
+        template <typename T>
+            requires (is_umeasurement_v<T>)
+        struct is_scalar_umeasurement<T> : is_scalar_base<typename T::base_t> {};
 
         template <typename T>
         inline static constexpr bool is_scalar_umeasurement_v = is_scalar_umeasurement<T>::value;
@@ -346,9 +352,9 @@ namespace scipp::physics {
         template <typename T>
         struct is_scalar_cmeasurement : std::false_type {};
 
-        template <typename SCALAR_MEAS_TYPE>
-            requires (math::is_number_v<SCALAR_MEAS_TYPE> || is_scalar_measurement_v<SCALAR_MEAS_TYPE> || is_scalar_umeasurement_v<SCALAR_MEAS_TYPE>)
-        struct is_scalar_cmeasurement<cmeasurement<SCALAR_MEAS_TYPE>> : std::true_type {};
+        template <typename T>
+            requires (math::is_number_v<T> || is_scalar_measurement_v<T> || is_scalar_umeasurement_v<T>)
+        struct is_scalar_cmeasurement<cmeasurement<T>> : std::true_type {};
 
         template <typename T>
         inline static constexpr bool is_scalar_cmeasurement_v = is_scalar_cmeasurement<T>::value;

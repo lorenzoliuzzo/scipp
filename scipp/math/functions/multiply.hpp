@@ -365,7 +365,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
                 
                 result_t result;
-                std::transform(y.data.begin(), y.data.end(), result.data.begin(), [&x](const auto& y_i) { return op::mult(x, y_i); });
+                std::transform(std::execution::par, y.data.begin(), y.data.end(), result.data.begin(), [&x](const auto& y_i) { return x * y_i; });
                 return result; 
 
             }
@@ -392,7 +392,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
                 
                 result_t result;
-                std::transform(x.data.begin(), x.data.end(), result.data.begin(), [&y](const auto& x_i) { return op::mult(x_i, y); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), result.data.begin(), [&y](const auto& x_i) { return x_i * y; });
                 return result; 
 
             }
@@ -449,7 +449,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
                 
                 result_t result;
-                std::transform(y.data.begin(), y.data.end(), result.data.begin(), [&x](const auto& y_i) { return op::mult(x, y_i); });
+                std::transform(std::execution::par, y.data.begin(), y.data.end(), result.data.begin(), [&x](const auto& y_i) { return x * y_i; });
                 return result; 
 
             }
@@ -476,7 +476,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept {
                 
                 result_t result;
-                std::transform(x.data.begin(), x.data.end(), result.data.begin(), [&y](const auto& x_i) { return op::mult(x_i, y); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), result.data.begin(), [&y](const auto& x_i) { return x_i * y; });
                 return result; 
 
             }

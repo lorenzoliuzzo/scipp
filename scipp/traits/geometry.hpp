@@ -105,6 +105,17 @@ namespace scipp::geometry {
         constexpr bool are_same_vectors_v = are_same_vectors<VECTORS...>::value;
 
 
+        template <typename T>
+        struct is_scalar_vector : std::false_type {};
+
+        template <typename T> 
+            requires (is_vector_v<T>)
+        struct is_scalar_vector<T> : physics::is_scalar<typename T::value_t> {};
+
+        template <typename T>
+        inline static constexpr bool is_scalar_vector_v = is_scalar_vector<T>::value;
+
+
     // =============================================
     // vector traits
     // =============================================
@@ -112,7 +123,6 @@ namespace scipp::geometry {
         template <typename VECTOR_TYPE, size_t COLUMNS>
             requires (is_vector_v<VECTOR_TYPE>)
         struct matrix;
-
 
         template <typename T>
         struct is_matrix : std::false_type{};

@@ -329,7 +329,7 @@ namespace scipp::math {
                 std::for_each(std::execution::par, 
                               result.data.begin(), result.data.end(), 
                               [&](auto& elem) { 
-                                elem = op::add(x.data[&elem - result.data.data()], y.data[&elem - result.data.data()]); 
+                                elem = x.data[&elem - result.data.data()] + y.data[&elem - result.data.data()]; 
                               });
 
                 return result;

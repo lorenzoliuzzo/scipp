@@ -2,7 +2,7 @@
  * @file    math/functions/operators.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-17
+ * @date    2023-05-20
  * 
  * @copyright Copyright (c) 2023
  */
@@ -54,35 +54,32 @@ namespace scipp {
     /// @brief Increment operator
     inline static constexpr auto operator+=(auto& x, auto&& y) noexcept { 
         
-        x = math::op::add(x, std::move(y));
-        return x;
+        return x = math::op::add(x, std::move(y));
         
     }
 
     /// @brief Decrement operator
     inline static constexpr auto operator-=(auto& x, auto&& y) noexcept { 
         
-        x = math::op::sub(x, std::move(y));
-        return x;
+        return x = math::op::sub(x, std::move(y));
         
     }
 
 
     /// @brief Scale operator
     template <typename T>
-        requires (math::is_number_v<T> || physics::is_scalar_v<T>)
+        requires (physics::is_scalar_v<T>)
     inline static constexpr auto operator*=(auto& x, T&& y) noexcept { 
 
-        x = math::op::mult(x, std::move(y));
-        return x;
+        return x = math::op::mult(x, std::move(y));
         
     }
 
 
     /// @brief Scale operator
     template <typename T>
-        requires (math::is_number_v<T> || physics::is_scalar_v<T>)
-    inline static constexpr auto operator/=(auto& x, T&& y) noexcept {
+        requires (physics::is_scalar_v<T>)
+    inline static constexpr auto operator/=(auto& x, T&& y) {
 
         return x *= math::op::inv(std::move(y));
         

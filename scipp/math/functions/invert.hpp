@@ -174,7 +174,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const VECTOR_TYPE& x) {
 
                 result_t x_inv;
-                std::transform(x.data.begin(), x.data.end(), x_inv.data.begin(), [](const auto& x_i) { return op::inv(x_i); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_inv.data.begin(), [](const auto& x_i) { return op::inv(x_i); });
                 return x_inv;
 
             }

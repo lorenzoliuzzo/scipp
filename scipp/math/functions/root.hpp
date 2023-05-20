@@ -86,6 +86,24 @@ namespace scipp::math {
         };
 
 
+        /// @brief power a number
+        template <size_t POWER, typename T>
+            requires (is_number_v<T>)
+        struct root<POWER, T> : unary_function<T, T> {
+
+
+            using result_t = T;
+
+            inline static constexpr result_t f(const T& x) noexcept {
+
+                return std::pow(x, 1.0 / POWER);
+
+            }       
+
+
+        };
+
+
         /// @brief power a measurement
         template <size_t POWER, typename MEAS_TYPE>
             requires (physics::is_measurement_v<MEAS_TYPE>)
@@ -154,7 +172,7 @@ namespace scipp::math {
             inline static constexpr result_t f(const VECTOR_TYPE& x) {
 
                 result_t x_pow;
-                std::transform(x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
                 return x_pow;
 
             }

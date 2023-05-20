@@ -1,2 +1,0 @@
-/usr/bin/ar qc libsci++.a 
-/usr/bin/ranlib libsci++.a

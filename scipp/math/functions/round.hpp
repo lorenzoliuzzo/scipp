@@ -20,16 +20,13 @@ namespace scipp::math {
             requires (is_number_v<T>)
         struct round<T> {
 
-
             using result_t = T;                                             
-
 
             inline static constexpr result_t f(const T& x) {
                     
                 return std::round(x);
 
             }       
-
 
         };
 
@@ -39,16 +36,13 @@ namespace scipp::math {
             requires (physics::is_measurement_v<T>)
         struct round<T> {
 
-
             using result_t = T;                                             
-
 
             inline static constexpr result_t f(const T& x) {
                     
                 return std::round(x.value);
 
             }       
-
 
         };
 

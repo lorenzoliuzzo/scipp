@@ -60,7 +60,7 @@ namespace scipp::math {
             return std::accumulate(other.data.begin(), other.data.end(), functions::square_t<typename VECTOR_TYPE::value_t>(), 
                                     [&average](const functions::square_t<typename VECTOR_TYPE::value_t>& acc, 
                                                             const typename VECTOR_TYPE::value_t& val) { 
-                                                                return acc + op::square(val - average); 
+                                                                return acc + op::sq(val - average); 
                                                             }
                                   ) / static_cast<double>(VECTOR_TYPE::dim);
 
@@ -77,7 +77,7 @@ namespace scipp::math {
             return std::accumulate(other.data.begin(), other.data.end(), functions::square_t<typename VECTOR_TYPE::value_t>(), 
                                     [&avg](const functions::square_t<typename VECTOR_TYPE::value_t>& acc, 
                                                             const typename VECTOR_TYPE::value_t& val) { 
-                                                                return acc + op::square(val - avg); 
+                                                                return acc + op::sq(val - avg); 
                                                             }
                                   ) / static_cast<double>(VECTOR_TYPE::dim);
 

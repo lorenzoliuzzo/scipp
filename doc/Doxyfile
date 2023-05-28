@@ -864,7 +864,7 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = include/, include/physics, include/physics/measurements, include/math, include/math/ops, include/geometry, include/tools
+INPUT                  = scipp/traits/, scipp/math/functions, scipp/math/calculus, scipp/math/integrals, scipp/physics/, scipp/physics/measurements, scipp/physics/measurements/types, scipp/geometry/, scipp/tools/
 
 
 

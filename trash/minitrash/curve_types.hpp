@@ -62,8 +62,8 @@ namespace scipp::math {
 
         return curve<POINT_TYPE>([center, radius](const std::array<double, 1>& t) {
 
-            return center + radius * make_vector(op::cube(op::cos(2.0 * constants::pi * t[0])), 
-                                                 op::cube(op::sin(2.0 * constants::pi * t[0]))); 
+            return center + radius * make_vector(op::cb(op::cos(2.0 * constants::pi * t[0])), 
+                                                 op::cb(op::sin(2.0 * constants::pi * t[0]))); 
 
         });
 

@@ -62,21 +62,21 @@
             
             #include "math/functions/operations.hpp"
             #include "math/functions/operators.hpp"
-            #include "math/functions/add.hpp" 
-            #include "math/functions/subtract.hpp" 
-            #include "math/functions/multiply.hpp" 
+            #include "math/functions/add.hpp" /// @ok
+            #include "math/functions/subtract.hpp" /// @ok
+            #include "math/functions/multiply.hpp" /// @todo umeasurements
             #include "math/functions/divide.hpp" 
             #include "math/functions/negate.hpp"
             #include "math/functions/modulo.hpp"
             #include "math/functions/invert.hpp" 
-            #include "math/functions/power.hpp" 
+            #include "math/functions/power.hpp" /// @ok
             #include "math/functions/root.hpp" 
-            #include "math/functions/exponential.hpp"
+            #include "math/functions/exponential.hpp" /// @ok, @todo matrices
             #include "math/functions/logarithm.hpp"
             #include "math/functions/trigonometric.hpp"
             #include "math/functions/round.hpp"
             // #include "math/functions/hyperbolic.hpp"
-            // #include "math/meta/compose.hpp" /// @todo 
+            #include "math/functions/compose.hpp"
             
 
         /// ---------------------------------------------------------------

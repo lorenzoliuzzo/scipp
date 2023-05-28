@@ -88,14 +88,14 @@ namespace scipp::math {
 
 
         template <typename T>
-        inline static constexpr auto square(const T& x) noexcept {
+        inline static constexpr auto sq(const T& x) noexcept {
 
             return pow<2>(x);
 
         }  
 
         template <typename T>
-        inline static constexpr auto cube(const T& x) noexcept {
+        inline static constexpr auto cb(const T& x) noexcept {
 
             return pow<3>(x);
 
@@ -103,7 +103,7 @@ namespace scipp::math {
 
         
         template <size_t POWER, typename T>
-        inline static constexpr auto root(const T& x) {
+        inline static constexpr auto rt(const T& x) {
             
             return functions::root<POWER, T>::f(x);
 
@@ -113,14 +113,14 @@ namespace scipp::math {
         template <typename T>
         inline static constexpr auto sqrt(const T& x) {
 
-            return root<2>(x); 
+            return rt<2>(x); 
 
         }
 
         template <typename T>
         inline static constexpr auto cbrt(const T& x) {
 
-            return root<3>(x); 
+            return rt<3>(x); 
 
         }
 

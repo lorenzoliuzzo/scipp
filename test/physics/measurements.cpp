@@ -46,8 +46,8 @@ int main() {
     print(x + y); 
     print(x * y); 
     print(x * -1.5m); 
-    print(op::square(x)); 
-    print(op::cube(x)); 
+    print(op::sq(x)); 
+    print(op::cb(x)); 
     
     // print(x / y); 
 

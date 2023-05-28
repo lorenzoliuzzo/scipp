@@ -624,7 +624,7 @@ namespace scipp::geometry {
             /// @brief Get the magnitude of the vector
             constexpr value_t magnitude() const noexcept {
 
-                return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::square(val); }, math::functions::square_t<value_t>{}));
+                return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::sq(val); }, math::functions::square_t<value_t>{}));
 
             }
 

@@ -2,7 +2,7 @@
  * @file    test/math/integrals.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-24
+ * @date    2023-05-28
  * 
  * @copyright Copyright (c) 2023
  */
@@ -34,6 +34,8 @@ constexpr void test_trapezoid_fixed_method(const auto I);
 struct gaussian : unary_function<double, double> {
 
 
+    using _t = unary_function<double, double>;
+
     using result_t = double; 
 
     using arg_t = double;
@@ -41,7 +43,7 @@ struct gaussian : unary_function<double, double> {
 
     inline static constexpr result_t f(const arg_t& x) noexcept { 
 
-        return std::exp(-op::square(x)); 
+        return std::exp(-op::sq(x)); 
     
     }
 
@@ -51,31 +53,73 @@ struct gaussian : unary_function<double, double> {
 
 int main() { 
 
-    constexpr interval I(0.0m, 1.0m);
-    print("\nTesting the rectangle method...");
-    test_rectangle_method(I);
-
-    print("\nTesting the rectangle fixed method...");
-    test_rectangle_fixed_method(I);
-
-    print("\nTesting the midpoint method...");
-    test_midpoint_method(I);
-
-    print("\nTesting the midpoint fixed method...");
-    test_midpoint_fixed_method(I);
 
 
-    print("\nTesting the simpson method...");
-    test_simpson_method(I);
+    // print("\nTesting the rectangle method...");
+    // test_rectangle_method(I);
 
-    print("\nTesting the simpson fixed method...");
-    test_simpson_fixed_method(I);
+    // print("\nTesting the rectangle fixed method...");
+    // test_rectangle_fixed_method(I);
 
-    print("\nTesting the trapexoid method...");
-    test_trapezoid_method(I);
+    // print("\nTesting the midpoint method...");
+    // test_midpoint_method(I);
 
-    print("\nTesting the trapezoid fixed method...");
-    test_trapezoid_fixed_method(I);
+    // print("\nTesting the midpoint fixed method...");
+    // test_midpoint_fixed_method(I);
+
+
+    // print("\nTesting the simpson method...");
+    // test_simpson_method(I);
+
+    // print("\nTesting the simpson fixed method...");
+    // test_simpson_fixed_method(I);
+
+    // print("\nTesting the trapexoid method...");
+    // test_trapezoid_method(I);
+
+    // print("\nTesting the trapezoid fixed method...");
+    // test_trapezoid_fixed_method(I);
+
+    constexpr interval<double> I(6.0, 1.0);
+    // auto result = simpson<compose<sine<double>, square<double>>, std::nano>(I);
+    // print<std::nano>("int sin(x^2), x in (0, 1), steps 1000", result);
+
+    // constexpr interval<double> I(0.0, std::numeric_limits<double>::infinity());
+
+    timer t; 
+    t.start();
+    t.stop();
+    print<std::micro>("trash time", t.elapsed());
+
+    auto real = 215.0 / 648.0;
+    print<std::femto>("real value", real);
+
+    t.start(); 
+    auto result = adaptive_simpson<compose<invert<double>, power<4, double>>, std::femto>(I);
+    t.stop();
+    print<std::femto>("int 1 / x^4, x in (6, 1)", result);
+    print<std::femto>("error", std::abs(real - result));
+    print<std::femto>("elapsed_time", t.elapsed());
+
+
+    t.start(); 
+    result = simpson<compose<invert<double>, power<4, double>>, std::femto>(I);
+    t.stop();
+    print<std::femto>("int 1 / x^4, x in (6, 1)", result);
+    print<std::femto>("error", std::abs(real - result));
+    print<std::femto>("elapsed_time", t.elapsed());
+
+
+    result = adaptive_simpson<compose<exponential<double>, negate<double>>, std::nano>(interval(0.0, 86.0));
+    print<std::nano>("int exp(-x), x in (0, inf)", result);
+
+
+    // auto result = adaptive_simpson<power<4, double>, std::nano>(I);
+    // print<std::femto>("int x^4, x in (0, 1)", result);
+
+
+    // result = simpson<invert<power<2, double>>, std::nano>(I);
+    // print<std::nano>("int 1 / x^2, x in (0, 1), steps 1000", result);
     
     return 0; 
 

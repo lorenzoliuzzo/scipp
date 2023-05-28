@@ -2,7 +2,7 @@
  * @file    traits/math.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::math namespace
- * @date    2023-05-20
+ * @date    2023-05-28
  * 
  * @copyright Copyright (c) 2023
  */
@@ -79,23 +79,20 @@ namespace scipp::math {
         template <typename ARG_TYPE, typename RESULT_TYPE>
         struct unary_function {
 
-
             using arg_t = ARG_TYPE;
 
             using result_t = RESULT_TYPE;
 
-            using _t = unary_function<arg_t, result_t>; 
+            using function_t = unary_function<arg_t, result_t>;
 
 
             static inline constexpr result_t f(const arg_t& x);
-
 
             constexpr result_t operator()(const arg_t& x) const { 
 
                 return f(x); 
             
             }
-
 
         };
 
@@ -106,7 +103,11 @@ namespace scipp::math {
         struct is_unary_function<unary_function<ARG_TYPE, RESULT_TYPE>> : std::true_type {};
 
         template <typename T>
-        inline static constexpr bool is_unary_function_v = is_unary_function<typename T::_t>::value; 
+        inline static constexpr bool is_unary_function_v = is_unary_function<typename T::function_t>::value; 
+
+        template <typename... Ts>
+        inline static constexpr bool are_unary_functions_v = std::conjunction_v<is_unary_function<typename Ts::function_t>...>;
+
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2, typename RESULT_TYPE>
@@ -142,6 +143,7 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr bool is_binary_function_v = is_binary_function<T>::value; 
+
 
 
         template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1, typename ARG_TYPE3 = ARG_TYPE1>
@@ -223,22 +225,14 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE>
-        struct round : unary_function<ARG_TYPE, ARG_TYPE> {
-
-            using _t = round<ARG_TYPE>;
-
-            using arg_t = ARG_TYPE;
-
-            using result_t = ARG_TYPE;
-
-        };
+        struct round;
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1>
-        struct add; 
+        struct add;
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using add_t = typename add<ARG_TYPE1, ARG_TYPE2>::result_t;
+        using add_t = typename add<ARG_TYPE1, ARG_TYPE2>::function_t::result_t;
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1>
@@ -252,7 +246,7 @@ namespace scipp::math {
         struct multiply; 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using multiply_t = typename multiply<ARG_TYPE1, ARG_TYPE2>::result_t;
+        using multiply_t = typename multiply<ARG_TYPE1, ARG_TYPE2>::function_t::result_t;
     
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
@@ -263,7 +257,7 @@ namespace scipp::math {
     
     
         template <typename T>
-        struct negate; 
+        struct negate;
 
 
         template <typename T>
@@ -277,23 +271,28 @@ namespace scipp::math {
         struct invert;
 
         template <typename T>
-        using invert_t = typename invert<T>::result_t;  
+        using invert_t = typename invert<T>::function_t::result_t;  
 
 
         template <size_t POWER, typename T>
         struct power; 
 
+        template <typename T>
+        using square = power<2, T>;
+
+        template <typename T>
+        using cube = power<3, T>;
+
         template <size_t POWER, typename T>
-        using power_t = typename power<POWER, T>::result_t; 
-
-
-        template <typename T>
-        using square_t = power_t<2, T>;
+        using power_t = typename power<POWER, T>::function_t::result_t; 
 
         template <typename T>
-        using cube_t = power_t<3, T>;
+        using square_t = square<T>;
 
-        
+        template <typename T>
+        using cube_t = cube<T>;
+
+
         template <size_t POWER, typename T>
         struct root; 
 

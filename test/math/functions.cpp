@@ -69,7 +69,7 @@ int main() {
     print(x * 3.0m);
 
     print(op::abs(x));
-    print(op::square(x) * 2.0);
+    print(op::sq(x) * 2.0);
     print(op::abs(cmeasurement(x, x)));
     print(op::exp(-4.0));
     print(op::sin(0.0));

@@ -153,7 +153,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const CMEAS_TYPE& x) noexcept {
 
-                return result_t::polar(op::root<POWER>(x.abs()), x.arg() / POWER);
+                return result_t::polar(op::rt<POWER>(x.abs()), x.arg() / POWER);
             }
 
 

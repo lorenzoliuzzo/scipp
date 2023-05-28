@@ -20,16 +20,15 @@ namespace scipp::math {
         /// @param I interval of integration
         /// @param steps number of steps
         template <typename FUNCTION_TYPE>
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps = 10000) {
+            requires (functions::is_unary_function_v<FUNCTION_TYPE>)
+        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I, size_t steps = 10000) {
             
+            using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
+            result_t result{}; 
+            const auto h = I.step(steps);
 
             if (is_finite(I.end) && is_finite(I.start)) {
                 
-                using result_t = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>;
-                result_t result{}; 
-
-                const auto h = I.step(steps);
                 const auto x_range = std::views::iota(0u, steps + 1) | std::views::transform(
                     [&](size_t i) {
                         return I.start + static_cast<double>(i) * h;
@@ -52,10 +51,27 @@ namespace scipp::math {
 
                 result /= 3.0;
 
-                return result;
+            } else if (!is_finite(I.end) && is_finite(I.start)) {
 
-            } else  
+                const auto t_range = std::views::iota(1u, steps + 1) | std::views::transform(
+                    [&](size_t i) {
+                        return static_cast<double>(i) / static_cast<double>(steps + 1);
+                    }
+                );
+
+                std::ranges::for_each(t_range,
+                    [&](auto t) {
+                        if (t >= 1.0 || t <= 0.0)
+                            std::cout << "Dioporco\n";
+                        const typename FUNCTION_TYPE::function_t::arg_t t_i((1.0 - t) / t);
+                        result += FUNCTION_TYPE::f(I.start + t_i) * h / op::sq(t);
+                    }
+                );
+
+            } else 
                 throw std::runtime_error("Maybe don't use such a poor algorithm to integrate over an infinite interval");
+
+            return result;
 
         }
 
@@ -64,11 +80,18 @@ namespace scipp::math {
         /// @tparam FUNCTION_TYPE integral function type
         /// @tparam PREFIX_TYPE precision of the result
         /// @param I interval of integration
+
+        /// @todo implement a better algorithm for the infinite interval case
+        /// @todo template deduction guidelines
+        // template <typename FUNCTION_TYPE, typename PREFIX_TYPE, typename INTERVAL_TYPE, size_t MAX_ITERATIONS = 10000000>
+        //     requires (functions::is_unary_function_v<FUNCTION_TYPE> && std::is_same_v<typename INTERVAL_TYPE::arg_t, typename FUNCTION_TYPE::function_t::arg_t> && physics::is_prefix_v<PREFIX_TYPE>)
+        // static constexpr auto simpson(const INTERVAL_TYPE& I) {
+
         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 10000000>
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && physics::is_prefix_v<PREFIX_TYPE>)
-        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::arg_t>& I) {
+            requires (functions::is_unary_function_v<FUNCTION_TYPE> && physics::is_prefix_v<PREFIX_TYPE>)
+        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
             
-            using result_t = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>;
+            using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
             result_t result{}, prev_result{}, current_result{};
 
             constexpr double relative_error = static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den);
@@ -89,6 +112,52 @@ namespace scipp::math {
 
         }
 
+
+/// @brief Adaptive Simpson's rule for numerical integration
+/// @tparam FUNCTION_TYPE integral function type
+/// @param I interval of integration
+/// @param epsilon maximum error tolerance
+template <typename FUNCTION_TYPE, typename PREFIX_TYPE>
+requires (functions::is_unary_function_v<FUNCTION_TYPE>)
+static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
+
+    auto recursive_simpson = [&](auto& self, auto a, auto b, auto fa, auto fm, auto fb, auto relative_error, auto S) {
+        auto c = (a + b) / 2.0;
+        auto h = (b - a) / 6.0;
+        auto d = (a + c) / 2.0;
+        auto e = (c + b) / 2.0;
+        auto fd = FUNCTION_TYPE::f(d);
+        auto fe = FUNCTION_TYPE::f(e);
+        auto Sleft = h * (fa + 4.0 * fd + fm);
+        auto Sright = h * (fm + 4.0 * fe + fb);
+        auto S2 = Sleft + Sright;
+
+        if (op::abs(S2 - S) <= 15.0 * relative_error)
+            return S2 + (S2 - S) / 15.0;
+        else
+            return self(self, a, c, fa, fd, fm, relative_error / 2.0, Sleft) + self(self, c, b, fm, fe, fb, relative_error / 2.0, Sright);
+    };
+
+    if (!std::isfinite(I.end)) {
+        auto a = I.start;
+        auto fa = FUNCTION_TYPE::f(a);
+        auto b = std::numeric_limits<typename FUNCTION_TYPE::function_t::arg_t>::max();
+        auto fm = FUNCTION_TYPE::f((a + b) / 2.0);
+        auto S = (b - a) * (fa + 4.0 * fm) / 6.0;
+
+        return recursive_simpson(recursive_simpson, a, b, fa, fm, 0, S, S);
+    }
+
+    constexpr double err = static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den);
+    auto a = I.start;
+    auto b = I.end;
+    auto fa = FUNCTION_TYPE::f(a);
+    auto fb = FUNCTION_TYPE::f(b);
+    auto fm = FUNCTION_TYPE::f((a + b) / 2.0);
+    auto S = (b - a) * (fa + 4.0 * fm + fb) / 6.0;
+
+    return recursive_simpson(recursive_simpson, a, b, fa, fm, fb, err, S) / 2.0;
+}
 
         // template <typename FUNCTION_TYPE> 
         //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)

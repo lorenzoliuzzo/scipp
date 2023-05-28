@@ -82,7 +82,7 @@ int main() {
     std::cout << op::sin(0.004) << '\n'; 
 
     std::cout << op::pow<2>(math::constants::i) << '\n'; 
-    std::cout << op::cube(math::constants::i) << '\n'; 
+    std::cout << op::cb(math::constants::i) << '\n'; 
     std::cout << op::pow(math::constants::i, scalar_m(4.0) * math::constants::i) << '\n'; 
 
     return 0; 

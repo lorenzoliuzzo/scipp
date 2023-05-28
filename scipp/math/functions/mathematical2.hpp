@@ -809,7 +809,7 @@ namespace scipp::math {
 
                 constexpr root_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
 
-                    return root_t<CMEAS_TYPE, POWER>::polar(op::root<POWER>(other.abs()), other.arg() / static_cast<double>(POWER));
+                    return root_t<CMEAS_TYPE, POWER>::polar(op::rt<POWER>(other.abs()), other.arg() / static_cast<double>(POWER));
 
                 }
 
@@ -832,7 +832,7 @@ namespace scipp::math {
 
                     root_t<VEC_TYPE, POWER> result;
                     for (size_t i{}; i < VEC_TYPE::dim; ++i) 
-                        result[i] = op::root<POWER>(other[i]);
+                        result[i] = op::rt<POWER>(other[i]);
 
                     return result;
 
@@ -896,7 +896,7 @@ namespace scipp::math {
 
                 constexpr square_t<typename CMEAS_TYPE::measurement_t> f(const CMEAS_TYPE& x) const noexcept override {
 
-                    return op::square(x.real) + op::square(x.imag);
+                    return op::sq(x.real) + op::sq(x.imag);
 
                 }
 
@@ -1493,11 +1493,11 @@ namespace scipp::math {
                     
                     using measurement_t = typename CMEAS_TYPE::measurement_t;
                     
-                    const auto r2 = op::square(other.real);
-                    const auto x = square_t<measurement_t>::one - r2 - op::square(other.imag);
+                    const auto r2 = op::sq(other.real);
+                    const auto x = square_t<measurement_t>::one - r2 - op::sq(other.imag);
 
                     return { op::atan(CMEAS_TYPE(2.0) * other.real / (2.0 * x)), 
-                             op::log((r2 + op::square(other.imag + measurement_t::one)) / (other.imag - measurement_t::one)) / 4.0 };
+                             op::log((r2 + op::sq(other.imag + measurement_t::one)) / (other.imag - measurement_t::one)) / 4.0 };
                         
                 }
 
@@ -1675,10 +1675,10 @@ namespace scipp::math {
 
                     using measurement_t = typename CMEAS_TYPE::measurement_t;
 
-                    const auto i2 = op::square(other.imag);
+                    const auto i2 = op::sq(other.imag);
 
-                    return { op::log((i2 + op::square(measurement_t::one + other.real)) / (i2 + op::square(measurement_t::one - other.real))) / 4.0,
-                             op::atan(2.0 * other.imag / (decltype(i2)::one - i2 - op::square(other.real))) / 2.0 };
+                    return { op::log((i2 + op::sq(measurement_t::one + other.real)) / (i2 + op::sq(measurement_t::one - other.real))) / 4.0,
+                             op::atan(2.0 * other.imag / (decltype(i2)::one - i2 - op::sq(other.real))) / 2.0 };
 
                 }
 
@@ -1716,7 +1716,7 @@ namespace scipp::math {
 
                 constexpr typename CMEAS_TYPE::measurement_t f(const CMEAS_TYPE& other) const noexcept override {
 
-                    return op::sqrt(op::square(other.real) + op::square(other.imag));
+                    return op::sqrt(op::sq(other.real) + op::sq(other.imag));
 
                 }
 
@@ -1736,7 +1736,7 @@ namespace scipp::math {
                     square_t<typename VEC_TYPE::measurement_t> result;
 
                     for (size_t i{}; i < VEC_TYPE::dim; ++i) 
-                        result += op::square(other.data[i]);
+                        result += op::sq(other.data[i]);
 
                     return op::sqrt(result);
 
@@ -1758,7 +1758,7 @@ namespace scipp::math {
             //         square_t<typename MAT_TYPE::measurement_t> result;
 
             //         for (size_t i{}; i < MAT_TYPE::dim; ++i) 
-            //             result += op::square(other.data[i]);
+            //             result += op::sq(other.data[i]);
 
             //         return op::sqrt(result);
 
@@ -1783,7 +1783,7 @@ namespace scipp::math {
                     square_t<typename VEC_TYPE::measurement_t> result;
 
                     for (size_t i{}; i < VEC_TYPE::dim; ++i) 
-                        result += op::square(other.data[i]);
+                        result += op::sq(other.data[i]);
 
                     return result;
 

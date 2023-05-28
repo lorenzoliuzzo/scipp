@@ -57,7 +57,7 @@ namespace scipp::math {
 
             // constexpr double f(const double& z, const double& x) const override {
 
-            //     return op::exp(-op::square(z) + 2.0 * x * z); 
+            //     return op::exp(-op::sq(z) + 2.0 * x * z); 
 
             // }
 

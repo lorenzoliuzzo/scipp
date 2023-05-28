@@ -19,18 +19,15 @@ namespace scipp::math {
         /// @brief Get the modulo of a number or a measurement
         template <typename T>
             requires (is_number_v<T> || physics::is_measurement_v<T> || physics::is_umeasurement_v<T>)
-        struct modulo<T> : unary_function<T, T> {
+        struct modulo<T> {
 
+            using function_t = unary_function<T, T>;                                          
 
-            using result_t = T;                                             
-
-
-            inline static constexpr result_t f(const T& x) {
+            inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
                     
                 return (x < T{}) ? -x : x;
 
             }       
-
 
         };
 
@@ -38,18 +35,15 @@ namespace scipp::math {
         /// @brief Get the modulo of a cmeasurement
         template <typename CMEAS_TYPE>
             requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-        struct modulo<CMEAS_TYPE> : unary_function<CMEAS_TYPE, typename CMEAS_TYPE::measurement_t> {
+        struct modulo<CMEAS_TYPE> {
 
+            using function_t = unary_function<CMEAS_TYPE, typename CMEAS_TYPE::measurement_t>;
 
-            using result_t = square_t<typename CMEAS_TYPE::measurement_t>;
+            inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
 
-
-            inline static constexpr result_t f(const CMEAS_TYPE& x) {
-
-                return op::square(x.real) + op::square(x.imag);
+                return op::sqrt(op::sq(x.real) + op::sq(x.imag));
 
             }
-
 
         };
 

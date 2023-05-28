@@ -49,7 +49,7 @@ namespace scipp::physics {
                                const mass_m& source_mass, 
                                const position<DIM>& source_position) {   
 
-                            return constants::G * mass * source_mass * (init - source_position) / math::op::cube(math::op::norm(init - source_position));
+                            return constants::G * mass * source_mass * (init - source_position) / math::op::cb(math::op::norm(init - source_position));
 
                         }
 

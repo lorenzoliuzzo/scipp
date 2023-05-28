@@ -242,7 +242,7 @@ namespace scipp::physics {
                 this->imag *= other.real;
                 this->imag -= this->real * other.imag; 
 
-                *this /= math::op::sqrt(math::op::square(other.real) + math::op::square(other.imag));
+                *this /= math::op::sqrt(math::op::sq(other.real) + math::op::sq(other.imag));
 
                 return *this;
 
@@ -260,7 +260,7 @@ namespace scipp::physics {
                 this->imag *= std::move(other.real);
                 this->imag -= this->real * std::move(other.imag); 
 
-                *this /= math::op::sqrt(math::op::square(std::move(other.real)) + math::op::square(std::move(other.imag)));
+                *this /= math::op::sqrt(math::op::sq(std::move(other.real)) + math::op::sq(std::move(other.imag)));
 
                 return *this;
 

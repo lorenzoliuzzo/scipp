@@ -83,7 +83,7 @@ namespace scipp::math {
                 for (size_t i = 0; i < steps; ++i) {
                     const double x = constants::pi / (steps + 1);
                     nodes[i] = I.start + (I.end - I.start) * 0.5 * (1.0 + op::cos(i * x));
-                    weights[i] = x * op::square(op::sin(i * x));
+                    weights[i] = x * op::sq(op::sin(i * x));
                 }
                 break;
 
@@ -131,7 +131,7 @@ namespace scipp::math {
         inline static constexpr bool is_weight_function_v = is_weight_function<T>::value; 
 
 
-        template <typename FUNCTION_TYPE, typename WEIGHT_FUNCTION_TYPE>
+        template <typename WEIGHT_FUNCTION_TYPE, typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && is_weight_function_v<WEIGHT_FUNCTION_TYPE>)
         static constexpr auto gauss(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) {
             

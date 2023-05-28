@@ -79,7 +79,7 @@ namespace scipp::math {
 
                         const double x = constants::pi / (order + 1);
                         nodes[i] = op::cos(i * x); 
-                        weights[i] = x * op::square(op::sin(i * x));
+                        weights[i] = x * op::sq(op::sin(i * x));
 
                     }
 
@@ -89,7 +89,7 @@ namespace scipp::math {
 
                         const double x = constants::pi / (order + 0.5);
                         nodes[i] = op::cos((i - 0.5) * x);
-                        weights[i] = 2.0 * x * op::square(op::cos(0.5 * (i - 0.5) * x));
+                        weights[i] = 2.0 * x * op::sq(op::cos(0.5 * (i - 0.5) * x));
 
                     }
 
@@ -100,7 +100,7 @@ namespace scipp::math {
 
                         const double x = constants::pi / (order + 0.5);
                         nodes[i] = op::cos(i * x);
-                        weights[i] = 2.0 * x * op::square(0.5 * op::sin((i * x)));
+                        weights[i] = 2.0 * x * op::sq(0.5 * op::sin((i * x)));
 
                     }
 
@@ -114,10 +114,10 @@ namespace scipp::math {
             static constexpr double weight_f(const double& x) noexcept {
 
                 if constexpr (type == 1)
-                    return 1.0 / std::sqrt(1.0 - op::square(x));
+                    return 1.0 / std::sqrt(1.0 - op::sq(x));
 
                 else if constexpr (type == 2)
-                    return std::sqrt(1.0 - op::square(x));
+                    return std::sqrt(1.0 - op::sq(x));
 
                 else if constexpr (type == 3)
                     return std::sqrt((1. + x) / (1. - x));

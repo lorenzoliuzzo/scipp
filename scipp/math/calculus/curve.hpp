@@ -14,7 +14,7 @@ namespace scipp::math {
 
     template <typename POINT_TYPE>      
         requires (geometry::is_vector_v<POINT_TYPE> || physics::is_cmeasurement_v<POINT_TYPE>)
-    struct curve : virtual nary_function<POINT_TYPE, POINT_TYPE::dim - 1, double> {
+    struct curve : functions::nary_function<POINT_TYPE, POINT_TYPE::dim - 1, double> {
 
 
         using _t = curve<POINT_TYPE>;

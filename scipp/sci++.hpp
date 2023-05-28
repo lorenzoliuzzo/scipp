@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @date    2023-05-20
+ * @date    2023-05-23
  * 
  * @copyright Copyright (c) 2023
  */
@@ -18,16 +18,19 @@
 
         // #include <algorithm>
         #include <array> /// geometry::vector, geometry::matrix
-        #include <concepts> 
+        #include <concepts>
         #include <chrono> /// tools::timer
         #include <cmath>
         #include <execution>
         #include <fstream> /// tools::io
         // #include <functional> // maybe not needed
         #include <iostream> /// tools::io
+        #include <iterator>
         #include <map> /// physics::prefix_map
         // #include <numeric> // maybe not needed
         // #include <omp.h> // maybe not needed
+        #include <random> /// math::statistics
+        #include <ranges> /// math::integrals
         #include <ratio> /// physics::prefix
         // #include <set>
         // #include <string> /// tools::io
@@ -70,7 +73,8 @@
             #include "math/functions/root.hpp" 
             #include "math/functions/exponential.hpp"
             #include "math/functions/logarithm.hpp"
-            // #include "math/functions/trigonometric.hpp"
+            #include "math/functions/trigonometric.hpp"
+            #include "math/functions/round.hpp"
             // #include "math/functions/hyperbolic.hpp"
             // #include "math/meta/compose.hpp" /// @todo 
             
@@ -83,7 +87,7 @@
             #include "physics/measurements/unit.hpp" 
         
             #include "physics/measurements/measurement.hpp"
-            // #include "physics/measurements/umeasurement.hpp"
+            #include "physics/measurements/umeasurement.hpp"
             #include "physics/measurements/cmeasurement.hpp"
             
             #include "physics/measurements/types/units.hpp" 
@@ -96,13 +100,13 @@
 
         // /// ---------------------------------------------------------------
 
-            // #include "math/constants.hpp" 
-            // #include "physics/constants.hpp"
+            #include "math/constants.hpp" 
+            #include "physics/constants.hpp"
 
         // /// ---------------------------------------------------------------
 
-            // #include "geometry/vector.hpp"
-            // #include "geometry/matrix.hpp"
+            #include "geometry/vector.hpp"
+            #include "geometry/matrix.hpp"
 
         // /// ---------------------------------------------------------------
 
@@ -139,11 +143,19 @@
         // /// @brief math/calculus
         // /// ---------------------------------------------------------------
 
-        //     #include "math/calculus/interval.hpp"
-        //     #include "math/calculus/curve.hpp"
+            #include "math/calculus/interval.hpp"
+            #include "math/calculus/curve.hpp"
 
-        //     #include "math/calculus/integrals/integrals.hpp"
-        //     #include "math/calculus/integrals/gauss.hpp"  
+            #include "math/integrals/rectangle.hpp"
+            #include "math/integrals/trapezoid.hpp"
+            #include "math/integrals/midpoint.hpp"
+            // #include "math/integrals/endpoint.hpp"
+            #include "math/integrals/simpson.hpp"
+            #include "math/integrals/curvilinear.hpp"
+
+
+        //     #include "math/integrals/integrals.hpp"
+            #include "math/integrals/gauss.hpp"  
 
         //     #include "math/calculus/hilbert_space.hpp"
 
@@ -159,7 +171,7 @@
 
         // /// ---------------------------------------------------------------
 
-        //     #include "math/statistics.hpp"
+            #include "math/statistics.hpp"
 
         // /// ---------------------------------------------------------------
 
@@ -168,7 +180,7 @@
         /// ---------------------------------------------------------------
 
             #include "tools/io.hpp"
-        //     #include "tools/timer.hpp"
+            #include "tools/timer.hpp"
         //     #include "tools/plot.hpp"
         //     #include "tools/bench.hpp"
 

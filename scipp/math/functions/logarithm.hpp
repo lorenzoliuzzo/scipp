@@ -73,7 +73,7 @@ namespace scipp::math {
                 if (x.value <= 0.0) 
                     throw std::invalid_argument("logarithm of a negative number is not defined");
 
-                return {std::log(x.value), x.uncertainty / x.value};
+                return { std::log(x.value), x.uncertainty / x.value };
 
             }       
 

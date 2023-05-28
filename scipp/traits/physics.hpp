@@ -201,16 +201,17 @@ namespace scipp::physics {
 
         /// @brief Type trait to check if two measurement types are the same
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>) 
         struct is_same_measurement : is_same_base<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t> {};
 
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
+            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>)
         inline static constexpr bool is_same_measurement_v = is_same_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
 
         template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 
         struct are_same_measurement : std::conjunction<is_same_measurement<MEAS_TYPE, OTHER_MEAS_TYPEs>...> {};
         
         template <typename MEAS_TYPE, typename... MEAS_TYPEs>
+            requires (are_measurements_v<MEAS_TYPE, MEAS_TYPEs...>)
         inline static constexpr bool are_same_measurement_v = are_same_measurement<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 

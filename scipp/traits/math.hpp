@@ -20,16 +20,6 @@ namespace scipp::math {
         template <typename T>
         struct is_number : std::false_type {}; 
 
-        template <typename T>
-        inline static constexpr bool is_number_v = is_number<T>::value; 
-
-        template <typename... Ts>
-        struct are_numbers : std::conjunction<is_number<Ts>...> {}; 
-
-        template <typename... Ts>
-        inline static constexpr bool are_numbers_v = are_numbers<Ts...>::value; 
-
-
         template <>
         struct is_number<int> : std::true_type {};
 
@@ -46,10 +36,37 @@ namespace scipp::math {
         struct is_number<unsigned int> : std::true_type {};
 
         template <>
-        struct is_number<unsigned long> : std::true_type {};
+        struct is_number<long unsigned int> : std::true_type {};
 
         template <>
         struct is_number<unsigned long long> : std::true_type {};
+
+
+        template <typename T>
+        inline static constexpr bool is_number_v = is_number<T>::value; 
+
+        template <typename... Ts>
+        struct are_numbers : std::conjunction<is_number<Ts>...> {}; 
+
+        template <typename... Ts>
+        inline static constexpr bool are_numbers_v = are_numbers<Ts...>::value; 
+
+
+        template <typename T>
+            requires (is_number_v<T>)
+        inline static constexpr bool is_finite(const T& x) {
+            
+            return std::isfinite(x);
+
+        }
+
+
+        template <typename T>
+        inline static constexpr bool is_finite(const T& x) {
+
+            return std::isfinite(x.value);
+            
+        }
 
 
     // =============================================
@@ -70,7 +87,7 @@ namespace scipp::math {
             using _t = unary_function<arg_t, result_t>; 
 
 
-            inline static constexpr result_t f(const arg_t& x);
+            static inline constexpr result_t f(const arg_t& x);
 
 
             constexpr result_t operator()(const arg_t& x) const { 
@@ -203,6 +220,18 @@ namespace scipp::math {
         template <typename T>
         inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
 
+
+
+        template <typename ARG_TYPE>
+        struct round : unary_function<ARG_TYPE, ARG_TYPE> {
+
+            using _t = round<ARG_TYPE>;
+
+            using arg_t = ARG_TYPE;
+
+            using result_t = ARG_TYPE;
+
+        };
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1>

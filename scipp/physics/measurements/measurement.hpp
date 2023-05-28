@@ -1,8 +1,8 @@
 /**
  * @file    physics/measurements/measurement.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation of the measurement struct and its type traits.
- * @date    2023-05-18
+ * @brief   This file contains the implementation of the measurement struct.
+ * @date    2023-05-28
  * 
  * @copyright Copyright (c) 2023
  */
@@ -182,7 +182,7 @@ namespace scipp::physics {
             
 
             /// @brief Print a measurement to an output stream
-            friend std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
+            friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
                 
                 os << other.value; 
                 if constexpr (!is_scalar_base_v<base_t>) 
@@ -192,32 +192,33 @@ namespace scipp::physics {
             }
 
             /// @brief Read a measurement from an input stream
-            friend std::istream& operator>>(std::istream& is, measurement& other) { 
+            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) { 
 
                 std::string unit;
-                is >> other.value >> unit;
-                
-                // Check if the read unit matches the base unit of the measurement type
+
+                if (!(is >> other.value >> unit))
+                    return is;
+
                 if (!unit.empty()) {
 
-                    if (unit.find("[") != std::string::npos) {
-                        
-                        double multiplier = 1.0;
-                        std::string prefix = unit.substr(unit.find("["), unit.find("]") + 1);
-                        unit = unit.substr(unit.find("]") + 1);
+                    std::istringstream unit_stream(unit);
+                    char prefix_char;
+                    if (unit_stream.get() == '[' && unit_stream.get(prefix_char) && unit_stream.get() == ']') {
 
-                        for (const auto& kv : prefix_map) 
-                            if (prefix[1] == kv.second) {
-                                multiplier = kv.first;
-                                break;
+                        auto prefix_it = std::find_if(prefix_map.begin(), prefix_map.end(),
+                            [prefix_char](const auto& pair) { 
+                                return pair.second == prefix_char; 
                             }
+                        );
 
-                        other.value *= multiplier;
+                        if (prefix_it != prefix_map.end())
+                            other.value *= prefix_it->first;
 
                     }
 
-                    if (unit != base_t::to_string()) 
-                        throw std::runtime_error("Unit mismatch: expected " + base_t::to_string() + ", got " + unit);
+                    std::string expected_unit = base_t::to_string();
+                    if (unit != expected_unit)
+                        throw std::runtime_error("Unit mismatch: expected " + expected_unit + ", got " + unit);
 
                 }
 

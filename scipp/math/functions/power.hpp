@@ -87,6 +87,24 @@ namespace scipp::math {
 
 
         /// @brief power a measurement
+        template <size_t POWER, typename SCALAR_TYPE>
+            requires (is_number_v<SCALAR_TYPE>)
+        struct power<POWER, SCALAR_TYPE> : unary_function<SCALAR_TYPE, SCALAR_TYPE> {
+
+            using result_t = SCALAR_TYPE;
+
+
+            inline static constexpr result_t f(const SCALAR_TYPE& x) noexcept {
+
+                return std::pow(x, POWER);
+
+            }       
+
+
+        };
+
+
+        /// @brief power a measurement
         template <size_t POWER, typename MEAS_TYPE>
             requires (physics::is_measurement_v<MEAS_TYPE>)
         struct power<POWER, MEAS_TYPE> : unary_function<MEAS_TYPE, physics::measurement<power_t<POWER, typename MEAS_TYPE::base_t>, typename MEAS_TYPE::value_t>> {

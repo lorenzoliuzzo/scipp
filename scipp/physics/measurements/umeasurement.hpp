@@ -174,478 +174,478 @@ namespace scipp::physics {
         // operators
         // ==============================================
 
-            /// @brief Copy assign an umeasurement from another umeasurement
-            constexpr umeasurement& operator=(const umeasurement& other) noexcept {
+            // /// @brief Copy assign an umeasurement from another umeasurement
+            // constexpr umeasurement& operator=(const umeasurement& other) noexcept {
                 
-                this->value = other.value;
-                this->uncertainty = other.uncertainty; 
+            //     this->value = other.value;
+            //     this->uncertainty = other.uncertainty; 
 
-                return *this;
+            //     return *this;
 
-            }   
+            // }   
 
-            /// @brief Move assign an umeasurement from another umeasurement
-            constexpr umeasurement& operator=(umeasurement&& other) noexcept {
+            // /// @brief Move assign an umeasurement from another umeasurement
+            // constexpr umeasurement& operator=(umeasurement&& other) noexcept {
                 
-                this->value = std::move(other.value);
-                this->uncertainty = std::move(other.uncertainty); 
+            //     this->value = std::move(other.value);
+            //     this->uncertainty = std::move(other.uncertainty); 
                 
-                return *this;
+            //     return *this;
                 
-            }   
+            // }   
 
 
-            /// @brief Copy assign an umeasurement from another measurement
-            constexpr umeasurement& operator=(const measurement<BASE_TYPE>& other) noexcept {
+            // /// @brief Copy assign an umeasurement from another measurement
+            // constexpr umeasurement& operator=(const measurement<BASE_TYPE>& other) noexcept {
                 
-                this->value = other.value;
-                this->uncertainty = 0.0; 
+            //     this->value = other.value;
+            //     this->uncertainty = 0.0; 
 
-                return *this;
+            //     return *this;
 
-            }   
+            // }   
 
-            /// @brief Move assign an umeasurement from another measurement
-            constexpr umeasurement& operator=(measurement<BASE_TYPE>&& other) noexcept {
+            // /// @brief Move assign an umeasurement from another measurement
+            // constexpr umeasurement& operator=(measurement<BASE_TYPE>&& other) noexcept {
                 
-                this->value = std::move(other.value);
-                this->uncertainty = 0.0; 
+            //     this->value = std::move(other.value);
+            //     this->uncertainty = 0.0; 
                 
-                return *this;
+            //     return *this;
                 
-            }  
+            // }  
 
 
-            /// @brief Add this umeasurement and another umeasurement
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement& operator+=(const umeasurement& other) noexcept {
+            // /// @brief Add this umeasurement and another umeasurement
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement& operator+=(const umeasurement& other) noexcept {
 
-                this->value += other.value;
-                this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)); 
+            //     this->value += other.value;
+            //     this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)); 
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Add this umeasurement and another umeasurement
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement& operator+=(umeasurement&& other) noexcept {
+            // /// @brief Add this umeasurement and another umeasurement
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement& operator+=(umeasurement&& other) noexcept {
 
-                this->value += std::move(other.value);
-                this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)); 
+            //     this->value += std::move(other.value);
+            //     this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)); 
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Add this umeasurement and a measurement
-            constexpr umeasurement& operator+=(const measurement<BASE_TYPE>& other) noexcept {
+            // /// @brief Add this umeasurement and a measurement
+            // constexpr umeasurement& operator+=(const measurement<BASE_TYPE>& other) noexcept {
 
-                this->value += other.value;
+            //     this->value += other.value;
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Add this umeasurement and a measurement
-            constexpr umeasurement& operator+=(measurement<BASE_TYPE>&& other) noexcept {
+            // /// @brief Add this umeasurement and a measurement
+            // constexpr umeasurement& operator+=(measurement<BASE_TYPE>&& other) noexcept {
 
-                this->value += std::move(other.value);
+            //     this->value += std::move(other.value);
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Add two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement operator+(const umeasurement& other) const noexcept {
+            // /// @brief Add two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement operator+(const umeasurement& other) const noexcept {
                 
-                return { this->value + other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
+            //     return { this->value + other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
             
-            }
+            // }
 
-            /// @brief Add two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement operator+(umeasurement&& other) const noexcept {
+            // /// @brief Add two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement operator+(umeasurement&& other) const noexcept {
                 
-                return { this->value + std::move(other.value), std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)) };
+            //     return { this->value + std::move(other.value), std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)) };
             
-            }
+            // }
 
-            /// @brief Add an umeasurement and a measurement
-            constexpr umeasurement operator+(const measurement<BASE_TYPE>& other) const noexcept {
+            // /// @brief Add an umeasurement and a measurement
+            // constexpr umeasurement operator+(const measurement<BASE_TYPE>& other) const noexcept {
                 
-                return { this->value + other.value, this->uncertainty };
+            //     return { this->value + other.value, this->uncertainty };
             
-            }
+            // }
 
-            /// @brief Add an umeasurement and a measurement
-            constexpr umeasurement operator+(measurement<BASE_TYPE>&& other) const noexcept {
+            // /// @brief Add an umeasurement and a measurement
+            // constexpr umeasurement operator+(measurement<BASE_TYPE>&& other) const noexcept {
                 
-                return { this->value + std::move(other.value), this->uncertainty };
+            //     return { this->value + std::move(other.value), this->uncertainty };
             
-            }
+            // }
 
-            /// @brief Add a measurement and an umeasurement
-            friend inline constexpr umeasurement operator+(const measurement<BASE_TYPE>& meas, const umeasurement<BASE_TYPE>& umeas) noexcept {
+            // /// @brief Add a measurement and an umeasurement
+            // friend inline constexpr umeasurement operator+(const measurement<BASE_TYPE>& meas, const umeasurement<BASE_TYPE>& umeas) noexcept {
                 
-                return { meas.value + umeas.value, umeas.uncertainty };
+            //     return { meas.value + umeas.value, umeas.uncertainty };
             
-            }
+            // }
 
-            /// @brief Add a measurement and an umeasurement
-            friend inline constexpr umeasurement operator+(measurement<BASE_TYPE>&& meas, umeasurement<BASE_TYPE>&& umeas) noexcept {
+            // /// @brief Add a measurement and an umeasurement
+            // friend inline constexpr umeasurement operator+(measurement<BASE_TYPE>&& meas, umeasurement<BASE_TYPE>&& umeas) noexcept {
                 
-                return { std::move(meas.value) + std::move(umeas.value), std::move(umeas.uncertainty) };
+            //     return { std::move(meas.value) + std::move(umeas.value), std::move(umeas.uncertainty) };
             
-            }
+            // }
 
 
-            /// @brief Subtract this umeasurement and another umeasurement
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement& operator-=(const umeasurement& other) noexcept {
+            // /// @brief Subtract this umeasurement and another umeasurement
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement& operator-=(const umeasurement& other) noexcept {
 
-                this->value -= other.value;
-                this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)); 
+            //     this->value -= other.value;
+            //     this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)); 
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Subtract this umeasurement and another umeasurement
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement& operator-=(umeasurement&& other) noexcept {
+            // /// @brief Subtract this umeasurement and another umeasurement
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement& operator-=(umeasurement&& other) noexcept {
 
-                this->value -= std::move(other.value);
-                this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)); 
+            //     this->value -= std::move(other.value);
+            //     this->uncertainty = std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)); 
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Subtract this umeasurement and a measurement
-            constexpr umeasurement& operator-=(const measurement<BASE_TYPE>& other) noexcept {
+            // /// @brief Subtract this umeasurement and a measurement
+            // constexpr umeasurement& operator-=(const measurement<BASE_TYPE>& other) noexcept {
 
-                this->value -= other.value;
+            //     this->value -= other.value;
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Subtract this umeasurement and a measurement
-            constexpr umeasurement& operator-=(measurement<BASE_TYPE>&& other) noexcept {
+            // /// @brief Subtract this umeasurement and a measurement
+            // constexpr umeasurement& operator-=(measurement<BASE_TYPE>&& other) noexcept {
 
-                this->value -= std::move(other.value);
+            //     this->value -= std::move(other.value);
 
-                return *this; 
+            //     return *this; 
 
-            }
+            // }
 
-            /// @brief Subtract two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement operator-(const umeasurement& other) const noexcept {
+            // /// @brief Subtract two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement operator-(const umeasurement& other) const noexcept {
                 
-                return { this->value - other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
+            //     return { this->value - other.value, std::sqrt(std::pow(this->uncertainty, 2) + std::pow(other.uncertainty, 2)) };
             
-            }
+            // }
 
-            /// @brief Subtract two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            constexpr umeasurement operator-(umeasurement&& other) const noexcept {
+            // /// @brief Subtract two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // constexpr umeasurement operator-(umeasurement&& other) const noexcept {
                 
-                return { this->value - std::move(other.value), std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)) };
+            //     return { this->value - std::move(other.value), std::sqrt(std::pow(this->uncertainty, 2) + std::pow(std::move(other.uncertainty), 2)) };
             
-            }
+            // }
 
-            /// @brief Subtract an umeasurement and a measurement
-            constexpr umeasurement operator-(const measurement<BASE_TYPE>& other) const noexcept {
+            // /// @brief Subtract an umeasurement and a measurement
+            // constexpr umeasurement operator-(const measurement<BASE_TYPE>& other) const noexcept {
                 
-                return { this->value - other.value, this->uncertainty };
+            //     return { this->value - other.value, this->uncertainty };
             
-            }
+            // }
 
-            /// @brief Subtract an umeasurement and a measurement
-            constexpr umeasurement operator-(measurement<BASE_TYPE>&& other) const noexcept {
+            // /// @brief Subtract an umeasurement and a measurement
+            // constexpr umeasurement operator-(measurement<BASE_TYPE>&& other) const noexcept {
                 
-                return { this->value - std::move(other.value), this->uncertainty };
+            //     return { this->value - std::move(other.value), this->uncertainty };
             
-            }
+            // }
 
-            /// @brief Subtract a measurement and an umeasurement
-            friend inline constexpr umeasurement operator-(const measurement<BASE_TYPE>& meas, const umeasurement<BASE_TYPE>& umeas) noexcept {
+            // /// @brief Subtract a measurement and an umeasurement
+            // friend inline constexpr umeasurement operator-(const measurement<BASE_TYPE>& meas, const umeasurement<BASE_TYPE>& umeas) noexcept {
                 
-                return { meas.value - umeas.value, umeas.uncertainty };
+            //     return { meas.value - umeas.value, umeas.uncertainty };
             
-            }
+            // }
 
-            /// @brief Subtract a measurement and an umeasurement
-            friend inline constexpr umeasurement operator-(measurement<BASE_TYPE>&& meas, umeasurement<BASE_TYPE>&& umeas) noexcept {
+            // /// @brief Subtract a measurement and an umeasurement
+            // friend inline constexpr umeasurement operator-(measurement<BASE_TYPE>&& meas, umeasurement<BASE_TYPE>&& umeas) noexcept {
                 
-                return { std::move(meas.value) - std::move(umeas.value), std::move(umeas.uncertainty) };
+            //     return { std::move(meas.value) - std::move(umeas.value), std::move(umeas.uncertainty) };
             
-            }
+            // }
 
 
-            /// @brief Multiply two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator*=(const UMEAS_TYPE& other) noexcept 
-                -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
+            // /// @brief Multiply two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator*=(const UMEAS_TYPE& other) noexcept 
+            //     -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
-                double result = this->value * other.value;
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = other.uncertainty / other.value;
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value * other.value;
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = other.uncertainty / other.value;
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                this->value = result;
-                this->uncertainty = std::fabs(result) * unc;
+            //     this->value = result;
+            //     this->uncertainty = std::fabs(result) * unc;
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Multiply two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator*=(UMEAS_TYPE&& other) noexcept 
-                -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
+            // /// @brief Multiply two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator*=(UMEAS_TYPE&& other) noexcept 
+            //     -> math::multiply_t<umeasurement, UMEAS_TYPE>& { 
                 
-                double result = this->value * std::move(other.value);
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = std::move(other.uncertainty) / std::move(other.value);
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value * std::move(other.value);
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = std::move(other.uncertainty) / std::move(other.value);
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                this->value = result;
-                this->uncertainty = std::fabs(result) * unc;
+            //     this->value = result;
+            //     this->uncertainty = std::fabs(result) * unc;
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Multiply an umeasurement and a measurement
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator*=(const MEAS_TYPE& other) noexcept 
-                -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
+            // /// @brief Multiply an umeasurement and a measurement
+            // template <typename MEAS_TYPE> 
+            //     requires (is_measurement_v<MEAS_TYPE>)
+            // constexpr auto operator*=(const MEAS_TYPE& other) noexcept 
+            //     -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
-                this->value *= other.value;
-                this->uncertainty *= std::fabs(other.value);
+            //     this->value *= other.value;
+            //     this->uncertainty *= std::fabs(other.value);
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Multiply an umeasurement and a measurement
-            template <typename MEAS_TYPE> 
-                requires (is_measurement_v<MEAS_TYPE>)
-            constexpr auto operator*=(MEAS_TYPE&& other) noexcept 
-                -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
+            // /// @brief Multiply an umeasurement and a measurement
+            // template <typename MEAS_TYPE> 
+            //     requires (is_measurement_v<MEAS_TYPE>)
+            // constexpr auto operator*=(MEAS_TYPE&& other) noexcept 
+            //     -> math::multiply_t<umeasurement, MEAS_TYPE>& { 
                 
-                this->value *= std::move(other.value);
-                this->uncertainty *= std::fabs(std::move(other.value));
+            //     this->value *= std::move(other.value);
+            //     this->uncertainty *= std::fabs(std::move(other.value));
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Multiply two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator*(const UMEAS_TYPE& other) const noexcept 
-                -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
+            // /// @brief Multiply two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator*(const UMEAS_TYPE& other) const noexcept 
+            //     -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = other.uncertainty / other.value;
-                double tunc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
-                double result = this->value * other.value;
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = other.uncertainty / other.value;
+            //     double tunc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value * other.value;
 
-                return { result, std::fabs(result) * tunc };
+            //     return { result, std::fabs(result) * tunc };
                 
-            }
+            // }
 
-            /// @brief Multiply two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator*(UMEAS_TYPE&& other) const noexcept 
-                -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
+            // /// @brief Multiply two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator*(UMEAS_TYPE&& other) const noexcept 
+            //     -> math::multiply_t<umeasurement, UMEAS_TYPE> { 
                 
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = std::move(other.uncertainty) / std::move(other.value);
-                double tunc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
-                double result = this->value * std::move(other.value);
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = std::move(other.uncertainty) / std::move(other.value);
+            //     double tunc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value * std::move(other.value);
 
-                return { result, std::fabs(result) * tunc };
+            //     return { result, std::fabs(result) * tunc };
                 
-            }
+            // }
 
-            /// @brief Multiply an umeasurement with a measurement
-            constexpr umeasurement operator*(const measurement<BASE_TYPE>& other) const noexcept {
+            // /// @brief Multiply an umeasurement with a measurement
+            // constexpr umeasurement operator*(const measurement<BASE_TYPE>& other) const noexcept {
 
-                return { this->value * other.value, this->uncertainty * std::fabs(other.value) };
+            //     return { this->value * other.value, this->uncertainty * std::fabs(other.value) };
 
-            }
+            // }
 
-            /// @brief Multiply an umeasurement with a measurement
-            constexpr umeasurement operator*(measurement<BASE_TYPE>&& other) const noexcept {
+            // /// @brief Multiply an umeasurement with a measurement
+            // constexpr umeasurement operator*(measurement<BASE_TYPE>&& other) const noexcept {
 
-                return { this->value * std::move(other.value), this->uncertainty * std::fabs(std::move(other.value)) };
+            //     return { this->value * std::move(other.value), this->uncertainty * std::fabs(std::move(other.value)) };
 
-            }
+            // }
 
-            /// @brief Multiply a measurement with an measurement
-            friend inline constexpr umeasurement operator*(const measurement<BASE_TYPE>& meas, const umeasurement& umeas) noexcept {
+            // /// @brief Multiply a measurement with an measurement
+            // friend inline constexpr umeasurement operator*(const measurement<BASE_TYPE>& meas, const umeasurement& umeas) noexcept {
 
-                return { meas.value * umeas.value, umeas.uncertainty * std::fabs(meas.value) };
+            //     return { meas.value * umeas.value, umeas.uncertainty * std::fabs(meas.value) };
 
-            }
+            // }
 
-            /// @brief Multiply a measurement with an measurement
-            friend inline constexpr umeasurement operator*(measurement<BASE_TYPE>&& meas, umeasurement&& umeas) noexcept {
+            // /// @brief Multiply a measurement with an measurement
+            // friend inline constexpr umeasurement operator*(measurement<BASE_TYPE>&& meas, umeasurement&& umeas) noexcept {
 
-                return { std::move(meas.value) * std::move(umeas.value), std::move(umeas.uncertainty) * std::fabs(std::move(meas.value)) };
+            //     return { std::move(meas.value) * std::move(umeas.value), std::move(umeas.uncertainty) * std::fabs(std::move(meas.value)) };
 
-            }
+            // }
 
 
-            /// @brief Divide two umeasurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
-                -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            // /// @brief Divide two umeasurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename OTHER_BASE_TYPE> 
+            //     requires (is_base_v<OTHER_BASE_TYPE>)
+            // constexpr auto operator/=(const umeasurement<OTHER_BASE_TYPE>& other) noexcept 
+            //     -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
-                double result = this->value / other.value;
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = other.uncertainty / other.value;
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value / other.value;
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = other.uncertainty / other.value;
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                this->value = result;
-                this->uncertainty = std::fabs(result) * unc;
+            //     this->value = result;
+            //     this->uncertainty = std::fabs(result) * unc;
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Divide this umeasurements by an umeasurement
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename OTHER_BASE_TYPE> 
-                requires (is_base_v<OTHER_BASE_TYPE>)
-            constexpr auto operator/=(umeasurement<OTHER_BASE_TYPE>&& other) noexcept 
-                -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
+            // /// @brief Divide this umeasurements by an umeasurement
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename OTHER_BASE_TYPE> 
+            //     requires (is_base_v<OTHER_BASE_TYPE>)
+            // constexpr auto operator/=(umeasurement<OTHER_BASE_TYPE>&& other) noexcept 
+            //     -> umeasurement<math::meta::divide_t<BASE_TYPE, OTHER_BASE_TYPE>>& { 
                 
-                double result = this->value / std::move(other.value);
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = std::move(other.uncertainty) / std::move(other.value);
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value / std::move(other.value);
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = std::move(other.uncertainty) / std::move(other.value);
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                this->value = result;
-                this->uncertainty = std::fabs(result) * unc;
+            //     this->value = result;
+            //     this->uncertainty = std::fabs(result) * unc;
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Divide this umeasurement by a scalar measurement
-            constexpr umeasurement& operator/=(const measurement<BASE_TYPE>& other) noexcept {
+            // /// @brief Divide this umeasurement by a scalar measurement
+            // constexpr umeasurement& operator/=(const measurement<BASE_TYPE>& other) noexcept {
 
-                this->value /= other.value;
-                this->uncertainty /= std::fabs(other.value);
+            //     this->value /= other.value;
+            //     this->uncertainty /= std::fabs(other.value);
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Divide this umeasurement by a scalar measurement
-            constexpr umeasurement& operator/=(measurement<BASE_TYPE>&& other) noexcept {
+            // /// @brief Divide this umeasurement by a scalar measurement
+            // constexpr umeasurement& operator/=(measurement<BASE_TYPE>&& other) noexcept {
 
-                this->value /= std::move(other.value);
-                this->uncertainty /= std::fabs(std::move(other.value));
+            //     this->value /= std::move(other.value);
+            //     this->uncertainty /= std::fabs(std::move(other.value));
 
-                return *this;
+            //     return *this;
 
-            }
+            // }
 
-            /// @brief Divide two measurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator/(const UMEAS_TYPE& other) const 
-                -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
+            // /// @brief Divide two measurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator/(const UMEAS_TYPE& other) const 
+            //     -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
 
-                if (other.value == 0.0) 
-                    throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
+            //     if (other.value == 0.0) 
+            //         throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
 
-                double result = this->value / other.value;
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = other.uncertainty / other.value;
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value / other.value;
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = other.uncertainty / other.value;
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                return { result, std::fabs(result) * unc };
+            //     return { result, std::fabs(result) * unc };
                 
-            }
+            // }
 
-            /// @brief Divide two measurements
-            /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
-            template <typename UMEAS_TYPE> 
-                requires (is_umeasurement_v<UMEAS_TYPE>)
-            constexpr auto operator/(UMEAS_TYPE&& other) const 
-                -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
+            // /// @brief Divide two measurements
+            // /// @note The uncertainty is propagated using the standard propagation of uncertainty formula
+            // template <typename UMEAS_TYPE> 
+            //     requires (is_umeasurement_v<UMEAS_TYPE>)
+            // constexpr auto operator/(UMEAS_TYPE&& other) const 
+            //     -> math::meta::divide_t<umeasurement, UMEAS_TYPE> {
 
-                if (other.value == 0.0) 
-                    throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
+            //     if (other.value == 0.0) 
+            //         throw std::invalid_argument("Cannot divide umeasurement by a zero umeasurement");
 
-                double result = this->value / std::move(other.value);
-                double runc1 = this->uncertainty / this->value;
-                double runc2 = std::move(other.uncertainty) / std::move(other.value);
-                double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
+            //     double result = this->value / std::move(other.value);
+            //     double runc1 = this->uncertainty / this->value;
+            //     double runc2 = std::move(other.uncertainty) / std::move(other.value);
+            //     double unc = std::sqrt(std::pow(runc1, 2) + std::pow(runc2, 2));
 
-                return { result, std::fabs(result) * unc };
+            //     return { result, std::fabs(result) * unc };
                 
-            }
+            // }
 
-            /// @brief Divide an umeasurement with a measurement
-            constexpr umeasurement operator/(const measurement<BASE_TYPE>& other) const {
+            // /// @brief Divide an umeasurement with a measurement
+            // constexpr umeasurement operator/(const measurement<BASE_TYPE>& other) const {
                 
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide umeasurement by a zero measurement");
+            //     if (other.value == 0.0)
+            //         throw std::invalid_argument("Cannot divide umeasurement by a zero measurement");
 
-                return { this->value / other.value, this->uncertainty / std::fabs(other.value) };
+            //     return { this->value / other.value, this->uncertainty / std::fabs(other.value) };
 
-            }
+            // }
 
-            /// @brief Divide an umeasurement with a measurement
-            constexpr umeasurement operator/(measurement<BASE_TYPE>&& other) const {
+            // /// @brief Divide an umeasurement with a measurement
+            // constexpr umeasurement operator/(measurement<BASE_TYPE>&& other) const {
                 
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide umeasurement by a zero measurement");
+            //     if (other.value == 0.0)
+            //         throw std::invalid_argument("Cannot divide umeasurement by a zero measurement");
 
-                return { this->value / std::move(other.value), this->uncertainty / std::fabs(std::move(other.value)) };
+            //     return { this->value / std::move(other.value), this->uncertainty / std::fabs(std::move(other.value)) };
 
-            }
+            // }
 
-            /// @brief Divide a measurement with an measurement
-            friend inline constexpr umeasurement operator/(const measurement<BASE_TYPE>& meas, const umeasurement& umeas) {
+            // /// @brief Divide a measurement with an measurement
+            // friend inline constexpr umeasurement operator/(const measurement<BASE_TYPE>& meas, const umeasurement& umeas) {
                 
-                if (umeas.value == 0.0)
-                    throw std::invalid_argument("Cannot divide measurement by a zero umeasurement");
+            //     if (umeas.value == 0.0)
+            //         throw std::invalid_argument("Cannot divide measurement by a zero umeasurement");
 
-                return { meas.value / umeas.value, umeas.uncertainty * std::fabs(meas.value) / std::pow(umeas.value, 2) };
+            //     return { meas.value / umeas.value, umeas.uncertainty * std::fabs(meas.value) / std::pow(umeas.value, 2) };
 
-            }
+            // }
 
-            /// @brief Divide a measurement with an measurement
-            friend inline constexpr umeasurement operator/(measurement<BASE_TYPE>&& meas, umeasurement&& umeas) {
+            // /// @brief Divide a measurement with an measurement
+            // friend inline constexpr umeasurement operator/(measurement<BASE_TYPE>&& meas, umeasurement&& umeas) {
                 
-                if (umeas.value == 0.0)
-                    throw std::invalid_argument("Cannot divide measurement by a zero umeasurement");
+            //     if (umeas.value == 0.0)
+            //         throw std::invalid_argument("Cannot divide measurement by a zero umeasurement");
 
-                return { std::move(meas.value) / std::move(umeas.value), std::move(umeas.uncertainty) * std::fabs(std::move(meas.value)) / std::pow(std::move(umeas.value), 2) };
+            //     return { std::move(meas.value) / std::move(umeas.value), std::move(umeas.uncertainty) * std::fabs(std::move(meas.value)) / std::pow(std::move(umeas.value), 2) };
 
-            }
+            // }
 
 
             /// @brief Check if this measurement is equal to another measurement
@@ -859,27 +859,6 @@ namespace scipp::physics {
             constexpr measurement<BASE_TYPE> uncertainty_as_measurement() const noexcept {
 
                 return { this->uncertainty }; 
-
-            }
-
-
-            /// @brief Print the measurement to the standard output
-            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
-            constexpr void print(const bool& newline = true) const noexcept {
-
-                std::cout << *this << (newline ? '\n' : ' ');
-
-            }
-
-            /// @brief Print the umeasurement to the standard output
-            /// @param units: The unit in which the value is printed
-            /// @param newline: If true (default case), a newline character is printed at the end of the measurement
-            /// @note The unit must be of the same base of the measurement
-            template <typename UNIT_TYPE> 
-                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<BASE_TYPE, typename UNIT_TYPE::base>)
-            constexpr void print_as(const UNIT_TYPE&, const bool& newline = true) const noexcept {
-
-                std::cout << this->value / UNIT_TYPE::mult << " ± " << this->uncertainty / UNIT_TYPE::mult << (newline ? '\n' : ' '); 
 
             }
 

@@ -87,26 +87,26 @@ namespace scipp::math {
 
             }
 
-            return start + t * (end - start);
+            return this->start + t * (this->end - this->start);
 
         }
 
 
         constexpr arg_t step(size_t N) const noexcept {
                 
-            return (end - start) / static_cast<double>(N);
+            return (this->end - this->start) / static_cast<double>(N);
     
         }
 
-        template <size_t N>
-        constexpr arg_t step() const noexcept {
-                
-            return (end - start) / static_cast<double>(N);
-    
+
+        constexpr arg_t length() const noexcept {
+
+            return this->end - this->start; 
+
         }
 
 
     };
 
-    
+
 } // namespace scipp::math

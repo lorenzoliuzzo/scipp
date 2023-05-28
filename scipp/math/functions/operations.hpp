@@ -15,6 +15,14 @@ namespace scipp::math {
     namespace op {
 
 
+        template <typename T>
+        inline static constexpr auto round(const T& x) noexcept {
+
+            return functions::round<T>::f(x);
+            
+        }
+        
+
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         inline static constexpr auto add(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
 
@@ -286,6 +294,7 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr auto normalize(const T&) noexcept; 
+
 
 
     } // namespace op

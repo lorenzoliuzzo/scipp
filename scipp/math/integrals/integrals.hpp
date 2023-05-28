@@ -60,41 +60,6 @@ namespace scipp::math {
         }
 
 
-        template <size_t steps, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
-        static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
-                                                   const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
-
-            typename FUNCTION_TYPE::result_t total_sum = f(I(0.0));
-            constexpr auto N = static_cast<double>(steps); 
-
-            for (size_t i{1}; i < steps; ++i)
-                total_sum += f(I((static_cast<double>(i) + 0.5) / N)); 
-
-            return total_sum * (I.end - I.start) / N; 
-
-        }
-                
-
-        template <size_t steps, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
-        static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
-                                                  const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
-            -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
-
-            typename FUNCTION_TYPE::result_t total_sum;
-            constexpr auto N = static_cast<double>(steps); 
-
-            if constexpr (steps % 2 == 0) 
-                total_sum = (f(I(0.0)) + f(I(1.0))) / 3.;
-
-            for (size_t i = 1; i < steps; ++i) 
-                total_sum += 2. * (1. + i % 2) * f(I(static_cast<double>(i) / N)) / 3.;
-
-            return total_sum * (I.end - I.start) / N; 
-
-        }
 
 
         // template <typename FUNCTION_TYPE> 
@@ -294,27 +259,7 @@ namespace scipp::math {
         }
 
 
-        template <typename FUNCTION_TYPE, size_t steps = 1000> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
-        static constexpr auto curvilinear(const FUNCTION_TYPE& func, 
-                                          const curve<typename FUNCTION_TYPE::arg_t>& curve,
-                                          double incr_der = 1.e-6) 
 
-            -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> {
-
-            multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t::measurement_t> total_sum; 
-                // auto d_curve = total_derivative(curve); // @todo
-            for (size_t i{}; i < steps; ++i) {
-
-                double t = static_cast<double>(i) / static_cast<double>(steps);
-                auto x = curve(t);
-                total_sum += func(x) * op::norm((curve(t + incr_der) - x) / incr_der);
-
-            }
-
-            return total_sum / static_cast<double>(steps); 
-
-        }
 
 
         template <typename CURVE_TYPE>

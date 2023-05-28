@@ -12,23 +12,23 @@ namespace scipp {
     
     
     /// @brief Addition operator
-    inline static constexpr auto operator+(auto x, auto y) noexcept { 
-        
-        return math::op::add(x, y);
+    inline constexpr auto operator+(auto x, auto y) noexcept { 
+
+        return math::op::add(std::move(x), std::move(y));
         
     }
 
 
     /// @brief Subtraction operator
-    inline static constexpr auto operator-(auto x, auto y) noexcept { 
+    inline constexpr auto operator-(auto x, auto y) noexcept { 
         
-        return math::op::sub(x, y);
+        return math::op::sub(std::move(x), std::move(y));
         
     }
 
 
     /// @brief Negate operator 
-    inline static constexpr auto operator-(auto x) noexcept { 
+    inline constexpr auto operator-(auto x) noexcept { 
         
         return math::op::neg(x);
         
@@ -36,7 +36,7 @@ namespace scipp {
     
 
     /// @brief Multiplication operator
-    inline static constexpr auto operator*(auto&& x, auto&& y) noexcept { 
+    inline constexpr auto operator*(auto&& x, auto&& y) noexcept { 
         
         return math::op::mult(std::move(x), std::move(y));
         
@@ -44,7 +44,7 @@ namespace scipp {
 
 
     /// @brief Division operator
-    inline static constexpr auto operator/(auto&& x, auto&& y) { 
+    inline constexpr auto operator/(auto&& x, auto&& y) { 
 
         return math::op::div(std::move(x), std::move(y));
         
@@ -52,14 +52,14 @@ namespace scipp {
 
 
     /// @brief Increment operator
-    inline static constexpr auto operator+=(auto& x, auto&& y) noexcept { 
+    inline constexpr auto operator+=(auto& x, auto&& y) noexcept { 
         
         return x = math::op::add(x, std::move(y));
         
     }
 
     /// @brief Decrement operator
-    inline static constexpr auto operator-=(auto& x, auto&& y) noexcept { 
+    inline constexpr auto operator-=(auto& x, auto&& y) noexcept { 
         
         return x = math::op::sub(x, std::move(y));
         
@@ -69,7 +69,7 @@ namespace scipp {
     /// @brief Scale operator
     template <typename T>
         requires (physics::is_scalar_v<T>)
-    inline static constexpr auto operator*=(auto& x, T&& y) noexcept { 
+    inline constexpr auto operator*=(auto& x, T&& y) noexcept { 
 
         return x = math::op::mult(x, std::move(y));
         
@@ -79,7 +79,7 @@ namespace scipp {
     /// @brief Scale operator
     template <typename T>
         requires (physics::is_scalar_v<T>)
-    inline static constexpr auto operator/=(auto& x, T&& y) {
+    inline constexpr auto operator/=(auto& x, T&& y) {
 
         return x *= math::op::inv(std::move(y));
         

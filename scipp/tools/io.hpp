@@ -59,7 +59,26 @@ namespace scipp::tools {
     }
 
 
-    /// @brief Print a measurement with a description
+    /// @brief Print a measurement with a fixed number of digits and a description
+    template <typename PREFIX_TYPE, typename MEAS_TYPE>
+        requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
+    inline static constexpr void print(const std::string& message, const MEAS_TYPE& other) noexcept {
+
+        double fixed_precision;
+
+        if constexpr (PREFIX_TYPE::num < PREFIX_TYPE::den)
+            fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
+        else
+            fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den));
+
+        std::cout << message << ": "; 
+        std::cout.precision(fixed_precision);
+        std::cout << std::fixed << other << std::defaultfloat << '\n';
+        std::cout.precision(6);
+
+    }
+
+    /// @brief Print a measurement with a fixed number of digits
     template <typename PREFIX_TYPE, typename MEAS_TYPE>
         requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
     inline static constexpr void print(const MEAS_TYPE& other) noexcept {

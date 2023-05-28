@@ -72,6 +72,8 @@ int main() {
     print(op::square(x) * 2.0);
     print(op::abs(cmeasurement(x, x)));
     print(op::exp(-4.0));
+    print(op::sin(0.0));
+    print(op::sin(math::constants::pi * 0.5));
 
 
     return 0; 

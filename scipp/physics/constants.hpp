@@ -2,12 +2,10 @@
  * @file    physics/constants.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-01-01
+ * @date    2023-05-23
  * 
  * @copyright Copyright (c) 2023
  */
-
-
  
 
 
@@ -42,9 +40,9 @@ namespace scipp::physics {
 
         inline static constexpr measurement k_B(1.380649e-23, J / K); ///< Boltzmann constant
 
-        inline static constexpr math::meta::invert_t<mole_m> N_A(6.02214076e23 / mol); ///< Avogadro constant
+        inline static constexpr measurement N_A(6.02214076e23 / mol); ///< Avogadro constant
 
-        inline static constexpr measurement R(N_A * k_B); ///< ideal gas constant
+        inline static constexpr auto R = N_A * k_B; ///< ideal gas constant
 
 
     } // namespace constants

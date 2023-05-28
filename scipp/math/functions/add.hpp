@@ -2,7 +2,7 @@
  * @file    math/ops/add.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-06
+ * @date    2023-05-25
  * 
  * @copyright Copyright (c) 2023
  */
@@ -36,12 +36,13 @@ namespace scipp::math {
         
         };
 
+        
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (are_numbers_v<ARG_TYPE1, ARG_TYPE2>)
-        struct add<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, double> {
+        struct add<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, decltype(ARG_TYPE1{1} + ARG_TYPE2{1})> {
 
 
-            using result_t = add_t<ARG_TYPE1, ARG_TYPE2>;
+            using result_t = decltype(ARG_TYPE1{1} + ARG_TYPE2{1});
 
             using first_arg_t = ARG_TYPE1;
 
@@ -50,7 +51,29 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept { 
 
-                return static_cast<double>(x) + static_cast<double>(y);   
+                return x + y;   
+            
+            }
+
+        
+        };
+
+
+        template <typename T>
+            requires (physics::is_measurement_v<T>)
+        struct add<T> : binary_function<T, T, T> {
+
+
+            using result_t = T;
+
+            using first_arg_t = T;
+
+            using second_arg_t = T;
+
+
+            inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) noexcept { 
+                
+                return {x.value + y.value}; 
             
             }
 
@@ -61,10 +84,10 @@ namespace scipp::math {
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_same_measurement_v<ARG_TYPE1, ARG_TYPE2>)
         struct add<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, 
-                                        physics::measurement<typename ARG_TYPE1::base_t, decltype(static_cast<typename ARG_TYPE1::value_t>(1.0) + static_cast<typename ARG_TYPE2::value_t>(1.0))>> {
+                                                           physics::measurement<typename ARG_TYPE1::base_t, add_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>> {
 
-
-            using result_t = physics::measurement<typename ARG_TYPE1::base_t, decltype(static_cast<typename ARG_TYPE1::value_t>(1.0) + static_cast<typename ARG_TYPE2::value_t>(1.0))>;
+                                                            
+            using result_t = physics::measurement<typename ARG_TYPE1::base_t, add_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>;
 
             using first_arg_t = ARG_TYPE1;
 
@@ -75,14 +98,6 @@ namespace scipp::math {
 
                 return x.value + y.value;   
             
-            }
-
-
-            inline static constexpr result_t f(first_arg_t& x, const second_arg_t& y) noexcept {
-
-                x.value += y.value; 
-                return x; 
-
             }
 
         

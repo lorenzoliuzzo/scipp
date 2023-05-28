@@ -88,6 +88,44 @@ namespace scipp::math {
         };
 
 
+        /// @brief Multiply an unit of measurement
+        template <typename SCALAR_TYPE, typename UNIT_TYPE>
+            requires (is_number_v<SCALAR_TYPE> && physics::is_unit_v<UNIT_TYPE>)
+        struct multiply<SCALAR_TYPE, UNIT_TYPE> : binary_function<SCALAR_TYPE, UNIT_TYPE, 
+                                                                physics::measurement<typename UNIT_TYPE::base_t, SCALAR_TYPE>> {
+
+            using result_t = physics::measurement<typename UNIT_TYPE::base_t, SCALAR_TYPE>;
+
+
+            inline static constexpr result_t f(const SCALAR_TYPE& x, const UNIT_TYPE&) noexcept {
+
+                return { x * UNIT_TYPE::mult };
+
+            }       
+
+
+        };
+
+
+        /// @brief Multiply two numbers
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_numbers_v<ARG_TYPE1, ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, 
+                                                                decltype(ARG_TYPE1{1.0} * ARG_TYPE2{1.0})> {
+
+
+            using result_t = decltype(ARG_TYPE1{1.0} * ARG_TYPE2{1.0});
+
+            inline static constexpr result_t f(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
+
+                return x * y; 
+
+            }
+
+
+        };
+
+        
         /// @brief Multiply two measurement
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_measurements_v<ARG_TYPE1, ARG_TYPE2>)

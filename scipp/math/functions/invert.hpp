@@ -165,7 +165,7 @@ namespace scipp::math {
 
         // /// @brief Invert an unary function
         // template <typename FUNCTION_TYPE>
-        //     requires (is_unary_function_v<FUNCTION_TYPE>)
+        //     requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         // struct invert<FUNCTION_TYPE> {
             
         //     using function_t = unary_function<typename FUNCTION_TYPE::arg_t, invert_t<typename FUNCTION_TYPE::result_t>>;

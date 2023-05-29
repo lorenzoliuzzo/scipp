@@ -16,7 +16,7 @@ namespace scipp::math {
 
 
         template <typename FUNCTION_TYPE1, typename FUNCTION_TYPE2>
-            requires (are_unary_functions_v<FUNCTION_TYPE1, FUNCTION_TYPE2> && 
+            requires (are_unary_functions_v<typename FUNCTION_TYPE1::function_t, typename FUNCTION_TYPE2::function_t> && 
                       std::is_same_v<typename FUNCTION_TYPE1::function_t::arg_t, typename FUNCTION_TYPE2::function_t::result_t>)
         struct compose {
             

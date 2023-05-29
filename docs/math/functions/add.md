@@ -1,6 +1,4 @@
-# Math Library - Addition Functions
-
-The `math/functions/add.hpp` file contains a collection of addition functions implemented in the `scipp::math` namespace. These functions provide various ways to perform addition on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
+The `math/functions/add.hpp` file contains a collection of addition functions implemented in the `scipp::math::functions` namespace. These functions provide various ways to perform addition on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
 
 ## Function Structure
 

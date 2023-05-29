@@ -44,7 +44,7 @@ namespace scipp::math {
 
 
         template <size_t steps, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
                                                     const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
@@ -114,7 +114,7 @@ namespace scipp::math {
                 
 
         template <typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
                                                   const interval<typename FUNCTION_TYPE::arg_t>& I,
                                                   const double& relative_error) noexcept
@@ -152,7 +152,7 @@ namespace scipp::math {
 
 
         template <integration_method method, size_t steps = 1000, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         inline static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const typename FUNCTION_TYPE::arg_t& from_a,
                                       const typename FUNCTION_TYPE::arg_t& to_b)                                        
@@ -179,7 +179,7 @@ namespace scipp::math {
 
 
         template <integration_method method, size_t steps = 1000, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         inline static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                              const interval<typename FUNCTION_TYPE::arg_t>& I)
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
@@ -202,7 +202,7 @@ namespace scipp::math {
 
 
         template <integration_method method, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         inline static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                              const typename FUNCTION_TYPE::arg_t& from_a,
                                              const typename FUNCTION_TYPE::arg_t& to_b,
@@ -233,7 +233,7 @@ namespace scipp::math {
 
 
         template <integration_method method, typename FUNCTION_TYPE> 
-            requires (is_unary_function_v<FUNCTION_TYPE>)
+            requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
                                       const interval<typename FUNCTION_TYPE::arg_t>& I, 
                                       double relative_error = 1.e-6)

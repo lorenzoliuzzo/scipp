@@ -20,7 +20,7 @@ namespace scipp::math {
         /// @param I interval of integration
         /// @param steps number of steps
         template <typename FUNCTION_TYPE>
-            requires (functions::is_unary_function_v<FUNCTION_TYPE>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I, size_t steps = 10000) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
@@ -84,11 +84,11 @@ namespace scipp::math {
         /// @todo implement a better algorithm for the infinite interval case
         /// @todo template deduction guidelines
         // template <typename FUNCTION_TYPE, typename PREFIX_TYPE, typename INTERVAL_TYPE, size_t MAX_ITERATIONS = 10000000>
-        //     requires (functions::is_unary_function_v<FUNCTION_TYPE> && std::is_same_v<typename INTERVAL_TYPE::arg_t, typename FUNCTION_TYPE::function_t::arg_t> && physics::is_prefix_v<PREFIX_TYPE>)
+        //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t> && std::is_same_v<typename INTERVAL_TYPE::arg_t, typename FUNCTION_TYPE::function_t::arg_t> && physics::is_prefix_v<PREFIX_TYPE>)
         // static constexpr auto simpson(const INTERVAL_TYPE& I) {
 
         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 10000000>
-            requires (functions::is_unary_function_v<FUNCTION_TYPE> && physics::is_prefix_v<PREFIX_TYPE>)
+            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t> && physics::is_prefix_v<PREFIX_TYPE>)
         static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
@@ -118,7 +118,7 @@ namespace scipp::math {
 /// @param I interval of integration
 /// @param epsilon maximum error tolerance
 template <typename FUNCTION_TYPE, typename PREFIX_TYPE>
-requires (functions::is_unary_function_v<FUNCTION_TYPE>)
+requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
 static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
 
     auto recursive_simpson = [&](auto& self, auto a, auto b, auto fa, auto fm, auto fb, auto relative_error, auto S) {

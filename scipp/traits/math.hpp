@@ -103,10 +103,10 @@ namespace scipp::math {
         struct is_unary_function<unary_function<ARG_TYPE, RESULT_TYPE>> : std::true_type {};
 
         template <typename T>
-        inline static constexpr bool is_unary_function_v = is_unary_function<typename T::function_t>::value; 
-
+        inline static constexpr bool is_unary_function_v = is_unary_function<T>::value; 
+        
         template <typename... Ts>
-        inline static constexpr bool are_unary_functions_v = std::conjunction_v<is_unary_function<typename Ts::function_t>...>;
+        inline static constexpr bool are_unary_functions_v = std::conjunction_v<is_unary_function<Ts>...>;
 
 
 

@@ -1,5 +1,5 @@
-doxygen doc/Doxyfile
-cd doc/latex
+doxygen docs/Doxyfile
+cd docs/latex
 make all
 evince refman.pdf
 cd ../html

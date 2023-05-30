@@ -94,34 +94,34 @@
             #include "physics/measurements/types/measurements.hpp" 
 
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
             
         //     // #include "math/numbers/dual.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
             #include "math/constants.hpp" 
             #include "physics/constants.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
             #include "geometry/vector.hpp"
             #include "geometry/matrix.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
-            // #include "physics/vector_types.hpp"
-        //     // #include "physics/matrix_types.hpp" // @todo
+            #include "physics/vector_types.hpp"
+            // #include "physics/matrix_types.hpp" // @todo
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
         // //     // #include "geometry/vectorial_space.hpp" // @todo
         //     #include "geometry/vectorial_base.hpp"
         
 
-        // /// ---------------------------------------------------------------
-        // /// @brief math/polynomials
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
+        /// @brief math/polynomials
+        /// ---------------------------------------------------------------
 
         //     #include "math/polynomials/ruffini.hpp"
         //     #include "math/polynomials/newton_raphson.hpp"
@@ -133,15 +133,15 @@
         //     #include "math/polynomials/chebyshev.hpp"
         //     // #include "math/polynomials/laguerre.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
         // //     #include "math/autodiff.hpp"
         // //     #include "math/calculus/derivative.hpp" // @todo
 
 
-        // /// ---------------------------------------------------------------
-        // /// @brief math/calculus
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
+        /// @brief math/calculus
+        /// ---------------------------------------------------------------
 
             #include "math/calculus/interval.hpp"
             #include "math/calculus/curve.hpp"
@@ -149,7 +149,7 @@
             #include "math/integrals/rectangle.hpp"
             #include "math/integrals/trapezoid.hpp"
             #include "math/integrals/midpoint.hpp"
-            // #include "math/integrals/endpoint.hpp"
+            #include "math/integrals/endpoint.hpp"
             #include "math/integrals/simpson.hpp"
             #include "math/integrals/curvilinear.hpp"
 
@@ -159,21 +159,21 @@
 
         //     #include "math/calculus/hilbert_space.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
         // // //     // #include "math/equations.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
         //     // #include "geometry/curve_types.hpp"
         // //     // #include "geometry/line.hpp"
         // //     // #include "geometry/linspace.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
             #include "math/statistics.hpp"
 
-        // /// ---------------------------------------------------------------
+        /// ---------------------------------------------------------------
 
         /// ---------------------------------------------------------------
         /// @brief tools

@@ -1,6 +1,6 @@
-# Physics Library - Multiplication Functions
+# Math Library - Multiplication Functions
 
-The `physics/functions/multiply.hpp` file contains a collection of multiplication functions implemented in the `scipp::physics` namespace. These functions provide various ways to perform multiplication on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
+The `math/functions/multiply.hpp` file contains a collection of multiplication functions implemented in the `scipp::math` namespace. These functions provide various ways to perform multiplication on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
 
 ## Function Structure
 
@@ -26,15 +26,15 @@ The first specialization of `multiply` handles the multiplication of two numbers
 
 ### 2. Multiplication of Measurements
 
-The second specialization handles the multiplication of two measurements. It supports types that satisfy the `physics::is_measurement_v` concept. The multiplication is performed by multiplying the values of the measurements.
+The second specialization handles the multiplication of two measurements. It supports types that satisfy the `math::is_measurement_v` concept. The multiplication is performed by multiplying the values of the measurements.
 
 ### 3. Multiplication of Complex Numbers
 
-The third specialization deals with the multiplication of two complex numbers. It supports types that satisfy the `physics::is_cmeasurement_v` concept. The multiplication is performed by multiplying the real and imaginary components separately.
+The third specialization deals with the multiplication of two complex numbers. It supports types that satisfy the `math::is_cmeasurement_v` concept. The multiplication is performed by multiplying the real and imaginary components separately.
 
 ### 4. Multiplication of Generic Measurements and Numbers
 
-This specialization handles the multiplication of a generic measurement and a number. It supports types that satisfy the `is_number_v` and `physics::is_generic_measurement_v` concepts and have a scalar base type. The multiplication is performed by multiplying the value of the measurement with the number.
+This specialization handles the multiplication of a generic measurement and a number. It supports types that satisfy the `is_number_v` and `math::is_generic_measurement_v` concepts and have a scalar base type. The multiplication is performed by multiplying the value of the measurement with the number.
 
 ### 5. Multiplication of Vectors
 
@@ -46,18 +46,18 @@ The last specialization deals with the multiplication of two matrices. It suppor
 
 ## Usage
 
-To use the multiplication functions provided by this library, include the `physics/functions/multiply.hpp` header file in your code. You can then call the `f` function of the desired specialization of `multiply` to perform the multiplication operation.
+To use the multiplication functions provided by this library, include the `math/functions/multiply.hpp` header file in your code. You can then call the `f` function of the desired specialization of `multiply` to perform the multiplication operation.
 
 Here's an example of using the multiplication function for numbers:
 
 ```cpp
 #include <iostream>
-#include "physics/functions/multiply.hpp"
+#include "math/functions/multiply.hpp"
 
 int main() {
     double x = 3.14;
     double y = 2.71;
-    auto result = scipp::physics::functions::multiply<double>::f(x, y);
+    auto result = scipp::math::functions::multiply<double>::f(x, y);
     std::cout << "Result: " << result << std::endl;
     return 0;
 }

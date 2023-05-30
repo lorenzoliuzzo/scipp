@@ -2,7 +2,7 @@
  * @file    math/calculus/endpoint.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-24
+ * @date    2023-05-30
  * 
  * @copyright Copyright (c) 2023
  */
@@ -19,17 +19,23 @@ namespace scipp::math {
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto endpoint_left(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
             
-            const auto h = I.step(steps);
-            std::array<size_t, steps> indices;
-            std::iota(indices.begin(), indices.end(), 0u);
+            auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
 
-            auto sum = std::transform_reduce(std::execution::par, indices.begin(), indices.end(), 0.0, std::plus<>(),
-                [&](auto i) {
-                    return FUNCTION_TYPE::f(I.start + static_cast<double>(i) * h);
+            const auto h = I.step(steps);
+            const auto x_range = std::views::iota(0u, steps) | std::views::transform(
+                [&](size_t i) {
+                    return I.start + static_cast<double>(i) * h;
                 }
             );
 
-            return sum * h;
+            std::ranges::for_each(x_range,
+                [&](auto x_i) {
+                    result += FUNCTION_TYPE::f(x_i) * h;
+                }
+            );
+
+            return result;
+
         }
 
 
@@ -37,17 +43,22 @@ namespace scipp::math {
         requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto endpoint_right(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
             
-            const auto h = I.step(steps);
-            std::array<size_t, steps + 1> indices;
-            std::iota(indices.begin(), indices.end(), 1u);
+            auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
 
-            auto sum = std::transform_reduce(std::execution::par, indices.begin(), indices.end(), 0.0, std::plus<>(),
-                [&](auto i) {
-                    return FUNCTION_TYPE::f(I.start + static_cast<double>(i) * h);
+            const auto h = I.step(steps);
+            const auto x_range = std::views::iota(1u, steps + 1) | std::views::transform(
+                [&](size_t i) {
+                    return I.start + static_cast<double>(i) * h;
                 }
             );
 
-            return sum * h;
+            std::ranges::for_each(x_range,
+                [&](auto x_i) {
+                    result += FUNCTION_TYPE::f(x_i) * h;
+                }
+            );
+
+            return result;
 
         }
 

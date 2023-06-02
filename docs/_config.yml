@@ -1,34 +1,153 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: Scipp Library
+description: A new scientific library written in c++!
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
+url: https://lorenzoliuzzo.github.io/scipp
 
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  Library Repository: https://github.com/lorenzoliuzzo/scipp
 
-build:
-  runs-on: ubuntu-latest
-  defaults:
-    run:
-      working-directory: docs
+# Site Author
+author:
+  name             : "Lorenzo Liuzzo"
+  avatar           : "/assets/images/profile.png"
+  bio              : "Physics student"
+  location         : "Milan, Italy"
+  employer         :
+  email            : "lorenzoliuzzo@outlook.com"
+  researchgate     :  
+  github           : "lorenzoliuzzo"
+  linkedin         :
+  stackoverflow    : 
 
-- name: Setup Ruby
-    uses: ruby/setup-ruby@v1
-    with:
-      ruby-version: '3.1'
-      bundler-cache: true
-      cache-version: 0
-      working-directory: '${{ github.workspace }}/docs'
+timezone: IT/Rome
 
-- name: Upload artifact
-    uses: actions/upload-pages-artifact@v1
-    with:
-      path: "docs/_site/"
+# Set a path/url to a logo that will be displayed instead of the title
+logo: "/assets/images/logo.png"
 
-on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "docs/**"
+color_scheme: light
+
+# Enable or disable the site search
+search_enabled: true
+
+search:
+  # Split pages into sections that can be searched individually
+  # Supports 1 - 6, default: 2
+  heading_level: 2
+  # Maximum amount of previews per search result
+  # Default: 3
+  previews: 3
+  # Maximum amount of words to display before a matched word in the preview
+  # Default: 5
+  preview_words_before: 5
+  # Maximum amount of words to display after a matched word in the preview
+  # Default: 10
+  preview_words_after: 10
+  # Set the search token separator
+  # Default: /[\s\-/]+/
+  # Example: enable support for hyphenated search words
+  tokenizer_separator: /[\s/]+/
+  # Display the relative url in search results
+  # Supports true (default) or false
+  rel_url: true
+  # Enable or disable the search button that appears in the bottom right corner of every page
+  # Supports true or false (default)
+  button: false
+
+# Enable or disable the copy button on code
+enable_copy_code_button: true
+
+# Back to top link
+back_to_top: true
+back_to_top_text: "Back to top"
+
+footer_content: "Copyright &copy; 2023-2026 Lorenzo Liuzzo."
+
+# Footer last edited timestamp
+last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
+last_edit_time_format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
+
+encoding: "utf-8"
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+
+# Archives
+#  Type
+#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
+#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
+#  Path (examples)
+#  - Archive page should exist at path when using Liquid method or you can
+#    expect broken links (especially with breadcrumbs enabled)
+#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
+#  - <base_path/categories/my-awesome-category/index.html ~> path: /categories/
+#  - <base_path/my-awesome-category/index.html ~> path: /
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/
+
+include:
+  - .htaccess
+  - math
+  - math/functions
+
+# Collections
+collections:
+  math:
+    output: true
+    permalink: /:collection/:path/
+    
+  functions:
+    output: true
+    permalink: /math/:collection/:path/
+    
+  physics:
+    output: true
+    permalink: /:collection/:path/
+
+  geometry:
+    output: true
+    permalink: /:collection/:path/
+
+
+# Defaults  
+defaults:
+
+  # _math
+  - scope:
+      path: ""
+      type: math
+    values:
+      layout: default
+      author_profile: true
+
+  - scope:
+      path: "math/"
+      type: functions
+    values:
+      layout: default
+      author_profile: true
+      
+  - scope:
+      path: "functions/"
+      type: add
+    values:
+      layout: default
+      author_profile: true
+      
+  # # _physics
+  # - scope:
+  #     path: ""
+  #     type: physics
+  #   values:
+  #     layout: default
+  #     author_profile: true
+
+  # # _geometry
+  # - scope:
+  #     path: ""
+  #     type: geometry
+  #   values:
+  #     layout: default
+  #     author_profile: true

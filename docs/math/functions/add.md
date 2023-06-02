@@ -1,3 +1,14 @@
+---
+title: Add
+layout: default
+permalink: /math/functions/add/
+# redirect_from: /math/functions/add/
+parent: Functions namespace
+author_profile: true
+---
+
+# Adding functions 
+
 The `math/functions/add.hpp` file contains a collection of addition functions implemented in the `scipp::math::functions` namespace. These functions provide various ways to perform addition on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
 
 ## Function Structure
@@ -49,13 +60,14 @@ To use the addition functions provided by this library, include the `math/functi
 Here's an example of using the addition function for numbers:
 
 ```cpp
-#include <iostream>
-#include "math/functions/add.hpp"
+#include "sci++.hpp"
+
+using namespace scipp::math;
 
 int main() {
     double x = 3.14;
     double y = 2.71;
-    auto result = scipp::math::functions::add<double>::f(x, y);
+    auto result = functions::add<double>::f(x, y);
     std::cout << "Result: " << result << std::endl;
     return 0;
 }

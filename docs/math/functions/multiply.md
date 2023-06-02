@@ -1,4 +1,14 @@
-# Math Library - Multiplication Functions
+---
+title: Multiply
+layout: default
+collection: functions
+permalink: /math/functions/multiply/
+redirect_from: /math/functions/multiply/
+parent: Functions namespace
+author_profile: true
+---
+
+# Multiplication Functions
 
 The `math/functions/multiply.hpp` file contains a collection of multiplication functions implemented in the `scipp::math` namespace. These functions provide various ways to perform multiplication on different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
 

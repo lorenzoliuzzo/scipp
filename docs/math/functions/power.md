@@ -1,4 +1,14 @@
-# Math Library - Power Functions
+---
+title: Power
+layout: default
+collection: functions
+permalink: /math/functions/power/
+redirect_from: /math/functions/power/
+parent: Functions namespace
+author_profile: true
+---
+
+# Power Functions
 
 The `math/functions/power.hpp` file contains a collection of power functions implemented in the `scipp::math` namespace. These functions provide various ways to calculate the power of different types of operands, including numbers, measurements, complex numbers, vectors, and matrices.
 

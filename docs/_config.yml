@@ -2,9 +2,9 @@ title: Scipp Library
 description: A new scientific library written in c++!
 theme: just-the-docs
 
-url: https://lorenzoliuzzo.github.io/scipp
+url: https://lorenzoliuzzo.github.io/sci++/
 
-aux_links:
+aux_links:scipp
   Library Repository: https://github.com/lorenzoliuzzo/scipp
 
 # Site Author

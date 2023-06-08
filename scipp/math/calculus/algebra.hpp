@@ -23,7 +23,7 @@ namespace scipp::math {
     
     // function to calculate the value of a polynomial at a given point x
     template <size_t N, typename SCALAR_CMEAS_TYPE, typename CMEAS_TYPE>
-        requires (physics::is_scalar_cmeasurement_v<SCALAR_CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+        requires (physics::is_scalar_complex_v<SCALAR_CMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
     constexpr CMEAS_TYPE eval_poly(const std::vector<SCALAR_CMEAS_TYPE>& coeffs, CMEAS_TYPE x) {
 
         CMEAS_TYPE result = 0.0;
@@ -38,7 +38,7 @@ namespace scipp::math {
 
     // function to find all roots of a polynomial of order n using the Fundamental Theorem of Algebra
     template <size_t N, typename SCALAR_CMEAS_TYPE>
-    requires (physics::is_scalar_cmeasurement_v<SCALAR_CMEAS_TYPE>)
+    requires (physics::is_scalar_complex_v<SCALAR_CMEAS_TYPE>)
     constexpr geometry::vector<SCALAR_CMEAS_TYPE, N> find_roots(const std::vector<SCALAR_CMEAS_TYPE>& coeffs) {
 
         geometry::vector<SCALAR_CMEAS_TYPE, N> roots;
@@ -99,7 +99,7 @@ namespace scipp::math {
 
     // // function to find all roots of a polynomial of order n using the Fundamental Theorem of Algebra
     // template <size_t N, typename SCALAR_CMEAS_TYPE>
-    //     requires (physics::is_scalar_cmeasurement_v<SCALAR_CMEAS_TYPE>)
+    //     requires (physics::is_scalar_complex_v<SCALAR_CMEAS_TYPE>)
     // constexpr geometry::vector<SCALAR_CMEAS_TYPE, N> find_roots(const geometry::vector<SCALAR_CMEAS_TYPE, N>& coeffs) {
 
     //     geometry::vector<SCALAR_CMEAS_TYPE, N> roots;

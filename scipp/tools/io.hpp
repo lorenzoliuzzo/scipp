@@ -258,7 +258,7 @@ namespace scipp::tools {
 
 
     template <typename MEAS_TYPE>
-        requires (physics::is_cmeasurement_v<MEAS_TYPE>)
+        requires (math::is_complex_v<MEAS_TYPE>)
     static constexpr void print(const MEAS_TYPE& other) noexcept {
 
         std::cout << other.real << " + i(" << other.imag << ")\n";
@@ -281,8 +281,10 @@ namespace scipp::tools {
     inline static constexpr void print(const VECTOR_TYPE& other) noexcept {
 
         std::cout << "[ "; 
-        for (size_t i{}; i < VECTOR_TYPE::dim; ++i)
-            std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n");
+        for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
+            print(other.data[i]);
+            std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n");
+        }
 
     }
 

@@ -94,7 +94,7 @@ namespace scipp::math {
 
 
         template <typename T>
-            requires (physics::is_cmeasurement_v<T>)
+            requires (math::is_complex_v<T>)
         struct subtract<T> {
             
             using function_t = binary_function<T, T, T>;
@@ -169,7 +169,7 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (physics::is_measurement_v<ARG_TYPE1> && physics::is_cmeasurement_v<ARG_TYPE2>)
+            requires (physics::is_measurement_v<ARG_TYPE1> && math::is_complex_v<ARG_TYPE2>)
         struct subtract<ARG_TYPE1, ARG_TYPE2> {
 
             using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
@@ -184,7 +184,7 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (physics::is_cmeasurement_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
+            requires (math::is_complex_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
         struct subtract<ARG_TYPE1, ARG_TYPE2> {
 
             using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;

@@ -126,19 +126,19 @@ namespace scipp::math {
         };
 
 
-        /// @brief Invert a cmeasurement
+        /// @brief Invert a complex
         template <typename CMEAS_TYPE>
-            requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+            requires (math::is_complex_v<CMEAS_TYPE>)
         struct invert<CMEAS_TYPE> {
             
-            using function_t = unary_function<CMEAS_TYPE, physics::cmeasurement<invert_t<typename CMEAS_TYPE::measurement_t>>>;
+            using function_t = unary_function<CMEAS_TYPE, complex<invert_t<typename CMEAS_TYPE::value_t>>>;
 
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
 
                 if (x == typename function_t::arg_t{})
                     throw std::runtime_error("Cannot invert zero");
 
-                return x * x.conj() / x.norm();
+                return x * x.conj() / op::abs(x);
 
             }
 

@@ -47,7 +47,7 @@ namespace scipp::math {
 
         // Specialization for complex numbers
         template <typename T>
-            requires (physics::is_cmeasurement_v<T>)
+            requires (math::is_complex_v<T>)
         struct negate<T> {
             using function_t = unary_function<T, T>;
 

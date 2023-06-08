@@ -64,9 +64,9 @@ namespace scipp::math {
         };
 
 
-        /// @brief Exponential of a cmeasurement
+        /// @brief Exponential of a complex
         template <typename CMEAS_TYPE>
-            requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+            requires (physics::is_scalar_complex_v<CMEAS_TYPE>)
         struct exponential<CMEAS_TYPE> {
             
             using function_t = unary_function<CMEAS_TYPE, CMEAS_TYPE>;

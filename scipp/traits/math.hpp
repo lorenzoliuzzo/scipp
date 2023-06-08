@@ -69,6 +69,34 @@ namespace scipp::math {
         }
 
 
+
+
+    /// =============================================
+    /// @brief complex traits
+    /// =============================================
+
+        template <typename T> 
+        struct complex {};
+
+
+        /// @brief Type trait to check if a type is a measurement
+        template <typename T>
+        struct is_complex : std::false_type {};
+
+        template <typename T>
+        struct is_complex<complex<T>> : std::true_type {};
+
+        template <typename CMEAS_TYPE>
+        inline static constexpr bool is_complex_v = is_complex<CMEAS_TYPE>::value;
+
+        template <typename... CMEAS_TYPES>
+        struct are_complex : std::conjunction<is_complex<CMEAS_TYPES>...> {};
+
+        template <typename... CMEAS_TYPES>
+        inline static constexpr bool are_complex_v = are_complex<CMEAS_TYPES...>::value;
+
+
+
     // =============================================
     // functions traits
     // =============================================
@@ -77,24 +105,7 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE, typename RESULT_TYPE>
-        struct unary_function {
-
-            using arg_t = ARG_TYPE;
-
-            using result_t = RESULT_TYPE;
-
-            using function_t = unary_function<arg_t, result_t>;
-
-
-            static inline constexpr result_t f(const arg_t& x);
-
-            constexpr result_t operator()(const arg_t& x) const { 
-
-                return f(x); 
-            
-            }
-
-        };
+        struct unary_function;
 
         template <typename T>
         struct is_unary_function : std::false_type {};
@@ -111,29 +122,7 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2, typename RESULT_TYPE>
-        struct binary_function {
-
-
-            using _t = binary_function<ARG_TYPE1, ARG_TYPE2, RESULT_TYPE>; 
-
-            using result_t = RESULT_TYPE;
-
-            using first_arg_t = ARG_TYPE1;
-
-            using second_arg_t = ARG_TYPE2;
-
-
-            inline static constexpr result_t f(const first_arg_t&, const second_arg_t&);
-
-
-            constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y) const { 
-
-                return f(x, y); 
-            
-            }
-
-
-        };
+        struct binary_function;
 
         template <typename T>
         struct is_binary_function : std::false_type {};
@@ -146,35 +135,8 @@ namespace scipp::math {
 
 
 
-        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1, typename ARG_TYPE3 = ARG_TYPE1>
-        struct ternary_function {
-
-
-            using _t = ternary_function<RESULT_TYPE, ARG_TYPE1, ARG_TYPE2>; 
-
-            using result_t = RESULT_TYPE;
-
-            using first_arg_t = ARG_TYPE1;
-
-            using second_arg_t = ARG_TYPE2;
-
-            using third_arg_t = ARG_TYPE3;
-
-
-            virtual ~ternary_function() = default;
-
-
-            inline static constexpr result_t f(const first_arg_t&, const second_arg_t&, const third_arg_t&);
-
-
-            constexpr result_t operator()(const first_arg_t& x, const second_arg_t& y, const third_arg_t& z) const { 
-
-                return f(x, y, z); 
-            
-            }
-
-
-        };
+        template <typename RESULT_TYPE, typename ARG_TYPE1, typename ARG_TYPE2, typename ARG_TYPE3>
+        struct ternary_function;
         
         template <typename T>
         struct is_ternary_function : std::false_type {};
@@ -186,46 +148,23 @@ namespace scipp::math {
         inline static constexpr bool is_ternary_function_v = is_ternary_function<T>::value; 
 
 
-        template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs> 
-            requires (sizeof...(ARG_TYPEs) == DIM)
-        struct nary_function {
+    
+        template <typename T>
+        struct negate;
 
-
-            using _t = nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>; 
-
-            using result_t = RESULT_TYPE;
-
-            using arg_t = std::tuple<ARG_TYPEs...>;
-
-
-            virtual ~nary_function() = default;
-
-
-            inline static constexpr result_t f(const ARG_TYPEs&... x);
-
-
-            constexpr result_t operator()(const ARG_TYPEs&... x) const { 
-
-                return f(x...); 
-            
-            }
-
-
-        };
 
         template <typename T>
-        struct is_nary_function : std::false_type {};
+        struct invert;
 
-        template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs>
-        struct is_nary_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
-        
         template <typename T>
-        inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
+        using invert_t = typename invert<T>::function_t::result_t;  
 
 
+        template <typename T>
+        struct modulo; 
 
-        template <typename ARG_TYPE>
-        struct round;
+        template <typename T>
+        using modulo_t = typename modulo<T>::result_t;
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1>
@@ -233,13 +172,6 @@ namespace scipp::math {
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         using add_t = typename add<ARG_TYPE1, ARG_TYPE2>::function_t::result_t;
-
-
-        template <typename ARG_TYPE1, typename ARG_TYPE2 = ARG_TYPE1>
-        struct subtract; 
-
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using subtract_t = typename subtract<ARG_TYPE1, ARG_TYPE2>::result_t;
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
@@ -250,29 +182,11 @@ namespace scipp::math {
     
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        struct divide; 
+        struct divide : multiply<ARG_TYPE1, invert_t<ARG_TYPE2>> {};
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using divide_t = typename divide<ARG_TYPE1, ARG_TYPE2>::result_t;
+        using divide_t = typename divide<ARG_TYPE1, ARG_TYPE2>::function_t::result_t;
     
-    
-        template <typename T>
-        struct negate;
-
-
-        template <typename T>
-        struct modulo; 
-
-        template <typename T>
-        using modulo_t = typename modulo<T>::result_t;
-
-
-        template <typename T>
-        struct invert;
-
-        template <typename T>
-        using invert_t = typename invert<T>::function_t::result_t;  
-
 
         template <size_t POWER, typename T>
         struct power; 
@@ -373,6 +287,11 @@ namespace scipp::math {
         template <typename T>
         struct hyperbolic_cotangent;
         
+
+
+        template <typename ARG_TYPE>
+        struct round;
+
 
     }
 

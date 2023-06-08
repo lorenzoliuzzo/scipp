@@ -1,5 +1,5 @@
 /**
- * @file    math/ops/cmeasurement.hpp
+ * @file    math/ops/complex.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-04-10
@@ -20,20 +20,20 @@ namespace scipp::math {
         // ====================================================================================================
 
             template <typename MEAS_TYPE>   
-                requires (physics::is_cmeasurement_v<MEAS_TYPE>)
-            struct invert<MEAS_TYPE> : physics::cmeasurement<meta::invert_t<typename MEAS_TYPE::measurement_t>> {};
+                requires (math::is_complex_v<MEAS_TYPE>)
+            struct invert<MEAS_TYPE> : physics::complex<meta::invert_t<typename MEAS_TYPE::measurement_t>> {};
 
             template <typename MEAS_TYPE1, typename MEAS_TYPE2>
-                requires (physics::are_cmeasurements_v<MEAS_TYPE1, MEAS_TYPE2>)
-            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : physics::cmeasurement<multiply_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
+                requires (are_complex_v<MEAS_TYPE1, MEAS_TYPE2>)
+            struct multiply<MEAS_TYPE1, MEAS_TYPE2> : physics::complex<multiply_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
 
             template <typename MEAS_TYPE1, typename MEAS_TYPE2>
-                requires (physics::are_cmeasurements_v<MEAS_TYPE1, MEAS_TYPE2>)
-            struct divide<MEAS_TYPE1, MEAS_TYPE2> : physics::cmeasurement<meta::divide_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
+                requires (are_complex_v<MEAS_TYPE1, MEAS_TYPE2>)
+            struct divide<MEAS_TYPE1, MEAS_TYPE2> : physics::complex<meta::divide_t<typename MEAS_TYPE1::measurement_t, typename MEAS_TYPE2::measurement_t>> {};
 
 
         template <typename MEAS_TYPE>
-            requires (physics::is_cmeasurement_v<MEAS_TYPE>)
+            requires (math::is_complex_v<MEAS_TYPE>)
         inline constexpr typename MEAS_TYPE::measurement_t abs(const MEAS_TYPE& other) noexcept {
             
             return op::sqrt(op::square(other.real) + op::square(other.imag));
@@ -42,7 +42,7 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE>
-            requires (physics::is_cmeasurement_v<MEAS_TYPE>)
+            requires (math::is_complex_v<MEAS_TYPE>)
         inline constexpr auto arg(const MEAS_TYPE& other) noexcept {
             
             return op::atan(other.imag / other.real);
@@ -50,7 +50,7 @@ namespace scipp::math {
         }
 
         template <typename MEAS_TYPE>
-            requires (physics::is_cmeasurement_v<MEAS_TYPE>)
+            requires (math::is_complex_v<MEAS_TYPE>)
         inline constexpr auto norm(const MEAS_TYPE& other) noexcept {
             
             return op::square(other.real) + op::square(other.imag);
@@ -59,7 +59,7 @@ namespace scipp::math {
 
 
         template <typename MEAS_TYPE>
-            requires (physics::is_cmeasurement_v<MEAS_TYPE>) // || is_dual_measurement_v<MEAS_TYPE>)
+            requires (math::is_complex_v<MEAS_TYPE>) // || is_dual_measurement_v<MEAS_TYPE>)
         inline constexpr auto conj(const MEAS_TYPE& other) noexcept {
             
             return MEAS_TYPE{other.real, -other.imag};
@@ -69,7 +69,7 @@ namespace scipp::math {
 
         template <typename MEAS_TYPE1, typename MEAS_TYPE2>
             requires (physics::are_generic_measurements_v<MEAS_TYPE1, MEAS_TYPE2> && physics::is_scalar_v<MEAS_TYPE2>)
-        inline constexpr physics::cmeasurement<MEAS_TYPE1> polar(const MEAS_TYPE1& rho, const MEAS_TYPE2& theta) noexcept {
+        inline constexpr physics::complex<MEAS_TYPE1> polar(const MEAS_TYPE1& rho, const MEAS_TYPE2& theta) noexcept {
             
             return { rho * op::cos(theta), rho * op::sin(theta) };
 
@@ -79,8 +79,8 @@ namespace scipp::math {
         /// @brief Get the exponential of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto exp(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto exp(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::polar(op::exp(other.real), other.imag) };
 
@@ -90,8 +90,8 @@ namespace scipp::math {
         /// @brief Get the logarithm of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto log(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto log(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::log(op::abs(other)), op::arg(other) };
 
@@ -100,7 +100,7 @@ namespace scipp::math {
         /// @brief Get the logarithm in base 10 of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto log10(const physics::cmeasurement<MEAS_TYPE>& other) noexcept {
+        inline constexpr auto log10(const physics::complex<MEAS_TYPE>& other) noexcept {
             
             return op::log(other) / op::log10(MEAS_TYPE{10.0});
 
@@ -110,8 +110,8 @@ namespace scipp::math {
         /// @brief Get the sine of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto sin(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto sin(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::sin(other.real) * op::cosh(other.imag), op::cos(other.real) * op::sinh(other.imag) };
 
@@ -120,8 +120,8 @@ namespace scipp::math {
         /// @brief Get the cosine of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto cos(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto cos(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::cos(other.real) * op::cosh(other.imag), -op::sin(other.real) * op::sinh(other.imag) };
 
@@ -130,7 +130,7 @@ namespace scipp::math {
         /// @brief Get the tangent of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto tan(const physics::cmeasurement<MEAS_TYPE>& other) noexcept {
+        inline constexpr auto tan(const physics::complex<MEAS_TYPE>& other) noexcept {
             
             return op::sin(other) / op::cos(other);
 
@@ -140,8 +140,8 @@ namespace scipp::math {
         /// @brief Get the sine hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto sinh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto sinh(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::sinh(other.real) * op::cos(other.imag), op::cosh(other.real) * op::sin(other.imag) };
 
@@ -150,8 +150,8 @@ namespace scipp::math {
         /// @brief Get the cosine hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto cosh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto cosh(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return { op::cosh(other.real) * op::cos(other.imag), op::sinh(other.real) * op::sin(other.imag) };
 
@@ -160,7 +160,7 @@ namespace scipp::math {
         /// @brief Get the tangent hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto tanh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept {
+        inline constexpr auto tanh(const physics::complex<MEAS_TYPE>& other) noexcept {
             
             return op::sinh(other) / op::cosh(other);
 
@@ -170,8 +170,8 @@ namespace scipp::math {
         /// @brief Get the arcsine of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto asin(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto asin(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
 
             auto z = op::asinh(MEAS_TYPE(-other.imag, other.real));
             return { z.imag, -z.real };
@@ -182,8 +182,8 @@ namespace scipp::math {
         /// @brief Get the arccosine of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto acos(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto acos(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             auto z = op::asin(other);
             return { M_PI_2 - z.real, -z.imag };
@@ -194,8 +194,8 @@ namespace scipp::math {
         /// @brief Get the arctangent of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto atan(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto atan(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
                     
             const auto r2 = op::square(other.real);
             const auto x = 1.0 - r2 - op::square(other.imag);
@@ -208,8 +208,8 @@ namespace scipp::math {
         /// @brief Get the arccosine hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto acosh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto acosh(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             return 2.0 * op::log(op::sqrt(0.5 * (other + 1.0)) + op::sqrt(0.5 * (other - 1.0)));
 
@@ -218,10 +218,10 @@ namespace scipp::math {
         /// @brief Get the arcsine hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto asinh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto asinh(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
-            physics::cmeasurement<math::meta::square_t<MEAS_TYPE>> z((other.real - other.imag) * (other.real + other.imag) + 1.0, 2.0 * other.real * other.imag);
+            physics::complex<math::meta::square_t<MEAS_TYPE>> z((other.real - other.imag) * (other.real + other.imag) + 1.0, 2.0 * other.real * other.imag);
 
             return op::log(op::sqrt(z) + other);
 
@@ -230,8 +230,8 @@ namespace scipp::math {
         /// @brief Get the arctangent hyperbolic of a scalar complex measurement
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline constexpr auto atanh(const physics::cmeasurement<MEAS_TYPE>& other) noexcept 
-            -> physics::cmeasurement<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
+        inline constexpr auto atanh(const physics::complex<MEAS_TYPE>& other) noexcept 
+            -> physics::complex<math::meta::divide_t<MEAS_TYPE, MEAS_TYPE>> {
             
             const auto i2 = op::square(other.imag);
 
@@ -243,8 +243,8 @@ namespace scipp::math {
 
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-        inline constexpr auto sqrt(const physics::cmeasurement<MEAS_TYPE>& other) noexcept
-            -> physics::cmeasurement<math::meta::sqrt_t<MEAS_TYPE>> {
+        inline constexpr auto sqrt(const physics::complex<MEAS_TYPE>& other) noexcept
+            -> physics::complex<math::meta::sqrt_t<MEAS_TYPE>> {
     
             if (other.real == MEAS_TYPE()) {
 
@@ -267,10 +267,10 @@ namespace scipp::math {
 
         // template <typename MEAS_TYPE>
         //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-        // inline static constexpr auto pow_impl(const physics::cmeasurement<MEAS_TYPE>& x, unsigned n) 
-        //     -> physics::cmeasurement<math::meta::pow_t<MEAS_TYPE, n>> {
+        // inline static constexpr auto pow_impl(const physics::complex<MEAS_TYPE>& x, unsigned n) 
+        //     -> physics::complex<math::meta::pow_t<MEAS_TYPE, n>> {
 
-        //     physics::cmeasurement<MEAS_TYPE> y = (n % 2) ? x : physics::cmeasurement<MEAS_TYPE>(1.0);
+        //     physics::complex<MEAS_TYPE> y = (n % 2) ? x : physics::complex<MEAS_TYPE>(1.0);
 
         //     while (n >>= 1) {
 
@@ -286,7 +286,7 @@ namespace scipp::math {
 
         // template <typename MEAS_TYPE>
         //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-        // inline static constexpr auto pow(const physics::cmeasurement<MEAS_TYPE>& x, int n) {
+        // inline static constexpr auto pow(const physics::complex<MEAS_TYPE>& x, int n) {
 
         //     return (n < 0) ? 1.0 / meta::power_impl(x, -n) : meta::power_impl(x, static_cast<unsigned>(n));
 
@@ -295,7 +295,7 @@ namespace scipp::math {
 
         template <typename MEAS_TYPE, typename SCALAR_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE> && physics::is_scalar_v<MEAS_TYPE>)
-        inline static constexpr auto pow(const physics::cmeasurement<MEAS_TYPE>& x, const SCALAR_TYPE& y) {
+        inline static constexpr auto pow(const physics::complex<MEAS_TYPE>& x, const SCALAR_TYPE& y) {
           
             if (x.imag == MEAS_TYPE() && x.real > MEAS_TYPE())
                 return op::pow(x.real, y);
@@ -308,7 +308,7 @@ namespace scipp::math {
 
         template <typename MEAS_TYPE>
             requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-        inline static constexpr auto pow(const physics::cmeasurement<MEAS_TYPE>& x, const physics::cmeasurement<MEAS_TYPE>& y) {
+        inline static constexpr auto pow(const physics::complex<MEAS_TYPE>& x, const physics::complex<MEAS_TYPE>& y) {
             
             return (x == MEAS_TYPE()) ? MEAS_TYPE() : op::exp(y * op::log(x));
             

@@ -72,9 +72,9 @@ namespace scipp::math {
         };
 
 
-        /// @brief Logarithm of a cmeasurement
+        /// @brief Logarithm of a complex
         template <typename CMEAS_TYPE>
-            requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+            requires (physics::is_scalar_complex_v<CMEAS_TYPE>)
         struct logarithm<CMEAS_TYPE> {
             
             using function_t = unary_function<CMEAS_TYPE, CMEAS_TYPE>;

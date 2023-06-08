@@ -126,14 +126,14 @@ namespace scipp::math {
         };
 
 
-        /// @brief Return the power of a cmeasurement
+        /// @brief Return the power of a complex
         /// @tparam POWER: exponent of the power
-        /// @tparam T: cmeasurement type
+        /// @tparam T: complex type
         template <size_t POWER, typename CMEAS_TYPE>
-            requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+            requires (math::is_complex_v<CMEAS_TYPE>)
         struct power<POWER, CMEAS_TYPE> {
             
-            using function_t = unary_function<CMEAS_TYPE, physics::cmeasurement<power_t<POWER, typename CMEAS_TYPE::measurement_t>>>;
+            using function_t = unary_function<CMEAS_TYPE, complex<power_t<POWER, typename CMEAS_TYPE::value_t>>>;
             
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
 

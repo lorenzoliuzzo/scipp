@@ -244,38 +244,12 @@ namespace scipp::physics {
 
 
     /// =============================================
-    /// @brief cmeasurement traits
-    /// =============================================
-
-        template <typename T> 
-            requires (math::is_number_v<T> || is_measurement_v<T> || is_umeasurement_v<T>)  
-        struct cmeasurement;
-
-
-        /// @brief Type trait to check if a type is a measurement
-        template <typename T>
-        struct is_cmeasurement : std::false_type {};
-
-        template <typename T>
-        struct is_cmeasurement<cmeasurement<T>> : std::true_type {};
-
-        template <typename CMEAS_TYPE>
-        inline static constexpr bool is_cmeasurement_v = is_cmeasurement<CMEAS_TYPE>::value;
-
-        template <typename... CMEAS_TYPES>
-        struct are_cmeasurements : std::conjunction<is_cmeasurement<CMEAS_TYPES>...> {};
-
-        template <typename... CMEAS_TYPES>
-        inline static constexpr bool are_cmeasurements_v = are_cmeasurements<CMEAS_TYPES...>::value;
-
-
-    /// =============================================
     /// @brief generic_measurement traits
     /// =============================================
 
         /// @brief Type trait to check if a type is a generic measurement
         template <typename T>
-        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || is_cmeasurement_v<T>, 
+        struct is_generic_measurement : std::conditional_t<is_measurement_v<T> || is_umeasurement_v<T> || math::is_complex_v<T>, 
                                                            std::true_type, 
                                                            std::false_type> {};
 
@@ -288,21 +262,23 @@ namespace scipp::physics {
         template <typename... MEAS_TYPEs>
         inline static constexpr bool are_generic_measurements_v = are_generic_measurements<MEAS_TYPEs...>::value;
 
+        // template <typename MEAS_TYPE1, typename MEAS_TYPE2>
+        // struct is_same_generic_measurement : std::false_type {};
 
-        /// @brief Type trait to check if two measurement types are the same
-        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-            requires ((are_measurements_v<MEAS_TYPE1, MEAS_TYPE2> || are_umeasurements_v<MEAS_TYPE1, MEAS_TYPE2> || are_cmeasurements_v<MEAS_TYPE1, MEAS_TYPE2>) &&
-                       is_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>)
-        struct is_same_generic_measurement : std::true_type {};
+        // /// @brief Type trait to check if two measurement types are the same
+        // template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
+        //     requires ((are_measurements_v<MEAS_TYPE1, MEAS_TYPE2> || are_umeasurements_v<MEAS_TYPE1, MEAS_TYPE2> || are_complex_v<MEAS_TYPE1, MEAS_TYPE2>) &&
+        //                is_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>)
+        // struct is_same_generic_measurement<MEAS_TYPE1, MEAS_TYPE2> : std::true_type {};
 
-        template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-        inline static constexpr bool is_same_generic_measurement_v = is_same_generic_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
+        // template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
+        // inline static constexpr bool is_same_generic_measurement_v = is_same_generic_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
 
-        template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 
-        struct are_same_generic_measurement : std::conjunction<is_same_generic_measurement<MEAS_TYPE, OTHER_MEAS_TYPEs>...> {};
+        // template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 
+        // struct are_same_generic_measurement : std::conjunction<is_same_generic_measurement<MEAS_TYPE, OTHER_MEAS_TYPEs>...> {};
         
-        template <typename MEAS_TYPE, typename... MEAS_TYPEs>
-        inline static constexpr bool are_same_generic_measurement_v = are_same_generic_measurement<MEAS_TYPE, MEAS_TYPEs...>::value;
+        // template <typename MEAS_TYPE, typename... MEAS_TYPEs>
+        // inline static constexpr bool are_same_generic_measurement_v = are_same_generic_measurement<MEAS_TYPE, MEAS_TYPEs...>::value;
 
 
     /// =============================================
@@ -351,14 +327,14 @@ namespace scipp::physics {
 
 
         template <typename T>
-        struct is_scalar_cmeasurement : std::false_type {};
+        struct is_scalar_complex : std::false_type {};
 
         template <typename T>
             requires (math::is_number_v<T> || is_scalar_measurement_v<T> || is_scalar_umeasurement_v<T>)
-        struct is_scalar_cmeasurement<cmeasurement<T>> : std::true_type {};
+        struct is_scalar_complex<math::complex<T>> : std::true_type {};
 
         template <typename T>
-        inline static constexpr bool is_scalar_cmeasurement_v = is_scalar_cmeasurement<T>::value;
+        inline static constexpr bool is_scalar_complex_v = is_scalar_complex<T>::value;
 
 
         template <typename... MEAS_TYPEs>
@@ -374,10 +350,10 @@ namespace scipp::physics {
         inline static constexpr bool are_scalar_umeasurements_v = are_scalar_umeasurements<UMEAS_TYPEs...>::value;
         
         template <typename... CMEAS_TYPEs>
-        struct are_scalar_cmeasurements : std::conjunction<is_scalar_cmeasurement<CMEAS_TYPEs>...> {};
+        struct are_scalar_complex : std::conjunction<is_scalar_complex<CMEAS_TYPEs>...> {};
 
         template <typename... CMEAS_TYPEs>
-        inline static constexpr bool are_scalar_cmeasurements_v = are_scalar_cmeasurements<CMEAS_TYPEs...>::value;
+        inline static constexpr bool are_scalar_complex_v = are_scalar_complex<CMEAS_TYPEs...>::value;
         
 
 
@@ -387,7 +363,7 @@ namespace scipp::physics {
                                               is_scalar_unit_v<T> || 
                                               is_scalar_measurement_v<T> ||
                                               is_scalar_umeasurement_v<T> ||
-                                              is_scalar_cmeasurement_v<T>, 
+                                              is_scalar_complex_v<T>, 
                                               std::true_type, std::false_type> {}; 
 
         template <typename T>

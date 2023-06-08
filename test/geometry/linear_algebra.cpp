@@ -22,7 +22,7 @@ using namespace math;
 int main() {
 
     auto p1 = position3(1.0m, 2.0m, 3.0m);
-    auto p2 = vector<cmeasurement<length_m>, 3, false>(cmeasurement<length_m>(1.0m, -1.0m), cmeasurement<length_m>(2.0m), cmeasurement<length_m>(3.0m));
+    auto p2 = vector<complex<length_m>, 3, false>(complex<length_m>(1.0m, -1.0m), complex<length_m>(2.0m), complex<length_m>(3.0m));
     auto p3 = row_vector<time_m, 3>(1.0 * units::s, 2.0 * units::s, 3.0 * units::s);
 
     static_assert(are_same_vectors_v<decltype(p1), position3>);

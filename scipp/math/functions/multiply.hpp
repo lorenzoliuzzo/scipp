@@ -139,12 +139,12 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply two cmeasurement
+        /// @brief Multiply two complex
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (physics::are_cmeasurements_v<ARG_TYPE1, ARG_TYPE2>)
+            requires (are_complex_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::cmeasurement<multiply_t<typename ARG_TYPE1::measurement_t, typename ARG_TYPE2::measurement_t>>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
@@ -187,6 +187,38 @@ namespace scipp::math {
         };
 
 
+        /// @brief Multiply a cmeasurment and a number
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (math::is_complex_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x.real * y, x.imag * y}; 
+
+            }
+
+        };
+
+
+        /// @brief Multiply a number and a cmeasurment
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_number_v<ARG_TYPE1> && math::is_complex_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x * y.real, x * y.imag}; 
+
+            }
+
+        };
+
+
         /// @todo
         /// @brief Multiply a measurement and an umeasurement
         template <typename ARG_TYPE1, typename ARG_TYPE2>
@@ -220,12 +252,12 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply a measurement/umeasurement and a cmeasurement
+        /// @brief Multiply a measurement/umeasurement and a complex
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires ((physics::is_measurement_v<ARG_TYPE1> || physics::is_umeasurement_v<ARG_TYPE1>) && physics::is_cmeasurement_v<ARG_TYPE2>)
+            requires ((physics::is_measurement_v<ARG_TYPE1> || physics::is_umeasurement_v<ARG_TYPE1>) && math::is_complex_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::cmeasurement<multiply_t<ARG_TYPE1, typename ARG_TYPE2::measurement_t>>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<ARG_TYPE1, typename ARG_TYPE2::measurement_t>>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
@@ -236,12 +268,12 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply a cmeasurement and a measurement/umeasurement 
+        /// @brief Multiply a complex and a measurement/umeasurement 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (physics::is_cmeasurement_v<ARG_TYPE1> && (physics::is_measurement_v<ARG_TYPE2> || physics::is_umeasurement_v<ARG_TYPE2>))
+            requires (math::is_complex_v<ARG_TYPE1> && (physics::is_measurement_v<ARG_TYPE2> || physics::is_umeasurement_v<ARG_TYPE2>))
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::cmeasurement<multiply_t<typename ARG_TYPE1::measurement_t, ARG_TYPE2>>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::measurement_t, ARG_TYPE2>>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 

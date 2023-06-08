@@ -1,5 +1,5 @@
 /**
- * @file    math/functions/operations.hpp
+ * @file    math/functions/types/operations.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-05-20
@@ -34,7 +34,8 @@ namespace scipp::math {
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         inline static constexpr auto sub(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
 
-            return functions::subtract<ARG_TYPE1, ARG_TYPE2>::f(x, y);
+            auto y_neg = functions::negate<ARG_TYPE2>::f(y);
+            return functions::add<ARG_TYPE1, ARG_TYPE2>::f(x, y_neg);
 
         } 
 

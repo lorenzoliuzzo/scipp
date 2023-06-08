@@ -834,7 +834,7 @@ namespace scipp::geometry {
                     // Elimination of variables
                     for (size_t i{k + 1}; i < columns; ++i) {
 
-                        physics::scalar_m factor = A_b[k][i] / A_b[k][k];
+                        auto factor = A_b[k][i] / A_b[k][k];
 
                         for (size_t j{k}; j < columns + 1; j++)
                             A_b[j][i] -= factor * A_b[j][k];
@@ -864,7 +864,6 @@ namespace scipp::geometry {
                     requires (columns == rows) {
 
                 std::array<vector_t, columns + 1> A_b = A.vstack(b);
-                double factor;
                 std::array<physics::scalar_m, rows> result;
 
                 // partial pivoting
@@ -878,7 +877,7 @@ namespace scipp::geometry {
                     for (size_t i{}; i < columns; ++i) 
                         if (i != j) {
 
-                            factor = A_b[j][i] / A_b[j][j];
+                            auto factor = A_b[j][i] / A_b[j][j];
                             
                             for (size_t k{}; k <= columns; k++) 
                                 A_b[k][i] -= factor * A_b[k][j];
@@ -900,12 +899,11 @@ namespace scipp::geometry {
                     requires (columns == rows) {
 
                 matrix<vector_t, rows> result{*this};
-                double factor;
 
                 for (size_t i{}; i < columns; ++i) 
                     for (size_t j{i + 1}; j < columns; ++j) {
 
-                        factor = result.data[i][j] / result.data[i][i];
+                        auto factor = result.data[i][j] / result.data[i][i];
 
                         for (size_t k{}; k < columns; ++k) 
                             result.data[k][j] -= factor * result.data[k][i];
@@ -923,12 +921,11 @@ namespace scipp::geometry {
                     requires (columns == rows) {
 
                 matrix<vector_t, rows> result{*this};
-                double factor;
 
                 for (size_t i{columns - 1}; i > 0; --i) 
                     for (size_t j{i - 1}; j > 0; --j) {
 
-                        factor = result.data[i][j] / result.data[i][i];
+                        auto factor = result.data[i][j] / result.data[i][i];
 
                         for (size_t k{}; k < columns; ++k) 
                             result.data[k][j] -= factor * result.data[k][i];

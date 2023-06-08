@@ -32,12 +32,12 @@ namespace scipp::math {
         };
 
 
-        /// @brief Get the modulo of a cmeasurement
+        /// @brief Get the modulo of a complex
         template <typename CMEAS_TYPE>
-            requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+            requires (math::is_complex_v<CMEAS_TYPE>)
         struct modulo<CMEAS_TYPE> {
 
-            using function_t = unary_function<CMEAS_TYPE, typename CMEAS_TYPE::measurement_t>;
+            using function_t = unary_function<CMEAS_TYPE, typename CMEAS_TYPE::value_t>;
 
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
 

@@ -87,37 +87,36 @@ namespace scipp::geometry {
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
-                requires (physics::are_same_generic_measurement_v<value_t, OTHER_MEAS_TYPE...> || 
-                          math::are_numbers_v<value_t, OTHER_MEAS_TYPE...>)
-            constexpr vector(OTHER_MEAS_TYPE&... other) noexcept 
+                requires ((std::is_same_v<value_t, OTHER_MEAS_TYPE>, ...))
+            constexpr vector(const OTHER_MEAS_TYPE&... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
-                data{std::forward<value_t>(other)...} {}
+                data{other...} {}
+
 
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
-                requires (physics::are_same_generic_measurement_v<value_t, OTHER_MEAS_TYPE...> || 
-                          math::are_numbers_v<value_t, OTHER_MEAS_TYPE...>)
+                requires ((std::is_same_v<value_t, OTHER_MEAS_TYPE>, ...))
             constexpr vector(OTHER_MEAS_TYPE&&... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
-                data{std::forward<value_t>(std::move(other))...} {}
+                data{std::move(other)...} {}
 
 
-            /// @brief Construct a new vector from a single measurement
-            constexpr vector(const value_t& other) noexcept {
+            // /// @brief Construct a new vector from a single measurement
+            // constexpr vector(const value_t& other) noexcept {
                 
-                this->data.fill(other); 
+            //     this->data.fill(other); 
 
-            }
+            // }
 
-            /// @brief Construct a new vector from a single measurement
-            constexpr vector(value_t&& other) noexcept {
+            // /// @brief Construct a new vector from a single measurement
+            // constexpr vector(value_t&& other) noexcept {
                 
-                this->data.fill(std::move(other)); 
+            //     this->data.fill(std::move(other)); 
 
-            }
+            // }
                         
 
         // ===========================================================
@@ -708,33 +707,41 @@ namespace scipp::geometry {
         -> vector<MEAS_TYPE, DIM>;
 
 
-    template <typename... MEAS> 
-        // requires (physics::are_same_measurement_v<MEAS...>)
-    inline constexpr auto make_vector(MEAS&... measurements) noexcept 
-        -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)> {
+    template <typename T, typename... Ts> 
+    inline constexpr auto make_vector(Ts... others) noexcept {
         
-        return { std::forward<std::common_type_t<MEAS...>>(measurements)... };
-
-    }
-
-    template <typename... MEAS> 
-        // requires (physics::are_same_measurement_v<MEAS...>)
-    inline constexpr auto make_vector(MEAS&&... measurements) noexcept 
-        -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)> {
-        
-        return { std::forward<std::common_type_t<MEAS...>>(measurements)... };
+        return vector<T, sizeof...(others)>(std::forward<T>(others)...);
 
     }
 
 
-    template <typename MEAS_TYPE, size_t DIM>
-        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
-    inline constexpr auto make_vector(const std::array<MEAS_TYPE, DIM>& other) noexcept
-        -> vector<MEAS_TYPE, DIM> {
+    // template <typename... Ts> 
+    // inline constexpr auto make_vector(const Ts&... others) noexcept {
         
-        return other;
+    //     using T = std::common_type_t<Ts...>;
+    //     return vector<T, sizeof...(others)>(std::forward<T>(others)...);
 
-    }
+    // }
+
+
+    // template <typename... MEAS> 
+    //     // requires (physics::are_same_measurement_v<MEAS...>)
+    // inline constexpr auto make_vector(MEAS&&... measurements) noexcept 
+    //     -> vector<std::common_type_t<MEAS...>, sizeof...(measurements)> {
+        
+    //     return { std::forward<std::common_type_t<MEAS...>>(measurements)... };
+
+    // }
+
+
+    // template <typename MEAS_TYPE, size_t DIM>
+    //     requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+    // inline constexpr auto make_vector(const std::array<MEAS_TYPE, DIM>& other) noexcept
+    //     -> vector<MEAS_TYPE, DIM> {
+        
+    //     return other;
+
+    // }
     
 
     template <typename MEAS_TYPE, size_t DIM>

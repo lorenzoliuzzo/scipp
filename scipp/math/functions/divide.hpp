@@ -16,114 +16,117 @@ namespace scipp::math {
     namespace functions {
         
 
-        /// @brief divide two physics::base_quantity
-        template <typename BASE_TYPE1, typename BASE_TYPE2>
-            requires (physics::are_base_v<BASE_TYPE1, BASE_TYPE2>)
-        struct divide<BASE_TYPE1, BASE_TYPE2> : binary_function<BASE_TYPE1, BASE_TYPE2, physics::base_quantity<BASE_TYPE1::length - BASE_TYPE2::length, 
-                                                                                                               BASE_TYPE1::time - BASE_TYPE2::time,
-                                                                                                               BASE_TYPE1::mass - BASE_TYPE2::mass,
-                                                                                                               BASE_TYPE1::temperature - BASE_TYPE2::temperature,
-                                                                                                               BASE_TYPE1::elettric_current - BASE_TYPE2::elettric_current,
-                                                                                                               BASE_TYPE1::substance_amount - BASE_TYPE2::substance_amount,
-                                                                                                               BASE_TYPE1::luminous_intensity - BASE_TYPE2::luminous_intensity>> {
-
-        
-            using result_t = physics::base_quantity<BASE_TYPE1::length - BASE_TYPE2::length, 
-                                                    BASE_TYPE1::time - BASE_TYPE2::time,
-                                                    BASE_TYPE1::mass - BASE_TYPE2::mass,
-                                                    BASE_TYPE1::temperature - BASE_TYPE2::temperature,
-                                                    BASE_TYPE1::elettric_current - BASE_TYPE2::elettric_current,
-                                                    BASE_TYPE1::substance_amount - BASE_TYPE2::substance_amount,
-                                                    BASE_TYPE1::luminous_intensity - BASE_TYPE2::luminous_intensity>;
-
-            inline static constexpr result_t f(const BASE_TYPE1&, const BASE_TYPE2&) noexcept {
-
-                return {};
-
-            }                                             
+        /// @brief Divide two base_quantities
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::are_base_v<ARG_TYPE1, ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
             
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::base_quantity<ARG_TYPE1::length - ARG_TYPE2::length,
+                                                                                            ARG_TYPE1::time - ARG_TYPE2::time,
+                                                                                            ARG_TYPE1::mass - ARG_TYPE2::mass,
+                                                                                            ARG_TYPE1::temperature - ARG_TYPE2::temperature,
+                                                                                            ARG_TYPE1::elettric_current - ARG_TYPE2::elettric_current,
+                                                                                            ARG_TYPE1::substance_amount - ARG_TYPE2::substance_amount,
+                                                                                            ARG_TYPE1::luminous_intensity - ARG_TYPE2::luminous_intensity>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t&, const function_t::second_arg_t&) noexcept {
+                return {};
+            }
 
         };
 
 
-        /// @brief divide two physics::base_quantity
-        template <typename PREFIX_TYPE1, typename PREFIX_TYPE2>
-            requires (physics::are_prefix_v<PREFIX_TYPE1, PREFIX_TYPE2>)
-        struct divide<PREFIX_TYPE1, PREFIX_TYPE2> : binary_function<PREFIX_TYPE1, PREFIX_TYPE2, std::ratio_divide<PREFIX_TYPE1, PREFIX_TYPE2>> {
-
-        
-            using result_t = std::ratio_divide<PREFIX_TYPE1, PREFIX_TYPE2>;
-
-
-            inline static constexpr result_t f(const PREFIX_TYPE1&, const PREFIX_TYPE2&) noexcept {
-
-                return {};
-
-            }                                             
+        /// @brief Divide two prefixes
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::are_prefix_v<ARG_TYPE1, ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
             
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, std::ratio_divide<ARG_TYPE1, ARG_TYPE2>>;
 
-        };
-
-
-        /// @brief divide an unit of measurement
-        template <typename UNIT_TYPE1, typename UNIT_TYPE2>
-            requires (physics::are_units_v<UNIT_TYPE1, UNIT_TYPE2>)
-        struct divide<UNIT_TYPE1, UNIT_TYPE2> : binary_function<UNIT_TYPE1, UNIT_TYPE2, physics::unit<divide_t<typename UNIT_TYPE1::base_t, typename UNIT_TYPE2::base_t>, 
-                                                                                                      divide_t<typename UNIT_TYPE1::prefix_t, typename UNIT_TYPE2::prefix_t>>> {
-
-
-            using result_t = physics::unit<divide_t<typename UNIT_TYPE1::base_t, typename UNIT_TYPE2::base_t>, 
-                                           divide_t<typename UNIT_TYPE1::prefix_t, typename UNIT_TYPE2::prefix_t>>;
-
-
-            inline static constexpr result_t f(const UNIT_TYPE1&, const UNIT_TYPE2&) noexcept {
-
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t&, const function_t::second_arg_t&) noexcept {
                 return {};
-
-            }       
-
+            }
 
         };
 
 
-        /// @brief divide an unit of measurement
+        /// @brief Divide two units of measurement
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::are_units_v<ARG_TYPE1, ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::unit<divide_t<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>,
+                                                                                   divide_t<typename ARG_TYPE1::prefix_t, typename ARG_TYPE2::prefix_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t&, const function_t::second_arg_t&) noexcept {
+                return {};
+            }
+
+        };
+
+
+        /// @brief Divide a number and an unit of measurement
         template <typename SCALAR_TYPE, typename UNIT_TYPE>
             requires (is_number_v<SCALAR_TYPE> && physics::is_unit_v<UNIT_TYPE>)
-        struct divide<SCALAR_TYPE, UNIT_TYPE> : binary_function<SCALAR_TYPE, UNIT_TYPE, 
-                                                                physics::measurement<typename UNIT_TYPE::base_t, SCALAR_TYPE>> {
+        struct divide<SCALAR_TYPE, UNIT_TYPE> {
 
-            using result_t = physics::measurement<typename UNIT_TYPE::base_t, SCALAR_TYPE>;
+            using function_t = binary_function<SCALAR_TYPE, UNIT_TYPE, physics::measurement<typename UNIT_TYPE::base_t, SCALAR_TYPE>>;
 
-
-            inline static constexpr result_t f(const SCALAR_TYPE& x, const UNIT_TYPE&) noexcept {
-
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t&) {
                 return { x / UNIT_TYPE::mult };
-
-            }       
-
+            }
 
         };
 
 
-        /// @brief divide two measurement
+        /// @brief Divide two numbers
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_numbers_v<ARG_TYPE1, ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, decltype(ARG_TYPE1{ 1.0 } / ARG_TYPE2{ 1.0 })>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
+                return x / y;
+            }
+
+        };
+        
+
+        /// @brief Divide two measurement
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_measurements_v<ARG_TYPE1, ARG_TYPE2>)
-        struct divide<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, 
-                                                              physics::measurement<divide_t<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>, decltype(typename ARG_TYPE1::value_t{} * typename ARG_TYPE2::value_t{})>> {
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, physics::measurement<divide_t<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>, decltype(typename ARG_TYPE1::value_t{} * typename ARG_TYPE2::value_t{})>>;
 
-
-            using result_t = physics::measurement<divide_t<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>, decltype(typename ARG_TYPE1::value_t{} * typename ARG_TYPE2::value_t{})>; 
-
-
-            inline static constexpr result_t f(const ARG_TYPE1& x, const ARG_TYPE2& y) {
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
                 
-                if (y.value == typename ARG_TYPE2::value_t{})
+                if (y == typename function_t::second_arg_t{})
                     throw std::runtime_error("Division by zero"); 
 
                 return x.value / y.value; 
 
             }
 
+        };
+
+
+        /// @brief divide two complex
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_complex_v<ARG_TYPE1, ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<divide_t<typename ARG_TYPE1::measurement_t, typename ARG_TYPE2::measurement_t>>>;
+            
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
+
+                if (y == typename function_t::second_arg_t{})
+                    throw std::runtime_error("Division by zero"); 
+
+                return x * op::inv(y); 
+
+            }
 
         };
 
@@ -131,26 +134,18 @@ namespace scipp::math {
         /// @brief divide a measurment and a number
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::is_measurement_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
-        struct divide<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, 
-                                                                ARG_TYPE1> {
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
 
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
 
-            using result_t = ARG_TYPE1; 
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
 
-            using first_arg_t = ARG_TYPE1;
-
-            using second_arg_t = ARG_TYPE2;
-
-
-            inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) {
-
-                if (y == second_arg_t{})
+                if (y == typename function_t::second_arg_t{})
                     throw std::runtime_error("Division by zero"); 
 
                 return x.value / y; 
 
             }
-
 
         };
 
@@ -158,28 +153,60 @@ namespace scipp::math {
         /// @brief divide a number and a measurment
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (is_number_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
-        struct divide<ARG_TYPE1, ARG_TYPE2> : binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2> {
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
 
 
-            using result_t = ARG_TYPE2; 
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
 
-            using first_arg_t = ARG_TYPE1;
-
-            using second_arg_t = ARG_TYPE2;
-
-
-            inline static constexpr result_t f(const first_arg_t& x, const second_arg_t& y) {
-
-                if (y.value == typename ARG_TYPE2::value_t{})
+                if (y == typename function_t::second_arg_t{})
                     throw std::runtime_error("Division by zero");
 
                 return x / y.value; 
 
             }
 
+        };
+
+
+        /// @brief divide a measurment and a number
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (math::is_complex_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
+
+                if (y == typename function_t::second_arg_t{})
+                    throw std::runtime_error("Division by zero"); 
+
+                return x * op::inv(y); 
+
+            }
 
         };
 
+
+        /// @brief divide a number and a measurment
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_number_v<ARG_TYPE1> && math::is_complex_v<ARG_TYPE2>)
+        struct divide<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
+
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) {
+
+                if (y == typename function_t::second_arg_t{})
+                    throw std::runtime_error("Division by zero");
+
+                return x * op::inv(y); 
+
+            }
+
+        };
 
 
     } // namespace functions

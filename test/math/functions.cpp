@@ -70,7 +70,7 @@ int main() {
 
     // print(op::abs(x));
     // print(op::sq(x) * 2.0);
-    // print(op::abs(cmeasurement(x, x)));
+    // print(op::abs(complex(x, x)));
     // print(op::exp(-4.0));
     // print(op::sin(0.0));
     // print(op::sin(math::constants::pi * 0.5));

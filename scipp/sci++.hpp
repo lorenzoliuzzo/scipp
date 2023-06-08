@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @date    2023-05-23
+ * @date    2023-06-08
  * 
  * @copyright Copyright (c) 2023
  */
@@ -60,22 +60,30 @@
         /// @brief math/functions
         /// ---------------------------------------------------------------
             
-            #include "math/functions/operations.hpp"
-            #include "math/functions/operators.hpp"
+            #include "math/functions/types/unary.hpp"
+            #include "math/functions/types/binary.hpp"
+            #include "math/functions/types/ternary.hpp"
+            #include "math/functions/types/nary.hpp"
+            #include "math/functions/types/operations.hpp"
+            #include "math/functions/types/operators.hpp"
+
+            #include "math/functions/negate.hpp"
+            #include "math/functions/invert.hpp" 
+            #include "math/functions/modulo.hpp"
+
             #include "math/functions/add.hpp" /// @ok
-            #include "math/functions/subtract.hpp" /// @ok
             #include "math/functions/multiply.hpp" /// @todo umeasurements
             #include "math/functions/divide.hpp" 
-            #include "math/functions/negate.hpp"
-            #include "math/functions/modulo.hpp"
-            #include "math/functions/invert.hpp" 
             #include "math/functions/power.hpp" /// @ok
             #include "math/functions/root.hpp" 
+
             #include "math/functions/exponential.hpp" /// @ok, @todo matrices
             #include "math/functions/logarithm.hpp"
             #include "math/functions/trigonometric.hpp"
+
             #include "math/functions/round.hpp"
             // #include "math/functions/hyperbolic.hpp"
+
             #include "math/functions/compose.hpp"
             
 
@@ -88,21 +96,24 @@
         
             #include "physics/measurements/measurement.hpp"
             #include "physics/measurements/umeasurement.hpp"
-            #include "physics/measurements/cmeasurement.hpp"
             
             #include "physics/measurements/types/units.hpp" 
             #include "physics/measurements/types/measurements.hpp" 
 
-
-        /// ---------------------------------------------------------------
             
-        //     // #include "math/numbers/dual.hpp"
-
         /// ---------------------------------------------------------------
+        /// @brief math/numbers
+        /// ---------------------------------------------------------------
+        
+            #include "math/numbers/complex.hpp" 
+            #include "math/numbers/dual.hpp"
 
-            #include "math/constants.hpp" 
+            #include "math/numbers/constants.hpp" 
             #include "physics/constants.hpp"
 
+
+        /// ---------------------------------------------------------------
+        /// @brief geometry/linear_algebra
         /// ---------------------------------------------------------------
 
             #include "geometry/vector.hpp"
@@ -123,8 +134,9 @@
         /// @brief math/polynomials
         /// ---------------------------------------------------------------
 
-        //     #include "math/polynomials/ruffini.hpp"
-        //     #include "math/polynomials/newton_raphson.hpp"
+            #include "math/polynomials/polynomial.hpp"
+            #include "math/polynomials/ruffini.hpp"
+            #include "math/polynomials/newton_root.hpp"
         //     #include "math/polynomials/roots.hpp"
         //     // #include "math/polynomials/durand_kerner.hpp"
 
@@ -146,16 +158,13 @@
             #include "math/calculus/interval.hpp"
             #include "math/calculus/curve.hpp"
 
-            #include "math/integrals/rectangle.hpp"
-            #include "math/integrals/trapezoid.hpp"
-            #include "math/integrals/midpoint.hpp"
-            #include "math/integrals/endpoint.hpp"
-            #include "math/integrals/simpson.hpp"
-            #include "math/integrals/curvilinear.hpp"
-
-
-        //     #include "math/integrals/integrals.hpp"
-            #include "math/integrals/gauss.hpp"  
+            #include "math/calculus/integrals/rectangle.hpp"
+            #include "math/calculus/integrals/trapezoid.hpp"
+            #include "math/calculus/integrals/midpoint.hpp"
+            #include "math/calculus/integrals/endpoint.hpp"
+            #include "math/calculus/integrals/simpson.hpp"
+            #include "math/calculus/integrals/curvilinear.hpp"
+            #include "math/calculus/integrals/gauss.hpp"  
 
         //     #include "math/calculus/hilbert_space.hpp"
 

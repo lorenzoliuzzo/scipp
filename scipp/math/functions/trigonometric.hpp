@@ -58,7 +58,7 @@ namespace scipp::math {
 		};
 
         template <typename T>
-            requires (physics::is_scalar_cmeasurement_v<T>)
+            requires (physics::is_scalar_complex_v<T>)
 		struct sine<T> {
 
 			using function_t = unary_function<T, T>;
@@ -133,7 +133,7 @@ namespace scipp::math {
 		};
 
         template <typename T>
-            requires (physics::is_scalar_cmeasurement_v<T>)
+            requires (physics::is_scalar_complex_v<T>)
 		struct cosine<T> {
 
 			using function_t = unary_function<T, T>;

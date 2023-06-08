@@ -142,13 +142,13 @@ namespace scipp::math {
         };
 
 
-        /// @brief power a cmeasurement
+        /// @brief power a complex
         template <size_t POWER, typename CMEAS_TYPE>
-            requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-        struct root<POWER, CMEAS_TYPE> : unary_function<CMEAS_TYPE, physics::cmeasurement<root_t<POWER, typename CMEAS_TYPE::measurement_t>>> {
+            requires (math::is_complex_v<CMEAS_TYPE>)
+        struct root<POWER, CMEAS_TYPE> : unary_function<CMEAS_TYPE, complex<root_t<POWER, typename CMEAS_TYPE::value_t>>> {
 
 
-            using result_t = physics::cmeasurement<root_t<POWER, typename CMEAS_TYPE::measurement_t>>;
+            using result_t = complex<root_t<POWER, typename CMEAS_TYPE::value_t>>;
 
 
             inline static constexpr result_t f(const CMEAS_TYPE& x) noexcept {

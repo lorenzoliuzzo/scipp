@@ -2,7 +2,7 @@
  * @file    math/polynomials/ruffini.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-05-03
+ * @date    2023-06-04
  * 
  * @copyright Copyright (c) 2023
  */
@@ -11,17 +11,23 @@
 
 namespace scipp::math {
 
-    auto ruffini(const std::vector<std::complex<double>>& a, const std::complex<double>& r) noexcept {
 
-        // std::fill(result.data.begin(), result.data.begin() + N - 1, std::complex<double>{0});
-        auto n = a.size();
-        std::vector<std::complex<double>> result(n - 1);
-        result[0] = a[0];
-        for (size_t i = 1; i < n; ++i) 
-            result[i] = a[i] + result[i - 1] * r;
+    /// @brief Performs Ruffini's rule division on a column vector.
+    /// @tparam POLYNOMIAL_TYPE The type of the polynomial vector.
+    /// @param a The column vector to be divided (in ascending order)
+    /// @param r The scalar value to divide `a` by.
+    /// @return A pair containing the resulting column vector and the remainder.
+    /// @note The returned column vector has a dimension of `VECTOR_TYPE::dim - 1`.
+    template <typename T>
+    constexpr auto ruffini(const std::vector<T>& v, const T& r) noexcept {
+
+        const size_t degree = v.size() - 1;
+        std::vector<T> result(degree);
+        result[0] = v[0];
+        for (size_t i = 1; i < degree; ++i) 
+            result[i] = v[i] + result[i - 1] * r;
         
-        
-        std::complex<double> remainder = a[n] + r * result[n - 1];
+        auto remainder = v[degree] + r * result[degree - 1];
         
         return std::make_pair(result, remainder);   
 

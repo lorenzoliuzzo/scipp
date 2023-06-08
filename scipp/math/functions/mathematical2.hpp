@@ -112,46 +112,46 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE1, typename CMEAS_TYPE2>
-                requires (physics::are_cmeasurements_v<CMEAS_TYPE1, CMEAS_TYPE2>)
+                requires (are_complex_v<CMEAS_TYPE1, CMEAS_TYPE2>)
             struct multiply<CMEAS_TYPE1, CMEAS_TYPE2> {
                 
-                using _t = physics::cmeasurement<multiply_t<typename CMEAS_TYPE1::measurement_t, typename CMEAS_TYPE2::measurement_t>>;                                             
+                using _t = complex<multiply_t<typename CMEAS_TYPE1::measurement_t, typename CMEAS_TYPE2::measurement_t>>;                                             
 
             };
 
 
             template <typename CMEAS_TYPE, typename MEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
             struct multiply<CMEAS_TYPE, MEAS_TYPE> {
 
-                using _t = physics::cmeasurement<multiply_t<typename CMEAS_TYPE::measurement_t, MEAS_TYPE>>;                                             
+                using _t = complex<multiply_t<typename CMEAS_TYPE::value_t, MEAS_TYPE>>;                                             
 
             };
 
 
             template <typename MEAS_TYPE, typename CMEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_measurement_v<MEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct multiply<MEAS_TYPE, CMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<multiply_t<MEAS_TYPE, typename CMEAS_TYPE::measurement_t>>;                                             
+                using _t = complex<multiply_t<MEAS_TYPE, typename CMEAS_TYPE::value_t>>;                                             
 
             };
 
 
             template <typename CMEAS_TYPE, typename UMEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE> && physics::is_umeasurement_v<UMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE> && physics::is_umeasurement_v<UMEAS_TYPE>)
             struct multiply<CMEAS_TYPE, UMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<multiply_t<typename CMEAS_TYPE::measurement_t, UMEAS_TYPE>>;                                             
+                using _t = complex<multiply_t<typename CMEAS_TYPE::value_t, UMEAS_TYPE>>;                                             
 
             };
 
 
             template <typename UMEAS_TYPE, typename CMEAS_TYPE>
-                requires (physics::is_umeasurement_v<UMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_umeasurement_v<UMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct multiply<UMEAS_TYPE, CMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<multiply_t<UMEAS_TYPE, typename CMEAS_TYPE::measurement_t>>;                                             
+                using _t = complex<multiply_t<UMEAS_TYPE, typename CMEAS_TYPE::value_t>>;                                             
 
             };
 
@@ -327,46 +327,46 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE1, typename CMEAS_TYPE2>
-                requires (physics::are_cmeasurements_v<CMEAS_TYPE1, CMEAS_TYPE2>)
+                requires (are_complex_v<CMEAS_TYPE1, CMEAS_TYPE2>)
             struct divide<CMEAS_TYPE1, CMEAS_TYPE2> {
 
-                using _t = physics::cmeasurement<divide_t<typename CMEAS_TYPE1::measurement_t, typename CMEAS_TYPE2::measurement_t>>;                                             
+                using _t = complex<divide_t<typename CMEAS_TYPE1::measurement_t, typename CMEAS_TYPE2::measurement_t>>;                                             
 
             };
 
 
             template <typename CMEAS_TYPE, typename MEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
             struct divide<CMEAS_TYPE, MEAS_TYPE> {
 
-                using _t = physics::cmeasurement<divide_t<typename CMEAS_TYPE::measurement_t, MEAS_TYPE>>;                                             
+                using _t = complex<divide_t<typename CMEAS_TYPE::value_t, MEAS_TYPE>>;                                             
 
             };
 
 
             template <typename MEAS_TYPE, typename CMEAS_TYPE>
-                requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_measurement_v<MEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct divide<MEAS_TYPE, CMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<divide_t<MEAS_TYPE, typename CMEAS_TYPE::measurement_t>>;                                             
+                using _t = complex<divide_t<MEAS_TYPE, typename CMEAS_TYPE::value_t>>;                                             
 
             };
 
 
             template <typename CMEAS_TYPE, typename UMEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE> && physics::is_umeasurement_v<UMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE> && physics::is_umeasurement_v<UMEAS_TYPE>)
             struct divide<CMEAS_TYPE, UMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<divide_t<typename CMEAS_TYPE::measurement_t, UMEAS_TYPE>>;                                             
+                using _t = complex<divide_t<typename CMEAS_TYPE::value_t, UMEAS_TYPE>>;                                             
 
             };
 
 
             template <typename UMEAS_TYPE, typename CMEAS_TYPE>
-                requires (physics::is_umeasurement_v<UMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_umeasurement_v<UMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct divide<UMEAS_TYPE, CMEAS_TYPE> {
 
-                using _t = physics::cmeasurement<divide_t<UMEAS_TYPE, typename CMEAS_TYPE::measurement_t>>;                                             
+                using _t = complex<divide_t<UMEAS_TYPE, typename CMEAS_TYPE::value_t>>;                                             
 
             };
 
@@ -562,9 +562,9 @@ namespace scipp::math {
             };
 
 
-            /// @brief Power of a cmeasurement
+            /// @brief Power of a complex
             template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_scalar_complex_v<CMEAS_TYPE>)
             struct pow_impl<CMEAS_TYPE, POWER> : unary_function<pow_t<CMEAS_TYPE, POWER>, CMEAS_TYPE> {
 
                 constexpr pow_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
@@ -575,15 +575,15 @@ namespace scipp::math {
             };
 
             template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct pow<CMEAS_TYPE, POWER> {
 
-                using _t = physics::cmeasurement<pow_t<typename CMEAS_TYPE::measurement_t, POWER>>;
+                using _t = complex<pow_t<typename CMEAS_TYPE::value_t, POWER>>;
 
             };
     
             template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct pow_impl<CMEAS_TYPE, POWER> : unary_function<pow_t<CMEAS_TYPE, POWER>, CMEAS_TYPE> {
 
                 constexpr pow_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
@@ -600,7 +600,7 @@ namespace scipp::math {
             struct pow_impl2; 
 
             template <typename CMEAS_TYPE1, typename CMEAS_TYPE2>
-                requires (physics::are_scalar_cmeasurements_v<CMEAS_TYPE1, CMEAS_TYPE2>)
+                requires (physics::are_scalar_complex_v<CMEAS_TYPE1, CMEAS_TYPE2>)
             struct pow_impl2<CMEAS_TYPE1, CMEAS_TYPE2> : binary_function<CMEAS_TYPE1, CMEAS_TYPE1, CMEAS_TYPE2> {
 
                 constexpr CMEAS_TYPE1 f(const CMEAS_TYPE1& base, const CMEAS_TYPE2& exp) const noexcept override {
@@ -796,15 +796,15 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct root<CMEAS_TYPE, POWER> {
 
-                using _t = physics::cmeasurement<root_t<typename CMEAS_TYPE::measurement_t, POWER>>;
+                using _t = complex<root_t<typename CMEAS_TYPE::value_t, POWER>>;
 
             };
 
             template <typename CMEAS_TYPE, uint POWER>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct root_impl<CMEAS_TYPE, POWER> : unary_function<root_t<CMEAS_TYPE, POWER>, CMEAS_TYPE> {
 
                 constexpr root_t<CMEAS_TYPE, POWER> f(const CMEAS_TYPE& other) const noexcept override {
@@ -891,10 +891,10 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-            struct abs_impl<CMEAS_TYPE> : unary_function<square_t<typename CMEAS_TYPE::measurement_t>, CMEAS_TYPE> {
+                requires (math::is_complex_v<CMEAS_TYPE>)
+            struct abs_impl<CMEAS_TYPE> : unary_function<square_t<typename CMEAS_TYPE::value_t>, CMEAS_TYPE> {
 
-                constexpr square_t<typename CMEAS_TYPE::measurement_t> f(const CMEAS_TYPE& x) const noexcept override {
+                constexpr square_t<typename CMEAS_TYPE::value_t> f(const CMEAS_TYPE& x) const noexcept override {
 
                     return op::sq(x.real) + op::sq(x.imag);
 
@@ -959,7 +959,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct exp_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1011,7 +1011,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct log_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {   
@@ -1061,7 +1061,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_scalar_complex_v<CMEAS_TYPE>)
             struct sin_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1113,7 +1113,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_scalar_cmeasurement_v<CMEAS_TYPE>)
+                requires (physics::is_scalar_complex_v<CMEAS_TYPE>)
             struct cos_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1164,12 +1164,12 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct tan_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
                     
-                    using measurement_t = typename CMEAS_TYPE::measurement_t;
+                    using measurement_t = typename CMEAS_TYPE::value_t;
 
                     if (other.imag == measurement_t::zero)
                         return op::tan(other.real);
@@ -1228,7 +1228,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct sinh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1280,7 +1280,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (is_number_v<CMEAS_TYPE> && physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (is_number_v<CMEAS_TYPE> && math::is_complex_v<CMEAS_TYPE>)
             struct cosh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1332,7 +1332,7 @@ namespace scipp::math {
             
             
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct tanh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1383,7 +1383,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct asin_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1434,7 +1434,7 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct acos_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
@@ -1486,12 +1486,12 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct atan_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
                     
-                    using measurement_t = typename CMEAS_TYPE::measurement_t;
+                    using measurement_t = typename CMEAS_TYPE::value_t;
                     
                     const auto r2 = op::sq(other.real);
                     const auto x = square_t<measurement_t>::one - r2 - op::sq(other.imag);
@@ -1560,12 +1560,12 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct asinh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
 
-                    using measurement_t = typename CMEAS_TYPE::measurement_t;
+                    using measurement_t = typename CMEAS_TYPE::value_t;
                     
                     square_t<CMEAS_TYPE> z((other.real - other.imag) * (other.real + other.imag) + square_t<measurement_t>::one, 2.0 * other.real * other.imag);
 
@@ -1615,12 +1615,12 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct acosh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
 
-                    using measurement_t = typename CMEAS_TYPE::measurement_t;
+                    using measurement_t = typename CMEAS_TYPE::value_t;
 
                     return 2.0 * op::log(op::sqrt(0.5 * (other + measurement_t::one)) + op::sqrt(0.5 * (other - measurement_t::one)));
 
@@ -1668,12 +1668,12 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
+                requires (math::is_complex_v<CMEAS_TYPE>)
             struct atanh_impl<CMEAS_TYPE> : unary_function<CMEAS_TYPE, CMEAS_TYPE> {
 
                 constexpr CMEAS_TYPE f(const CMEAS_TYPE& other) const noexcept override {
 
-                    using measurement_t = typename CMEAS_TYPE::measurement_t;
+                    using measurement_t = typename CMEAS_TYPE::value_t;
 
                     const auto i2 = op::sq(other.imag);
 
@@ -1711,10 +1711,10 @@ namespace scipp::math {
 
 
             template <typename CMEAS_TYPE>  
-                requires (physics::is_cmeasurement_v<CMEAS_TYPE>)
-            struct norm_impl<CMEAS_TYPE> : unary_function<typename CMEAS_TYPE::measurement_t, CMEAS_TYPE> {
+                requires (math::is_complex_v<CMEAS_TYPE>)
+            struct norm_impl<CMEAS_TYPE> : unary_function<typename CMEAS_TYPE::value_t, CMEAS_TYPE> {
 
-                constexpr typename CMEAS_TYPE::measurement_t f(const CMEAS_TYPE& other) const noexcept override {
+                constexpr typename CMEAS_TYPE::value_t f(const CMEAS_TYPE& other) const noexcept override {
 
                     return op::sqrt(op::sq(other.real) + op::sq(other.imag));
 

@@ -1,5 +1,5 @@
 /**
- * @file    math/functions/operators.hpp
+ * @file    math/functions/types/operators.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-05-20
@@ -22,7 +22,7 @@ namespace scipp {
     /// @brief Subtraction operator
     inline constexpr auto operator-(auto x, auto y) noexcept { 
         
-        return math::op::sub(std::move(x), std::move(y));
+        return math::op::add(std::move(x), math::op::neg(std::move(y)));
         
     }
 
@@ -46,7 +46,7 @@ namespace scipp {
     /// @brief Division operator
     inline constexpr auto operator/(auto&& x, auto&& y) { 
 
-        return math::op::div(std::move(x), std::move(y));
+        return math::op::mult(std::move(x), math::op::inv(std::move(y)));
         
     }
 
@@ -61,7 +61,7 @@ namespace scipp {
     /// @brief Decrement operator
     inline constexpr auto operator-=(auto& x, auto&& y) noexcept { 
         
-        return x = math::op::sub(x, std::move(y));
+        return x = math::op::add(x, math::op::neg(std::move(y)));
         
     }
 
@@ -81,7 +81,7 @@ namespace scipp {
         requires (physics::is_scalar_v<T>)
     inline constexpr auto operator/=(auto& x, T&& y) {
 
-        return x *= math::op::inv(std::move(y));
+        return x =  math::op::mult(x, math::op::inv(std::move(y)));
         
     }
     

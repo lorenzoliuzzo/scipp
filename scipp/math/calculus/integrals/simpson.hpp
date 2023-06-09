@@ -17,11 +17,11 @@ namespace scipp::math {
 
         /// @brief Simpson's rule for numerical integration 
         /// @tparam FUNCTION_TYPE integral function type
-        /// @param I interval of integration
+        /// @param I curves::interval of integration
         /// @param steps number of steps
         template <typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
-        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I, size_t steps = 10000) {
+        static constexpr auto simpson(const curves::interval<typename FUNCTION_TYPE::function_t::arg_t>& I, size_t steps = 10000) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
             result_t result{}; 
@@ -69,7 +69,7 @@ namespace scipp::math {
                 );
 
             } else 
-                throw std::runtime_error("Maybe don't use such a poor algorithm to integrate over an infinite interval");
+                throw std::runtime_error("Maybe don't use such a poor algorithm to integrate over an infinite curves::interval");
 
             return result;
 
@@ -79,9 +79,9 @@ namespace scipp::math {
         /// @brief Simpson's rule for numerical integration 
         /// @tparam FUNCTION_TYPE integral function type
         /// @tparam PREFIX_TYPE precision of the result
-        /// @param I interval of integration
+        /// @param I curves::interval of integration
 
-        /// @todo implement a better algorithm for the infinite interval case
+        /// @todo implement a better algorithm for the infinite curves::interval case
         /// @todo template deduction guidelines
         // template <typename FUNCTION_TYPE, typename PREFIX_TYPE, typename INTERVAL_TYPE, size_t MAX_ITERATIONS = 10000000>
         //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t> && std::is_same_v<typename INTERVAL_TYPE::arg_t, typename FUNCTION_TYPE::function_t::arg_t> && physics::is_prefix_v<PREFIX_TYPE>)
@@ -89,7 +89,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 10000000>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t> && physics::is_prefix_v<PREFIX_TYPE>)
-        static constexpr auto simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
+        static constexpr auto simpson(const curves::interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::function_t::result_t, typename FUNCTION_TYPE::function_t::arg_t>;
             result_t result{}, prev_result{}, current_result{};
@@ -115,11 +115,11 @@ namespace scipp::math {
 
 /// @brief Adaptive Simpson's rule for numerical integration
 /// @tparam FUNCTION_TYPE integral function type
-/// @param I interval of integration
+/// @param I curves::interval of integration
 /// @param epsilon maximum error tolerance
 template <typename FUNCTION_TYPE, typename PREFIX_TYPE>
 requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
-static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
+static constexpr auto adaptive_simpson(const curves::interval<typename FUNCTION_TYPE::function_t::arg_t>& I) {
 
     auto recursive_simpson = [&](auto& self, auto a, auto b, auto fa, auto fm, auto fb, auto relative_error, auto S) {
         auto c = (a + b) / 2.0;
@@ -161,7 +161,7 @@ static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::fu
 
         // template <typename FUNCTION_TYPE> 
         //     requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        // static constexpr auto simpson(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept 
+        // static constexpr auto simpson(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept 
 
         //     const auto h = (I.end - I.start) / static_cast<double>(steps);
         //     auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
@@ -265,7 +265,7 @@ static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::fu
         
 
 // template <typename FUNCTION_TYPE>
-// static constexpr auto simpson_recursive(const interval<typename FUNCTION_TYPE::arg_t>& I, const double h, const size_t n, const size_t depth) noexcept 
+// static constexpr auto simpson_recursive(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, const double h, const size_t n, const size_t depth) noexcept 
 //     -> functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
     
 //     const auto x1 = I.start;
@@ -276,8 +276,8 @@ static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::fu
 //     const auto integral = sum * (h / 6.0);
 
 //     if (depth > 0) {
-//         const auto interval_left = interval<typename FUNCTION_TYPE::arg_t>(I.start, x_mid);
-//         const auto interval_right = interval<typename FUNCTION_TYPE::arg_t>(x_mid, I.end);
+//         const auto curves::interval_left = curves::interval<typename FUNCTION_TYPE::arg_t>(I.start, x_mid);
+//         const auto curves::interval_right = curves::interval<typename FUNCTION_TYPE::arg_t>(x_mid, I.end);
 //         const auto integral_left = simpson_recursive<FUNCTION_TYPE>(interval_left, h / 2.0, n / 2, depth - 1);
 //         const auto integral_right = simpson_recursive<FUNCTION_TYPE>(interval_right, h / 2.0, n / 2, depth - 1);
 //         return integral + integral_left + integral_right;
@@ -290,10 +290,10 @@ static constexpr auto adaptive_simpson(const interval<typename FUNCTION_TYPE::fu
 //         /// @brief Rectangle rule for numerical integration 
 //         /// @tparam FUNCTION_TYPE integral function type
 //         /// @tparam PREFIX_TYPE precision of the result
-//         /// @param I interval of integration
+//         /// @param I curves::interval of integration
 //         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 1000>
 //             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && physics::is_prefix_v<PREFIX_TYPE>)
-//         static constexpr auto simpson(const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept {
+//         static constexpr auto simpson(const curves::interval<typename FUNCTION_TYPE::arg_t>& I) noexcept {
 
 //             constexpr double relative_error = static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den);
 

@@ -58,7 +58,7 @@ void chebyshev() {
     auto result = gauss_legendre(f); 
     print<std::femto>(result);
 
-    auto I = interval(-1., 6.);
+    auto I = curves::interval(-1., 6.);
     auto oooresult1 = gauss<polynomials::chebyshev<1, 50>>(f, I);
     auto oooresult2 = gauss<polynomials::chebyshev<2, 50>>(f, I);
     auto oooresult3 = gauss<polynomials::chebyshev<3, 50>>(f, I);
@@ -79,12 +79,12 @@ int main() {
     chebyshev();
 
     auto f = func();
-    auto I = interval(-1., 1.);
+    auto I = curves::interval(-1., 1.);
     auto riemann_result = riemann<integration_method::simpson>(f, I, 0.000000001); 
     print("riemann_result"); 
     print<std::femto>(riemann_result);
 
-    auto I2 = interval(-1., 6.);
+    auto I2 = curves::interval(-1., 6.);
     auto riemann_result2 = riemann<integration_method::simpson>(f, I2, 0.000000001); 
     print("riemann_result2"); 
     print<std::femto>(riemann_result2);
@@ -111,7 +111,7 @@ int main() {
 //     timer sw;
 
 //     auto f = func(); 
-//     auto I = interval(-1., 1.);
+//     auto I = curves::interval(-1., 1.);
 
 //     sw.start();
 //     sw.stop();

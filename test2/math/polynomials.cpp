@@ -29,13 +29,13 @@ void hermite_polynomials() {
     auto hermite5 = hermite<5>(); 
     // auto hermite6 = hermite<6>(); 
 
-    plot(hermite0, interval(-5., 5.), 1000, "hermite0");
-    plot(hermite1, interval(-5., 5.), 1000, "hermite1");
-    plot(hermite2, interval(-5., 5.), 1000, "hermite2");
-    plot(hermite3, interval(-5., 5.), 1000, "hermite3");
-    plot(hermite4, interval(-5., 5.), 1000, "hermite4");
-    plot(hermite5, interval(-5., 5.), 1000, "hermite5");
-    // plot(hermite6, interval(-5., 5.), 1000, "hermite6");
+    plot(hermite0, curves::interval(-5., 5.), 1000, "hermite0");
+    plot(hermite1, curves::interval(-5., 5.), 1000, "hermite1");
+    plot(hermite2, curves::interval(-5., 5.), 1000, "hermite2");
+    plot(hermite3, curves::interval(-5., 5.), 1000, "hermite3");
+    plot(hermite4, curves::interval(-5., 5.), 1000, "hermite4");
+    plot(hermite5, curves::interval(-5., 5.), 1000, "hermite5");
+    // plot(hermite6, curves::interval(-5., 5.), 1000, "hermite6");
     plt::legend();
     plt::title("Hermite polynomials"); 
     plt::show(); 
@@ -54,13 +54,13 @@ void legendre_polynomials() {
     auto legendre6 = legendre<6>(); 
 
 
-    plot(legendre0, interval(-1., 1.), 1000, "legendre0");
-    plot(legendre1, interval(-1., 1.), 1000, "legendre1");
-    plot(legendre2, interval(-1., 1.), 1000, "legendre2");
-    plot(legendre3, interval(-1., 1.), 1000, "legendre3");
-    plot(legendre4, interval(-1., 1.), 1000, "legendre4");
-    plot(legendre5, interval(-1., 1.), 1000, "legendre5");
-    plot(legendre6, interval(-1., 1.), 1000, "legendre6");
+    plot(legendre0, curves::interval(-1., 1.), 1000, "legendre0");
+    plot(legendre1, curves::interval(-1., 1.), 1000, "legendre1");
+    plot(legendre2, curves::interval(-1., 1.), 1000, "legendre2");
+    plot(legendre3, curves::interval(-1., 1.), 1000, "legendre3");
+    plot(legendre4, curves::interval(-1., 1.), 1000, "legendre4");
+    plot(legendre5, curves::interval(-1., 1.), 1000, "legendre5");
+    plot(legendre6, curves::interval(-1., 1.), 1000, "legendre6");
     plt::legend();
     plt::title("Legendre polynomials"); 
     plt::show(); 
@@ -79,13 +79,13 @@ void chebyshev_polynomials() {
     auto chebyshev6 = chebyshev<1, 6>(); 
 
 
-    plot(chebyshev0, interval(-1., 1.), 1000, "chebyshev0");
-    plot(chebyshev1, interval(-1., 1.), 1000, "chebyshev1");
-    plot(chebyshev2, interval(-1., 1.), 1000, "chebyshev2");
-    plot(chebyshev3, interval(-1., 1.), 1000, "chebyshev3");
-    plot(chebyshev4, interval(-1., 1.), 1000, "chebyshev4");
-    plot(chebyshev5, interval(-1., 1.), 1000, "chebyshev5");
-    // plot(chebyshev6, interval(-1., 1.), 1000, "chebyshev6");
+    plot(chebyshev0, curves::interval(-1., 1.), 1000, "chebyshev0");
+    plot(chebyshev1, curves::interval(-1., 1.), 1000, "chebyshev1");
+    plot(chebyshev2, curves::interval(-1., 1.), 1000, "chebyshev2");
+    plot(chebyshev3, curves::interval(-1., 1.), 1000, "chebyshev3");
+    plot(chebyshev4, curves::interval(-1., 1.), 1000, "chebyshev4");
+    plot(chebyshev5, curves::interval(-1., 1.), 1000, "chebyshev5");
+    // plot(chebyshev6, curves::interval(-1., 1.), 1000, "chebyshev6");
     plt::legend();
     plt::title("chebyshev polynomials of 1st type"); 
     plt::show(); 
@@ -99,13 +99,13 @@ void chebyshev_polynomials() {
     auto chebyshev26 = chebyshev<2, 6>(); 
 
 
-    plot(chebyshev20, interval(-1., 1.), 1000, "chebyshev0");
-    plot(chebyshev21, interval(-1., 1.), 1000, "chebyshev1");
-    plot(chebyshev22, interval(-1., 1.), 1000, "chebyshev2");
-    plot(chebyshev23, interval(-1., 1.), 1000, "chebyshev3");
-    plot(chebyshev24, interval(-1., 1.), 1000, "chebyshev4");
-    // plot(chebyshev25, interval(-1., 1.), 1000, "chebyshev25");
-    // plot(chebyshev26, interval(-1., 1.), 1000, "chebyshev26");
+    plot(chebyshev20, curves::interval(-1., 1.), 1000, "chebyshev0");
+    plot(chebyshev21, curves::interval(-1., 1.), 1000, "chebyshev1");
+    plot(chebyshev22, curves::interval(-1., 1.), 1000, "chebyshev2");
+    plot(chebyshev23, curves::interval(-1., 1.), 1000, "chebyshev3");
+    plot(chebyshev24, curves::interval(-1., 1.), 1000, "chebyshev4");
+    // plot(chebyshev25, curves::interval(-1., 1.), 1000, "chebyshev25");
+    // plot(chebyshev26, curves::interval(-1., 1.), 1000, "chebyshev26");
     plt::legend();
     plt::title("chebyshev polynomials of 2nd type"); 
     plt::show(); 

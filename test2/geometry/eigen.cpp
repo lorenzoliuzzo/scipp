@@ -55,11 +55,11 @@ int main() {
 
 int jacobi() {
 
-    // std::vector<cmeasurement<scalar_m>> coeffs({cmeasurement<scalar_m>(1.0), 
-    //                                             cmeasurement<scalar_m>(0.0), 
-    //                                             cmeasurement<scalar_m>(-2.0), 
-    //                                             cmeasurement<scalar_m>(0.0), 
-    //                                             cmeasurement<scalar_m>(1.0)}); // x^4 - 2x^2 + 1 = 0
+    // std::vector<complex<scalar_m>> coeffs({complex<scalar_m>(1.0), 
+    //                                             complex<scalar_m>(0.0), 
+    //                                             complex<scalar_m>(-2.0), 
+    //                                             complex<scalar_m>(0.0), 
+    //                                             complex<scalar_m>(1.0)}); // x^4 - 2x^2 + 1 = 0
     // auto roots = math::find_roots<5>(coeffs);
     // for (const auto& r : roots.data) 
     //     print("Root", r); 

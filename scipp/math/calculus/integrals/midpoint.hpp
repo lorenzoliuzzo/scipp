@@ -17,7 +17,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE> 
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto midpoint(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps = 100000) noexcept {
+        static constexpr auto midpoint(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps = 100000) noexcept {
 
             auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
 
@@ -43,10 +43,10 @@ namespace scipp::math {
         /// @brief Midpoint rule for numerical integration 
         /// @tparam FUNCTION_TYPE integral function type
         /// @tparam PREFIX_TYPE precision of the result
-        /// @param I interval of integration
+        /// @param I curves::interval of integration
         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 10000>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && physics::is_prefix_v<PREFIX_TYPE>)
-        static constexpr auto midpoint(const interval<typename FUNCTION_TYPE::arg_t>& I) {
+        static constexpr auto midpoint(const curves::interval<typename FUNCTION_TYPE::arg_t>& I) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>;
             result_t result{}, prev_result{}, current_result{};

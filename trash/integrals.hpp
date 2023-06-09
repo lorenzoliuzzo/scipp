@@ -29,7 +29,7 @@ namespace scipp::math {
         template <size_t steps, typename FUNCTION_TYPE> 
             // requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         static constexpr auto rectangle_integration(const FUNCTION_TYPE& f,
-                                                    const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
+                                                    const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum;
@@ -46,7 +46,7 @@ namespace scipp::math {
         template <size_t steps, typename FUNCTION_TYPE> 
             requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
-                                                    const interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
+                                                    const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I) noexcept
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             typename FUNCTION_TYPE::result_t total_sum = (f(I(0.0)) + f(I(1.0))) / 2.;
@@ -65,7 +65,7 @@ namespace scipp::math {
         // template <typename FUNCTION_TYPE> 
         //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto rectangle_integration(const FUNCTION_TYPE& f,
-        //                                             const interval<typename FUNCTION_TYPE::arg_t>& I,
+        //                                             const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                             const double& relative_error) noexcept
         //     -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
@@ -82,7 +82,7 @@ namespace scipp::math {
         // template <typename FUNCTION_TYPE> 
         //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto trapexoid_integration(const FUNCTION_TYPE& f,
-        //                                             const interval<typename FUNCTION_TYPE::arg_t>& I,
+        //                                             const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                             const double& relative_error) noexcept
         //     -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
@@ -99,7 +99,7 @@ namespace scipp::math {
         // template <typename FUNCTION_TYPE> 
         //     requires (is_unary_function_v<typename FUNCTION_TYPE::_t>)
         // static constexpr auto midpoint_integration(const FUNCTION_TYPE& f, 
-        //                                            const interval<typename FUNCTION_TYPE::arg_t>& I,
+        //                                            const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I,
         //                                            const double& relative_error) noexcept
         //     -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
@@ -116,7 +116,7 @@ namespace scipp::math {
         template <typename FUNCTION_TYPE> 
             requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto simpson_integration(const FUNCTION_TYPE& f, 
-                                                  const interval<typename FUNCTION_TYPE::arg_t>& I,
+                                                  const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I,
                                                   const double& relative_error) noexcept
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
@@ -158,7 +158,7 @@ namespace scipp::math {
                                       const typename FUNCTION_TYPE::arg_t& to_b)                                        
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
-            interval I(from_a, to_b); 
+            curves::interval I(from_a, to_b); 
 
             if constexpr (method == integration_method::rectangle)
                 return rectangle_integration<steps>(f, I);
@@ -181,7 +181,7 @@ namespace scipp::math {
         template <integration_method method, size_t steps = 1000, typename FUNCTION_TYPE> 
             requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         inline static constexpr auto riemann(const FUNCTION_TYPE& f, 
-                                             const interval<typename FUNCTION_TYPE::arg_t>& I)
+                                             const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I)
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
             if constexpr (method == integration_method::rectangle)
@@ -212,7 +212,7 @@ namespace scipp::math {
             if (relative_error <= 0.0)
                 throw std::runtime_error("The relative error must be positive.");
 
-            interval I(from_a, to_b); 
+            curves::interval I(from_a, to_b); 
 
             if constexpr (method == integration_method::rectangle)
                 return rectangle_integration(f, I, relative_error);
@@ -235,7 +235,7 @@ namespace scipp::math {
         template <integration_method method, typename FUNCTION_TYPE> 
             requires (is_unary_function_v<typename FUNCTION_TYPE::function_t>)
         static constexpr auto riemann(const FUNCTION_TYPE& f, 
-                                      const interval<typename FUNCTION_TYPE::arg_t>& I, 
+                                      const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I, 
                                       double relative_error = 1.e-6)
             -> multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t> {
 
@@ -263,7 +263,7 @@ namespace scipp::math {
 
 
         template <typename CURVE_TYPE>
-            requires (is_curve_v<CURVE_TYPE>)
+            requires (curves::is_curve_v<CURVE_TYPE>)
         inline static constexpr auto length(const CURVE_TYPE& curve, double der_incr = 1.e-6) noexcept {
 
             return curvilinear(functions::one<typename CURVE_TYPE::point_t>(), curve, der_incr);

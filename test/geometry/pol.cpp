@@ -26,7 +26,16 @@ int main() {
     print(mat1);
     print(mat2);
     
-    print(mat1.determinant());  
+    print(mat1 + 10 * mat2);
+    // print(mat1.determinant());  
+
+    auto x = complex<double>(1.0, 2.0);
+    print(x.real);
+
+    x.real = 2.0;
+    print(x.real);
+
+    print(x.conj());
 
 
     return 0; 

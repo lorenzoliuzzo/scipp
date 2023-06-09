@@ -70,7 +70,7 @@ int main() {
 
     // std::cout << op::sin(0.05) << '\n'; 
     // std::cout << op::sin(scalar_m(0.05)) << '\n';
-    // std::cout << op::sin(cmeasurement(scalar_m(0.05), scalar_m(0.05))) << '\n';
+    // std::cout << op::sin(complex(scalar_m(0.05), scalar_m(0.05))) << '\n';
     
     // std::cout << op::cos(0.05) << '\n'; 
     // std::cout << op::cos(scalar_m(0.05)) << '\n'; 

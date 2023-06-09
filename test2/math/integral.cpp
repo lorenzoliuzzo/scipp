@@ -95,7 +95,7 @@ int main() {
     meta::divide_t<position2, length_m> c2;
     print(c2); 
 
-    interval I(scalar_m(1.0), scalar_m(10.0)); 
+    curves::interval I(scalar_m(1.0), scalar_m(10.0)); 
     print(I(0)); 
     print(I(1)); 
 

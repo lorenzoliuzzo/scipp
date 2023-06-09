@@ -2,7 +2,7 @@
  * @file    physics/measurements/base_quantity.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the base_quantity struct.
- * @date    2023-05-28
+ * @date    2023-06-09
  * 
  * @copyright Copyright (c) 2023
  */
@@ -13,15 +13,9 @@
 namespace scipp::physics {
     
 
-    /// @brief base_quantity contains the dimensional information for a physical quantity
-    /// @tparam LENGTH: power of length                              
-    /// @tparam TIME: power of time                                  
-    /// @tparam MASS: power of mass                                  
-    /// @tparam TEMPERATURE: power of temperature                    
-    /// @tparam SUBSTANCE_AMOUNT: power of substance amount          
-    /// @tparam ELETTRIC_CURRENT: power of elettric current          
-    /// @tparam LUMINOUS_INTENSITY: power of luminous intensity
-    /// @note the powers must be integers                            
+    /// @brief This template meta-structure contains the dimensional information for a physical quantity.
+    ///        It uses the powers of the international system base quantities to represent the dimensions.
+    /// @note The powers must be integers                            
     template <int LENGTH, int TIME, int MASS, int TEMPERATURE, int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY> 
     struct base_quantity {
 
@@ -48,7 +42,7 @@ namespace scipp::physics {
 
         
         /// @brief Returns the string representation of the base_quantity
-        static constexpr std::string to_string() noexcept {
+        static constexpr std::string_view to_string() noexcept {
 
             std::stringstream ss;
             bool first_unit = true;

@@ -17,7 +17,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE> 
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
-        static constexpr auto curvilinear(const curve<typename FUNCTION_TYPE::arg_t>& gamma,
+        static constexpr auto curvilinear(const curves::curve<typename FUNCTION_TYPE::value_t, FUNCTION_TYPE::value_t::dim>& gamma,
                                           size_t steps,
                                           double incr_der = 1.e-6) {
 

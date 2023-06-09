@@ -185,7 +185,7 @@ namespace scipp::math {
 
         /// @todo adjust this require
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (((geometry::are_column_vectors_v<ARG_TYPE1, ARG_TYPE2> || geometry::are_row_vectors_v<ARG_TYPE1, ARG_TYPE2>) && geometry::have_same_dimension_v<ARG_TYPE1, ARG_TYPE2> && physics::are_same_base_v<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>)
+            requires (((geometry::are_column_vectors_v<ARG_TYPE1, ARG_TYPE2> || geometry::are_row_vectors_v<ARG_TYPE1, ARG_TYPE2>) && geometry::have_same_dimension_v<ARG_TYPE1, ARG_TYPE2> && std::same_as<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>)
                     || (geometry::is_matrix_v<ARG_TYPE1> && geometry::is_matrix_v<ARG_TYPE2>))
         struct add<ARG_TYPE1, ARG_TYPE2> {
 
@@ -194,13 +194,13 @@ namespace scipp::math {
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept { 
 
                 typename function_t::result_t result;
-                std::ranges::transform(x.data, y.data, result.data, std::plus<typename function_t::result_t::value_t>());
-                // std::for_each(std::execution::par, 
-                //               result.data.begin(), result.data.end(), 
-                //               [&](auto& elem) { 
-                //                 elem = x.data[&elem - result.data.data()] + y.data[&elem - result.data.data()]; 
-                //               });
-
+                std::for_each(std::execution::par, result.data.begin(), result.data.end(), 
+                    [&](auto& elem) {
+                        auto index = &elem - result.data.data();
+                        elem = x.data[index] + y.data[index];
+                    }
+                );
+                
                 return result;
             
             }

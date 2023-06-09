@@ -19,16 +19,16 @@ namespace scipp::math {
 
         /// @brief Trapezoid rule for numerical integration 
         /// @tparam FUNCTION_TYPE integral function type
-        /// @param I interval of integration
+        /// @param I curves::interval of integration
         /// @param steps number of steps
         template <typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto trapezoid(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps = 10000) {
+        static constexpr auto trapezoid(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps = 10000) {
             
 
             if (is_finite(I.end) && is_finite(I.start)) {
                 
-                // Regular integration over a finite interval
+                // Regular integration over a finite curves::interval
                 const auto h = I.step(steps);
                 const auto x_range = std::views::iota(1u, steps) | std::views::transform(
                     [&](size_t i) {
@@ -46,7 +46,7 @@ namespace scipp::math {
                 return result;
 
             } else  
-                throw std::runtime_error("Maybe don't use such a poor algorithm to integrate over an infinite interval");
+                throw std::runtime_error("Maybe don't use such a poor algorithm to integrate over an infinite curves::interval");
 
         }
 
@@ -55,10 +55,10 @@ namespace scipp::math {
         /// @brief Trapezoid's rule for numerical integration 
         /// @tparam FUNCTION_TYPE integral function type
         /// @tparam PREFIX_TYPE precision of the result
-        /// @param I interval of integration
+        /// @param I curves::interval of integration
         template <typename FUNCTION_TYPE, typename PREFIX_TYPE, size_t MAX_ITERATIONS = 10000000>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && physics::is_prefix_v<PREFIX_TYPE>)
-        static constexpr auto trapezoid(const interval<typename FUNCTION_TYPE::arg_t>& I) {
+        static constexpr auto trapezoid(const curves::interval<typename FUNCTION_TYPE::arg_t>& I) {
             
             using result_t = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>;
             result_t result{}, prev_result{};

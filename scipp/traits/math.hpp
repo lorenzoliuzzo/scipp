@@ -76,7 +76,7 @@ namespace scipp::math {
     /// =============================================
 
         template <typename T> 
-        struct complex {};
+        struct complex;
 
 
         /// @brief Type trait to check if a type is a measurement
@@ -146,6 +146,39 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr bool is_ternary_function_v = is_ternary_function<T>::value; 
+
+
+        template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs> 
+        struct nary_function;
+
+        template <typename T>
+        struct is_nary_function : std::false_type {};
+
+        template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs>
+        struct is_nary_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
+        
+        template <typename T>
+        inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
+
+
+        template <typename T1, typename T2>
+        struct equal;
+
+
+        template <typename T>
+        struct greater;
+
+
+        template <typename T>
+        struct less;
+
+
+        template <typename T>
+        struct greater_equal;
+
+
+        template <typename T>
+        struct less_equal;
 
 
     
@@ -300,17 +333,74 @@ namespace scipp::math {
     // calculus traits
     // =============================================
 
-        template <typename T>
-        struct interval; 
+        namespace curves {
 
-        template <typename T>
-        struct is_interval : std::false_type {};
 
-        template <typename T>
-        struct is_interval<interval<T>> : std::true_type {};
+            template <typename T, size_t DIM>      
+            struct curve : functions::nary_function<T, DIM, double> {
 
-        template <typename T>
-        inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+                using _t = curve<T, DIM>;
+
+                using function_t = functions::nary_function<T, DIM, double>;
+
+                using param_t = std::array<double, DIM>;
+
+
+            }; // struct curve 
+        
+
+            template <typename T>
+            struct is_curve : std::false_type {};
+
+            template <typename T, size_t DIM>
+            struct is_curve<curve<T, DIM>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
+
+
+            template <typename T>
+            struct interval; 
+
+            template <typename T>
+            struct is_interval : std::false_type {};
+
+            template <typename T>
+            struct is_interval<interval<T>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+
+            template <typename T>
+            struct line; 
+
+            template <typename T>
+            struct is_line : std::false_type {};
+
+            template <typename T>
+            struct is_line<line<T>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_line_v = is_line<T>::value;
+
+
+            template <typename T>
+            struct circumference; 
+
+            template <typename T>
+            struct is_circumference : std::false_type {};
+
+            template <typename T>
+            struct is_circumference<circumference<T>> : std::true_type {};
+
+            template <typename T>
+            inline static constexpr bool is_circumference_v = is_circumference<T>::value;
+
+
+
+        } // namespace curves
 
 
 } /// namespace scipp::math

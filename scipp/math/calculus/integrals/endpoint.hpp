@@ -17,7 +17,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto endpoint_left(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
+        static constexpr auto endpoint_left(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
             
             auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
 
@@ -41,7 +41,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE>
         requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto endpoint_right(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
+        static constexpr auto endpoint_right(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) noexcept {
             
             auto result = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>{};
 
@@ -65,7 +65,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto endpoint_left(const interval<typename FUNCTION_TYPE::arg_t>& I, double relative_error) noexcept {
+        static constexpr auto endpoint_left(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, double relative_error) noexcept {
             
             auto result = endpoint_left<FUNCTION_TYPE, 1>(I); // Start with a single step
             auto prev_result = result;
@@ -91,7 +91,7 @@ namespace scipp::math {
 
         template <typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t>)
-        static constexpr auto endpoint_right(const interval<typename FUNCTION_TYPE::arg_t>& I, double relative_error) noexcept {
+        static constexpr auto endpoint_right(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, double relative_error) noexcept {
             
             auto result = endpoint_right<FUNCTION_TYPE, 1>(I); // Start with a single step
             auto prev_result = result;

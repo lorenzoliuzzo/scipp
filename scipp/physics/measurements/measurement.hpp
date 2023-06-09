@@ -15,7 +15,7 @@ namespace scipp::physics {
 
     /// @brief Struct measurement represents a physical measurement as a double and a dimentional template meta-structure 
     /// @tparam BASE_TYPE: base_quantity of the measurement
-    /// @see base_quantity, prefix, unit and their operations in namespace math::op
+    /// @see in physics: base_quantity, prefix, unit
     template <typename BASE_TYPE, typename VALUE_TYPE = double> 
         requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
     struct measurement {
@@ -45,7 +45,7 @@ namespace scipp::physics {
 
             inline static constexpr measurement zero{value_t{}}; ///< The zero measurement
 
-            inline static constexpr measurement one{static_cast<value_t>(1.0)}; ///< The one measurement
+            inline static constexpr measurement one{value_t{1.0}}; ///< The one measurement
 
 
         // ==============================================
@@ -60,27 +60,9 @@ namespace scipp::physics {
 
             /// @brief Construct a measurement from a scalar value
             /// @param val: The value of the measurement
-            constexpr measurement(const value_t& val) noexcept :
-
-                value{val} {}
-
-
-            /// @brief Construct a measurement from a scalar value
-            /// @param val: The value of the measurement
             constexpr measurement(value_t&& val) noexcept :
 
-                value{std::move(val)} {}
-
-
-            /// @brief Construct a measurement from a scalar value and an unit
-            /// @param val: The value of the measurement
-            /// @param UNIT_TYPE: The unit of the measurement
-            /// @note The unit must be of the same base of the measurement
-            template <typename UNIT_TYPE> 
-                requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
-            constexpr measurement(const value_t& val, const UNIT_TYPE&) noexcept :
-
-                value{val * UNIT_TYPE::mult} {}
+                value{std::forward<value_t>(val)} {}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
@@ -91,21 +73,14 @@ namespace scipp::physics {
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
             constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept :
 
-                value{std::move(val * UNIT_TYPE::mult)} {}
-
-
-            /// @brief Construct a measurement from another measurement
-            /// @param meas: The measurement to copy
-            constexpr measurement(const measurement& other) noexcept :
-
-                value{other.value} {}
+                value{std::forward<value_t>(val) * UNIT_TYPE::mult} {}
 
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to move
             constexpr measurement(measurement&& other) noexcept :
 
-                value{std::move(other.value)} {}
+                value{std::forward<value_t>(other.value)} {}
 
 
         // ==============================================

@@ -282,8 +282,7 @@ namespace scipp::tools {
 
         std::cout << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
-            print(other.data[i]);
-            std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n");
+            std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n");
         }
 
     }

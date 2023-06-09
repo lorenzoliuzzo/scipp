@@ -75,7 +75,7 @@ namespace scipp::math {
                 real(std::move(real)), imag{} {}
 
 
-            constexpr complex(const value_t& real, const value_t& imag) noexcept : 
+            explicit constexpr complex(const value_t& real, const value_t& imag) noexcept : 
                 
                 real(real), imag(imag) {}
 
@@ -122,43 +122,35 @@ namespace scipp::math {
             }
 
 
+            friend constexpr std::ostream& operator<<(std::ostream& os, const complex& x) noexcept {
+
+                os << x.real << " + " << x.imag << "i";
+
+                return os;
+
+            }
+
+
             constexpr decltype(auto) x() noexcept {
 
                 return this->real;
 
             }
 
-            // constexpr value_t x() noexcept {
 
-            //     return this->real;
-
-            // }
-
-
-            constexpr value_t y() const noexcept {
+            constexpr decltype(auto) y() noexcept {
 
                 return this->imag;
 
-            }         
-
-            constexpr value_t y() noexcept {
-
-                return this->imag;
-
-            }         
+            } 
 
 
-            constexpr complex conj() const noexcept {
+            constexpr auto conj() const noexcept {
 
-                return { this->real, -this->imag };
+                return complex(this->real, -this->imag);
 
             }
 
-            constexpr complex conj() noexcept {
-
-                return { this->real, -this->imag };
-
-            }
 
             constexpr auto abs() const noexcept {
                 
@@ -166,24 +158,19 @@ namespace scipp::math {
 
             }
 
+
             constexpr auto arg() const noexcept {
                 
                 return op::atan(this->imag, this->real);
 
             }
 
-
-            inline static constexpr complex cartesian(const value_t& x, const value_t& y) noexcept {
-
-                return { x, y };
-
-            }
             
             template <typename SCALAR_TYPE>
                 requires (is_number_v<SCALAR_TYPE> || physics::is_scalar_measurement_v<SCALAR_TYPE> || physics::is_scalar_umeasurement_v<SCALAR_TYPE>)
-            inline static constexpr complex polar(const value_t& rho, const SCALAR_TYPE& theta) noexcept {
+            inline static constexpr auto polar(const value_t& rho, const SCALAR_TYPE& theta) noexcept {
 
-                return { rho * op::cos(theta), rho * op::sin(theta) };
+                return complex(rho * op::cos(theta), rho * op::sin(theta));
 
             }
 

@@ -11,3 +11,5 @@ add_executable(poly poly.cpp)
 target_link_libraries(poly ${PROJECT_NAME})
 
 add_executable(gauss gauss.cpp)
+target_link_libraries(gauss ${PROJECT_NAME})
+

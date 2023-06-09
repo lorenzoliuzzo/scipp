@@ -18,10 +18,10 @@
 
         // #include <algorithm>
         #include <array> /// geometry::vector, geometry::matrix
-        #include <concepts>
+        #include <concepts> /// traits
         #include <chrono> /// tools::timer
-        #include <cmath>
-        #include <execution>
+        #include <cmath> /// math::functions
+        #include <execution> /// math::functions, math::integrals
         #include <fstream> /// tools::io
         // #include <functional> // maybe not needed
         #include <iostream> /// tools::io
@@ -31,10 +31,11 @@
         // #include <omp.h> // maybe not needed
         #include <random> /// math::statistics
         #include <ranges> /// math::integrals
-        #include <ratio> /// physics::prefix
+        #include <ratio> /// physics::prefix, tools::io
         // #include <set>
-        // #include <string> /// tools::io
+        #include <string> /// tools::io
         #include <sstream> /// tools::io
+        #include <type_traits>
         // #include <thread> // maybe not needed
         // #include <vector>
 
@@ -67,24 +68,27 @@
             #include "math/functions/types/operations.hpp"
             #include "math/functions/types/operators.hpp"
 
-            #include "math/functions/negate.hpp"
-            #include "math/functions/invert.hpp" 
-            #include "math/functions/modulo.hpp"
+            #include "math/functions/logical/equal.hpp"
+            // #include "math/functions/logical/greater.hpp"
+            // #include "math/functions/logical/less.hpp"
 
-            #include "math/functions/add.hpp" /// @ok
-            #include "math/functions/multiply.hpp" /// @todo umeasurements
-            #include "math/functions/divide.hpp" 
-            #include "math/functions/power.hpp" /// @ok
-            #include "math/functions/root.hpp" 
+            #include "math/functions/algebraic/add.hpp" /// @ok
+            #include "math/functions/algebraic/negate.hpp"
 
-            #include "math/functions/exponential.hpp" /// @ok, @todo matrices
-            #include "math/functions/logarithm.hpp"
-            #include "math/functions/trigonometric.hpp"
+            #include "math/functions/algebraic/multiply.hpp" /// @todo umeasurements
+            #include "math/functions/algebraic/invert.hpp" 
 
-            #include "math/functions/round.hpp"
-            // #include "math/functions/hyperbolic.hpp"
+            #include "math/functions/algebraic/power.hpp" /// @ok
+            #include "math/functions/algebraic/root.hpp" 
 
-            #include "math/functions/compose.hpp"
+            #include "math/functions/mathematical/compose.hpp"
+            #include "math/functions/mathematical/modulo.hpp"
+            #include "math/functions/mathematical/exponential.hpp" /// @ok, @todo matrices
+            #include "math/functions/mathematical/logarithm.hpp"
+            #include "math/functions/mathematical/trigonometric.hpp"
+            #include "math/functions/mathematical/hyperbolic.hpp"
+
+            #include "math/functions/numerical/round.hpp"
             
 
         /// ---------------------------------------------------------------
@@ -105,8 +109,8 @@
         /// @brief math/numbers
         /// ---------------------------------------------------------------
         
-            #include "math/numbers/complex.hpp" 
-            #include "math/numbers/dual.hpp"
+            #include "math/numbers/complex.hpp" /// @tofinish
+            #include "math/numbers/dual.hpp" /// @todo
 
             #include "math/numbers/constants.hpp" 
             #include "physics/constants.hpp"
@@ -119,15 +123,10 @@
             #include "geometry/vector.hpp"
             #include "geometry/matrix.hpp"
 
-        /// ---------------------------------------------------------------
-
             #include "physics/vector_types.hpp"
             // #include "physics/matrix_types.hpp" // @todo
 
-        /// ---------------------------------------------------------------
-
-        // //     // #include "geometry/vectorial_space.hpp" // @todo
-        //     #include "geometry/vectorial_base.hpp"
+            // #include "geometry/vectorial_base.hpp"
         
 
         /// ---------------------------------------------------------------
@@ -155,8 +154,12 @@
         /// @brief math/calculus
         /// ---------------------------------------------------------------
 
-            #include "math/calculus/interval.hpp"
-            #include "math/calculus/curve.hpp"
+            // #include "math/calculus/curves/curve.hpp"
+            #include "math/calculus/curves/interval.hpp"
+            #include "math/calculus/curves/line.hpp"
+            #include "math/calculus/curves/circumference.hpp"
+            #include "math/calculus/curves/ellipse.hpp"
+            #include "math/calculus/curves/sphere.hpp"
 
             #include "math/calculus/integrals/rectangle.hpp"
             #include "math/calculus/integrals/trapezoid.hpp"
@@ -174,8 +177,6 @@
 
         /// ---------------------------------------------------------------
 
-        //     // #include "geometry/curve_types.hpp"
-        // //     // #include "geometry/line.hpp"
         // //     // #include "geometry/linspace.hpp"
 
         /// ---------------------------------------------------------------

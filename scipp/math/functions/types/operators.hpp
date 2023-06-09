@@ -11,6 +11,54 @@
 namespace scipp {
     
     
+    /// @brief Equal operator
+    inline constexpr auto operator==(auto&& x, auto&& y) noexcept { 
+
+        return math::op::equal(std::move(x), std::move(y));
+        
+    }
+
+
+    /// @brief Disqual operator
+    inline constexpr auto operator!=(auto&& x, auto&& y) noexcept { 
+
+        return !math::op::equal(std::move(x), std::move(y));
+        
+    }
+
+
+    // /// @brief Greater than operator
+    // inline constexpr auto operator>(auto&& x, auto&& y) noexcept { 
+
+    //     return math::op::greater(std::move(x), std::move(y));
+        
+    // }
+
+
+    // /// @brief Less than operator
+    // inline constexpr auto operator<(auto&& x, auto&& y) noexcept { 
+
+    //     return math::op::less(std::move(x), std::move(y));
+        
+    // }
+
+
+    // /// @brief Greater than or equal operator
+    // inline constexpr auto operator>=(auto&& x, auto&& y) noexcept { 
+
+    //     return math::op::greater_equal(std::move(x), std::move(y));
+        
+    // }
+
+
+    // /// @brief Less than or equal operator
+    // inline constexpr auto operator<=(auto&& x, auto&& y) noexcept { 
+
+    //     return math::op::less_equal(std::move(x), std::move(y));
+        
+    // }
+    
+    
     /// @brief Addition operator
     inline constexpr auto operator+(auto x, auto y) noexcept { 
 

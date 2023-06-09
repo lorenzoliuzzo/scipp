@@ -65,7 +65,7 @@ namespace scipp::math {
 
 
             template <typename INTERVAL_TYPE>
-                requires (is_interval_v<INTERVAL_TYPE>)
+                requires (curves::is_interval_v<INTERVAL_TYPE>)
             inline static constexpr auto weighted_nodes(const INTERVAL_TYPE& I, size_t steps) {
                 
                 std::vector<double> weights(steps); 
@@ -133,7 +133,7 @@ namespace scipp::math {
 
         template <typename WEIGHT_FUNCTION_TYPE, typename FUNCTION_TYPE>
             requires (functions::is_unary_function_v<typename FUNCTION_TYPE::_t> && is_weight_function_v<WEIGHT_FUNCTION_TYPE>)
-        static constexpr auto gauss(const interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) {
+        static constexpr auto gauss(const curves::interval<typename FUNCTION_TYPE::arg_t>& I, size_t steps) {
             
             if (steps % 2 != 0) 
                 throw std::runtime_error("Number of steps for Gauss Quadrature must be even.");
@@ -194,7 +194,7 @@ static constexpr auto gauss_weight(size_t n, size_t i) {
 
 
     //     template <weight_function_type WEIGHT_FUNC, size_t N>
-    //     inline static constexpr auto weighted_points(const interval<auto>& I) {
+    //     inline static constexpr auto weighted_points(const curves::interval<auto>& I) {
 
     //         std::array<double, N> weights, points; 
 
@@ -293,7 +293,7 @@ static constexpr auto gauss_weight(size_t n, size_t i) {
 
     //     template <weight_function_type WEIGHT_FUNC, size_t N = 100, typename FUNC_TYPE>
 //         requires (is_unary_function_v<FUNC_TYPE>)
-    //     inline static constexpr auto gauss(const FUNC_TYPE& func, const interval<typename FUNC_TYPE::arg_t>& I) {
+    //     inline static constexpr auto gauss(const FUNC_TYPE& func, const curves::curves::interval<typename FUNC_TYPE::arg_t>& I) {
 
     //         typename FUNC_TYPE::result_t result{};
     //         const auto [points, weights] = weighted_points<WEIGHT_FUNC, N>(I);
@@ -323,7 +323,7 @@ static constexpr auto gauss_weight(size_t n, size_t i) {
 
     //     template <typename POLYNOMIAL_TYPE, typename FUNC_TYPE>
     //         requires (is_unary_function_v<FUNC_TYPE>)
-    //     inline static constexpr auto gauss(const FUNC_TYPE& func, const interval<typename FUNC_TYPE::arg_t>& I) {
+    //     inline static constexpr auto gauss(const FUNC_TYPE& func, const curves::curves::interval<typename FUNC_TYPE::arg_t>& I) {
 
     //         constexpr auto poly = POLYNOMIAL_TYPE();
     //         typename FUNC_TYPE::result_t result{};
@@ -345,7 +345,7 @@ static constexpr auto gauss_weight(size_t n, size_t i) {
 
     //     template <typename FUNC_TYPE>
     //         requires (is_unary_function_v<FUNC_TYPE>)
-    //     inline static constexpr auto gauss_legendre(const FUNC_TYPE& func, const interval<typename FUNC_TYPE::arg_t>& I) {
+    //     inline static constexpr auto gauss_legendre(const FUNC_TYPE& func, const curves::curves::interval<typename FUNC_TYPE::arg_t>& I) {
 
     //         typename FUNC_TYPE::result_t result{};
 

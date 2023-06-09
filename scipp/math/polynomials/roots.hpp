@@ -14,7 +14,7 @@ namespace scipp::math {
 
     template <typename FUNCTION_TYPE>
     auto bisection(const FUNCTION_TYPE& f, 
-                   const interval<typename FUNCTION_TYPE::arg_t>& I, 
+                   const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I, 
                    const typename FUNCTION_TYPE::arg_t eps) {
 
         if (f(I.start) * f(I.end) >= 0) {
@@ -51,7 +51,7 @@ namespace scipp::math {
 
     template <typename FUNCTION_TYPE>
     auto regula_falsi(const FUNCTION_TYPE& f, 
-                      const interval<typename FUNCTION_TYPE::arg_t>& I, 
+                      const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I, 
                       const typename FUNCTION_TYPE::arg_t eps) {
 
         if (f(I.start) * f(I.end) >= 0) {
@@ -89,7 +89,7 @@ namespace scipp::math {
 
     template <typename FUNCTION_TYPE>
     auto secant(const FUNCTION_TYPE& f, 
-                const interval<typename FUNCTION_TYPE::arg_t>& I, 
+                const curves::curves::interval<typename FUNCTION_TYPE::arg_t>& I, 
                 const typename FUNCTION_TYPE::result_t eps) {
         
         auto x0 = I.start;

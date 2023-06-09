@@ -25,7 +25,7 @@ int main() {
     std::vector<complex<double>> v = {4.0, 0.0, 1.0};
     auto roots = find_roots<2>(v);
     for (auto& root : roots) {
-        std::cout << root << std::endl;
+        print(root);
     }
 
     return 0; 

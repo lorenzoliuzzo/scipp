@@ -80,11 +80,11 @@ int main() {
     // print("\nTesting the trapezoid fixed method...");
     // test_trapezoid_fixed_method(I);
 
-    constexpr interval<double> I(6.0, 1.0);
+    constexpr curves::interval<double> I(6.0, 1.0);
     // auto result = simpson<compose<sine<double>, square<double>>, std::nano>(I);
     // print<std::nano>("int sin(x^2), x in (0, 1), steps 1000", result);
 
-    // constexpr interval<double> I(0.0, std::numeric_limits<double>::infinity());
+    // constexpr curves::interval<double> I(0.0, std::numeric_limits<double>::infinity());
 
     timer t; 
     t.start();
@@ -110,7 +110,7 @@ int main() {
     print<std::femto>("elapsed_time", t.elapsed());
 
 
-    result = adaptive_simpson<compose<exponential<double>, negate<double>>, std::nano>(interval(0.0, 86.0));
+    result = adaptive_simpson<compose<exponential<double>, negate<double>>, std::nano>(curves::interval(0.0, 86.0));
     print<std::nano>("int exp(-x), x in (0, inf)", result);
 
 
@@ -360,7 +360,7 @@ constexpr void test_trapezoid_fixed_method(const auto I) {
 
 // constexpr void gauss(const auto I) {
 
-//     // auto I2 = interval(0.0, 1.0);
+//     // auto I2 = curves::interval(0.0, 1.0);
 //     // auto result = gauss<power<2, length_m>, weight_function<laguerre>>(I2, 100000);
 //     // print("laguerre", result); 
 //     // result = gauss<power<2, length_m>, weight_function<legendre>>(I2, 100000);

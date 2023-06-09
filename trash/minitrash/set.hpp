@@ -197,7 +197,7 @@ namespace scipp::geometry {
 
 
     template <typename INTERVAL_TYPE, size_t N>    
-        requires (is_interval_v<INTERVAL_TYPE>)
+        requires (curves::is_interval_v<INTERVAL_TYPE>)
     constexpr finite_set<typename INTERVAL_TYPE::arg_type, N> linspace(const INTERVAL_TYPE& other) noexcept {
 
         const typename INTERVAL_TYPE::arg_type increment = math::op::abs(other.end - other.start) / static_cast<physics::scalar_m>(N); 

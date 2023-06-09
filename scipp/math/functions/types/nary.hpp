@@ -14,9 +14,7 @@ namespace scipp::math {
     namespace functions {
 
 
-
         template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs> 
-            requires (sizeof...(ARG_TYPEs) == DIM)
         struct nary_function {
 
 
@@ -24,18 +22,16 @@ namespace scipp::math {
 
             using result_t = RESULT_TYPE;
 
-            using arg_t = std::tuple<ARG_TYPEs...>;
-
-
-            virtual ~nary_function() = default;
+            using param_t = std::tuple<ARG_TYPEs...>;
 
 
             inline static constexpr result_t f(const ARG_TYPEs&... x);
 
 
-            constexpr result_t operator()(const ARG_TYPEs&... x) const { 
+            inline constexpr result_t operator()(const ARG_TYPEs&... params) const  
+                requires (sizeof...(params) == DIM) {
 
-                return f(x...); 
+                return f(params...); 
             
             }
 
@@ -43,16 +39,6 @@ namespace scipp::math {
         }; /// struct nary_function
   
 
-        template <typename T>
-        struct is_nary_function : std::false_type {};
-
-        template <typename RESULT_TYPE, size_t DIM, typename... ARG_TYPEs>
-        struct is_nary_function<nary_function<RESULT_TYPE, DIM, ARG_TYPEs...>> : std::true_type {};
-        
-        template <typename T>
-        inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
-
-    
     } /// namespace functions
 
 

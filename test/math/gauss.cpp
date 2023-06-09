@@ -1,6 +1,13 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include "sci++.hpp"
+
+using namespace scipp;
+using namespace scipp::math;
+using namespace scipp::math::functions;
+
+
 
 void generateGaussianQuadrature(int numPoints, std::vector<double>& quadraturePoints, std::vector<double>& weights) {
     quadraturePoints.resize(numPoints);
@@ -71,9 +78,10 @@ int main() {
     
     // Perform Gaussian quadrature and get the result
     double result = gaussianQuadrature(lowerLimit, upperLimit, numPoints);
-    
+    auto exact = integrals::simpson<compose<sine<double>, square<double>>, std::micro>(curves::interval(lowerLimit, upperLimit));
     // Output the result
     std::cout << "Approximation: " << result << std::endl;
-    
+    tools::print(exact);
+
     return 0;
 }

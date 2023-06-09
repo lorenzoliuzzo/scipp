@@ -19,9 +19,9 @@ using namespace geometry;
 using namespace tools; 
 
 
-struct func : unary_function<cmeasurement<scalar_m>, cmeasurement<scalar_m>> {
+struct func : unary_function<complex<scalar_m>, complex<scalar_m>> {
 
-    constexpr cmeasurement<scalar_m> operator()(const cmeasurement<scalar_m>& x) const override {
+    constexpr complex<scalar_m> operator()(const complex<scalar_m>& x) const override {
 
         return x * op::exp(x); 
 
@@ -49,10 +49,10 @@ int main() {
     std::cout << meta::invert_t<length_m>() << '\n';
 
 
-    std::cout << multiply_t<cmeasurement<length_m>, cmeasurement<time_m>, time_m>() << '\n';
+    std::cout << multiply_t<complex<length_m>, complex<time_m>, time_m>() << '\n';
 
     auto f = func(); 
-    cmeasurement<scalar_m> x(1.0, 1.0);
+    complex<scalar_m> x(1.0, 1.0);
 
     auto circ = circumference(x, x.real); 
 

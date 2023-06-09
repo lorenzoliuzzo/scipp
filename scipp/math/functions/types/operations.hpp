@@ -24,6 +24,46 @@ namespace scipp::math {
         
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
+        inline static constexpr auto equal(ARG_TYPE1&& x, ARG_TYPE2&& y) noexcept {
+
+            return functions::equal<ARG_TYPE1, ARG_TYPE2>::f(std::forward<ARG_TYPE1>(x), std::forward<ARG_TYPE2>(y));
+
+        }      
+
+
+        // template <typename ARG_TYPE>
+        // inline static constexpr auto greater(ARG_TYPE&& x, ARG_TYPE&& y) noexcept {
+
+        //     return functions::greater<ARG_TYPE>::f(std::forward<ARG_TYPE>(x), std::forward<ARG_TYPE>(y));
+
+        // }
+
+
+        // template <typename ARG_TYPE>
+        // inline static constexpr auto greater_equal(ARG_TYPE&& x, ARG_TYPE&& y) noexcept {
+
+        //     return functions::greater_equal<ARG_TYPE>::f(std::forward<ARG_TYPE>(x), std::forward<ARG_TYPE>(y));
+
+        // }
+
+
+        // template <typename ARG_TYPE>
+        // inline static constexpr auto less(ARG_TYPE&& x, ARG_TYPE&& y) noexcept {
+
+        //     return functions::less<ARG_TYPE>::f(std::forward<ARG_TYPE>(x), std::forward<ARG_TYPE>(y));
+
+        // }
+
+
+        // template <typename ARG_TYPE>
+        // inline static constexpr auto less_equal(ARG_TYPE&& x, ARG_TYPE&& y) noexcept {
+
+        //     return functions::less_equal<ARG_TYPE>::f(std::forward<ARG_TYPE>(x), std::forward<ARG_TYPE>(y));
+
+        // }
+        
+
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
         inline static constexpr auto add(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
 
             return functions::add<ARG_TYPE1, ARG_TYPE2>::f(x, y);

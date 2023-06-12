@@ -124,22 +124,22 @@ namespace scipp::math {
         // };
 
 
-        // template <typename MEAS_TYPE>
-        //     requires (physics::is_measurement_v<MEAS_TYPE>)
-        // struct equal<MEAS_TYPE> {
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::are_measurements_v<ARG_TYPE1, ARG_TYPE2>)
+        struct equal<ARG_TYPE1, ARG_TYPE2> {
             
-        //     using function_t = unary_function<MEAS_TYPE, physics::measurement<equal_t<typename MEAS_TYPE::base_t>, double>>; 
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, bool>; 
 
-        //     inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
-        //         if (x == typename function_t::arg_t{})
-        //             throw std::runtime_error("Cannot equal zero");
+                if constexpr (physics::are_same_base_v<ARG_TYPE1, ARG_TYPE2>)
+                    return (x.value == y.value);
+                
+                return false; 
 
-        //         return 1.0 / x.value;
+            }       
 
-        //     }       
-
-        // };
+        };
 
 
         // template <typename UMEAS_TYPE>

@@ -88,20 +88,20 @@ namespace scipp::geometry {
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
                 requires ((std::is_same_v<value_t, OTHER_MEAS_TYPE>, ...))
-            constexpr vector(const OTHER_MEAS_TYPE&... other) noexcept 
+            constexpr vector(OTHER_MEAS_TYPE... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
-                data{other...} {}
+                data{std::forward<value_t>(other)...} {}
 
 
-            /// @brief Construct a new vector from a pack of measurements
-            /// @note The number of components must be the same as the dimension of the vector
-            template <typename... OTHER_MEAS_TYPE>
-                requires ((std::is_same_v<value_t, OTHER_MEAS_TYPE>, ...))
-            constexpr vector(OTHER_MEAS_TYPE&&... other) noexcept 
-                requires (sizeof...(other) == dim) : 
+            // /// @brief Construct a new vector from a pack of measurements
+            // /// @note The number of components must be the same as the dimension of the vector
+            // template <typename... OTHER_MEAS_TYPE>
+            //     requires ((std::is_same_v<value_t, OTHER_MEAS_TYPE>, ...))
+            // constexpr vector(OTHER_MEAS_TYPE&&... other) noexcept 
+            //     requires (sizeof...(other) == dim) : 
                 
-                data{std::move(other)...} {}
+            //     data{std::move(other)...} {}
 
 
             // /// @brief Construct a new vector from a single measurement

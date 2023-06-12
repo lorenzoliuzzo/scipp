@@ -12,7 +12,7 @@ namespace scipp {
     
     
     /// @brief Equal operator
-    inline constexpr auto operator==(auto&& x, auto&& y) noexcept { 
+    inline constexpr auto operator==(auto x, auto y) noexcept { 
 
         return math::op::equal(std::move(x), std::move(y));
         
@@ -20,7 +20,7 @@ namespace scipp {
 
 
     /// @brief Disqual operator
-    inline constexpr auto operator!=(auto&& x, auto&& y) noexcept { 
+    inline constexpr auto operator!=(auto x, auto y) noexcept { 
 
         return !math::op::equal(std::move(x), std::move(y));
         
@@ -58,19 +58,20 @@ namespace scipp {
         
     // }
     
-    
     /// @brief Addition operator
-    inline constexpr auto operator+(auto x, auto y) noexcept { 
+    template <typename T1, typename T2>
+    inline constexpr auto operator+(T1 x, T2 y) noexcept { 
 
-        return math::op::add(std::move(x), std::move(y));
+        return math::op::add(std::forward<T1>(x), std::forward<T2>(y));
         
     }
 
 
     /// @brief Subtraction operator
-    inline constexpr auto operator-(auto x, auto y) noexcept { 
+    template <typename T1, typename T2>
+    inline constexpr auto operator-(T1 x, T2 y) noexcept { 
         
-        return math::op::add(std::move(x), math::op::neg(std::move(y)));
+        return math::op::add(std::forward<T1>(x), math::op::neg(std::forward<T2>(y)));
         
     }
 
@@ -84,17 +85,19 @@ namespace scipp {
     
 
     /// @brief Multiplication operator
-    inline constexpr auto operator*(auto&& x, auto&& y) noexcept { 
+    template <typename T1, typename T2>
+    inline constexpr auto operator*(T1 x, T2 y) noexcept { 
         
-        return math::op::mult(std::move(x), std::move(y));
+        return math::op::mult(std::forward<T1>(x), std::forward<T2>(y));
         
     }
 
 
     /// @brief Division operator
-    inline constexpr auto operator/(auto&& x, auto&& y) { 
+    template <typename T1, typename T2>
+    inline constexpr auto operator/(T1 x, T2 y) noexcept { 
 
-        return math::op::mult(std::move(x), math::op::inv(std::move(y)));
+        return math::op::mult(std::forward<T1>(x), math::op::inv(std::forward<T2>(y)));
         
     }
 
@@ -119,7 +122,7 @@ namespace scipp {
         requires (physics::is_scalar_v<T>)
     inline constexpr auto operator*=(auto& x, T&& y) noexcept { 
 
-        return x = math::op::mult(x, std::move(y));
+        return x = math::op::mult(x, std::forward<T>(y));
         
     }
 
@@ -129,7 +132,7 @@ namespace scipp {
         requires (physics::is_scalar_v<T>)
     inline constexpr auto operator/=(auto& x, T&& y) {
 
-        return x =  math::op::mult(x, math::op::inv(std::move(y)));
+        return x =  math::op::mult(x, math::op::inv(std::forward<T>(y)));
         
     }
     

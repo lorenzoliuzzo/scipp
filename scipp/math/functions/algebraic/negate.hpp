@@ -1,9 +1,9 @@
 /**
- * @file    math/functions/negate.hpp
+ * @file    math/functions/algebraic/negate.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-28
  * 
+ * @date    2023-06-12
  * @copyright Copyright (c) 2023
  */
 
@@ -45,10 +45,26 @@ namespace scipp::math {
         };
 
 
-        // Specialization for complex numbers
         template <typename T>
-            requires (math::is_complex_v<T>)
+            requires (physics::is_umeasurement_v<T>)
         struct negate<T> {
+
+            using function_t = unary_function<T, T>;
+
+            inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
+
+                return { -x.value, x.uncertainty };
+
+            }
+
+        };
+
+
+        // Specialization for complex/dual numbers
+        template <typename T>
+            requires (is_complex_v<T> || is_dual_v<T>)
+        struct negate<T> {
+
             using function_t = unary_function<T, T>;
 
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
@@ -69,7 +85,9 @@ namespace scipp::math {
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
 
                 typename function_t::result_t result;
-                std::transform(x.data.begin(), x.data.end(), result.data.begin(), [](const auto& val) { return -val; });
+                std::transform(x.data.begin(), x.data.end(), result.data.begin(), 
+                    [](const auto& val) { return op::neg(val); }
+                );
                 return result;
 
             }
@@ -86,7 +104,9 @@ namespace scipp::math {
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
 
                 typename function_t::result_t result;
-                std::transform(x.data.begin(), x.data.end(), result.data.begin(), [](const auto& val) { return -val; });
+                std::transform(x.data.begin(), x.data.end(), result.data.begin(), 
+                    [](const auto& val) { return op::neg(val); }
+                );
                 return result;
 
             }

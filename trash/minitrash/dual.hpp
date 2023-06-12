@@ -561,24 +561,6 @@ namespace scipp::math {
     }; /// struct dual
 
 
-    /// @brief Type trait to check if a type is a dual measurement
-    template <typename T>
-    struct is_dual_measurement : std::false_type {};
-
-    template <typename MEAS_TYPE>
-    struct is_dual_measurement<dual<MEAS_TYPE>> : std::true_type {};
-
-    template <typename T>
-    inline constexpr bool is_dual_measurement_v = is_dual_measurement<T>::value;
-
-
-    /// @brief Type trait to check if a set of types are all dual measurements
-    template <typename... MEAS_TYPES>
-    struct are_dual_measurements : std::conjunction<is_dual_measurement<MEAS_TYPES>...>{};
-
-    template <typename... MEAS_TYPES>
-    inline constexpr bool are_dual_measurements_v = are_dual_measurements<MEAS_TYPES...>::value;
-
 
     /// @brief dual numbers with order N
     template <typename MEAS_TYPE, size_t N>    

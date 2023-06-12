@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @date    2023-06-08
+ * @date    2023-06-12
  * 
  * @copyright Copyright (c) 2023
  */
@@ -40,8 +40,8 @@
         // #include <vector>
 
 
-        // #include "external/matplotlibcpp.h"
-        // namespace plt = matplotlibcpp;
+        #include "external/matplotlibcpp.h"
+        namespace plt = matplotlibcpp;
 
 
     /// ===============================================================
@@ -82,6 +82,7 @@
             #include "math/functions/algebraic/root.hpp" 
 
             #include "math/functions/mathematical/compose.hpp"
+            #include "math/functions/mathematical/sign.hpp"
             #include "math/functions/mathematical/modulo.hpp"
             #include "math/functions/mathematical/exponential.hpp" /// @ok, @todo matrices
             #include "math/functions/mathematical/logarithm.hpp"
@@ -109,8 +110,8 @@
         /// @brief math/numbers
         /// ---------------------------------------------------------------
         
-            #include "math/numbers/complex.hpp" /// @tofinish
-            #include "math/numbers/dual.hpp" /// @todo
+            #include "math/numbers/complex.hpp" 
+            #include "math/numbers/dual.hpp" 
 
             #include "math/numbers/constants.hpp" 
             #include "physics/constants.hpp"
@@ -154,7 +155,6 @@
         /// @brief math/calculus
         /// ---------------------------------------------------------------
 
-            // #include "math/calculus/curves/curve.hpp"
             #include "math/calculus/curves/interval.hpp"
             #include "math/calculus/curves/line.hpp"
             #include "math/calculus/curves/circumference.hpp"
@@ -191,7 +191,7 @@
 
             #include "tools/io.hpp"
             #include "tools/timer.hpp"
-        //     #include "tools/plot.hpp"
+            #include "tools/plot.hpp"
         //     #include "tools/bench.hpp"
 
 

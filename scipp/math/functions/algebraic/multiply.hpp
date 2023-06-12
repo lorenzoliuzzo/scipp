@@ -1,12 +1,14 @@
 /**
- * @file    math/ops/multiply.hpp
+ * @file    math/functions/algebraic/multiply.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * 
  * @brief   This file contains a collection of multiplication functions implemented in the scipp::math namespace. 
  *          These functions provide various ways to perform multiplication on different types of operands, 
- *          including numbers, measurements, complex numbers, vectors, and matrices.
+ *          including numbers, complex numbers, measurements, vectors, and matrices.
  * 
- * @date    2023-05-28
+ * @todo    umeasurement multiplies
+ * 
+ * @date    2023-06-12
  * @copyright Copyright (c) 2023
  */
 
@@ -19,7 +21,127 @@ namespace scipp::math {
     namespace functions {
         
 
-        /// @brief Multiply two base_quantities
+        /// @brief Multiply specialization for numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_numbers_v<ARG_TYPE1, ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, decltype(ARG_TYPE1{1} * ARG_TYPE2{1})>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return x * y; 
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for complex numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_complex_v<ARG_TYPE1, ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x.real * y.real - x.imag * y.imag, x.real * y.imag + x.imag * y.real}; 
+
+            }
+
+        };                
+
+
+        /// @brief Multiply specialization for complex numbers and numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_complex_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x.real * y, x.imag * y}; 
+
+            }
+
+        };
+
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_number_v<ARG_TYPE1> && is_complex_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x * y.real, x * y.imag}; 
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for dual numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (are_duals_v<ARG_TYPE1, ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, dual<multiply_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x.real * y.real, x.real * y.imag + x.imag * y.real};
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for dual numbers and numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_dual_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, dual<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x.real * y, x.imag * y}; 
+
+            }
+
+        };
+
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_number_v<ARG_TYPE1> && is_dual_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, dual<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return {x * y.real, x * y.imag}; 
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for physics::base_quantity
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_base_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -41,7 +163,10 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply two prefixes
+
+        /// @brief Multiply specialization for prefix
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_prefix_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -57,7 +182,9 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply two units of measurement
+        /// @brief Multiply specialization for physics::unit
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_units_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> { 
@@ -74,7 +201,9 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply a number and an unit of measurement
+        /// @brief Multiply specialization for numbers and physics::units
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename SCALAR_TYPE, typename UNIT_TYPE>
             requires (is_number_v<SCALAR_TYPE> && physics::is_unit_v<UNIT_TYPE>)
         struct multiply<SCALAR_TYPE, UNIT_TYPE> { 
@@ -90,23 +219,9 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply two numbers
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (are_numbers_v<ARG_TYPE1, ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, decltype(ARG_TYPE1{1.0} * ARG_TYPE2{1.0})>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return x * y; 
-
-            }
-
-        };
-
-        
-        /// @brief Multiply two measurement
+        /// @brief Multiply specialization for physics::measurement
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_measurements_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -122,8 +237,9 @@ namespace scipp::math {
         };
         
 
-        /// @todo
-        /// @brief Multiply two umeasurement
+        /// @brief Multiply specialization for physics::umeasurement
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::are_umeasurements_v<ARG_TYPE1, ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> { 
@@ -132,95 +248,16 @@ namespace scipp::math {
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
-                return x * y; 
+                return x * y; /// @todo
 
             }
 
         };
 
 
-        /// @brief Multiply two complex
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (are_complex_v<ARG_TYPE1, ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>>>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return {x.real * y.real - x.imag * y.imag, x.real * y.imag + x.imag * y.real}; 
-
-            }
-
-        };
-
-
-        /// @brief Multiply a measurment and a number
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (physics::is_measurement_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return x.value * y; 
-
-            }
-
-        };
-
-
-        /// @brief Multiply a number and a measurment
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (is_number_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return x * y.value; 
-
-            }
-
-        };
-
-
-        /// @brief Multiply a cmeasurment and a number
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (math::is_complex_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return {x.real * y, x.imag * y}; 
-
-            }
-
-        };
-
-
-        /// @brief Multiply a number and a cmeasurment
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (is_number_v<ARG_TYPE1> && math::is_complex_v<ARG_TYPE2>)
-        struct multiply<ARG_TYPE1, ARG_TYPE2> {
-            
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
-
-            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
-
-                return {x * y.real, x * y.imag}; 
-
-            }
-
-        };
-
-
-        /// @todo
-        /// @brief Multiply a measurement and an umeasurement
+        /// @brief Multiply specialization for physics::measurement and physics::umeasurement
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::is_measurement_v<ARG_TYPE1> && physics::is_umeasurement_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -229,14 +266,12 @@ namespace scipp::math {
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
-                return x * y;
+                return static_cast<function_t::second_arg_t>(x) * y;
 
             }
 
         };
 
-
-        /// @brief Multiply an umeasurement and a measurement 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (physics::is_umeasurement_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -252,12 +287,46 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply a measurement/umeasurement and a complex
+        /// @brief Multiply specialization for physics::measurement and number
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires ((physics::is_measurement_v<ARG_TYPE1> || physics::is_umeasurement_v<ARG_TYPE1>) && math::is_complex_v<ARG_TYPE2>)
+            requires (physics::is_measurement_v<ARG_TYPE1> && is_number_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<ARG_TYPE1, typename ARG_TYPE2::measurement_t>>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE1>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return x.value * y; 
+
+            }
+
+        };
+
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_number_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, ARG_TYPE2>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return x * y.value; 
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for physics::measurement and complex number
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::is_measurement_v<ARG_TYPE1> && is_complex_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
@@ -267,13 +336,11 @@ namespace scipp::math {
 
         };
 
-
-        /// @brief Multiply a complex and a measurement/umeasurement 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (math::is_complex_v<ARG_TYPE1> && (physics::is_measurement_v<ARG_TYPE2> || physics::is_umeasurement_v<ARG_TYPE2>))
+            requires (is_complex_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::measurement_t, ARG_TYPE2>>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, complex<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
 
@@ -284,6 +351,41 @@ namespace scipp::math {
         };
 
 
+        /// @brief Multiply specialization for physics::measurement and dual number
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (physics::is_measurement_v<ARG_TYPE1> && is_dual_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, dual<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return static_cast<function_t::second_arg_t>(x) * y;
+
+            }
+
+        };
+
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+            requires (is_dual_v<ARG_TYPE1> && physics::is_measurement_v<ARG_TYPE2>)
+        struct multiply<ARG_TYPE1, ARG_TYPE2> {
+            
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, dual<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>>>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
+
+                return x * static_cast<function_t::first_arg_t>(y);
+
+            }
+
+        };
+
+
+        /// @brief Multiply specialization for geometry::column_vector and geometry::row_vector
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (geometry::is_column_vector_v<ARG_TYPE1> && geometry::is_row_vector_v<ARG_TYPE2> && ARG_TYPE1::dim == ARG_TYPE2::dim)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -304,7 +406,6 @@ namespace scipp::math {
 
         };
 
-
         template <typename ARG_TYPE1, typename ARG_TYPE2>
             requires (geometry::is_row_vector_v<ARG_TYPE1> && geometry::is_column_vector_v<ARG_TYPE2> && ARG_TYPE1::dim == ARG_TYPE2::dim)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
@@ -320,9 +421,11 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply a generic_measurement/number and a vector
+        /// @brief Multiply specialization for geometry::vector and generic physics::measurements / numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires ((physics::is_generic_measurement_v<ARG_TYPE1> || is_number_v<ARG_TYPE1>) && geometry::is_vector_v<ARG_TYPE2>)
+            requires ((physics::is_generic_measurement_v<ARG_TYPE1> || is_generic_number_v<ARG_TYPE1>) && geometry::is_vector_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
             using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::vector<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>, ARG_TYPE2::dim, ARG_TYPE2::flag>>;
@@ -337,10 +440,8 @@ namespace scipp::math {
         
         };
 
-
-        /// @brief Multiply a vector and a generic_measurement/number 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (geometry::is_vector_v<ARG_TYPE1> && (physics::is_generic_measurement_v<ARG_TYPE2> || is_number_v<ARG_TYPE1>))
+            requires (geometry::is_vector_v<ARG_TYPE1> && (physics::is_generic_measurement_v<ARG_TYPE2> || is_generic_number_v<ARG_TYPE1>))
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
             using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::vector<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>, ARG_TYPE1::dim, ARG_TYPE1::flag>>;
@@ -356,9 +457,11 @@ namespace scipp::math {
         };
 
 
-        /// @brief Multiply two matrices
+        /// @brief Multiply specialization for geometry::matrix
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (geometry::are_matrices_v<ARG_TYPE1, ARG_TYPE2> && (ARG_TYPE1::columns == ARG_TYPE2::rows))
+            requires (geometry::are_matrix_v<ARG_TYPE1, ARG_TYPE2> && (ARG_TYPE1::columns == ARG_TYPE2::rows))
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
             using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::matrix<geometry::column_vector<multiply_t<typename ARG_TYPE1::value_t, typename ARG_TYPE2::value_t>, ARG_TYPE1::rows>, ARG_TYPE2::columns>>;
@@ -378,12 +481,14 @@ namespace scipp::math {
         }; 
 
 
-        /// @brief Multiply a generic_measurement/number and a matrix
+        /// @brief Multiply specialization for geometry::matrix and physics::measurements / generic numbers
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires ((physics::is_generic_measurement_v<ARG_TYPE1> || is_number_v<ARG_TYPE1>) && geometry::is_matrix_v<ARG_TYPE2>)
+            requires ((physics::is_measurement_v<ARG_TYPE1> || is_generic_number_v<ARG_TYPE1>) && geometry::is_matrix_v<ARG_TYPE2>)
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::matrix<multiply_t<ARG_TYPE1, typename ARG_TYPE2::vector_t>, ARG_TYPE2::columns>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::matrix<multiply_t<ARG_TYPE1, typename ARG_TYPE2::value_t>, ARG_TYPE2::columns>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
                 
@@ -395,13 +500,11 @@ namespace scipp::math {
         
         };
 
-
-        /// @brief Multiply a matrix and a generic_measurement/number 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-            requires (geometry::is_matrix_v<ARG_TYPE1> && (physics::is_generic_measurement_v<ARG_TYPE2> || is_number_v<ARG_TYPE1>))
+            requires (geometry::is_matrix_v<ARG_TYPE1> && (physics::is_measurement_v<ARG_TYPE2> || is_generic_number_v<ARG_TYPE1>))
         struct multiply<ARG_TYPE1, ARG_TYPE2> {
             
-            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::matrix<multiply_t<typename ARG_TYPE1::vector_t, ARG_TYPE2>, ARG_TYPE1::columns>>;
+            using function_t = binary_function<ARG_TYPE1, ARG_TYPE2, geometry::matrix<multiply_t<typename ARG_TYPE1::value_t, ARG_TYPE2>, ARG_TYPE1::columns>>;
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept {
                 

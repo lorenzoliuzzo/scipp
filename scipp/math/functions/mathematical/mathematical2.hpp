@@ -253,7 +253,7 @@ namespace scipp::math {
 
 
             template <typename MATRIX_TYPE1, typename MATRIX_TYPE2>
-                requires (geometry::are_matrices_v<MATRIX_TYPE1, MATRIX_TYPE2> && 
+                requires (geometry::are_matrix_v<MATRIX_TYPE1, MATRIX_TYPE2> && 
                           MATRIX_TYPE1::cols == MATRIX_TYPE2::rows)
             struct multiply<MATRIX_TYPE1, MATRIX_TYPE2> {
 

@@ -13,34 +13,38 @@ namespace scipp::tools {
 
 
     template <typename FUNC_TYPE>
-        requires (math::is_unary_function_v<FUNC_TYPE>)
-    void plot(const FUNC_TYPE& func, const math::interval<typename FUNC_TYPE::arg_t>& I, uint points) noexcept {
+        requires (math::functions::is_unary_function_v<typename FUNC_TYPE::function_t>)
+    void plot(const math::curves::interval<typename FUNC_TYPE::function_t::arg_t>& I, size_t points) noexcept {
 
         std::vector<double> x(points), y(points);
-        auto incr = (I.end - I.start) / static_cast<double>(points);
+        const auto h = I.step(points);
+
         for (size_t i = 0; i < points; ++i) {
-            x[i] = I.start + i * incr;
-            y[i] = func(x[i]);
+            auto x_i = I.start + i * h;
+            y[i] = FUNC_TYPE::f(x_i).value;
+            x[i] = x_i.value;
         }
 
         plt::plot(x, y);
+        plt::show(); 
 
     }
 
-    template <typename FUNC_TYPE>
-        requires (math::is_unary_function_v<FUNC_TYPE>)
-    void plot(const FUNC_TYPE& func, const math::interval<typename FUNC_TYPE::arg_t>& I, uint points, std::string label) noexcept {
 
-        std::vector<double> x(points), y(points);
-        auto incr = (I.end - I.start) / static_cast<double>(points);
-        for (size_t i = 0; i < points; ++i) {
-            x[i] = I.start + i * incr;
-            y[i] = func(x[i]);
-        }
+    // template <typename FUNC_TYPE>
+    //     requires (math::functions::is_unary_function_v<FUNC_TYPE>)
+    // void plot(const FUNC_TYPE& func, const math::interval<typename FUNC_TYPE::arg_t>& I, uint points, std::string label) noexcept {
 
-        plt::named_plot(label, x, y);
+    //     std::vector<double> x(points), y(points);
+    //     auto incr = (I.end - I.start) / static_cast<double>(points);
+    //     for (size_t i = 0; i < points; ++i) {
+    //         x[i] = I.start + i * incr;
+    //         y[i] = func(x[i]);
+    //     }
 
-    }
+    //     plt::named_plot(label, x, y);
+
+    // }
 
         
 } /// namespace scipp::tools

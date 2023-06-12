@@ -2,7 +2,7 @@
  * @file    traits/math.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::math namespace
- * @date    2023-05-28
+ * @date    2023-06-12
  * 
  * @copyright Copyright (c) 2023
  */
@@ -52,32 +52,12 @@ namespace scipp::math {
         inline static constexpr bool are_numbers_v = are_numbers<Ts...>::value; 
 
 
-        template <typename T>
-            requires (is_number_v<T>)
-        inline static constexpr bool is_finite(const T& x) {
-            
-            return std::isfinite(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr bool is_finite(const T& x) {
-
-            return std::isfinite(x.value);
-            
-        }
-
-
-
-
     /// =============================================
-    /// @brief complex traits
+    /// @brief complex numbers traits
     /// =============================================
 
         template <typename T> 
         struct complex;
-
 
         /// @brief Type trait to check if a type is a measurement
         template <typename T>
@@ -96,10 +76,80 @@ namespace scipp::math {
         inline static constexpr bool are_complex_v = are_complex<CMEAS_TYPES...>::value;
 
 
+    /// =============================================
+    /// @brief dual numbers traits
+    /// =============================================
 
-    // =============================================
-    // functions traits
-    // =============================================
+        template <typename T> 
+        struct dual;
+
+        template <typename T>
+        dual(T) -> dual<T>;
+
+        template <typename T>
+        dual(T, T) -> dual<T>;
+
+
+        /// @brief Type trait to check if a type is a dual number
+        template <typename T>
+        struct is_dual : std::false_type {};
+
+        template <typename MEAS_TYPE>
+        struct is_dual<dual<MEAS_TYPE>> : std::true_type {};
+
+        template <typename T>
+        inline constexpr bool is_dual_v = is_dual<T>::value;
+
+
+        /// @brief Type trait to check if a set of types are all dual numbers
+        template <typename... MEAS_TYPES>
+        struct are_duals : std::conjunction<is_dual<MEAS_TYPES>...>{};
+
+        template <typename... MEAS_TYPES>
+        inline constexpr bool are_duals_v = are_duals<MEAS_TYPES...>::value;
+
+
+
+    /// =============================================
+    /// @brief generic numbers traits
+    /// =============================================
+
+        /// @brief Type trait to check if a type is a generic number
+        template <typename T>
+        struct is_generic_number : std::conditional_t<is_number_v<T> || is_complex_v<T> || is_dual_v<T>, 
+                                                      std::true_type, 
+                                                      std::false_type> {};
+
+        template <typename T>
+        inline static constexpr bool is_generic_number_v = is_generic_number<T>::value;
+
+        template <typename... MEAS_TYPES>
+        struct are_generic_numbers : std::conjunction<is_generic_number<MEAS_TYPES>...> {};
+
+        template <typename... Ts>
+        inline static constexpr bool are_generic_number_v = are_generic_numbers<Ts...>::value;
+
+
+        template <typename T>
+            requires (is_number_v<T>)
+        inline static constexpr bool is_finite(const T& x) {
+            
+            return std::isfinite(x);
+
+        }
+
+
+        template <typename T>
+        inline static constexpr bool is_finite(const T& x) {
+
+            return std::isfinite(x.value);
+            
+        }
+
+
+    /// =============================================
+    /// @brief functions traits
+    /// =============================================
 
     namespace functions {
 
@@ -180,6 +230,9 @@ namespace scipp::math {
         template <typename T>
         struct less_equal;
 
+
+        template <typename T>
+        struct sign; 
 
     
         template <typename T>
@@ -329,78 +382,78 @@ namespace scipp::math {
     }
 
 
-    // =============================================
-    // calculus traits
-    // =============================================
+    /// =============================================
+    /// @brief calculus traits
+    /// =============================================
 
-        namespace curves {
-
-
-            template <typename T, size_t DIM>      
-            struct curve : functions::nary_function<T, DIM, double> {
+    namespace curves {
 
 
-                using _t = curve<T, DIM>;
-
-                using function_t = functions::nary_function<T, DIM, double>;
-
-                using param_t = std::array<double, DIM>;
+        template <typename T, size_t DIM>      
+        struct curve : functions::nary_function<T, DIM, double> {
 
 
-            }; // struct curve 
-        
+            using _t = curve<T, DIM>;
 
-            template <typename T>
-            struct is_curve : std::false_type {};
+            using function_t = functions::nary_function<T, DIM, double>;
 
-            template <typename T, size_t DIM>
-            struct is_curve<curve<T, DIM>> : std::true_type {};
-
-            template <typename T>
-            inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
+            using param_t = std::array<double, DIM>;
 
 
-            template <typename T>
-            struct interval; 
+        }; // struct curve 
+    
 
-            template <typename T>
-            struct is_interval : std::false_type {};
+        template <typename T>
+        struct is_curve : std::false_type {};
 
-            template <typename T>
-            struct is_interval<interval<T>> : std::true_type {};
+        template <typename T, size_t DIM>
+        struct is_curve<curve<T, DIM>> : std::true_type {};
 
-            template <typename T>
-            inline static constexpr bool is_interval_v = is_interval<T>::value;
-
-
-            template <typename T>
-            struct line; 
-
-            template <typename T>
-            struct is_line : std::false_type {};
-
-            template <typename T>
-            struct is_line<line<T>> : std::true_type {};
-
-            template <typename T>
-            inline static constexpr bool is_line_v = is_line<T>::value;
+        template <typename T>
+        inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
 
 
-            template <typename T>
-            struct circumference; 
+        template <typename T>
+        struct interval; 
 
-            template <typename T>
-            struct is_circumference : std::false_type {};
+        template <typename T>
+        struct is_interval : std::false_type {};
 
-            template <typename T>
-            struct is_circumference<circumference<T>> : std::true_type {};
+        template <typename T>
+        struct is_interval<interval<T>> : std::true_type {};
 
-            template <typename T>
-            inline static constexpr bool is_circumference_v = is_circumference<T>::value;
+        template <typename T>
+        inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+
+        template <typename T>
+        struct line; 
+
+        template <typename T>
+        struct is_line : std::false_type {};
+
+        template <typename T>
+        struct is_line<line<T>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_line_v = is_line<T>::value;
+
+
+        template <typename T>
+        struct circumference; 
+
+        template <typename T>
+        struct is_circumference : std::false_type {};
+
+        template <typename T>
+        struct is_circumference<circumference<T>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_circumference_v = is_circumference<T>::value;
 
 
 
-        } // namespace curves
+    } // namespace curves
 
 
 } /// namespace scipp::math

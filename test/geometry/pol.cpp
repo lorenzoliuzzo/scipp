@@ -21,8 +21,8 @@ int main() {
     auto r8 = make_vector<complex<double>>(0., 0., 0., 0.);
 
 
-    auto mat1 = make_matrix(r1, r2, r3, r4).transpose();
-    auto mat2 = make_matrix(r5, r6, r7, r8).transpose();
+    auto mat1 = make_matrix<column_vector<complex<double>, 4>>(r1, r2, r3, r4);
+    auto mat2 = make_matrix<column_vector<complex<double>, 4>>(r5, r6, r7, r8);
     print(mat1);
     print(mat2);
     
@@ -36,6 +36,12 @@ int main() {
     print(x.real);
 
     print(x.conj());
+
+
+    print("mat1", mat1); 
+    mat1.row(0) = r3.transpose(); 
+    print("mat1", mat1);
+
 
 
     return 0; 

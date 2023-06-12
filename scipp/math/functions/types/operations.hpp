@@ -21,6 +21,14 @@ namespace scipp::math {
             return functions::round<T>::f(x);
             
         }
+
+
+        template <typename T>
+        inline static constexpr auto sign(const T& x) noexcept {
+
+            return functions::sign<T>::f(x);
+            
+        }
         
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
@@ -29,6 +37,7 @@ namespace scipp::math {
             return functions::equal<ARG_TYPE1, ARG_TYPE2>::f(std::forward<ARG_TYPE1>(x), std::forward<ARG_TYPE2>(y));
 
         }      
+
 
 
         // template <typename ARG_TYPE>
@@ -322,6 +331,13 @@ namespace scipp::math {
         inline static constexpr auto cross(const T1&, const T2&) noexcept; 
 
 
+        template <typename T, typename SCALAR_TYPE>
+            requires (is_number_v<SCALAR_TYPE> || physics::is_scalar_measurement_v<SCALAR_TYPE> || physics::is_scalar_umeasurement_v<SCALAR_TYPE>)
+        inline static constexpr auto polar(const T& rho, const SCALAR_TYPE& theta) noexcept {
+
+            return { rho * cos(theta), rho * sin(theta) };
+
+        }
 
         template <typename T1, typename T2>
         inline static constexpr auto proj(const T1&, const T2&) noexcept; 

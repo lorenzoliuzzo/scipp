@@ -1,9 +1,10 @@
 /**
  * @file    geometry/matrix.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-05-02
  * 
+ * @brief   
+ * 
+ * @date    2023-06-12
  * @copyright Copyright (c) 2023
  */
 
@@ -18,33 +19,37 @@ namespace scipp::geometry {
 
 
         // ===========================================================
+        // static members
+        // ===========================================================
+
+            inline static constexpr size_t rows = VECTOR_TYPE::dim;
+
+            inline static constexpr size_t columns = COLUMNS;
+            
+
+        // ===========================================================
         // aliases
         // ===========================================================
 
-            using type = matrix<VECTOR_TYPE, COLUMNS>;
+            using value_t = VECTOR_TYPE; 
 
-            using data_t = std::array<VECTOR_TYPE, COLUMNS>;
+            using element_t = typename VECTOR_TYPE::value_t; 
 
-            using value_t = typename VECTOR_TYPE::value_t; 
+            using data_t = std::array<value_t, columns>;
 
-            using vector_t = VECTOR_TYPE; 
-
-            using row_vector_t = vector<value_t, COLUMNS>;
+            using _t = matrix<value_t, columns>;
 
 
         // ===========================================================
         // members
         // ===========================================================            
 
-            inline static constexpr size_t rows = vector_t::dim;
-
-            inline static constexpr size_t columns = COLUMNS;
-
             data_t data; 
 
             std::array<uint, rows> max_idx_row; // array of indices of the maximum element in each row
 
             std::array<uint, columns> max_idx_col; // array of indices of the maximum element in each column
+
 
         // ===========================================================
         // constructors
@@ -84,33 +89,19 @@ namespace scipp::geometry {
             /// @note The number of vectors must be equal to the number of columns
             template <typename... VECTORS>
                 requires (sizeof...(VECTORS) == columns) // are_same_vectors_v<VECTORS...> && 
-            constexpr matrix(const VECTORS&... other) noexcept :
-                
-                data{std::forward<vector_t>(other...)} {}
-
-            /// @brief Constructor from a list of vectors
-            /// @note  The list of vectors must be of the same type
-            /// @note The number of vectors must be equal to the number of columns
-            template <typename... VECTORS>
-                requires (sizeof...(VECTORS) == columns) // are_same_vectors_v<VECTORS...> && 
             constexpr matrix(VECTORS&&... other) noexcept :
                 
-                data{std::forward<vector_t>(std::move(other))...} {}
+                data{std::forward<value_t>(other)...} {}
 
 
-            /// @brief Construct a new matrix from a single vector
-            constexpr matrix(const value_t& other) noexcept {
+            // /// @brief Constructor from a list of vectors
+            // /// @note  The list of vectors must be of the same type
+            // /// @note The number of vectors must be equal to the number of columns
+            // template <typename... VECTORS>
+            //     requires (sizeof...(VECTORS) == columns) // are_same_vectors_v<VECTORS...> && 
+            // constexpr matrix(VECTORS&&... other) noexcept :
                 
-                this->data.fill(vector<value_t, rows>(other)); 
-
-            }
-
-            /// @brief Construct a new matrix from a single vector
-            constexpr matrix(value_t&& other) noexcept {
-                
-                this->data.fill(vector<value_t, rows>(std::move(other))); 
-
-            }
+            //     data{std::forward<value_t>(other)...} {}
 
                         
         // ===========================================================
@@ -166,348 +157,27 @@ namespace scipp::geometry {
             }
 
 
-            /// @brief Addition operator
-            constexpr matrix& operator+=(const matrix& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               this->data.begin(), 
-                               std::plus<vector_t>());
-
-                return *this;
-
-            }
-
-            /// @brief Addition operator
-            constexpr matrix& operator+=(matrix&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               std::move(other).data.begin(), 
-                               this->data.begin(), 
-                               std::plus<vector_t>());
-
-                return *this;
-
-            }
-
-
-            /// @brief Subtraction operator
-            constexpr matrix& operator-=(const matrix& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               this->data.begin(), 
-                               std::minus<vector_t>());
-
-                return *this;
-                
-            }
-
-            /// @brief Subtraction operator
-            constexpr matrix& operator-=(matrix&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               std::move(other).data.begin(), 
-                               this->data.begin(), 
-                               std::minus<vector_t>());
-
-                return *this;
-
-            }
-
-
-            /// @brief Addition operator
-            constexpr matrix operator+(const matrix& other) const noexcept {
-
-                data_t result;
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               result.begin(), 
-                               std::plus<vector_t>());
-
-                return result;
-
-            }
-
-            /// @brief Addition operator
-            constexpr matrix operator+(matrix&& other) const noexcept {
-
-                data_t result;
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               result.begin(), 
-                               std::plus<vector_t>());
-
-                return result;
-
-            }
-
-
-            /// @brief Subtraction operator
-            constexpr matrix operator-(const matrix& other) const noexcept {
-
-                data_t result;
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               result.begin(), 
-                               std::minus<vector_t>());
-
-                return result;
-
-            }
-
-            /// @brief Subtraction operator
-            constexpr matrix operator-(matrix&& other) const noexcept {
-
-                data_t result;
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               std::move(other).data.begin(), 
-                               result.begin(), 
-                               std::minus<vector_t>());
-
-                return result;
-
-            }
-
-
-            /// @brief Negate a matrix
-            constexpr matrix operator-() const noexcept {
-
-                data_t result; 
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               std::negate<vector_t>()); 
-
-                return result;    
-
-            }
-
-
-            /// @brief Multiply this matrix by a scalar measurement
-            constexpr matrix& operator*=(const physics::scalar_m& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](vector_t& x) { return x *= other; });
-
-                return *this;
-
-            }
-
-            /// @brief Multiply this matrix by a scalar measurement
-            constexpr matrix& operator*=(physics::scalar_m&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](vector_t& x) { return std::move(x *= other); });
-
-                return *this;
-
-            }
-
-
-            /// @brief Divide this matrix by a scalar measurement
-            constexpr matrix& operator/=(const physics::scalar_m& other) {
-                
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide a matrix by zero"); 
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](vector_t& x) { return x /= other; });
-
-                return *this;
-
-            }
-
-            /// @brief Divide this matrix by a scalar measurement
-            constexpr matrix& operator/=(physics::scalar_m&& other) {
-                
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide a matrix by zero"); 
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](vector_t& x) { return std::move(x /= other); });
-
-                return *this;
-
-            }
-
-
-            /// @brief Multiplicate a matrix with a generic measurement
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept 
-                -> matrix<math::functions::multiply_t<vector_t, OTHER_MEAS_TYPE>, columns> {
-
-                std::array<math::functions::multiply_t<vector_t, OTHER_MEAS_TYPE>, columns> result;
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               [&other](const vector_t& x) { return x * other; });
-
-                return result; 
-
-            }
-
-            /// @brief Multiplicate a matrix with a generic measurement
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept 
-                -> matrix<math::functions::multiply_t<vector_t, OTHER_MEAS_TYPE>, columns> {
-
-                std::array<math::functions::multiply_t<vector_t, OTHER_MEAS_TYPE>, columns> result;
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               [&other](const vector_t& x) { return std::move(x * other); });
-
-                return result;
-
-            }
-
-
-            /// @brief Divide a matrix by a generic measurement
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator/(const OTHER_MEAS_TYPE& other) const 
-                -> matrix<vector<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, rows>, columns> {
-
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
-
-                return std::apply(
-                    [&](const auto&... components) {
-                        return std::array<vector<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, rows>, columns>({components / other ...});
-                    }, this->data
-                );
-
-            }
-
-            /// @brief Divide a matrix by a generic measurement
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator/(OTHER_MEAS_TYPE&& other) const 
-                -> matrix<vector<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, rows>, columns> {
-
-                if (other.value == 0.0)
-                    throw std::invalid_argument("Cannot divide a matrix by a zero measurement");
-
-                return std::apply(
-                    [&](const auto&... components) {
-                        return std::array<vector<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, rows>, columns>({components / std::move(other) ...});
-                    }, this->data
-                );
-
-            }
-
-
-            /// @brief  Multiply a matrix by a vector
-            template <typename OTHER_VEC_TYPE>
-                requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
-            constexpr auto operator*(const OTHER_VEC_TYPE& other) const noexcept 
-                -> vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows> {
-                
-                std::array<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows> result;
-                const auto transposed_data = this->transpose().data;
-
-                std::transform(std::execution::par,
-                               transposed_data.begin(), transposed_data.end(), 
-                               result.begin(), 
-                               [&other](auto&& row) { return math::op::dot(row, other); });
-
-                return result;            
-
-            }
-
-            /// @brief  Multiply a matrix by a vector
-            template <typename OTHER_VEC_TYPE>
-                requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
-            constexpr auto operator*(OTHER_VEC_TYPE&& other) const noexcept 
-                -> vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows> {
-                
-                std::array<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows> result;
-                const auto transposed_data = this->transpose().data;  
-
-                std::transform(std::execution::par,
-                               transposed_data.begin(), transposed_data.end(), 
-                               result.begin(), 
-                               [&other](auto&& row) { return math::op::dot(row, std::move(other)); });
-                               
-                return result;               
-
-            }
-
-
-            // /// @brief Multiply a matrix to another matrix
-            // template <typename OTHER_VEC_TYPE>
-            //     requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns) 
-            // constexpr auto operator*(const matrix<OTHER_VEC_TYPE, rows>& other) const noexcept 
-            //     -> matrix<vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows>, columns> {
-
-            //     std::array<vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows>, columns> result;
-            //     const auto transposed_data = this->transpose().data;  
-            //     for (size_t i{}; i < columns; ++i)
-            //         for (size_t j{}; j < rows; ++j)
-            //             result[i][j] = math::op::dot(transposed_data[j], other.data[i]);
-
-            //     return result;
-
-            // }
-
-            template <typename OTHER_VEC_TYPE>
-                requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == columns)
-            constexpr auto operator*(const matrix<OTHER_VEC_TYPE, rows>& other) const noexcept 
-                -> matrix<vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows>, OTHER_VEC_TYPE::dim> {
-
-                matrix<vector<math::functions::multiply_t<value_t, typename OTHER_VEC_TYPE::value_t>, rows>, OTHER_VEC_TYPE::dim> result;
-                const auto transposed = this->transpose();  
-                for (size_t i{}; i < OTHER_VEC_TYPE::dim; ++i)
-                    for (size_t j{}; j < rows; ++j)
-                        result.data[i][j] = math::op::dot(transposed[j], other.data[i]);
-
-                return result;
-                
-            }
-
-
         // ===========================================================
         // callable methods
         // ===========================================================
            
             /// @brief Get the identity matrix
             static constexpr auto identity() noexcept
-                -> matrix<vector<value_t, rows>, columns> 
+                -> matrix<value_t, columns> 
                     requires (columns == rows) { 
 
-                std::array<vector<value_t, rows>, columns> result; 
+                std::array<value_t, columns> result; 
                 for (size_t i{}; i < columns; ++i)
                     for (size_t j{}; j < rows; ++j)
                         if (i == j)
-                            result[i][j] = value_t::one; 
+                            result[i][j] = element_t::one; 
 
                 return result; 
 
             };
 
 
-            constexpr vector_t operator[](size_t index) const noexcept {
+            constexpr value_t operator[](size_t index) const noexcept {
 
                 return this->data[index];
 
@@ -517,7 +187,7 @@ namespace scipp::geometry {
             /// @brief Get the column at index
             template <size_t index>
                 requires (index < columns)
-            constexpr vector_t column() const noexcept {
+            constexpr value_t column() const noexcept {
                                     
                 return this->data[index];
 
@@ -526,7 +196,7 @@ namespace scipp::geometry {
             /// @brief Get the column at index
             template <size_t index>
                 requires (index < columns)
-            constexpr vector_t column() noexcept {
+            constexpr value_t column() noexcept {
                                     
                 return this->data[index];
 
@@ -534,7 +204,7 @@ namespace scipp::geometry {
 
 
             /// @brief Get the column at index
-            constexpr vector_t column(size_t& index) const {
+            constexpr value_t column(size_t& index) const {
                                     
                 if (index >= columns) 
                     throw std::out_of_range("Cannot access column " + std::to_string(index) + " from a matrix with " + std::to_string(columns) + " columns."); 
@@ -544,7 +214,7 @@ namespace scipp::geometry {
             }
 
             /// @brief Get the column at index
-            constexpr vector_t column(size_t& index) {
+            constexpr value_t column(size_t& index) {
                                     
                 if (index >= columns) 
                     throw std::out_of_range("Cannot access column " + std::to_string(index) + " from a matrix with " + std::to_string(columns) + " columns."); 
@@ -560,8 +230,8 @@ namespace scipp::geometry {
             constexpr decltype(auto) row() const noexcept {
                                     
                 return std::apply(
-                    [&](auto&&... column) -> row_vector_t {
-                        return row_vector_t({column[index]...}); 
+                    [&](auto&&... column) -> row_vector<element_t, rows> {
+                        return {column[index]...}; 
                     }, this->data
                 );
 
@@ -574,8 +244,8 @@ namespace scipp::geometry {
                     throw std::out_of_range("Cannot access row " + std::to_string(index) + " from a matrix with " + std::to_string(rows) + " rows."); 
 
                 return std::apply(
-                    [&](auto&&... column) -> row_vector_t {
-                        return row_vector_t({column[index]...}); 
+                    [&](auto&&... column) -> row_vector<element_t, rows> {
+                        return {column[index]...}; 
                     }, this->data
                 );
 
@@ -605,31 +275,31 @@ namespace scipp::geometry {
 
 
             /// @brief Add a column to a matrix
-            constexpr auto vstack(const vector_t& other) const noexcept {
+            constexpr auto vstack(const value_t& other) const noexcept {
 
                 return std::apply(
                     [&](const auto&... components) {
-                        return std::array<vector_t, columns + 1>({components..., other});
+                        return std::array<value_t, columns + 1>({components..., other});
                     }, this->data
                 );
 
             }
 
 
-            /// @brief Add a row to a matrix
-            constexpr auto hstack(const row_vector_t& other) const noexcept {
+            // /// @brief Add a row to a matrix
+            // constexpr auto hstack(const row_vector_t& other) const noexcept {
                 
-                std::array<vector<value_t, rows + 1>, columns> result;
-                for (size_t i{}; i < columns; ++i)
-                    for (size_t j{}; j < rows; ++j)
-                        result[i][j] = this->data[i][j];
+            //     std::array<vector<value_t, rows + 1>, columns> result;
+            //     for (size_t i{}; i < columns; ++i)
+            //         for (size_t j{}; j < rows; ++j)
+            //             result[i][j] = this->data[i][j];
 
-                for (size_t i{}; i < rows; ++i)
-                    result[columns][i] = other.data[i];
+            //     for (size_t i{}; i < rows; ++i)
+            //         result[columns][i] = other.data[i];
 
-                return result; 
+            //     return result; 
 
-            }
+            // }
 
 
             // /// @brief Get the subvector of the matrix
@@ -685,9 +355,9 @@ namespace scipp::geometry {
 
 
             /// @brief Transpose the matrix 
-            constexpr matrix<row_vector_t, rows> transpose() const noexcept {
+            constexpr matrix<vector<element_t, columns, !value_t::flag>, rows> transpose() const noexcept {
 
-                std::array<row_vector_t, rows> result;
+                std::array<vector<element_t, columns, !value_t::flag>, rows> result;
 
                 for (size_t i{}; i < columns; ++i) 
                     for (size_t j{}; j < rows; ++j) 
@@ -699,10 +369,10 @@ namespace scipp::geometry {
 
 
             /// @brief Get the trace of the matrix
-            constexpr value_t trace() const noexcept 
+            constexpr element_t trace() const noexcept 
                 requires (columns == rows) {
 
-                value_t result;
+                element_t result;
 
                 for (size_t i{}; i < columns; ++i)
                     result += this->data[i][i];
@@ -714,10 +384,10 @@ namespace scipp::geometry {
 
             /// @brief Get the diagonal of the matrix
             constexpr auto diagonal() const noexcept 
-                -> vector<value_t, columns> 
+                -> vector<element_t, columns> 
                     requires (columns == rows) {
 
-                std::array<value_t, columns> result;
+                std::array<element_t, columns> result;
                 for (size_t i{}; i < columns; ++i)
                     result[i] = this->data[i][i];
 
@@ -728,7 +398,7 @@ namespace scipp::geometry {
 
             /// @brief Get the determinant of the matrix
             constexpr auto determinant() const noexcept 
-                -> math::functions::power_t<columns, value_t> 
+                -> math::functions::power_t<columns, element_t> 
                     requires (columns == rows) {
 
                 if constexpr (columns == 1)
@@ -753,7 +423,7 @@ namespace scipp::geometry {
 
             /// @brief Get the cofactor at row and column
             constexpr auto cofactor(const size_t& row_i, const size_t& col_j) const noexcept 
-                -> math::functions::power_t<columns - 1, value_t>
+                -> math::functions::power_t<columns - 1, element_t>
                     requires (columns == rows) {
                 
                 auto submatrix = this->submatrix(row_i, col_j);
@@ -764,10 +434,10 @@ namespace scipp::geometry {
 
             /// @brief Get the adjoint matrix
             constexpr auto adjoint() const noexcept 
-                -> matrix<vector<math::functions::power_t<columns - 1, value_t>, columns>, rows> 
+                -> matrix<vector<math::functions::power_t<columns - 1, element_t>, columns>, rows> 
                     requires (columns == rows) {
 
-                std::array<vector<math::functions::power_t<columns - 1, value_t>, columns>, rows> result;
+                std::array<vector<math::functions::power_t<columns - 1, element_t>, columns>, rows> result;
                 for (size_t i{}; i < columns; ++i) 
                     for (size_t j{}; j < rows; ++j) 
                         result[i][j] = this->cofactor(j, i);
@@ -779,7 +449,7 @@ namespace scipp::geometry {
 
             /// @brief Get the inverse of the matrix
             constexpr auto inverse() const 
-                -> matrix<vector<math::functions::invert_t<value_t>, columns>, rows>
+                -> matrix<vector<math::functions::invert_t<element_t>, columns>, rows>
                     requires (columns == rows) {
 
                 if (this->determinant().value == 0.0) 
@@ -793,8 +463,7 @@ namespace scipp::geometry {
             /// @brief Solve the system of linear equations
             template <typename OTHER_VEC_TYPE>
                 requires (is_vector_v<OTHER_VEC_TYPE> && OTHER_VEC_TYPE::dim == rows && columns == rows)
-            friend constexpr auto solve(const matrix& A, const OTHER_VEC_TYPE& b) 
-                -> math::functions::divide_t<OTHER_VEC_TYPE, value_t> {
+            friend constexpr auto solve(const matrix& A, const OTHER_VEC_TYPE& b) {
 
                 if (A.determinant().value == 0.0) 
                     throw std::domain_error("Cannot solve a singular system of linear equations.");
@@ -804,159 +473,159 @@ namespace scipp::geometry {
             }
             
 
-            /// @brief Solve the linear system Ax = b with the Gauss elimination method
-            friend constexpr auto gauss_solve(const matrix& A, const vector_t& b) noexcept 
-                -> vector<physics::scalar_m, rows>
-                    requires (columns == rows) {
+            // /// @brief Solve the linear system Ax = b with the Gauss elimination method
+            // friend constexpr auto gauss_solve(const matrix& A, const vector_t& b) noexcept 
+            //     -> vector<physics::scalar_m, rows>
+            //         requires (columns == rows) {
 
-                std::array<vector_t, columns + 1> A_b = A.vstack(b); 
-                std::array<physics::scalar_m, rows> result;
+            //     std::array<vector_t, columns + 1> A_b = A.vstack(b); 
+            //     std::array<physics::scalar_m, rows> result;
 
-                for (size_t k{}; k < columns; ++k) {
+            //     for (size_t k{}; k < columns; ++k) {
                     
-                    size_t pivot{k};
-                    value_t maxPivot;
+            //         size_t pivot{k};
+            //         value_t maxPivot;
 
-                    // Find the best pivot
-                    for (size_t i{k}; i < columns; ++i) 
-                        if (math::op::abs(A_b[k][i]) > maxPivot) {
+            //         // Find the best pivot
+            //         for (size_t i{k}; i < columns; ++i) 
+            //             if (math::op::abs(A_b[k][i]) > maxPivot) {
 
-                            maxPivot = math::op::abs(A_b[k][i]);
-                            pivot = i;
+            //                 maxPivot = math::op::abs(A_b[k][i]);
+            //                 pivot = i;
 
-                        }
+            //             }
 
-                    // Swap rows k and p
-                    if (pivot != k)
-                        for (size_t i{k}; i < columns + 1; ++i)
-                            std::swap(A_b[i][pivot], A_b[i][k]);
+            //         // Swap rows k and p
+            //         if (pivot != k)
+            //             for (size_t i{k}; i < columns + 1; ++i)
+            //                 std::swap(A_b[i][pivot], A_b[i][k]);
 
-                    // Elimination of variables
-                    for (size_t i{k + 1}; i < columns; ++i) {
+            //         // Elimination of variables
+            //         for (size_t i{k + 1}; i < columns; ++i) {
 
-                        auto factor = A_b[k][i] / A_b[k][k];
+            //             auto factor = A_b[k][i] / A_b[k][k];
 
-                        for (size_t j{k}; j < columns + 1; j++)
-                            A_b[j][i] -= factor * A_b[j][k];
+            //             for (size_t j{k}; j < columns + 1; j++)
+            //                 A_b[j][i] -= factor * A_b[j][k];
 
-                    }
+            //         }
 
-                }
+            //     }
 
-                // Back substitution
-                for (long int k = columns - 1; k >= 0; k--) {
+            //     // Back substitution
+            //     for (long int k = columns - 1; k >= 0; k--) {
 
-                    value_t sum = A_b[columns][k];
-                    for (size_t j = k + 1; j < columns; j++)
-                        sum -= result[j] * A_b[j][k];
+            //         value_t sum = A_b[columns][k];
+            //         for (size_t j = k + 1; j < columns; j++)
+            //             sum -= result[j] * A_b[j][k];
 
-                    result[k] = sum / A_b[k][k];
+            //         result[k] = sum / A_b[k][k];
 
-                }
+            //     }
 
-                return result; 
+            //     return result; 
 
-            }
+            // }
     
 
-            friend constexpr auto gauss_jordan_solve(const matrix& A, const vector_t& b) noexcept 
-                -> vector<physics::scalar_m, rows>
-                    requires (columns == rows) {
+            // friend constexpr auto gauss_jordan_solve(const matrix& A, const vector_t& b) noexcept 
+            //     -> vector<physics::scalar_m, rows>
+            //         requires (columns == rows) {
 
-                std::array<vector_t, columns + 1> A_b = A.vstack(b);
-                std::array<physics::scalar_m, rows> result;
+            //     std::array<vector_t, columns + 1> A_b = A.vstack(b);
+            //     std::array<physics::scalar_m, rows> result;
 
-                // partial pivoting
-                for (int i = columns - 1; i > 0; --i) 
-                    if (math::op::abs(A_b[0][i - 1]) < math::op::abs(A_b[i][0]))
-                        for (size_t j{}; j <= columns; j++) 
-                            std::swap(A_b[j][i - 1], A_b[j][i]);
+            //     // partial pivoting
+            //     for (int i = columns - 1; i > 0; --i) 
+            //         if (math::op::abs(A_b[0][i - 1]) < math::op::abs(A_b[i][0]))
+            //             for (size_t j{}; j <= columns; j++) 
+            //                 std::swap(A_b[j][i - 1], A_b[j][i]);
 
-                // gauss elimination
-                for (size_t j{}; j < columns; ++j) 
-                    for (size_t i{}; i < columns; ++i) 
-                        if (i != j) {
+            //     // gauss elimination
+            //     for (size_t j{}; j < columns; ++j) 
+            //         for (size_t i{}; i < columns; ++i) 
+            //             if (i != j) {
 
-                            auto factor = A_b[j][i] / A_b[j][j];
+            //                 auto factor = A_b[j][i] / A_b[j][j];
                             
-                            for (size_t k{}; k <= columns; k++) 
-                                A_b[k][i] -= factor * A_b[k][j];
+            //                 for (size_t k{}; k <= columns; k++) 
+            //                     A_b[k][i] -= factor * A_b[k][j];
 
-                        }
+            //             }
 
-                // diagonal elements
-                for (size_t i{}; i < rows; ++i) 
-                    result[i] = A_b[columns][i] / A_b[i][i];
+            //     // diagonal elements
+            //     for (size_t i{}; i < rows; ++i) 
+            //         result[i] = A_b[columns][i] / A_b[i][i];
 
-                return result;
+            //     return result;
 
-            }
-
-
-            /// @brief Reduce the matrix to an upper triangular matrix
-            constexpr auto upper_triangular() const noexcept 
-                -> matrix<vector_t, rows>
-                    requires (columns == rows) {
-
-                matrix<vector_t, rows> result{*this};
-
-                for (size_t i{}; i < columns; ++i) 
-                    for (size_t j{i + 1}; j < columns; ++j) {
-
-                        auto factor = result.data[i][j] / result.data[i][i];
-
-                        for (size_t k{}; k < columns; ++k) 
-                            result.data[k][j] -= factor * result.data[k][i];
-
-                    }
-
-                return result;
-
-            }
+            // }
 
 
-            /// @brief Reduce the matrix to a lower triangular matrix
-            constexpr auto lower_triangular() const noexcept 
-                -> matrix<vector_t, rows>
-                    requires (columns == rows) {
+            // /// @brief Reduce the matrix to an upper triangular matrix
+            // constexpr auto upper_triangular() const noexcept 
+            //     -> matrix<vector_t, rows>
+            //         requires (columns == rows) {
 
-                matrix<vector_t, rows> result{*this};
+            //     matrix<vector_t, rows> result{*this};
 
-                for (size_t i{columns - 1}; i > 0; --i) 
-                    for (size_t j{i - 1}; j > 0; --j) {
+            //     for (size_t i{}; i < columns; ++i) 
+            //         for (size_t j{i + 1}; j < columns; ++j) {
 
-                        auto factor = result.data[i][j] / result.data[i][i];
+            //             auto factor = result.data[i][j] / result.data[i][i];
 
-                        for (size_t k{}; k < columns; ++k) 
-                            result.data[k][j] -= factor * result.data[k][i];
+            //             for (size_t k{}; k < columns; ++k) 
+            //                 result.data[k][j] -= factor * result.data[k][i];
 
-                    }
+            //         }
 
-                return result;
+            //     return result;
 
-            }
+            // }
 
 
-            template <int row_start, int col_start, int row_end, int col_end>
-            friend constexpr auto submatrix(const matrix& other) {
+            // /// @brief Reduce the matrix to a lower triangular matrix
+            // constexpr auto lower_triangular() const noexcept 
+            //     -> matrix<vector_t, rows>
+            //         requires (columns == rows) {
+
+            //     matrix<vector_t, rows> result{*this};
+
+            //     for (size_t i{columns - 1}; i > 0; --i) 
+            //         for (size_t j{i - 1}; j > 0; --j) {
+
+            //             auto factor = result.data[i][j] / result.data[i][i];
+
+            //             for (size_t k{}; k < columns; ++k) 
+            //                 result.data[k][j] -= factor * result.data[k][i];
+
+            //         }
+
+            //     return result;
+
+            // }
+
+
+            // template <int row_start, int col_start, int row_end, int col_end>
+            // friend constexpr auto submatrix(const matrix& other) {
                 
-                if constexpr (row_start > row_end || col_start > col_end) 
-                    throw std::invalid_argument("Invalid submatrix range.");
+            //     if constexpr (row_start > row_end || col_start > col_end) 
+            //         throw std::invalid_argument("Invalid submatrix range.");
                 
-                if constexpr (row_end >= rows || col_end >= columns) 
-                    throw std::out_of_range("Submatrix range out of bounds.");
+            //     if constexpr (row_end >= rows || col_end >= columns) 
+            //         throw std::out_of_range("Submatrix range out of bounds.");
                 
-                constexpr size_t sub_rows = row_end - row_start + 1;
-                constexpr size_t sub_cols = col_end - col_start + 1;
-                matrix<vector<value_t, sub_rows>, sub_cols> sub;
+            //     constexpr size_t sub_rows = row_end - row_start + 1;
+            //     constexpr size_t sub_cols = col_end - col_start + 1;
+            //     matrix<vector<value_t, sub_rows>, sub_cols> sub;
                 
-                for (size_t i = 0; i < sub_rows; ++i) 
-                    for (size_t j = 0; j < sub_cols; ++j) 
-                        sub.data[i][j] = other.data[row_start + i][col_start + j];
+            //     for (size_t i = 0; i < sub_rows; ++i) 
+            //         for (size_t j = 0; j < sub_cols; ++j) 
+            //             sub.data[i][j] = other.data[row_start + i][col_start + j];
 
-                return sub;
+            //     return sub;
 
-            }
+            // }
 
 
             // template <int row_start, int col_start, int row_end, int col_end>
@@ -1010,279 +679,279 @@ namespace scipp::geometry {
                         
 
 
-            constexpr uint max_entry_row(uint i) const noexcept {
+            // constexpr uint max_entry_row(uint i) const noexcept {
 
-                uint j_max = i + 1;
-                for (uint j = i + 2; j < rows; ++j)
-                    if (math::op::abs(this->data[i][j]) > math::op::abs(this->data[i][j_max]))
-                        j_max = j;
+            //     uint j_max = i + 1;
+            //     for (uint j = i + 2; j < rows; ++j)
+            //         if (math::op::abs(this->data[i][j]) > math::op::abs(this->data[i][j_max]))
+            //             j_max = j;
 
-                return j_max;
+            //     return j_max;
 
-            }
-
-
-            constexpr auto max_entry() const noexcept 
-                -> std::pair<uint, uint> {
-
-                uint i_max = 0;
-                uint j_max = this->max_idx_row[i_max];
-                auto max_entry = math::op::abs(this->data[i_max][j_max]);
-                uint nm1 = rows - 1;
-                for (uint i = 1; i < nm1; ++i) {
-
-                    uint j = this->max_idx_row[i];
-                    auto x = math::op::abs(this->data[i][j]);
-                    if (x > max_entry) {
-                        max_entry = x;
-                        i_max = i;
-                        j_max = j;
-                    }
-
-                }
-
-                return std::make_pair(i_max, j_max);
-
-            }
+            // }
 
 
-            template <bool EIGEN = true, uint ITER_MAX = 1000>  
-                requires (rows == columns)
-            friend constexpr auto diagonalize(const matrix& mat) 
-                -> std::conditional_t<EIGEN, std::pair<matrix, matrix::vector_t>, matrix> {
+            // constexpr auto max_entry() const noexcept 
+            //     -> std::pair<uint, uint> {
 
-                matrix M{mat};
-                matrix evec = matrix::identity();
-                std::array<value_t, matrix::rows> eval;
-                double t, c, s; // = tan(θ), cos(θ), sin(θ)
+            //     uint i_max = 0;
+            //     uint j_max = this->max_idx_row[i_max];
+            //     auto max_entry = math::op::abs(this->data[i_max][j_max]);
+            //     uint nm1 = rows - 1;
+            //     for (uint i = 1; i < nm1; ++i) {
 
-                auto calc_rot = [&](uint i_, uint j_) {
+            //         uint j = this->max_idx_row[i];
+            //         auto x = math::op::abs(this->data[i][j]);
+            //         if (x > max_entry) {
+            //             max_entry = x;
+            //             i_max = i;
+            //             j_max = j;
+            //         }
+
+            //     }
+
+            //     return std::make_pair(i_max, j_max);
+
+            // }
+
+
+            // template <bool EIGEN = true, uint ITER_MAX = 1000>  
+            //     requires (rows == columns)
+            // friend constexpr auto diagonalize(const matrix& mat) 
+            //     -> std::conditional_t<EIGEN, std::pair<matrix, matrix::vector_t>, matrix> {
+
+            //     matrix M{mat};
+            //     matrix evec = matrix::identity();
+            //     std::array<value_t, matrix::rows> eval;
+            //     double t, c, s; // = tan(θ), cos(θ), sin(θ)
+
+            //     auto calc_rot = [&](uint i_, uint j_) {
                 
-                    t = 0.0; // Initialize with zero (not 1.0)
-                    auto M_jj_ii = (M.data[j_][j_] - M.data[i_][i_]);
-                    auto M_ij = M.data[i_][j_];
+            //         t = 0.0; // Initialize with zero (not 1.0)
+            //         auto M_jj_ii = (M.data[j_][j_] - M.data[i_][i_]);
+            //         auto M_ij = M.data[i_][j_];
 
-                    if (M_jj_ii != value_t::zero && 
-                        M_ij != value_t::zero) { // Use double precision comparison
+            //         if (M_jj_ii != value_t::zero && 
+            //             M_ij != value_t::zero) { // Use double precision comparison
                         
-                        double kappa = M_jj_ii / (2.0 * M_ij);
+            //             double kappa = M_jj_ii / (2.0 * M_ij);
 
-                        // t satisfies: t^2 + 2*t*kappa - 1 = 0 (choose the root which has the smaller absolute value)
-                        t = (kappa < 0) ? (1.0 / (-kappa + std::sqrt(1 + kappa * kappa))) :
-                              ((kappa == 0) ? 1.0 : (1.0 / (kappa + std::sqrt(1 + kappa * kappa))));
+            //             // t satisfies: t^2 + 2*t*kappa - 1 = 0 (choose the root which has the smaller absolute value)
+            //             t = (kappa < 0) ? (1.0 / (-kappa + std::sqrt(1 + kappa * kappa))) :
+            //                   ((kappa == 0) ? 1.0 : (1.0 / (kappa + std::sqrt(1 + kappa * kappa))));
                         
-                    }
+            //         }
 
-                    c = 1.0 / std::sqrt(1.0 + t * t);
-                    s = t * c;
+            //         c = 1.0 / std::sqrt(1.0 + t * t);
+            //         s = t * c;
                     
-                };      
+            //     };      
 
-                auto apply_rot = [&](uint i_, uint j_) {
+            //     auto apply_rot = [&](uint i_, uint j_) {
 
-                    for (uint w = 0; w < i_; ++w) {
-                        auto a = M.data[w][i_];
-                        auto b = M.data[w][j_];
-                        M.data[w][i_] = c * a - s * b;
-                        M.data[w][j_] = s * a + c * b;
-                        if (w == M.max_idx_row[i_]) 
-                            M.max_idx_row[i_] = M.max_entry_row(i_);
-                        if (w == M.max_idx_row[j_]) 
-                            M.max_idx_row[j_] = M.max_entry_row(j_);
-                    }
+            //         for (uint w = 0; w < i_; ++w) {
+            //             auto a = M.data[w][i_];
+            //             auto b = M.data[w][j_];
+            //             M.data[w][i_] = c * a - s * b;
+            //             M.data[w][j_] = s * a + c * b;
+            //             if (w == M.max_idx_row[i_]) 
+            //                 M.max_idx_row[i_] = M.max_entry_row(i_);
+            //             if (w == M.max_idx_row[j_]) 
+            //                 M.max_idx_row[j_] = M.max_entry_row(j_);
+            //         }
 
-                    std::cout << "1\n";
-                    for (uint w = i_ + 1; w < j_; ++w) {
-                        auto a = M.data[i_][w];
-                        auto b = M.data[w][j_];
-                        M.data[i_][w] = c * a - s * b;
-                        M.data[w][j_] = s * a + c * b;
-                        if (w == M.max_idx_row[i_]) 
-                            M.max_idx_row[i_] = M.max_entry_row(i_);
-                        if (w == M.max_idx_row[j_]) 
-                            M.max_idx_row[j_] = M.max_entry_row(j_);
-                    }
-                    std::cout << "2\n";
-                    for (uint w = j_ + 1; w < rows; ++w) {
-                        auto a = M.data[i_][w];
-                        auto b = M.data[j_][w];
-                        M.data[i_][w] = c * a - s * b;
-                        M.data[j_][w] = s * a + c * b;
-                        if (w == M.max_idx_row[i_]) 
-                            M.max_idx_row[i_] = M.max_entry_row(i_);
-                        if (w == M.max_idx_row[j_]) 
-                            M.max_idx_row[j_] = M.max_entry_row(j_);
-                    }
-                    std::cout << "3...\n";
-                    M.data[i_][j_] = 0.0;
-                    M.max_idx_row[i_] = M.max_entry_row(i_);
-                    std::swap(M.max_idx_row[j_], M.max_idx_col[i_]);
+            //         std::cout << "1\n";
+            //         for (uint w = i_ + 1; w < j_; ++w) {
+            //             auto a = M.data[i_][w];
+            //             auto b = M.data[w][j_];
+            //             M.data[i_][w] = c * a - s * b;
+            //             M.data[w][j_] = s * a + c * b;
+            //             if (w == M.max_idx_row[i_]) 
+            //                 M.max_idx_row[i_] = M.max_entry_row(i_);
+            //             if (w == M.max_idx_row[j_]) 
+            //                 M.max_idx_row[j_] = M.max_entry_row(j_);
+            //         }
+            //         std::cout << "2\n";
+            //         for (uint w = j_ + 1; w < rows; ++w) {
+            //             auto a = M.data[i_][w];
+            //             auto b = M.data[j_][w];
+            //             M.data[i_][w] = c * a - s * b;
+            //             M.data[j_][w] = s * a + c * b;
+            //             if (w == M.max_idx_row[i_]) 
+            //                 M.max_idx_row[i_] = M.max_entry_row(i_);
+            //             if (w == M.max_idx_row[j_]) 
+            //                 M.max_idx_row[j_] = M.max_entry_row(j_);
+            //         }
+            //         std::cout << "3...\n";
+            //         M.data[i_][j_] = 0.0;
+            //         M.max_idx_row[i_] = M.max_entry_row(i_);
+            //         std::swap(M.max_idx_row[j_], M.max_idx_col[i_]);
 
-                };
+            //     };
 
-                auto apply_rot_left = [&](uint i_, uint j_) {
+            //     auto apply_rot_left = [&](uint i_, uint j_) {
 
-                    for (uint v = 0; v < rows; ++v) {
+            //         for (uint v = 0; v < rows; ++v) {
 
-                        auto Eiv = evec.data[i_][v];
-                        evec.data[i_][v] = c * evec.data[i_][v] - s * evec.data[j_][v];
-                        evec.data[j_][v] = s * Eiv + c * evec.data[j_][v];
+            //             auto Eiv = evec.data[i_][v];
+            //             evec.data[i_][v] = c * evec.data[i_][v] - s * evec.data[j_][v];
+            //             evec.data[j_][v] = s * Eiv + c * evec.data[j_][v];
 
-                    }
+            //         }
   
-                };
+            //     };
 
-                for (uint i = 0; i < rows - 1; ++i)          //Initialize the "M.max_idx_row[]" array 
-                    M.max_idx_row[i] = M.max_entry_row(i);  //(which is needed by MaxEntry())
+            //     for (uint i = 0; i < rows - 1; ++i)          //Initialize the "M.max_idx_row[]" array 
+            //         M.max_idx_row[i] = M.max_entry_row(i);  //(which is needed by MaxEntry())
 
-                uint n_iters;
-                uint max_num_iters = ITER_MAX * rows * (rows - 1) / 2; //"sweep" = n*(n-1)/2 iters
-                for (n_iters = 0; n_iters < max_num_iters; ++n_iters) {
+            //     uint n_iters;
+            //     uint max_num_iters = ITER_MAX * rows * (rows - 1) / 2; //"sweep" = n*(n-1)/2 iters
+            //     for (n_iters = 0; n_iters < max_num_iters; ++n_iters) {
                     
-                    auto [i, j] = M.max_entry(); // Find the maximum entry in the matrix. Store in i,j
-                    if ((M.data[i][i] + M.data[i][j] == M.data[i][i]) && 
-                        (M.data[j][j] + M.data[i][j] == M.data[j][j])) {
+            //         auto [i, j] = M.max_entry(); // Find the maximum entry in the matrix. Store in i,j
+            //         if ((M.data[i][i] + M.data[i][j] == M.data[i][i]) && 
+            //             (M.data[j][j] + M.data[i][j] == M.data[j][j])) {
 
-                        M.data[i][j] = value_t::zero;
-                        M.max_idx_row[i] = M.max_entry_row(i); //update max_idx_row[i]
+            //             M.data[i][j] = value_t::zero;
+            //             M.max_idx_row[i] = M.max_entry_row(i); //update max_idx_row[i]
 
-                    }
+            //         }
 
-                    if (M.data[i][j] == value_t::zero)
-                        break; // If M.data[i][j] = 0, then M is diagonal. Stop iterating.
+            //         if (M.data[i][j] == value_t::zero)
+            //             break; // If M.data[i][j] = 0, then M is diagonal. Stop iterating.
 
-                    // Otherwise, apply a rotation to make M.data[i][j] = 0
-                    calc_rot(i, j);  
-                    apply_rot(i, j); 
+            //         // Otherwise, apply a rotation to make M.data[i][j] = 0
+            //         calc_rot(i, j);  
+            //         apply_rot(i, j); 
                     
-                    if constexpr (EIGEN) 
-                        apply_rot_left(i, j);
+            //         if constexpr (EIGEN) 
+            //             apply_rot_left(i, j);
                      
-                } 
+            //     } 
 
-                // // Optional: Sort Ms by eigenvalue.
-                // SortRows(eval, evec, rows, sort_criteria);
+            //     // // Optional: Sort Ms by eigenvalue.
+            //     // SortRows(eval, evec, rows, sort_criteria);
 
-                if ((n_iters > max_num_iters) && (rows > 1))   // If we exceeded max_num_iters,
-                    throw std::runtime_error("Diagonalize() failed to converge"); // indicate an error occured.
+            //     if ((n_iters > max_num_iters) && (rows > 1))   // If we exceeded max_num_iters,
+            //         throw std::runtime_error("Diagonalize() failed to converge"); // indicate an error occured.
 
-                if constexpr (EIGEN) {
+            //     if constexpr (EIGEN) {
 
-                    /// eigenvalues
-                    for (uint i = 0; i < rows; ++i)
-                        eval[i] = M.data[i][i];
+            //         /// eigenvalues
+            //         for (uint i = 0; i < rows; ++i)
+            //             eval[i] = M.data[i][i];
                     
-                    return std::make_pair(evec, eval);
+            //         return std::make_pair(evec, eval);
 
-                }
+            //     }
 
-                else 
-                    return M;
+            //     else 
+            //         return M;
 
-            }
-
-
-            template <uint ITER_MAX = 100 * rows>
-                requires (rows == columns)
-            friend constexpr auto jacobi(const matrix& mat) noexcept {
-
-                std::cout << "numeric eps: " << std::numeric_limits<double>::epsilon() << "\n";
+            // }
 
 
-                // Check if the matrix is already symmetric
-                bool is_symmetric = true;
-                for (size_t i = 0; i < rows; ++i) {
-                    for (size_t j = i + 1; j < rows; ++j) {
-                        if (math::op::abs(mat.data[i][j] - mat.data[j][i]) > std::numeric_limits<double>::epsilon()) {
-                            is_symmetric = false;
-                            break;
-                        }
-                    }
-                    if (!is_symmetric) 
-                        break;
-                }
+            // template <uint ITER_MAX = 100 * rows>
+            //     requires (rows == columns)
+            // friend constexpr auto jacobi(const matrix& mat) noexcept {
 
-                if (is_symmetric) {
-                    // The matrix is already symmetric, return the diagonal elements as eigenvalues
-                    std::cout << "The matrix is already symmetric\n";
-                    vector_t eigenvalues;
-                    for (size_t i = 0; i < rows; ++i) 
-                        eigenvalues.data[i] = mat.data[i][i];
-
-                    return std::make_pair(eigenvalues, matrix::identity());
-
-                }
+            //     std::cout << "numeric eps: " << std::numeric_limits<double>::epsilon() << "\n";
 
 
-                matrix M = mat;
-                matrix eigenvectors = matrix::identity();
-                vector_t eigenvalues;
+            //     // Check if the matrix is already symmetric
+            //     bool is_symmetric = true;
+            //     for (size_t i = 0; i < rows; ++i) {
+            //         for (size_t j = i + 1; j < rows; ++j) {
+            //             if (math::op::abs(mat.data[i][j] - mat.data[j][i]) > std::numeric_limits<double>::epsilon()) {
+            //                 is_symmetric = false;
+            //                 break;
+            //             }
+            //         }
+            //         if (!is_symmetric) 
+            //             break;
+            //     }
 
-                size_t iterations = 0;
+            //     if (is_symmetric) {
+            //         // The matrix is already symmetric, return the diagonal elements as eigenvalues
+            //         std::cout << "The matrix is already symmetric\n";
+            //         vector_t eigenvalues;
+            //         for (size_t i = 0; i < rows; ++i) 
+            //             eigenvalues.data[i] = mat.data[i][i];
 
-                while (iterations < ITER_MAX) {
+            //         return std::make_pair(eigenvalues, matrix::identity());
 
-                    value_t max_elem{};
-                    size_t p = 0, q = 0;
-
-                    // Find the largest off-diagonal element
-                    for (size_t i = 0; i < rows; ++i) {
-                        for (size_t j = i + 1; j < rows; ++j) {
-                            value_t elem = math::op::abs(M.data[i][j]);
-                            if (elem > max_elem) {
-                                max_elem = elem;
-                                p = i;
-                                q = j;
-                            }
-                        }
-                    }
-
-                    // Check for convergence
-                    if (math::op::abs(max_elem).value < std::numeric_limits<double>::epsilon()) 
-                        break;
-
-                    if (math::op::abs(M.data[p][q]).value < std::numeric_limits<double>::epsilon()) {
-                        M.data[p][q] = M.data[q][p] = value_t::zero;
-                        continue;
-                    }
-
-                    // Compute the rotation angle
-                    double theta = 0.5 * std::atan2(2.0 * math::op::abs(M.data[p][q]).value, math::op::abs(M.data[p][p] - M.data[q][q]).value);
-
-                    // Compute the rotation matrix
-                    auto rotation = matrix<vector<physics::scalar_m, rows>, rows>::identity();
-                    rotation.data[p][p] = std::cos(theta);
-                    rotation.data[q][q] = std::cos(theta);
-
-                    if (M.data[p][p] < M.data[q][q]) {
-                        rotation.data[p][q] = std::sin(theta);
-                        rotation.data[q][p] = -std::sin(theta);
-                    } else {
-                        rotation.data[p][q] = -std::sin(theta);
-                        rotation.data[q][p] = std::sin(theta);
-                    }
-
-                    // Update the matrix and eigenvectors
-                    M = rotation.transpose() * M * rotation;
-                    eigenvectors = eigenvectors * rotation;
-
-                    ++iterations;
-
-                }
-
-                // Store the eigenvalues
-                for (size_t i = 0; i < rows; ++i) {
-
-                    if (math::op::abs(M.data[i][i]).value < std::numeric_limits<double>::epsilon())
-                        M.data[i][i] = value_t::zero;
-                    eigenvalues.data[i] = M.data[i][i];
-
-                }
+            //     }
 
 
-                return std::make_pair(eigenvalues, eigenvectors);                            
+            //     matrix M = mat;
+            //     matrix eigenvectors = matrix::identity();
+            //     vector_t eigenvalues;
 
-            }
+            //     size_t iterations = 0;
+
+            //     while (iterations < ITER_MAX) {
+
+            //         value_t max_elem{};
+            //         size_t p = 0, q = 0;
+
+            //         // Find the largest off-diagonal element
+            //         for (size_t i = 0; i < rows; ++i) {
+            //             for (size_t j = i + 1; j < rows; ++j) {
+            //                 value_t elem = math::op::abs(M.data[i][j]);
+            //                 if (elem > max_elem) {
+            //                     max_elem = elem;
+            //                     p = i;
+            //                     q = j;
+            //                 }
+            //             }
+            //         }
+
+            //         // Check for convergence
+            //         if (math::op::abs(max_elem).value < std::numeric_limits<double>::epsilon()) 
+            //             break;
+
+            //         if (math::op::abs(M.data[p][q]).value < std::numeric_limits<double>::epsilon()) {
+            //             M.data[p][q] = M.data[q][p] = value_t::zero;
+            //             continue;
+            //         }
+
+            //         // Compute the rotation angle
+            //         double theta = 0.5 * std::atan2(2.0 * math::op::abs(M.data[p][q]).value, math::op::abs(M.data[p][p] - M.data[q][q]).value);
+
+            //         // Compute the rotation matrix
+            //         auto rotation = matrix<vector<physics::scalar_m, rows>, rows>::identity();
+            //         rotation.data[p][p] = std::cos(theta);
+            //         rotation.data[q][q] = std::cos(theta);
+
+            //         if (M.data[p][p] < M.data[q][q]) {
+            //             rotation.data[p][q] = std::sin(theta);
+            //             rotation.data[q][p] = -std::sin(theta);
+            //         } else {
+            //             rotation.data[p][q] = -std::sin(theta);
+            //             rotation.data[q][p] = std::sin(theta);
+            //         }
+
+            //         // Update the matrix and eigenvectors
+            //         M = rotation.transpose() * M * rotation;
+            //         eigenvectors = eigenvectors * rotation;
+
+            //         ++iterations;
+
+            //     }
+
+            //     // Store the eigenvalues
+            //     for (size_t i = 0; i < rows; ++i) {
+
+            //         if (math::op::abs(M.data[i][i]).value < std::numeric_limits<double>::epsilon())
+            //             M.data[i][i] = value_t::zero;
+            //         eigenvalues.data[i] = M.data[i][i];
+
+            //     }
+
+
+            //     return std::make_pair(eigenvalues, eigenvectors);                            
+
+            // }
 
             
             // constexpr matrix diagonalized() const noexcept {
@@ -1310,142 +979,142 @@ namespace scipp::geometry {
             // }
 
 
-            constexpr matrix eigenvectors(const vector_t& eigenvalues) const noexcept {
+        //     constexpr matrix eigenvectors(const vector_t& eigenvalues) const noexcept {
                 
-                matrix<vector<physics::scalar_m, rows>, rows> result;
-                for (size_t i{}; i < rows; ++i) 
-                    result.data[i] = solve((*this) - matrix<vector<physics::scalar_m, rows>, rows>::identity() * eigenvalues[i], vector_t::zero);
+        //         matrix<vector<physics::scalar_m, rows>, rows> result;
+        //         for (size_t i{}; i < rows; ++i) 
+        //             result.data[i] = solve((*this) - matrix<vector<physics::scalar_m, rows>, rows>::identity() * eigenvalues[i], vector_t::zero);
 
-                return result * value_t::one;
+        //         return result * value_t::one;
 
-            }
-
-
-            template <uint ITER_MAX = 1000>  
-                requires (rows == columns)
-            constexpr auto eigen() const {
-
-                using scalar_t = physics::scalar_m;
-                using scalar_vector_t = vector<scalar_t, rows>;
-                using scalar_matrix_t = matrix<scalar_vector_t, rows>;
-
-                vector_t eig_values, wp;
-                matrix eig_vectors, eig_val; 
-                scalar_matrix_t Q;
-                scalar_vector_t dumsum;
-                double f;
-
-                // Copy the values of the current matrix to eig_val
-                eig_val = *this;
-
-                // Initialize Q and eig_val for computation of eigenvectors
-                Q = scalar_matrix_t::identity();
-                for (uint i = 0; i < rows; ++i)
-                    eig_val[i][i] = value_t::one;
-
-                // Eigen decomposition iterations
-                for (uint it = 0; it < ITER_MAX; ++it) {
-
-                    // Gram-Schmidt decorrelation
-                    for (uint p = 0; p < rows; ++p) {
-
-                        for (uint i = 0; i < rows; ++i)
-                            wp[i] = eig_val[i][p];
-
-                        auto eval_wp = math::op::normalize(wp);
-
-                        for (uint i = 0; i < rows; ++i)
-                            dumsum[i] = 0.0;
-
-                        for (uint i = 0; i < rows; ++i) {
-                            for (uint j = 0; j < p; ++j) {
-                                f = 0.0;
-                                for (uint k = 0; k < rows; ++k)
-                                    f += eval_wp[k] * Q[k][j];
-
-                                dumsum[i] += f * Q[i][j];
-                            }
-                        }
-
-                        for (uint i = 0; i < rows; ++i)
-                            eval_wp[i] -= dumsum[i];
-
-                        eval_wp = math::op::normalize(eval_wp);
-
-                        // Store estimated rows of the inverse of the mixing matrix as columns in Q
-                        for (uint i = 0; i < rows; ++i)
-                            Q[i][p] = eval_wp[i];
-
-                    }
-
-                    auto R = Q.transpose() * eig_val;
-                    eig_val = R * Q;
-                    eig_vectors = eig_vectors * Q;
-
-                }
-
-                // Set results
-                for (uint i = 0; i < rows; ++i)
-                    eig_values[i] = eig_val[i][i];
-
-                return std::make_pair(eig_values, eig_vectors);
-
-        }
+        //     }
 
 
-            friend auto gram_schmidt(const matrix& basis) {
+        //     template <uint ITER_MAX = 1000>  
+        //         requires (rows == columns)
+        //     constexpr auto eigen() const {
 
-                matrix appo;
-                matrix<vector<physics::scalar_m, rows>, columns> result;
+        //         using scalar_t = physics::scalar_m;
+        //         using scalar_vector_t = vector<scalar_t, rows>;
+        //         using scalar_matrix_t = matrix<scalar_vector_t, rows>;
 
-                // do the first vector before the loop
-                appo.data[0] = basis.data[0];
+        //         vector_t eig_values, wp;
+        //         matrix eig_vectors, eig_val; 
+        //         scalar_matrix_t Q;
+        //         scalar_vector_t dumsum;
+        //         double f;
 
-                for (size_t i{1}; i < columns; ++i) {
+        //         // Copy the values of the current matrix to eig_val
+        //         eig_val = *this;
 
-                    vector_t projection;
-                    for (size_t j{}; j < i; ++j) 
-                        projection -= math::op::proj(appo.data[j], basis.data[i]);
+        //         // Initialize Q and eig_val for computation of eigenvectors
+        //         Q = scalar_matrix_t::identity();
+        //         for (uint i = 0; i < rows; ++i)
+        //             eig_val[i][i] = value_t::one;
+
+        //         // Eigen decomposition iterations
+        //         for (uint it = 0; it < ITER_MAX; ++it) {
+
+        //             // Gram-Schmidt decorrelation
+        //             for (uint p = 0; p < rows; ++p) {
+
+        //                 for (uint i = 0; i < rows; ++i)
+        //                     wp[i] = eig_val[i][p];
+
+        //                 auto eval_wp = math::op::normalize(wp);
+
+        //                 for (uint i = 0; i < rows; ++i)
+        //                     dumsum[i] = 0.0;
+
+        //                 for (uint i = 0; i < rows; ++i) {
+        //                     for (uint j = 0; j < p; ++j) {
+        //                         f = 0.0;
+        //                         for (uint k = 0; k < rows; ++k)
+        //                             f += eval_wp[k] * Q[k][j];
+
+        //                         dumsum[i] += f * Q[i][j];
+        //                     }
+        //                 }
+
+        //                 for (uint i = 0; i < rows; ++i)
+        //                     eval_wp[i] -= dumsum[i];
+
+        //                 eval_wp = math::op::normalize(eval_wp);
+
+        //                 // Store estimated rows of the inverse of the mixing matrix as columns in Q
+        //                 for (uint i = 0; i < rows; ++i)
+        //                     Q[i][p] = eval_wp[i];
+
+        //             }
+
+        //             auto R = Q.transpose() * eig_val;
+        //             eig_val = R * Q;
+        //             eig_vectors = eig_vectors * Q;
+
+        //         }
+
+        //         // Set results
+        //         for (uint i = 0; i < rows; ++i)
+        //             eig_values[i] = eig_val[i][i];
+
+        //         return std::make_pair(eig_values, eig_vectors);
+
+        // }
+
+
+            // friend auto gram_schmidt(const matrix& basis) {
+
+            //     matrix appo;
+            //     matrix<vector<physics::scalar_m, rows>, columns> result;
+
+            //     // do the first vector before the loop
+            //     appo.data[0] = basis.data[0];
+
+            //     for (size_t i{1}; i < columns; ++i) {
+
+            //         vector_t projection;
+            //         for (size_t j{}; j < i; ++j) 
+            //             projection -= math::op::proj(appo.data[j], basis.data[i]);
                     
-                    appo.data[i] = basis.data[i] + projection;
-                }
+            //         appo.data[i] = basis.data[i] + projection;
+            //     }
 
-                for (size_t i{}; i < columns; ++i) 
-                    result.data[i] = appo.data[i] / math::op::norm(appo.data[i]);
+            //     for (size_t i{}; i < columns; ++i) 
+            //         result.data[i] = appo.data[i] / math::op::norm(appo.data[i]);
 
-                return result;
+            //     return result;
                 
-            }
+            // }
 
 
-            friend auto gram_schmidt_qr(const matrix& A) noexcept {
+            // friend auto gram_schmidt_qr(const matrix& A) noexcept {
 
-                auto Q = gram_schmidt(A);        
-                return std::make_pair(Q, Q.transpose() * A);
+            //     auto Q = gram_schmidt(A);        
+            //     return std::make_pair(Q, Q.transpose() * A);
                 
-            }
+            // }
 
 
-            template <size_t ITERATIONS>
-            friend auto eigen_qr(const matrix& A) noexcept {
+            // template <size_t ITERATIONS>
+            // friend auto eigen_qr(const matrix& A) noexcept {
 
-                auto A_k = A; 
-                auto eigvec = matrix<vector<value_t, rows>, rows>::identity(); 
+            //     auto A_k = A; 
+            //     auto eigvec = matrix<vector<value_t, rows>, rows>::identity(); 
 
-                for (size_t i{}; i < ITERATIONS; ++i) {
+            //     for (size_t i{}; i < ITERATIONS; ++i) {
 
-                    value_t s = A_k.data[rows - 1][rows - 1];
-                    auto smult = matrix<vector<physics::scalar_m, rows>, rows>::identity() * s;
+            //         value_t s = A_k.data[rows - 1][rows - 1];
+            //         auto smult = matrix<vector<physics::scalar_m, rows>, rows>::identity() * s;
                     
-                    auto [Q, R] = gram_schmidt_qr(A_k - smult);
-                    A_k = R * Q + smult;
-                    eigvec = eigvec * Q;
+            //         auto [Q, R] = gram_schmidt_qr(A_k - smult);
+            //         A_k = R * Q + smult;
+            //         eigvec = eigvec * Q;
 
-                }
+            //     }
 
-                return std::make_pair(A_k.diagonal(), eigvec);
+            //     return std::make_pair(A_k.diagonal(), eigvec);
 
-            }
+            // }
 
 
             // template <size_t ITERATIONS = 500>
@@ -1557,12 +1226,13 @@ namespace scipp::geometry {
 
     // }
     
-    template <typename... VECTORS>  
-        // requires (are_same_vectors_v<VEC_TYPE, VECTORS...>) 
-    inline constexpr auto make_matrix(VECTORS&&... other) noexcept 
-        -> matrix<std::common_type_t<VECTORS...>, sizeof...(other)> {
+
+
+    template <typename T, typename... Ts> 
+        requires ((are_column_vectors_v<Ts...> || are_row_vectors_v<Ts...>) && have_same_dimension_v<Ts...>)
+    inline constexpr auto make_matrix(Ts&... others) {
         
-        return {std::forward<VECTORS>(other)...};
+        return matrix<T, sizeof...(others)>(std::forward<T>(others)...);
 
     }
         

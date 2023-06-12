@@ -32,7 +32,7 @@ namespace scipp::math {
         };
 
 
-        /// @brief Get the modulo of a complex
+        /// @brief Get the modulo of a complex number
         template <typename CMEAS_TYPE>
             requires (math::is_complex_v<CMEAS_TYPE>)
         struct modulo<CMEAS_TYPE> {
@@ -42,6 +42,22 @@ namespace scipp::math {
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
 
                 return op::sqrt(op::sq(x.real) + op::sq(x.imag));
+
+            }
+
+        };
+
+
+        /// @brief Get the modulo of a dual number
+        template <typename T>
+            requires (math::is_dual_v<T>)
+        struct modulo<T> {
+
+            using function_t = unary_function<T, T>;
+
+            inline static constexpr function_t::result_t f(const function_t::arg_t& x) {
+
+                return { op::abs(x.real), x.imag * op::sign(x.real) }; 
 
             }
 

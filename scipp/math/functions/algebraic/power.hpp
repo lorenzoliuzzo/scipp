@@ -1,5 +1,5 @@
 /**
- * @file    math/functions/power.hpp
+ * @file    math/functions/algebraic/power.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * 
  * @brief   This file contains a collection of power functions implemented in the scipp::math namespace. 
@@ -126,19 +126,38 @@ namespace scipp::math {
         };
 
 
-        /// @brief Return the power of a complex
+        /// @brief Return the power of a complex number
         /// @tparam POWER: exponent of the power
         /// @tparam T: complex type
-        template <size_t POWER, typename CMEAS_TYPE>
-            requires (math::is_complex_v<CMEAS_TYPE>)
-        struct power<POWER, CMEAS_TYPE> {
+        template <size_t POWER, typename T>
+            requires (math::is_complex_v<T>)
+        struct power<POWER, T> {
             
-            using function_t = unary_function<CMEAS_TYPE, complex<power_t<POWER, typename CMEAS_TYPE::value_t>>>;
+            using function_t = unary_function<T, complex<power_t<POWER, typename T::value_t>>>;
             
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
 
                 const auto z = op::log(x);
-                return function_t::result_t::polar(op::exp(POWER * z.real), POWER * z.imag);
+                return polar(op::exp(POWER * z.real), POWER * z.imag);
+
+            }
+
+        };
+
+
+        /// @brief Return the power of a dual number
+        /// @tparam POWER: exponent of the power
+        /// @tparam T: dual type
+        template <size_t POWER, typename T>
+            requires (math::is_dual_v<T>)
+        struct power<POWER, T> {
+            
+            using function_t = unary_function<T, dual<power_t<POWER, typename T::value_t>>>;
+            
+            inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
+
+                const auto pow = op::pow<POWER - 1>(x.real);
+                return {x.real * pow, x.imag * static_cast<double>(POWER) * pow}; 
 
             }
 

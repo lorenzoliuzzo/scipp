@@ -22,16 +22,16 @@ namespace scipp::geometry {
     // vector traits
     // =============================================
 
-        template <typename MEAS_TYPE, size_t DIM, bool ROW_VECTOR_FLAG>
-            requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>)
+        template <typename T, size_t DIM, bool ROW_VECTOR_FLAG>
+            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
         struct vector;
 
 
-        template <typename MEAS_TYPE, size_t DIM>
-        using column_vector = vector<MEAS_TYPE, DIM, false>;
+        template <typename T, size_t DIM>
+        using column_vector = vector<T, DIM, false>;
 
-        template <typename MEAS_TYPE, size_t DIM>
-        using row_vector = vector<MEAS_TYPE, DIM, true>;
+        template <typename T, size_t DIM>
+        using row_vector = vector<T, DIM, true>;
 
 
         template <typename T>
@@ -40,9 +40,9 @@ namespace scipp::geometry {
         template <typename T>
         inline static constexpr bool is_column_vector_v = is_column_vector<T>::value;
 
-        template <typename MEAS_TYPE, size_t DIM> 
-            requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>)
-        struct is_column_vector<column_vector<MEAS_TYPE, DIM>> : std::true_type {};
+        template <typename T, size_t DIM> 
+            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
+        struct is_column_vector<column_vector<T, DIM>> : std::true_type {};
 
         template <typename... VECTORS>
         struct are_column_vectors : std::conjunction<is_column_vector<VECTORS>...> {};
@@ -57,9 +57,9 @@ namespace scipp::geometry {
         template <typename T>
         inline static constexpr bool is_row_vector_v = is_row_vector<T>::value;
 
-        template <typename MEAS_TYPE, size_t DIM> 
-            requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>)
-        struct is_row_vector<row_vector<MEAS_TYPE, DIM>> : std::true_type {};
+        template <typename T, size_t DIM> 
+            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
+        struct is_row_vector<row_vector<T, DIM>> : std::true_type {};
 
         template <typename... Ts>
         struct are_row_vectors : std::conjunction<is_row_vector<Ts>...> {};
@@ -135,10 +135,10 @@ namespace scipp::geometry {
 
 
         template <typename... Ts>
-        struct are_matrices : std::conjunction<is_matrix<Ts>...> {};
+        struct are_matrix : std::conjunction<is_matrix<Ts>...> {};
 
-        template <typename... MATRICES>
-        inline static constexpr bool are_matrices_v = are_matrices<MATRICES...>::value;
+        template <typename... Ts>
+        inline static constexpr bool are_matrix_v = are_matrix<Ts...>::value;
 
 
 } /// namespace scipp::geometry

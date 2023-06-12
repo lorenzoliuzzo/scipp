@@ -14,6 +14,431 @@ namespace scipp::math {
     
     namespace op {
 
+        // ==============================================
+        // operators with duals
+        // ==============================================
+
+
+            /// @brief copy assignment operator with addition
+            constexpr dual& operator+=(const dual& other) noexcept {
+                
+                this->val += other.val;
+                this->eps += other.eps;
+
+                return *this;
+
+            }
+
+            /// @brief move assignment operator with addition
+            constexpr dual& operator+=(dual&& other) noexcept {
+                
+                this->val += std::move(other.val);
+                this->eps += std::move(other.eps);
+
+                return *this;
+
+            }
+
+
+            /// @brief copy assignment operator with subtraction
+            constexpr dual& operator-=(const dual& other) noexcept {
+                
+                this->val -= other.val;
+                this->eps -= other.eps;
+
+                return *this;
+                
+            }   
+            
+            /// @brief move assignment operator with subtraction
+            constexpr dual& operator-=(dual&& other) noexcept {
+                
+                this->val -= std::move(other.val);
+                this->eps -= std::move(other.eps);
+
+                return *this;
+                
+            }
+
+
+            /// @brief copy assignment operator with multiplication
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr dual& operator*=(const dual<OTHER_T>& other) noexcept {
+                
+                this->val *= other.val;
+                this->eps += this->val * other.eps;
+                this->eps *= other.val;
+
+                return *this;
+
+            }
+
+            /// @brief move assignment operator with multiplication
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr dual& operator*=(dual<OTHER_T>&& other) noexcept {
+                    
+                this->val *= std::move(other.val);
+                this->eps += this->val * std::move(other.eps);
+                this->eps *= std::move(other.val);
+
+                return *this;
+
+            }
+
+
+            /// @brief copy assignment operator with division
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr dual& operator/=(const dual<OTHER_T>& other) {
+
+                if (other.val == OTHER_T::zero) 
+                    throw std::runtime_error("Cannot divide a dual number by a dual zero");
+
+                this->val /= other.val;
+                this->eps *= other.val; 
+                this->eps -= this->val * other.eps;
+                this->eps /= op::square(other.val); 
+
+                return *this;
+
+            }
+
+            /// @brief copy assignment operator with division
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr dual& operator/=(dual<OTHER_T>&& other) {
+
+                if (other.val == OTHER_T::zero) 
+                    throw std::runtime_error("Cannot divide a dual number by a dual zero");
+
+                this->val /= std::move(other.val);
+                this->eps *= std::move(other.val); 
+                this->eps -= this->val * std::move(other.eps);
+                this->eps /= op::square(std::move(other.val)); 
+
+                return *this;
+
+            }
+
+
+            /// @brief unary minus operator
+            constexpr dual operator-() const noexcept {
+                
+                return {-val, -eps};
+
+            }
+
+
+            /// @brief addition operator 
+            constexpr dual operator+(const dual& other) const noexcept {
+                
+                return {this->val + other.val, this->eps + other.eps};
+
+            }
+
+            /// @brief addition operator
+            constexpr dual operator+(dual&& other) const noexcept {
+                
+                return {this->val + std::move(other.val), this->eps + std::move(other.eps)};
+
+            }
+
+
+            /// @brief subtraction operator
+            constexpr dual operator-(const dual& other) const noexcept {
+                
+                return {this->val - other.val, this->eps - other.eps};
+
+            }
+
+            /// @brief subtraction operator
+            constexpr dual operator-(dual&& other) const noexcept {
+                
+                return {this->val - std::move(other.val), this->eps - std::move(other.eps)};
+
+            }
+
+
+            /// @brief multiplication operator
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator*(const dual<OTHER_T>& other) const noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>> {
+
+                return {this->val * other.val, this->val * other.eps + this->eps * other.val};
+
+            } 
+
+            /// @brief multiplication operator
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator*(dual<OTHER_T>&& other) const noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>> {
+
+                return {this->val * std::move(other.val), this->val * std::move(other.eps) + this->eps * std::move(other.val)};
+
+            } 
+
+
+            /// @brief division operator
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator/(const dual<OTHER_T>& other) const
+                -> dual<meta::divide<measurement_t, OTHER_T>> {
+
+                if (other.val == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+
+                return {this->val / other.val, (this->eps * other.val - this->val * other.eps) / op::square(other.val)};
+
+            }
+
+            /// @brief division operator
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator/(dual<OTHER_T>&& other) const
+                -> dual<meta::divide<measurement_t, OTHER_T>> {
+
+                if (other.val == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+
+                return {this->val / std::move(other.val), (this->eps * std::move(other.val) - this->val * std::move(other.eps)) / op::square(std::move(other.val))};
+
+            }
+            
+
+        // ==============================================
+        // operators with value_t
+        // ==============================================
+
+            /// @brief copy assignment operator from a value_t
+            constexpr dual& operator=(const value_t& val) noexcept {
+                
+                this->val = val;
+                this->eps = value_t{};
+
+                return *this;
+
+            }
+
+            /// @brief copy assignment operator from a value_t
+            constexpr dual& operator=(measurement_t&& val) noexcept {
+                
+                this->val = std::move(val);
+                this->eps = value_t{};
+
+                return *this;
+
+            }
+
+            
+            /// @brief copy assignment operator from a value_t with addition
+            constexpr dual& operator+=(const value_t& val) noexcept {
+                
+                this->val += val;
+                
+                return *this;
+
+            }
+
+            /// @brief copy assignment operator from a value_t with addition
+            constexpr dual& operator+=(measurement_t&& val) noexcept {
+                
+                this->val += std::move(val);
+                
+                return *this;
+
+            }
+
+
+            /// @brief copy assignment operator from a value_t with subtraction
+            constexpr dual& operator-=(const value_t& val) noexcept {
+                
+                this->val -= val;
+
+                return *this;
+
+            }
+
+            /// @brief copy assignment operator from a value_t with subtraction
+            constexpr dual& operator-=(measurement_t&& val) noexcept {
+                
+                this->val -= std::move(val);
+
+                return *this;
+
+            }
+
+
+            /// @brief copy assignment operator from a scalar measurement with multiplication
+            template <typename OTHER_T>
+                requires (physics::is_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr auto operator*=(const OTHER_T& other) noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>>& {
+                
+                this->val *= other;
+                this->eps *= other;
+
+                return *this;
+        
+            }
+
+            /// @brief copy assignment operator from a scalar measurement with multiplication
+            template <typename OTHER_T>
+                requires (physics::is_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr auto operator*=(OTHER_T&& other) noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>>& {
+                
+                this->val *= std::move(other);
+                this->eps *= std::move(other);
+
+                return *this;
+        
+            }
+            
+
+            /// @brief copy assignment operator from a scalar measurement with division
+            template <typename OTHER_T>
+                requires (physics::is_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr auto operator/=(const OTHER_T& other) 
+                -> dual<meta::divide<measurement_t, OTHER_T>>& {
+
+                if (other == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+                
+                this->val /= other;
+                this->eps /= other;
+
+                return *this;
+        
+            }
+
+            /// @brief copy assignment operator from a scalar measurement with division
+            template <typename OTHER_T>
+                requires (physics::is_measurement_v<OTHER_T> && physics::is_scalar_v<OTHER_T>)
+            constexpr auto operator/=(OTHER_T&& other) 
+                -> dual<meta::divide<measurement_t, OTHER_T>>& {
+
+                if (other == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+                
+                this->val /= std::move(other);
+                this->eps /= std::move(other);
+
+                return *this;
+        
+            }
+
+            
+
+            constexpr dual operator+(const value_t& val) const noexcept {
+                
+                dual<measurement_t> result; 
+                result.val = this->val + val;
+
+                return result;
+
+            }
+
+            constexpr dual operator+(measurement_t&& val) const noexcept {
+                
+                dual<measurement_t> result; 
+                result.val = this->val + std::move(val);
+
+                return result;
+
+            }
+
+
+            constexpr dual operator-(const value_t& val) const noexcept {
+                
+                dual<measurement_t> result; 
+                result.val = this->val - val;
+
+                return result;
+
+            }
+
+            constexpr dual operator-(measurement_t&& val) const noexcept {
+                
+                dual<measurement_t> result; 
+                result.val = this->val - std::move(val);
+
+                return result;
+
+            }
+
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator*(const OTHER_T& other) const noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>> {
+                    
+                return {this->val * other, this->eps * other};
+        
+            }
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator*(OTHER_T&& other) const noexcept 
+                -> dual<multiply_t<measurement_t, OTHER_T>> {
+                    
+                return {this->val * std::move(other), this->eps * std::move(other)};
+        
+            }
+
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator/(const OTHER_T& other) const 
+                -> dual<meta::divide<measurement_t, OTHER_T>> {
+
+                if (other == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+
+                return {this->val / other, this->eps / other};
+
+            }
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            constexpr auto operator/(OTHER_T&& other) const 
+                -> dual<meta::divide<measurement_t, OTHER_T>> {
+
+                if (other == OTHER_T::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+
+                return {this->val / std::move(other), this->eps / std::move(other)};
+
+            }
+
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            friend constexpr auto operator*(const OTHER_T& other, const dual<measurement_t>& other_dual) noexcept 
+                -> dual<multiply_t<OTHER_T, value_t>> {
+                    
+                return {other_dual.val * other, other_dual.eps * other};
+        
+            }
+
+            template <typename OTHER_T>
+                requires (physics::is_generic_measurement_v<OTHER_T>)
+            friend constexpr auto operator/(const OTHER_T& other, const dual<measurement_t>& other_dual) 
+                -> dual<meta::divide<OTHER_T, value_t>> {
+
+                if (other_dual.val == value_t::zero)
+                    throw std::runtime_error("Cannot divide a dual number by a zero measurement");
+
+                return {other / other_dual.val, -other * other_dual.eps / op::square(other_dual.val)};
+
+            }
+
+
+    }; /// struct dual
+
 
         template <typename MEAS_TYPE>
             requires (is_dual_measurement_v<MEAS_TYPE>)
@@ -32,13 +457,7 @@ namespace scipp::math {
         }
 
 
-        template <typename MEAS_TYPE>
-            requires (is_dual_measurement_v<MEAS_TYPE>)
-        static inline constexpr MEAS_TYPE abs(const MEAS_TYPE& other) noexcept {
 
-            return {op::abs(other.val), other.eps * op::sign(other.val)}; 
-
-        }
 
 
         template <typename MEAS_TYPE, size_t POWER>

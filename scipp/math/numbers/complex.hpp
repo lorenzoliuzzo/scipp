@@ -65,24 +65,9 @@ namespace scipp::math {
                 real(std::move(other.real)), imag(std::move(other.imag)) {}
 
 
-            constexpr complex(const value_t& real) noexcept :
-
-                real(real), imag{} {}
+            constexpr complex(value_t real, value_t imag = value_t{}) noexcept : 
                 
-
-            constexpr complex(value_t&& real) noexcept :
-
-                real(std::move(real)), imag{} {}
-
-
-            explicit constexpr complex(const value_t& real, const value_t& imag) noexcept : 
-                
-                real(real), imag(imag) {}
-
-
-            constexpr complex(value_t&& real, value_t&& imag) noexcept : 
-                
-                real(std::move(real)), imag(std::move(imag)) {}
+                real(std::forward<value_t>(real)), imag(std::forward<value_t>(imag)) {}
 
 
 
@@ -162,15 +147,6 @@ namespace scipp::math {
             constexpr auto arg() const noexcept {
                 
                 return op::atan(this->imag, this->real);
-
-            }
-
-            
-            template <typename SCALAR_TYPE>
-                requires (is_number_v<SCALAR_TYPE> || physics::is_scalar_measurement_v<SCALAR_TYPE> || physics::is_scalar_umeasurement_v<SCALAR_TYPE>)
-            inline static constexpr auto polar(const value_t& rho, const SCALAR_TYPE& theta) noexcept {
-
-                return complex(rho * op::cos(theta), rho * op::sin(theta));
 
             }
 

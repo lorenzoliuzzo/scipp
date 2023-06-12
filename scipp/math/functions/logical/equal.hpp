@@ -24,7 +24,7 @@ namespace scipp::math {
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept { 
 
-                return x == y;   
+                return (x == y);   
             
             }
 
@@ -39,7 +39,22 @@ namespace scipp::math {
 
             inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept { 
 
-                return x == y;   
+                return (x == y);   
+            
+            }
+
+        };
+
+
+        template <typename T>
+            requires (is_complex_v<T> || is_dual_v<T>)
+        struct equal<T, T> {
+
+            using function_t = binary_function<T, T, bool>;
+
+            inline static constexpr function_t::result_t f(const function_t::first_arg_t& x, const function_t::second_arg_t& y) noexcept { 
+
+                return (x.real == y.real && x.imag == y.imag);   
             
             }
 

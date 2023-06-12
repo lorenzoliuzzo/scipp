@@ -78,9 +78,16 @@ namespace scipp::physics {
 
             /// @brief Construct a measurement from another measurement
             /// @param meas: The measurement to move
+            constexpr measurement(const measurement& other) noexcept :
+
+                value{other.value} {}
+
+
+            /// @brief Construct a measurement from another measurement
+            /// @param meas: The measurement to move
             constexpr measurement(measurement&& other) noexcept :
 
-                value{std::forward<value_t>(other.value)} {}
+                value{std::move(other.value)} {}
 
 
         // ==============================================

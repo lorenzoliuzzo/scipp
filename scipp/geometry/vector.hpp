@@ -16,7 +16,7 @@ namespace scipp::geometry {
 
 
     template <typename MEAS_TYPE, size_t DIM, bool ROW_VECTOR_FLAG = false>
-        requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>)
+        requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_generic_number_v<MEAS_TYPE>)
     struct vector {
 
         
@@ -209,281 +209,6 @@ namespace scipp::geometry {
 
             }
 
-
-            /// @brief Addition operator
-            constexpr vector& operator+=(const vector& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               this->data.begin(), 
-                               std::plus<value_t>());
-
-                return *this;
-
-            }
-
-            /// @brief Addition operator
-            constexpr vector& operator+=(vector&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               std::move(other).data.begin(), 
-                               this->data.begin(), 
-                               std::plus<value_t>());
-
-                return *this;
-
-            }
-
-
-            /// @brief Subtraction operator
-            constexpr vector& operator-=(const vector& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               other.data.begin(), 
-                               this->data.begin(), 
-                               std::minus<value_t>());
-
-                return *this;
-                
-            }
-
-            /// @brief Subtraction operator
-            constexpr vector& operator-=(vector&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               std::move(other).data.begin(), 
-                               this->data.begin(), 
-                               std::minus<value_t>());
-
-                return *this;
-
-            }
-
-
-            /// @brief Addition operator
-            template <typename T>
-            constexpr auto operator+(const T& other) const noexcept {
-
-                return math::op::add(*this, other);
-
-            }
-
-            /// @brief Addition operator
-            template <typename T>
-            constexpr auto operator+(T&& other) const noexcept {
-
-                return math::op::add(*this, std::move(other));
-
-            }
-
-
-            /// @brief Subtraction operator
-            constexpr vector operator-(const vector& other) const noexcept {
-
-                return math::op::sub(*this, other);
-
-            }
-
-            /// @brief Subtraction operator
-            constexpr vector operator-(vector&& other) const noexcept {
-                
-                return math::op::sub(*this, std::move(other));
-
-            }
-
-
-            /// @brief Negation operator
-            constexpr vector operator-() const noexcept {
-
-                data_t result; 
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               std::negate<value_t>()); 
-
-                return result;    
-
-            }
-
-
-            /// @brief Multiply this vector by a scalar measurement
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator*=(const SCALAR_TYPE& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](value_t& x) { return x *= other; });
-
-                return *this;
-
-            }
-
-            /// @brief Multiply this vector by a scalar measurement
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator*=(SCALAR_TYPE&& other) noexcept {
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](value_t& x) { return std::move(x *= other); });
-
-                return *this;
-
-            }
-
-
-            /// @brief Divide this vector by a scalar measurement
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator/=(const SCALAR_TYPE& other) {
-
-                if (other == SCALAR_TYPE{}) 
-                    throw std::invalid_argument("Cannot divide a vector by zero");
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](value_t& x) { return x /= other; });
-
-                return *this;
-
-            }
-
-            /// @brief Divide this vector by a scalar measurement
-            template <typename SCALAR_TYPE>
-                requires (physics::is_scalar_v<SCALAR_TYPE>)
-            constexpr vector& operator/=(SCALAR_TYPE&& other) {
-
-                if (other == SCALAR_TYPE{}) 
-                    throw std::invalid_argument("Cannot divide a vector by zero");
-                
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               this->data.begin(), 
-                               [&other](value_t& x) { return std::move(x /= other); });
-
-                return *this;
-
-            }
-
-
-            /// @brief Multiplicate by a scalar
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(const OTHER_MEAS_TYPE& other) const noexcept {
-
-                return math::op::mult(*this, other); 
-
-            }
-
-            /// @brief Multiplicate by a scalar
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator*(OTHER_MEAS_TYPE&& other) const noexcept {
-
-                return math::op::mult(*this, std::move(other)); 
-
-            }
-
-            /// @brief Divide a vector by a measurement 
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator/(const OTHER_MEAS_TYPE& other) const
-                -> math::functions::divide_t<vector, OTHER_MEAS_TYPE> {
-
-                if (other == OTHER_MEAS_TYPE{}) 
-                    throw std::invalid_argument("Cannot divide a vector by a zero measurement");
-
-                std::array<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, dim> result;
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               [&other](const value_t& x) { return x / other; });
-
-                return result;
-
-            }
-
-            /// @brief Divide a vector by a measurement 
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            constexpr auto operator/(OTHER_MEAS_TYPE&& other) const
-                -> math::functions::divide_t<vector, OTHER_MEAS_TYPE> {
-                
-                if (other == OTHER_MEAS_TYPE{}) 
-                    throw std::invalid_argument("Cannot divide a vector by a zero measurement");
-
-                std::array<math::functions::divide_t<value_t, OTHER_MEAS_TYPE>, dim> result;
-
-                std::transform(std::execution::par,
-                               this->data.begin(), this->data.end(), 
-                               result.begin(), 
-                               [&other](const value_t& x) { return std::move(x / other); });
-
-                return result;
-
-            }
-
-
-            /// @brief Multiply a measurement by a vector
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            friend constexpr auto operator*(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept {
-
-                return math::op::mult(meas, vec);
-            
-            }
-
-            /// @brief Divide a measurement by a vector
-            template <typename OTHER_MEAS_TYPE>
-                requires (physics::is_generic_measurement_v<OTHER_MEAS_TYPE> || math::is_number_v<OTHER_MEAS_TYPE>)
-            friend constexpr auto operator/(const OTHER_MEAS_TYPE& meas, const vector& vec) noexcept
-                -> math::functions::divide_t<OTHER_MEAS_TYPE, vector> {
-                
-                std::array<math::functions::divide_t<OTHER_MEAS_TYPE, value_t>, dim> result;
-
-                std::transform(std::execution::par,
-                               vec.data.begin(), vec.data.end(), 
-                               result.begin(), 
-                               [&meas](const value_t& x) { return meas / x; });
-
-                return result;
-            
-            }
-
-
-            /// @brief Print the vector to an output stream
-            friend std::ostream& operator<<(std::ostream& os, const vector& vec) noexcept {
-
-                os << "(\t";
-                for (size_t i{}; i < DIM; ++i) 
-                    os << vec[i] << "\t\t";
-                os << ')';
-
-                return os;
-
-            }
-            
-            /// @brief Print the vector to an output stream
-            friend std::ofstream& operator<<(std::ofstream& os, const vector& vec) noexcept {
-
-                os << "(\t";
-                for (size_t i{}; i < DIM; ++i) 
-                    os << vec[i] << "\t\t";
-                os << ')';
-
-                return os;
-
-            }
-            
         
         // ===========================================================
         // methods
@@ -707,10 +432,18 @@ namespace scipp::geometry {
         -> vector<MEAS_TYPE, DIM>;
 
 
-    template <typename T, typename... Ts> 
-    inline constexpr auto make_vector(Ts... others) noexcept {
+    template <typename T, bool ROW_FLAG = false, typename... Ts> 
+    inline constexpr auto make_vector(Ts... others) {
         
-        return vector<T, sizeof...(others)>(std::forward<T>(others)...);
+        return vector<T, sizeof...(others), ROW_FLAG>(std::forward<T>(others)...);
+
+    }
+
+
+    template <bool ROW_FLAG = false, typename... Ts>
+    inline constexpr auto make_vector(Ts... others) {
+
+        return make_vector<std::common_type_t<Ts...>, ROW_FLAG>(others...);
 
     }
 

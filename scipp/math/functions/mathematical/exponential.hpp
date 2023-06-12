@@ -73,7 +73,7 @@ namespace scipp::math {
 
             inline static constexpr function_t::result_t f(const function_t::arg_t& x) noexcept {
 
-                return typename function_t::result_t::polar(std::exp(x.real), x.imag);
+                return polar(std::exp(x.real), x.imag);
 
             }
 

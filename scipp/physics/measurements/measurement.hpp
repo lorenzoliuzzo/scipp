@@ -15,7 +15,7 @@ namespace scipp::physics {
 
     /// @brief Struct measurement represents a physical measurement as a double and a dimentional template meta-structure 
     /// @tparam BASE_TYPE: base_quantity of the measurement
-    /// @see in physics: base_quantity, prefix, unit
+    /// @see in physics: base_quantity, prefix, unit1
     template <typename BASE_TYPE, typename VALUE_TYPE = double> 
         requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
     struct measurement {
@@ -58,11 +58,18 @@ namespace scipp::physics {
                 value{value_t{}} {}
 
 
+
+            /// @brief Construct a measurement from a scalar value
+            /// @param val: The value of the measurement
+            constexpr measurement(const value_t& val) noexcept :
+
+                value{val} {}
+
             /// @brief Construct a measurement from a scalar value
             /// @param val: The value of the measurement
             constexpr measurement(value_t&& val) noexcept :
 
-                value{std::forward<value_t>(val)} {}
+                value{std::move(val)} {}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
@@ -89,6 +96,13 @@ namespace scipp::physics {
 
                 value{std::move(other.value)} {}
 
+
+            template <typename PointerType>
+                requires std::is_pointer_v<PointerType>
+            constexpr measurement(PointerType ptr) noexcept :   
+                
+                value(static_cast<value_t>(*ptr)) {}
+                
 
         // ==============================================
         // operators
@@ -211,6 +225,8 @@ namespace scipp::physics {
 
     }; // struct measurement
 
+
+    using double_m = measurement<scalar_base, double>; 
 
     // =============================================
     // measurement template guidelines

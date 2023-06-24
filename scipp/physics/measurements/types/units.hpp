@@ -259,12 +259,12 @@ namespace scipp::physics {
         inline static constexpr unit<second2> s2; ///< s2 unit
         inline static constexpr unit<ampere2> A2; ///< A2 unit
 
-        inline static constexpr auto N = kg * m / s2; ///< s2 unit
-        inline static constexpr auto Pa = N / m2; ///< m2 unit
-        inline static constexpr auto J = N * m; ///< J unit
-        inline static constexpr auto W = J / s; ///< W unit
-        inline static constexpr auto C = A * s; ///< C unit
-        inline static constexpr auto V = W / A; ///< V unit
+        // inline static constexpr auto N = kg * m / s2; ///< s2 unit
+        // inline static constexpr auto Pa = N / m2; ///< m2 unit
+        // inline static constexpr auto J = N * m; ///< J unit
+        // inline static constexpr auto W = J / s; ///< W unit
+        // inline static constexpr auto C = A * s; ///< C unit
+        // inline static constexpr auto V = W / A; ///< V unit
 
 
     } // namespace units

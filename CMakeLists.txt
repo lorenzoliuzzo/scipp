@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(sci++ VERSION 2.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096 -I/usr/local/lib/python3.10/site-packages/numpy/core/include")
+set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit=0 -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096 -I/usr/local/lib/python3.10/site-packages/numpy/core/include")
 
 add_library(${PROJECT_NAME} 
     STATIC   

@@ -21,6 +21,8 @@ namespace scipp::physics {
         template <int, int, int, int, int, int, int>
         struct base_quantity; 
 
+        using scalar_base = base_quantity<0, 0, 0, 0, 0, 0, 0>; 
+        
 
         /// @brief Type trait to check if a type is a base_quantity
         template <typename T>
@@ -201,10 +203,10 @@ namespace scipp::physics {
 
         /// @brief Type trait to check if two measurement types are the same
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-        struct is_same_measurement : is_same_base<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t> {};
+        struct is_same_measurement : std::conditional_t<are_measurements_v<MEAS_TYPE1, MEAS_TYPE2> && are_same_base_v<typename MEAS_TYPE1::base_t, typename MEAS_TYPE2::base_t>, 
+                                                        std::true_type, std::false_type> {};
 
         template <typename MEAS_TYPE1, typename MEAS_TYPE2> 
-            requires (are_measurements_v<MEAS_TYPE1, MEAS_TYPE2>)
         inline static constexpr bool is_same_measurement_v = is_same_measurement<MEAS_TYPE1, MEAS_TYPE2>::value; 
 
         template <typename MEAS_TYPE, typename... OTHER_MEAS_TYPEs> 

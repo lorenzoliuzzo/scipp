@@ -79,7 +79,13 @@ namespace scipp::math {
 
         }      
         
-        
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+        inline static constexpr auto sub(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
+
+            return functions::add<ARG_TYPE1, ARG_TYPE2>::f(x, functions::invert<y);
+
+        }      
+                
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         inline static constexpr auto sub(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
 
@@ -174,154 +180,6 @@ namespace scipp::math {
 
         }
 
-        
-        template <typename T>
-        inline static constexpr auto exp(const T& x) noexcept {  
-
-            return functions::exponential<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto log(const T& x) {
-
-            return functions::logarithm<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto sin(const T& x) noexcept {
-
-            return functions::sine<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto cos(const T& x) noexcept {
-
-            return functions::cosine<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto tan(const T& x) noexcept {
-
-            return functions::tangent<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto tan(const T& x, const T& y) noexcept {
-
-            return functions::tangent<T>::f(x, y);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto cot(const T& x) noexcept {
-
-            return functions::cotangent<T>::f(x);
-
-        }
-
-        template <typename T>
-        inline static constexpr auto sec(const T& x) noexcept {
-
-            return functions::secant<T>::f(x);
-
-        }
-
-        template <typename T>
-        inline static constexpr auto csc(const T& x) noexcept {
-
-            return functions::cosecant<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto asin(const T& x) noexcept {
-
-            return functions::arcsine<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto acos(const T& x) noexcept {
-
-            return functions::arccosine<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr auto atan(const T& x) noexcept {
-
-            return functions::arctangent<T>::f(x);
-
-        }
-
-
-
-        template <typename T>
-        inline static constexpr auto acot(const T& x) noexcept {
-
-            return functions::arccotangent<T>::f(x);
-
-        }
-
-        template <typename T>
-        inline static constexpr auto asec(const T& x) noexcept {
-
-            return functions::arcsecant<T>::f(x);
-
-        }
-
-        template <typename T>
-        inline static constexpr auto acsc(const T& x) noexcept {
-
-            return functions::arccosecant<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        inline static constexpr T sinh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T cosh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T tanh(const T&) noexcept;
-
-
-        template <typename T>
-        inline static constexpr T asin(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T acos(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T atan(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr auto atan(const T&, const T&) noexcept; 
-
-        template <typename T>
-        inline static constexpr T asinh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T acosh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T atanh(const T&) noexcept;
 
 
         template <typename T1, typename T2>

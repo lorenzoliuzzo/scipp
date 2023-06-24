@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/traits)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/geometry)
+=======
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/geometry)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/autodiff)
+>>>>>>> Stashed changes
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/math)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/physics)
 # add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/tools)

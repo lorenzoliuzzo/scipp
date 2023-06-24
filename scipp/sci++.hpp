@@ -25,18 +25,25 @@
         #include <fstream> /// tools::io
         // #include <functional> // maybe not needed
         #include <iostream> /// tools::io
-        #include <iterator>
         #include <map> /// physics::prefix_map
+<<<<<<< Updated upstream
         // #include <numeric> // maybe not needed
         // #include <omp.h> // maybe not needed
+=======
+        #include <memory>
+        #include <numeric> // maybe not needed
+>>>>>>> Stashed changes
         #include <random> /// math::statistics
         #include <ranges> /// math::integrals
         #include <ratio> /// physics::prefix, tools::io
-        // #include <set>
         #include <string> /// tools::io
         #include <sstream> /// tools::io
         #include <type_traits>
+<<<<<<< Updated upstream
         // #include <thread> // maybe not needed
+=======
+        #include <utility>
+>>>>>>> Stashed changes
         // #include <vector>
 
 
@@ -56,6 +63,53 @@
             #include "traits/physics.hpp"
             #include "traits/geometry.hpp"
 
+<<<<<<< Updated upstream
+=======
+        /// ---------------------------------------------------------------
+
+            #include "tools/meta.hpp"
+
+            #include "math/calculus/expressions.hpp" /// @ok
+            #include "math/calculus/variables.hpp"
+            #include "math/calculus/derivatives.hpp"
+
+        /// ---------------------------------------------------------------
+
+            #include "math/operations/algebraic/add.hpp" /// @ok
+            #include "math/operations/algebraic/negate.hpp" /// @ok          
+            #include "math/operations/algebraic/multiply.hpp" /// @ok
+            #include "math/operations/algebraic/invert.hpp" /// @ok
+            #include "math/operations/algebraic/power.hpp" /// @ok
+            #include "math/operations/algebraic/root.hpp" /// @ok
+            #include "math/operations/operators.hpp" 
+            #include "math/operations/mathematical/trigonometric.hpp"
+            
+
+        /// ---------------------------------------------------------------
+
+            
+        /// ---------------------------------------------------------------
+        /// @brief physics/measurements
+        /// ---------------------------------------------------------------
+    
+            #include "physics/measurements/base_quantity.hpp" 
+            #include "physics/measurements/unit.hpp" 
+        
+            #include "physics/measurements/measurement.hpp"
+            #include "physics/measurements/umeasurement.hpp"
+            
+            #include "physics/measurements/types/units.hpp" 
+            #include "physics/measurements/types/measurements.hpp" 
+
+
+        /// ---------------------------------------------------------------
+        /// @brief math/numbers
+        /// ---------------------------------------------------------------
+        
+            // #include "math/numbers/complex.hpp" 
+            // #include "math/numbers/dual.hpp" 
+
+>>>>>>> Stashed changes
 
         /// ---------------------------------------------------------------
         /// @brief math/functions
@@ -71,9 +125,17 @@
             #include "math/functions/logical/equal.hpp"
             // #include "math/functions/logical/greater.hpp"
             // #include "math/functions/logical/less.hpp"
+<<<<<<< Updated upstream
 
             #include "math/functions/algebraic/add.hpp" /// @ok
             #include "math/functions/algebraic/negate.hpp"
+=======
+            
+            // #include "math/functions/algebraic/negate.hpp"
+
+            // #include "math/functions/algebraic/multiply.hpp" /// @todo umeasurements
+            // #include "math/functions/algebraic/invert.hpp" 
+>>>>>>> Stashed changes
 
             #include "math/functions/algebraic/multiply.hpp" /// @todo umeasurements
             #include "math/functions/algebraic/invert.hpp" 
@@ -92,6 +154,7 @@
             #include "math/functions/numerical/round.hpp"
             
 
+<<<<<<< Updated upstream
         /// ---------------------------------------------------------------
         /// @brief physics/measurements
         /// ---------------------------------------------------------------
@@ -105,6 +168,8 @@
             #include "physics/measurements/types/units.hpp" 
             #include "physics/measurements/types/measurements.hpp" 
 
+=======
+>>>>>>> Stashed changes
             
         /// ---------------------------------------------------------------
         /// @brief math/numbers

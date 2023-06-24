@@ -1,8 +1,8 @@
 # add_executable(functions functions.cpp)
 # target_link_libraries(functions ${PROJECT_NAME})
 
-add_executable(dual dual.cpp)
-target_link_libraries(dual ${PROJECT_NAME} python3.10)
+# add_executable(dual dual.cpp)
+# target_link_libraries(dual ${PROJECT_NAME} python3.10)
 
 add_executable(taylor taylor.cpp)
 target_link_libraries(taylor ${PROJECT_NAME} python3.10)

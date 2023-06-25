@@ -30,8 +30,6 @@ int main() {
     variable<measurement<metre2>> d = c + c; 
     variable<measurement<metre2>> f = c + d; 
     variable<measurement<metre>> e = d / b; 
-    auto j = e + f; 
-    // variable<measurement<scalar_base>> g = op::sin(e);
 
     print("a", val(a));
     print("b = 3a ", val(b));

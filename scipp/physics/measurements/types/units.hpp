@@ -242,6 +242,7 @@ namespace scipp::physics {
         inline static constexpr unit<candela> cd; ///< cd unit
         inline static constexpr unit<radian> rad; ///< rad unit
 
+        inline static constexpr unit<newton> N; ///< Newton N unit
 
         inline static constexpr unit<metre_per_second> m_s; ///< m_s unit
         inline static constexpr unit<metre_per_second2> m_ss; ///< m_s unit

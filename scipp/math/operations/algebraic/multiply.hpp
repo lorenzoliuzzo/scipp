@@ -154,7 +154,7 @@ namespace scipp::math {
                                                     ARG_TYPE1::substance_amount + ARG_TYPE2::substance_amount,
                                                     ARG_TYPE1::luminous_intensity + ARG_TYPE2::luminous_intensity>;
 
-            inline static constexpr result_t f(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
+            inline static constexpr result_t f(const ARG_TYPE1&, const ARG_TYPE2&) noexcept {
 
                 return {};
 
@@ -173,7 +173,7 @@ namespace scipp::math {
             
             using result_t = std::ratio_multiply<ARG_TYPE1, ARG_TYPE2>;
 
-            inline static constexpr result_t f(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
+            inline static constexpr result_t f(const ARG_TYPE1&, const ARG_TYPE2&) noexcept {
 
                 return {};
 
@@ -192,7 +192,7 @@ namespace scipp::math {
             using result_t = physics::unit<multiply_t<typename ARG_TYPE1::base_t, typename ARG_TYPE2::base_t>, 
                                            multiply_t<typename ARG_TYPE1::prefix_t, typename ARG_TYPE2::prefix_t>>;
 
-            inline static constexpr result_t f(const ARG_TYPE1& x, const ARG_TYPE2& y) noexcept {
+            inline static constexpr result_t f(const ARG_TYPE1&, const ARG_TYPE2&) noexcept {
 
                 return {};
 

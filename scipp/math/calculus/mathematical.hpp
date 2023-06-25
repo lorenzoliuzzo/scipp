@@ -16,38 +16,6 @@ namespace scipp::math {
 
 
 
-        // template <typename T>
-        // struct tan_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr tan_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         const auto aux = 1.0 / cos(x->val);
-        //         x->propagate(wprime * aux * aux);
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         const auto aux = 1.0 / cos(x);
-        //         x->propagatex(wprime * aux * aux);
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = tan(x->val);
-
-        //     }
-            
-        // };
-
 
         // template <typename T>
         // struct sinh_expr : unary_expr<T, T> {

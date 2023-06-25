@@ -151,13 +151,6 @@ namespace scipp::math {
     /// @brief functions traits
     /// =============================================
 
-<<<<<<< Updated upstream
-    namespace functions {
-
-
-        template <typename ARG_TYPE, typename RESULT_TYPE>
-        struct unary_function;
-=======
 
     namespace calculus {
                 
@@ -262,7 +255,6 @@ namespace scipp::math {
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         struct add_impl;
->>>>>>> Stashed changes
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
         using add_t = typename add_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
@@ -274,11 +266,6 @@ namespace scipp::math {
 
         }
 
-<<<<<<< Updated upstream
-        template <typename ARG_TYPE, typename RESULT_TYPE>
-        struct is_unary_function<unary_function<ARG_TYPE, RESULT_TYPE>> : std::true_type {};
-=======
->>>>>>> Stashed changes
 
         template <typename T>
         struct negate_impl;

@@ -37,15 +37,15 @@ namespace scipp::math {
 
             /// Bind an expression pointer for writing the derivative expression during propagation
             // template <typename U> 
-            virtual constexpr void bind_expr(void*) {}
+            virtual constexpr void bind_expr(std::shared_ptr<std::shared_ptr<void>>) {}
 
 
             /// Update the contribution of this expression in the derivative of the root node of the expression tree.
             /// @param wprime The derivative of the root expression node w.r.t. the child expression of this expression node.
             virtual constexpr void propagate(std::shared_ptr<void>) = 0;
 
-            // /// Update the contribution of this expression in the derivative of the root node of the expression tree.
-            // /// @param wprime The derivative of the root expression node w.r.t. the child expression of this expression node (as an expression).
+            /// Update the contribution of this expression in the derivative of the root node of the expression tree.
+            /// @param wprime The derivative of the root expression node w.r.t. the child expression of this expression node (as an expression).
             // virtual constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>>) = 0;
 
 
@@ -93,9 +93,9 @@ namespace scipp::math {
 
             using expr<T>::expr;
 
-            constexpr void propagate([[maybe_unused]] std::shared_ptr<void> wprime) override {}
+            constexpr void propagate(std::shared_ptr<void>) override {}
 
-            // constexpr void propagatex([[maybe_unused]] const ExprPtr<T>& wprime) override {}
+            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>>) override {}
 
             constexpr void update() override {}
 
@@ -160,8 +160,14 @@ namespace scipp::math {
 
             // virtual constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
                 
-            //     // if (gradx_ptr) 
-            //         // *static_cast<decltype(wprime)*>(gradx_ptr) += wprime; 
+            //     if (gradx_ptr.get()) {
+
+            //         auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+            //         auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+
+            //         *value += *derivative;
+                    
+            //     }
 
             // }
 
@@ -200,11 +206,18 @@ namespace scipp::math {
 
             // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) override {
 
-            //     // if (gradx_ptr) 
-            //         // *static_cast<decltype(wprime)*>(gradx_ptr) += wprime; 
+            //     if (gradx_ptr.get()) {
 
+            //         auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+            //         auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+
+            //         *value += *derivative;
+
+            //     }
+
+            //     expr->propagatex(wprime);
+                
             // }
-
 
 
             virtual constexpr void update() override {
@@ -226,19 +239,21 @@ namespace scipp::math {
             using unary_expr<T, T>::unary_expr;
 
 
-            template <typename U>
-            constexpr void propagate(const U& wprime) {
+            constexpr void propagate(std::shared_ptr<void> wprime) override {
 
-                x->propagate(-wprime);
-
-            }
-
-            template <typename U>
-            constexpr void propagatex(const expr_ptr<U>& wprime) {
-
-                x->propagatex(-wprime);
+                auto wprime_v = *std::static_pointer_cast<T>(wprime);
+                auto x_v = - wprime_v; 
+                x->propagate(std::make_shared<decltype(x_v)>(x_v));
 
             }
+
+            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+
+            //     auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
+            //     auto x_v = - wprime_v; 
+            //     x->propagatex(std::make_shared<decltype(x_v)>(x_v));
+
+            // }
 
             virtual constexpr void update() override {
 
@@ -304,12 +319,15 @@ namespace scipp::math {
             }
 
 
-                // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
 
-                //     // l->propagatex(op::multiply(wprime, r));
-                //     // r->propagatex(op::multiply(wprime, l));
+            //     auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
+            //     auto rval = wprime_v * r->val;
+            //     auto lval = wprime_v * l->val;
+            //     l->propagatex(std::make_shared<decltype(rval)>(rval)); // (l * r)'l = w' * r
+            //     r->propagatex(std::make_shared<decltype(lval)>(lval)); // (l * r)'r = l * w'
 
-                // }
+            // }
 
             constexpr void update() override {
 
@@ -332,17 +350,17 @@ namespace scipp::math {
 
             constexpr void propagate(std::shared_ptr<void> wprime) override {
                 
-                auto wprime_p = std::static_pointer_cast<T>(wprime);
-                auto wprime_v = *wprime_p;
+                auto wprime_v = *std::static_pointer_cast<T>(wprime);
                 auto aux = - wprime_v / op::square(x->val);
                 x->propagate(std::make_shared<decltype(aux)>(aux));
 
             }
 
-            // template <typename U>
-            // constexpr void propagatex(const expr_ptr<U>& wprime) {
-
-            //     x->propagatex(-wprime);
+            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) override {
+                
+            //     auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
+            //     auto aux = - wprime_v / op::square(x->expr);
+            //     x->propagatex(std::make_shared<decltype(aux)>(aux));
 
             // }
 

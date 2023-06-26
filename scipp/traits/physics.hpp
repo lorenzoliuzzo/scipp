@@ -13,6 +13,9 @@
 namespace scipp::physics {
 
 
+    using namespace math; 
+
+
     /// =============================================
     /// @brief base_quantity traits
     /// =============================================

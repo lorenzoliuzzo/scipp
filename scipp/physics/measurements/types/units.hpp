@@ -142,6 +142,9 @@ namespace scipp::physics {
 
         using newton = base_quantity<1, -2, 1, 0, 0, 0, 0>; ///< newton base_quantity
 
+        using newton_per_metre = math::op::divide_t<newton, metre>;
+        using kilogram_metre_per_second = math::op::multiply_t<kilogram, metre_per_second>;
+
         using pascal = base_quantity<-1, -2, 1, 0, 0, 0, 0>; ///< pascal base_quantity
 
         using joule = base_quantity<2, -2, 1, 0, 0, 0, 0>; ///< joule base_quantity

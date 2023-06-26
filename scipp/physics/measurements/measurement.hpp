@@ -101,7 +101,7 @@ namespace scipp::physics {
                 requires std::is_pointer_v<PointerType>
             constexpr measurement(PointerType ptr) noexcept :   
                 
-                value(static_cast<value_t>(*ptr)) {}
+                value(static_cast<measurement<base_t, value_t>>(*ptr)) {}
                 
 
         // ==============================================

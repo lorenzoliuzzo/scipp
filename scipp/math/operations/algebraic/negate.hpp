@@ -106,14 +106,14 @@ namespace scipp::math {
         };
 
 
-        /// @brief Negate specialization for expr
+        /// @brief Negate specialization for expr_ptr
         /// @tparam T
         template <typename T>
-        struct negate_impl<calculus::expr<T>> {
+        struct negate_impl<calculus::expr_ptr<T>> {
 
             using result_t = calculus::expr_ptr<T>;
             
-            inline static constexpr result_t f(const calculus::expr<T>& x) noexcept {
+            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) noexcept {
                 
                 return std::make_shared<calculus::neg_expr<T>>(-x->val, x);
 
@@ -121,18 +121,18 @@ namespace scipp::math {
                     
         };
 
-        // template <typename T>
-        // struct negate_impl<calculus::variable<T>> {
+        template <typename T>
+        struct negate_impl<calculus::variable<T>> {
 
-        //     using result_t = calculus::expr_ptr<T>;
+            using result_t = calculus::expr_ptr<T>;
 
-        //     inline static constexpr result_t f(const calculus::variable<T>& x) noexcept {
+            inline static constexpr result_t f(const calculus::variable<T>& x) noexcept {
 
-        //         return -x.expr;
+                return -x.expr;
 
-        //     }
+            }
 
-        // };
+        };
 
 
     } // namespace op

@@ -103,13 +103,15 @@ namespace scipp::math {
     inline static constexpr auto operator+=(auto& x, const auto& y) noexcept { 
         
         return x = op::add(x, y);
+        // return x; 
         
     }
 
     /// @brief Decrement operator
     inline static constexpr auto operator-=(auto& x, const auto& y) noexcept { 
         
-        return x = op::sub(x, y);
+        x = op::sub(x, y);
+        return x; 
         
     }
 

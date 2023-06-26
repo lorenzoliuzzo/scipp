@@ -167,12 +167,12 @@ namespace scipp::math {
 
             }
 
-            template <typename U>
-            constexpr explicit operator U() const {
+            // template <typename U>
+            // constexpr explicit operator U() const {
 
-                return static_cast<U>(expr->val);
+            //     return static_cast<U>(expr->val);
 
-            }
+            // }
 
         };
 

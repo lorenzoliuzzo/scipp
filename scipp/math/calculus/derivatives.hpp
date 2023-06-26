@@ -57,6 +57,32 @@ namespace scipp::math {
         }
 
 
+        /// Return the derivatives expr of a dependent variable y with respect given independent variables.
+        template <typename T, typename... Vars>
+        constexpr auto derivativesx(const variable<T>& y, const Wrt<Vars...>& wrt) {
+            
+            constexpr auto N = sizeof...(Vars);
+            std::tuple<variable<op::divide_t<T, typename std::decay_t<Vars>::value_t>>...> values;
+    
+            // meta::for_<N>([&](auto i) constexpr {
+            //     using grad_t = std::tuple_element_t<i, decltype(values)>;
+            //     std::shared_ptr<grad_t> sharedPtr(&std::get<i>(values), [](grad_t*){});
+            //     std::get<i>(wrt.args).expr->bind_expr(sharedPtr);
+            // });
+
+            // y.expr->propagate(std::make_shared<double>(1.0)); 
+
+            // meta::for_<N>([&](auto i) constexpr {
+
+            //     std::get<i>(wrt.args).expr->bind_expr(nullptr);
+
+            // });
+
+            return values; 
+
+        }
+
+
     } // namespace calculus
 
 

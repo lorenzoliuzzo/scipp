@@ -2,7 +2,7 @@
  * @file    sci++.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @date    2023-06-25
+ * @date    2023-06-28
  * 
  * @copyright Copyright (c) 2023
  */
@@ -35,7 +35,9 @@
         #include <sstream>      /// tools::io
         #include <type_traits>  /// traits
         #include <utility>
+        #include <variant>      
         #include <vector>
+
 
 
         #include "external/matplotlibcpp.h"
@@ -94,6 +96,7 @@
             
             #include "physics/measurements/types/units.hpp" 
             #include "physics/measurements/types/measurements.hpp" 
+            #include "physics/constants.hpp"
 
 
             #include "physics/kinetic_energy.hpp"
@@ -128,7 +131,6 @@
             // #include "math/numbers/dual.hpp" 
 
             // #include "math/numbers/constants.hpp" 
-            // #include "physics/constants.hpp"
 
 
         /// ---------------------------------------------------------------

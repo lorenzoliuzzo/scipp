@@ -283,6 +283,20 @@ namespace scipp::tools {
     // }
 
 
+    template <typename T>
+    inline static constexpr void print(const math::calculus::variable<T>& other) noexcept {
+
+        print(math::calculus::val(other));
+
+    }
+
+    template <typename T>
+    inline static constexpr void print(const std::string& description, const math::calculus::variable<T>& other) noexcept {
+
+        print(description, math::calculus::val(other));
+
+    }
+
     /// @brief Print a geometry::vector
     template <typename VECTOR_TYPE>
         requires (geometry::is_vector_v<VECTOR_TYPE>)

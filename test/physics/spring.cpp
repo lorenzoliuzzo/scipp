@@ -26,11 +26,11 @@ int main() {
 
     print("Simulating a spring potential...");      
 
-    constexpr size_t N = 500;                                       /// number of points to plot
+    constexpr size_t N = 800;                                       /// number of points to plot
     std::vector<double> x_i(N), p_i(N), E_i(N), t_i(N);             /// value containers for plotting
 
 
-    constexpr measurement<kilogram> mass = 20;                      /// mass
+    measurement<kilogram> mass = 20;                      /// mass
     constexpr measurement<newton_per_metre> k = 50.0;               /// spring_constant
     constexpr measurement<metre> l0 = 2.0; 
 
@@ -40,25 +40,24 @@ int main() {
     print("l0", l0);
 
     variable<measurement<metre>> x = 6.0;                           /// initial position
-    variable<measurement<metre_per_second>> x_dot = 0.0;            /// initial velocity 
+    variable<measurement<metre_per_second>> x_dot = 1.0;            /// initial velocity 
+    variable<measurement<second>> t;                                /// time              
 
-    print("\nVariables");
-    print("x", val(x)); 
-    print("x_dot", val(x_dot));
-
-
-    lagrangian L(x, x_dot, mass, k, l0);                            /// build the lagrangian
+    lagrangian L(x, x_dot, t, mass, k, l0);                            /// build the lagrangian
     hamiltonian H(L);                                               /// build the hamiltonian
 
+    print("\nVariables");
+    print("x", H.x); 
+    print("p", H.p);
+    print("t", H.t);
+
     print("\nEnergy values");
-    print("T", val(L.T())); 
-    print("V", val(L.V())); 
-    print("L", val(L())); 
-    print("H", val(H())); 
+    print("T", L.T()); 
+    print("V", L.V()); 
+    print("L", L()); 
+    print("H", H()); 
 
-
-    measurement<second> t;                                      
-    constexpr measurement<second> t_max = 5;                    /// max time to evolve the sistem
+    constexpr measurement<second> t_max = 60;                    /// max time to evolve the sistem
     constexpr measurement<second> dt = t_max / N;               /// increment time step 
 
     print("\nEvolving the system...");
@@ -68,25 +67,27 @@ int main() {
     meta::for_<N>([&](auto i) constexpr {
 
         t += dt; 
-        print("t", t);
         H.rk4(dt);                                              /// evolving the system with rk4
         x_i[i] = val(H.x).value;                                /// extracting the variable value and then extracting the measurement value
         p_i[i] = val(H.p).value; 
         E_i[i] = val(H()).value;
-        t_i[i] = t.value; 
+        t_i[i] = val(t).value; 
 
     }); 
 
     print("\nFinal values");                                    /// printing the final values
-    print("x", val(H.x));
-    print("p", val(H.p));
-    print("E", val(H()));
+    print("x", H.x);
+    print("p", H.p);
+    print("t", H.t);
+    print("E", H());
 
 
     print("\nPlotting the phase space plot...");                /// plotting with matplotlibcpp
     plt::figure(); 
     plt::title("Harmonic oscillator");                          
     plt::named_plot("phase space p-x", x_i, p_i); 
+    // plt::xlabel("x [" + units::m::to_string() + "]");
+    // plt::ylabel("p [" + (units::kg * units::m_s)::to_string() + "]");
     plt::grid(true);
     plt::tight_layout(); 
     plt::legend();

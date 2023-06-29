@@ -12,103 +12,26 @@
 namespace scipp::physics {
 
 
-    template <typename... VArgs>
+    template <typename... PotArgs>
     struct lagrangian {
-
-
-        calculus::variable<measurement<units::metre>>& x;
-        calculus::variable<measurement<units::metre_per_second>>& x_dot;
-        calculus::variable<measurement<units::second>>& t; 
-
-        measurement<units::kilogram>& mass; 
-        std::tuple<std::decay_t<VArgs>...> pot_args; 
-
-        std::function<calculus::variable<measurement<units::joule>>()> T = kinetic_energy(x_dot, mass);  
-        std::function<calculus::variable<measurement<units::joule>>()> V = potential_energy(x, pot_args);
-        
-
-        lagrangian(calculus::variable<measurement<units::metre>>& position, 
-                   calculus::variable<measurement<units::metre_per_second>>& velocity, 
-                   calculus::variable<measurement<units::second>>& time,
-                   measurement<units::kilogram>& m, const VArgs&... args) noexcept 
-                
-            : x{position}, x_dot{velocity}, t{time}, mass{m}, pot_args{std::forward_as_tuple(std::decay_t<VArgs>(args)...)} {}
-
-
-        lagrangian(calculus::variable<measurement<units::metre>>& position, 
-                   calculus::variable<measurement<units::metre_per_second>>& velocity, 
-                   measurement<units::kilogram>& m, const std::tuple<VArgs...>& args) noexcept 
-                
-            : x{position}, x_dot{velocity}, mass{m}, pot_args{args} {}
-
-
-
-        lagrangian(calculus::variable<measurement<units::metre>>& position, 
-                   calculus::variable<measurement<units::kilogram_metre_per_second>>& momentum, 
-                   calculus::variable<measurement<units::second>>& time,
-                   measurement<units::kilogram>& m, const VArgs&... args) noexcept 
-                
-            : x{position}, t{time}, mass{m}, pot_args{std::forward_as_tuple(std::decay_t<VArgs>(args)...)} {
-
-            x_dot = momentum / mass;
-        
-        }
-
-
-        lagrangian(calculus::variable<measurement<units::metre>>& position, 
-                   calculus::variable<measurement<units::kilogram_metre_per_second>>& momentum, 
-                   measurement<units::kilogram>& m, const std::tuple<VArgs...>& args) noexcept 
-                
-            : x{position}, mass{m}, pot_args{args} {
-
-            x_dot = momentum / mass;
-        
-        }
-
-
-        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
-            
-            return T() - V(); 
-
-        }
-
-
-    }; // class lagrangian
-
-
-    template <typename... VArgs>
-    struct Lagrangian {
 
         measurement<units::kilogram>& m; 
         calculus::variable<measurement<units::metre>>& x;
         calculus::variable<measurement<units::metre_per_second>>& x_dot;
-        // calculus::variable<measurement<units::second>>& t; 
+        calculus::variable<measurement<units::second>>& t; 
 
-        potential_energy<VArgs...>& potential;
+        potential_energy<PotArgs...>& potential;
         calculus::variable<measurement<units::joule>> V{}, T{}; 
 
 
-        Lagrangian(measurement<units::kilogram>& mass,
+        lagrangian(measurement<units::kilogram>& mass,
                    calculus::variable<measurement<units::metre>>& position, 
                    calculus::variable<measurement<units::metre_per_second>>& velocity, 
-                //    calculus::variable<measurement<units::second>>& time,
-                   potential_energy<VArgs...>& potential) noexcept 
+                   calculus::variable<measurement<units::second>>& time,
+                   potential_energy<PotArgs...>& potential) noexcept 
                 
-            : m{mass}, x{position}, x_dot{velocity}, potential{potential} {}
+            : m{mass}, x{position}, x_dot{velocity}, t{time}, potential{potential} {}
 
-
-        // Lagrangian(measurement<units::kilogram>& mass,
-        //            calculus::variable<measurement<units::metre>>& position, 
-        //            calculus::variable<measurement<units::kilogram_metre_per_second>>& momentum, 
-        //         //    calculus::variable<measurement<units::second>>& time,
-        //            potential_energy<VArgs...>& potential) noexcept 
-                
-        //     : m{mass}, x{position}, x_dot{calculus::variable<measurement<units::metre_per_second>>(momentum / mass)}, potential{potential} {
-            
-        //     update_kinetic();
-        //     update_potential(); 
-
-        // }
 
         inline void update_kinetic() noexcept {
 
@@ -129,6 +52,119 @@ namespace scipp::physics {
             return this->T - this->V; 
 
         }
+
+        inline auto derivatives() noexcept {
+            
+            return calculus::derivatives(this->operator()(), calculus::wrt(this->x, this->x_dot, this->t));
+
+        }
+
+    };
+
+
+    template <size_t DIM, typename... Vars>
+    struct lagrangian_multidim {
+
+        // inline static constexpr dim = sizeof...(Vars);
+
+        measurement<units::kilogram>& m; 
+
+        std::array<calculus::variable<measurement<units::metre>>, DIM>& x;
+        std::array<calculus::variable<measurement<units::metre_per_second>>, DIM>& x_dot;
+        calculus::variable<measurement<units::second>>& t; 
+
+        // potential_energy<VArgs...>& potential;
+        calculus::variable<measurement<units::joule>> V{}, T{}; 
+
+        lagrangian_multidim(measurement<units::kilogram>& mass,
+                            std::array<calculus::variable<measurement<units::metre>>, DIM>& variables,
+                            std::array<calculus::variable<measurement<units::metre_per_second>>, DIM>& tangents,
+                            calculus::variable<measurement<units::second>>& time) noexcept
+            
+            : m{mass}, x{variables}, x_dot{tangents}, t{time} {}
+
+
+        inline void update_kinetic() noexcept {
+
+            this->T = kinetic_energy(this->m, this->x_dot);
+        
+        }
+
+        // inline void update_potential() noexcept {
+
+        //     this->V = this->potential(this->params);
+        
+        // }
+
+
+        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+
+            update_kinetic();
+            // update_potential();
+            return this->T - this->V;
+
+        }
+
+        // inline auto derivatives() noexcept {
+
+        //     return calculus::derivatives(this->operator()(), calculus::wrt(this->params, this->x_dot, this->t));
+            
+        // }
+
+    };
+
+
+    template <typename... Vars>
+    struct lagrangian_multi {
+
+        inline static constexpr size_t dim = sizeof...(Vars);
+
+        measurement<units::kilogram>& m; 
+        // calculus::variable<measurement<units::second>>& t; 
+
+        std::tuple<Vars...> variables;
+        std::function<std::array<calculus::variable<measurement<units::metre>>, dim>(Vars...)>& parametrization;
+        // std::array<calculus::variable<measurement<units::metre_per_second>>, dim>& x_dot;
+
+        // potential_energy<VArgs...>& potential;
+        calculus::variable<measurement<units::joule>> V{}, T{}; 
+
+        lagrangian_multi(measurement<units::kilogram>& mass,
+                        //  calculus::variable<measurement<units::second>>& time, 
+                         std::function<std::array<calculus::variable<measurement<units::metre>>, dim>(Vars...)>& gamma,
+                         Vars... variables
+                        //  std::array<calculus::variable<measurement<units::metre_per_second>>, dim>& tangents
+                         ) noexcept
+            
+            : m{mass}, variables{std::forward_as_tuple(variables...)} {} //, parametrization{gamma} {}
+
+
+        inline void update_kinetic() noexcept {
+
+            // this->T = kinetic_energy(this->m, this->x_dot);
+        
+        }
+
+        // inline void update_potential() noexcept {
+
+        //     this->V = this->potential(this->params);
+        
+        // }
+
+
+        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+
+            update_kinetic();
+            // update_potential();
+            return this->T - this->V;
+
+        }
+
+        // inline auto derivatives() noexcept {
+
+        //     return calculus::derivatives(this->operator()(), calculus::wrt(this->params, this->x_dot, this->t));
+            
+        // }
 
     };
 

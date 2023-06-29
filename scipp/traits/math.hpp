@@ -247,6 +247,34 @@ namespace scipp::math {
         };
 
 
+
+        template <typename T, size_t DIM>
+            requires is_variable_v<T>  
+        struct curve; 
+
+        template <typename T>
+        struct is_curve : std::false_type {};
+
+        template <typename T, size_t DIM>
+        struct is_curve<curve<T, DIM>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_curve_v = is_curve<T>::value;
+
+
+        template <typename T>
+        struct interval; 
+
+        template <typename T>
+        struct is_interval : std::false_type {};
+
+        template <typename T>
+        struct is_interval<interval<T>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+
     } // namespace calculus
 
 
@@ -716,41 +744,9 @@ namespace scipp::math {
     // namespace curves {
 
 
-    //     template <typename T, size_t DIM>      
-    //     struct curve : functions::nary_function<T, DIM, double> {
 
 
-    //         using _t = curve<T, DIM>;
 
-    //         using function_t = functions::nary_function<T, DIM, double>;
-
-    //         using param_t = std::array<double, DIM>;
-
-
-    //     }; // struct curve 
-    
-
-    //     template <typename T>
-    //     struct is_curve : std::false_type {};
-
-    //     template <typename T, size_t DIM>
-    //     struct is_curve<curve<T, DIM>> : std::true_type {};
-
-    //     template <typename T>
-    //     inline static constexpr bool is_curve_v = is_curve<typename T::_t>::value;
-
-
-    //     template <typename T>
-    //     struct interval; 
-
-    //     template <typename T>
-    //     struct is_interval : std::false_type {};
-
-    //     template <typename T>
-    //     struct is_interval<interval<T>> : std::true_type {};
-
-    //     template <typename T>
-    //     inline static constexpr bool is_interval_v = is_interval<T>::value;
 
 
     //     template <typename T>

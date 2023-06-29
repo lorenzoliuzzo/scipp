@@ -212,7 +212,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const VALUE_T& x, const UNIT_T&) noexcept {
 
-                return { x * UNIT_T::mult };
+                return static_cast<VALUE_T>(x * UNIT_T::mult);
 
             }       
 

@@ -17,7 +17,7 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct interval : curve<T, T::dim> {
+        struct interval {
 
 
             using arg_t = T;

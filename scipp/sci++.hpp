@@ -63,8 +63,8 @@
             #include "math/calculus/expressions.hpp" /// @ok
             #include "math/calculus/variables.hpp"
             #include "math/calculus/derivatives.hpp"
-            #include "math/calculus/ode/solver.hpp"
-            #include "math/calculus/legendre_transformation.hpp"
+            // #include "math/calculus/ode/solver.hpp"
+            // #include "math/calculus/legendre_transformation.hpp"
 
         /// ---------------------------------------------------------------
 
@@ -97,6 +97,11 @@
             #include "physics/measurements/types/units.hpp" 
             #include "physics/measurements/types/measurements.hpp" 
             #include "physics/constants.hpp"
+
+
+            #include "math/calculus/taylor_series.hpp"
+            #include "math/calculus/curve.hpp"
+            #include "math/calculus/interval.hpp"
 
 
             #include "physics/kinetic_energy.hpp"
@@ -137,7 +142,7 @@
         /// @brief geometry/linear_algebra
         /// ---------------------------------------------------------------
 
-            // #include "geometry/vector.hpp"
+            #include "geometry/vector.hpp"
             // #include "geometry/matrix.hpp"
 
             // #include "physics/vector_types.hpp"

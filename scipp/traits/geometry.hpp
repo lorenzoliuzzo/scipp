@@ -22,10 +22,8 @@ namespace scipp::geometry {
     // vector traits
     // =============================================
 
-        template <typename T, size_t DIM, bool ROW_VECTOR_FLAG>
-            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
+        template <typename, size_t, bool>
         struct vector;
-
 
         template <typename T, size_t DIM>
         using column_vector = vector<T, DIM, false>;
@@ -41,7 +39,6 @@ namespace scipp::geometry {
         inline static constexpr bool is_column_vector_v = is_column_vector<T>::value;
 
         template <typename T, size_t DIM> 
-            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
         struct is_column_vector<column_vector<T, DIM>> : std::true_type {};
 
         template <typename... VECTORS>
@@ -58,7 +55,6 @@ namespace scipp::geometry {
         inline static constexpr bool is_row_vector_v = is_row_vector<T>::value;
 
         template <typename T, size_t DIM> 
-            requires (physics::is_generic_measurement_v<T> || math::is_generic_number_v<T>)
         struct is_row_vector<row_vector<T, DIM>> : std::true_type {};
 
         template <typename... Ts>

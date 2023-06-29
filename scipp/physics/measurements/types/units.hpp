@@ -138,14 +138,15 @@ namespace scipp::physics {
     /// Composed base_quantity
     /// =================================================
 
-        using hertz = base_quantity<0, -1, 0, 0, 0, 0, 0>; ///< hertz base_quantity  
+        using hertz = math::op::invert_t<second>; ///< hertz base_quantity  
 
-        using newton = base_quantity<1, -2, 1, 0, 0, 0, 0>; ///< newton base_quantity
+        using newton = math::op::multiply_t<kilogram, metre_per_second2>; ///< newton base_quantity
 
-        using newton_per_metre = math::op::divide_t<newton, metre>;
+        using newton_per_metre = math::op::divide_t<newton, metre>; 
+
         using kilogram_metre_per_second = math::op::multiply_t<kilogram, metre_per_second>;
 
-        using pascal = base_quantity<-1, -2, 1, 0, 0, 0, 0>; ///< pascal base_quantity
+        using pascal = math::op::divide_t<newton, metre2>; ///< pascal unit
 
         using joule = base_quantity<2, -2, 1, 0, 0, 0, 0>; ///< joule base_quantity
 
@@ -179,6 +180,9 @@ namespace scipp::physics {
 
         using decametre = unit<metre, std::deca>; ///< decametre unit
         inline static constexpr decametre dam; ///< dam unit
+
+        using decimetre = unit<metre, std::deci>; ///< decimetre unit
+        inline static constexpr decimetre dm; ///< dm unit
 
         using centimetre = unit<metre, std::centi>; 
         inline static constexpr centimetre cm; ///< cm unit
@@ -236,6 +240,35 @@ namespace scipp::physics {
 
         inline static constexpr unit<metre2_per_second> m2_s; ///< m2_s unit
 
+        using decimetre3 = math::op::power_t<3, decimetre>; 
+        inline static constexpr decimetre3 dm3; ///< dm3 unit
+
+        using litre = decimetre3; ///< litre unit
+        inline static constexpr litre L; ///< L unit
+
+        // using decilitre = unit<decimetre3, std::deci>; ///< decilitre unit
+        // inline static constexpr decilitre dL; ///< L unit
+
+        // using centilitre = unit<decimetre3, std::centi>; ///< centilitre unit
+        // using millilitre = unit<decimetre3, std::milli>; ///< millilitre unit
+
+
+        inline static constexpr unit<hertz> Hz;
+        inline static constexpr unit<newton> N;
+        inline static constexpr unit<newton_per_metre> N_m;
+        inline static constexpr unit<kilogram_metre_per_second> kg_m_s;
+        inline static constexpr unit<joule> J;
+
+        using kilojoule = unit<joule, std::kilo>; ///< kilojoule unit
+        inline static constexpr kilojoule kJ; ///< kJ unit
+
+        inline static constexpr unit<watt> W;
+        inline static constexpr unit<coulomb> C;
+        inline static constexpr unit<volt> V;
+        inline static constexpr unit<farad> F;
+        inline static constexpr unit<ohm> Ohm;
+        inline static constexpr unit<weber> Wb;
+        inline static constexpr unit<tesla> T;
 
         inline static constexpr unit<second> s; ///< s unit
         inline static constexpr unit<kilogram> kg; ///< kg unit
@@ -244,8 +277,6 @@ namespace scipp::physics {
         inline static constexpr unit<mole> mol; ///< mol unit
         inline static constexpr unit<candela> cd; ///< cd unit
         inline static constexpr unit<radian> rad; ///< rad unit
-
-        inline static constexpr unit<newton> N; ///< Newton N unit
 
         inline static constexpr unit<metre_per_second> m_s; ///< m_s unit
         inline static constexpr unit<metre_per_second2> m_ss; ///< m_s unit
@@ -263,8 +294,18 @@ namespace scipp::physics {
         inline static constexpr unit<second2> s2; ///< s2 unit
         inline static constexpr unit<ampere2> A2; ///< A2 unit
 
+        inline static constexpr unit<pascal> Pa; ///< m2 unit
+
+        inline static constexpr unit<pascal, std::ratio<101325, 1>> atm; ///< atm unit
+
+        using calorie = unit<joule, std::ratio<4184, 1000>>; ///< calorie unit
+        inline static constexpr calorie cal; ///< cal unit
+
+        using kilocalorie = unit<joule, std::ratio<4184, 1>>; ///< kilocalorie unit
+        inline static constexpr kilocalorie kcal; ///< kcal unit
+        
+
         // inline static constexpr auto N = kg * m / s2; ///< s2 unit
-        // inline static constexpr auto Pa = N / m2; ///< m2 unit
         // inline static constexpr auto J = N * m; ///< J unit
         // inline static constexpr auto W = J / s; ///< W unit
         // inline static constexpr auto C = A * s; ///< C unit

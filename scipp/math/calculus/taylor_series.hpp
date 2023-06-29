@@ -1,8 +1,8 @@
 /**
- * @file    math/calculus/differentials/taylor_series.hpp
+ * @file    math/calculus/taylor_series.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-06-09
+ * @date    2023-06-29
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,7 +12,7 @@
 namespace scipp::math {
     
 
-    namespace differentials {
+    namespace calculus {
 
 
         /// Represents a Taylor series along a direction for either a scalar or vector function.
@@ -51,7 +51,7 @@ namespace scipp::math {
 
 
                 template <typename... Ts>
-                    requires ((std::is_same_v<value_t, Ts>, ...))
+                    requires (std::is_same_v<value_t, Ts>, ...)
                 constexpr taylor_series(Ts... other) noexcept 
                     requires (sizeof...(other) == order) : 
                     
@@ -86,7 +86,7 @@ namespace scipp::math {
         }; /// struct taylor_series
 
 
-    } /// namespace differentials
+    } /// namespace calculus
 
 
 } /// namespace scipp::math

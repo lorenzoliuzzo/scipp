@@ -16,7 +16,7 @@ namespace scipp::geometry {
 
 
     template <typename MEAS_TYPE, size_t DIM, bool ROW_VECTOR_FLAG = false>
-        requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_generic_number_v<MEAS_TYPE>)
+        // requires (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_generic_number_v<MEAS_TYPE> || math::calculus::is_variable_v<MEAS_TYPE>)
     struct vector {
 
         
@@ -345,12 +345,12 @@ namespace scipp::geometry {
             // }
 
 
-            /// @brief Get the magnitude of the vector
-            constexpr value_t magnitude() const noexcept {
+            // /// @brief Get the magnitude of the vector
+            // constexpr value_t magnitude() const noexcept {
 
-                return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::sq(val); }, math::functions::square_t<value_t>{}));
+            //     return math::op::sqrt(std::accumulate(this->data.begin(), this->data.end(), [](auto acc, auto val) { return acc + math::op::sq(val); }, math::functions::square_t<value_t>{}));
 
-            }
+            // }
 
 
             // /// @brief Get the projection of a vector on the current vector

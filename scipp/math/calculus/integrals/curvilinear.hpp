@@ -29,6 +29,7 @@ namespace scipp::math {
 
                 double t = static_cast<double>(i) / N;
                 auto x = gamma(t);
+                auto dgamma = calculus::derivatives(x, calculus::wrt(t));
                 result += FUNCTION_TYPE::f(x) * op::norm((gamma(t + incr_der) - x) / incr_der);
 
             }

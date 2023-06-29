@@ -29,52 +29,61 @@ int main() {
     /// variables
     variable<measurement<metre>> x = 6.0;                           
     variable<measurement<metre_per_second>> x_dot = 1.0;
+    variable<measurement<second>> t = 0.0;
 
     /// parameters
     measurement<metre> l0 = 2.0; 
     measurement<newton_per_metre> k = 50.0;     
-    measurement<kilogram> m1 = 20, m2 = 40e20;
+    measurement<kilogram> m1 = 20.0;
 
-    /// potentials
-    auto V_spring = spring_potential(k, l0);    
-    print("\nspring potential", V_spring(x)); 
-    print("force", V_spring.force(x));
-
-    auto V_grav = gravitational_potential(m1, m2);    
-    print("\ngravitational potential", V_grav(x)); 
-    print("force", V_grav.force(x));
-
-    /// total potential
-    auto V = potential_energy(V_spring, V_grav);
-    print("\ntotal potential", V(x));
+    /// potential
+    auto V = potential_energy(potentials::elastic(k, l0));    
+    print("\nspring potential", V(x)); 
     print("force", V.force(x));
 
-    auto L = Lagrangian(m1, x, x_dot, V);
-    auto L_v = L();
-    print("L", L_v);
+    auto L = lagrangian(m1, x, x_dot, t, V);
+    print("\nL", L());
     print("T", L.T);
     print("V", L.V);
+    print("x", L.x);
+    print("xdot", L.x_dot);
 
-    // L.x = 2.0;
-    // L.x_dot = 0.0;
-    // print("T", L.T());
-    // print("V", L.V());
-    // print("L", L());
+    auto [dL_dx, dL_dxdot, dL_dt] = L.derivatives();
+    print("\ndL_dx", dL_dx);
+    print("dL_dxdot", dL_dxdot);
+    print("dL_dt", dL_dt);
 
-    variable<measurement<kilogram_metre_per_second>> p = std::get<0>(derivatives(L_v, wrt(L.x_dot)));
-    print("p", p);
-    print("p address", &p);
+    auto H = hamiltonian(L);
+    print("\nH", H());
+    print("T", H.T);
+    print("V", H.V);
+    print("x", H.x);
+    print("p", H.p);
+    print("t", H.t);
 
-    variable<measurement<metre_per_second>> X_dot = p / m1;
+    auto [_dH_dx, _dH_dp, _dH_dt] = H.derivatives();
+    print("\ndH_dx", _dH_dx);
+    print("dH_dp", _dH_dp); 
+    print("dH_dt", _dH_dt);   
 
-    auto L_ = Lagrangian(m1, x, X_dot, V);
+    H.plot_evolution<500>(10.0 * s);    
 
-    variable<measurement<joule>> H_v = p * L_.x_dot - L_();
-    print("H", H_v);
+    print("\nH", H());
+    print("T", H.T);
+    print("V", H.V);
+    print("x", H.x);
+    print("p", H.p);
+    print("t", H.t);
 
-    auto [dH_dx, dH_dp] = derivatives(H_v, wrt(L_.x, p));
-    print("dH_dx", dH_dx);
-    print("dH_dp", dH_dp);    
+    auto [__dH_dx, __dH_dp, __dH_dt] = H.derivatives();
+    print("\ndH_dx", __dH_dx);
+    print("dH_dp", __dH_dp); 
+    print("dH_dt", __dH_dt);   
+
+
+    print(sizeof(x));
+    print(sizeof(L));
+    print(sizeof(H));
 
     return 0; 
 

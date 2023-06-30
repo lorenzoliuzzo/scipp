@@ -5,6 +5,10 @@ project(sci++ VERSION 2.0 LANGUAGES CXX)
 set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit=0 -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096") 
 #-I/usr/local/lib/python3.10/site-packages/numpy/core/include"
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+find_package(Python3 3.10 COMPONENTS Interpreter NumPy REQUIRED)
+include_directories(${PYTHON_INCLUDE_DIRS})
+
 add_library(${PROJECT_NAME} 
     STATIC   
         ${PROJECT_SOURCE_DIR}/scipp/sci++.hpp)
@@ -18,7 +22,8 @@ target_include_directories(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} 
     PROPERTIES 
         LINKER_LANGUAGE CXX)
-
+        
+target_link_libraries(sci++ ${PYTHON_LIBRARIES} Python3::NumPy)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/scipp/ DESTINATION include/scipp)
     
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)

@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit
 #-I/usr/local/lib/python3.10/site-packages/numpy/core/include"
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-find_package (Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
+find_package (Python3 COMPONENTS Interpreter Development REQUIRED NumPy)
 
 add_library(${PROJECT_NAME} 
     STATIC   
@@ -22,7 +22,7 @@ set_target_properties(${PROJECT_NAME}
     PROPERTIES 
         LINKER_LANGUAGE CXX)
         
-target_link_libraries(sci++ ${PYTHON_LIBRARIES} Python3::NumPy)
+target_link_libraries(sci++ ${PYTHON_LIBRARIES} NumPy)
 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/scipp/ DESTINATION include/scipp)
     

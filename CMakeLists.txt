@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit
 #-I/usr/local/lib/python3.10/site-packages/numpy/core/include"
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-find_package(Python3 3.10.6 COMPONENTS Interpreter NumPy REQUIRED)
+find_package (Python3 COMPONENTS Interpreter Development)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} 

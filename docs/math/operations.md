@@ -22,7 +22,7 @@ Let's see how to use the operations provided by the library. We will use the add
 Here's an example of using the addition function for numbers:
 
 ```cpp
-#include "sci++.hpp"
+#include "scipp"
 
 using namespace scipp;
 using namespace scipp::math;

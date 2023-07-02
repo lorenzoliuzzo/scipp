@@ -1,8 +1,8 @@
 /**
- * @file    sci++.hpp
+ * @file    scipp.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file includes all the sci++ library headers files and its standard dependency. 
- * @date    2023-06-28
+ * @brief   This file includes all the scipp library headers files and its standard dependency. 
+ * @date    2023-07-02
  * 
  * @copyright Copyright (c) 2023
  */
@@ -40,14 +40,20 @@
 
 
 
-        #include "external/matplotlibcpp.h"
-        namespace plt = matplotlibcpp;
+        // #include "external/matplotlibcpp.h"
+        // namespace plt = matplotlibcpp;
 
 
     /// ===============================================================
-    /// @brief sci++ library headers
+    /// @brief scipp library headers
     /// ===============================================================
 
+        namespace scipp {
+
+            inline static constexpr size_t version = 1; 
+
+        }    
+        
         /// ---------------------------------------------------------------
         /// @brief scipp traits
         /// ---------------------------------------------------------------
@@ -60,21 +66,28 @@
 
             #include "tools/meta.hpp"
 
-            #include "math/calculus/expressions.hpp" /// @ok
-            #include "math/calculus/variables.hpp"
+            #include "math/calculus/expression.hpp" /// @ok
+            #include "math/calculus/variable.hpp" /// @ok
+            #include "math/calculus/constant.hpp" /// @ok
+
+            #include "math/calculus/expressions/add.hpp"
+            #include "math/calculus/expressions/negate.hpp"
+            #include "math/calculus/expressions/multiply.hpp"
+            #include "math/calculus/expressions/invert.hpp"
+
             #include "math/calculus/derivatives.hpp"
             // #include "math/calculus/ode/solver.hpp"
             // #include "math/calculus/legendre_transformation.hpp"
 
         /// ---------------------------------------------------------------
 
+            #include "math/operations/operators.hpp" 
             #include "math/operations/algebraic/add.hpp" /// @ok
             #include "math/operations/algebraic/negate.hpp" /// @ok          
             #include "math/operations/algebraic/multiply.hpp" /// @ok
             #include "math/operations/algebraic/invert.hpp" /// @ok
             #include "math/operations/algebraic/power.hpp" /// @ok
             #include "math/operations/algebraic/root.hpp" /// @ok
-            #include "math/operations/operators.hpp" 
             #include "math/operations/mathematical/sine.hpp"
             #include "math/operations/mathematical/cosine.hpp"
             #include "math/operations/mathematical/tangent.hpp"

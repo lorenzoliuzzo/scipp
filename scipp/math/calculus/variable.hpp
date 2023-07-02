@@ -1,8 +1,8 @@
 /**
- * @file    math/calculus/functions/variables.hpp
+ * @file    math/calculus/variable.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation
- * @date    2023-06-19
+ * @date    2023-07-02
  *
  * @copyright Copyright (c) 2023
  */
@@ -11,6 +11,127 @@ namespace scipp::math {
 
 
     namespace calculus {
+
+
+        template <typename T>
+        struct variable_expr : expr<T> {
+
+            std::shared_ptr<void> grad_ptr;
+            std::shared_ptr<std::shared_ptr<void>> gradx_ptr;
+
+
+            constexpr variable_expr(const T& v) noexcept 
+                : expr<T>(v) {}
+
+
+            virtual constexpr void bind_value(std::shared_ptr<void> grad) {   
+
+                grad_ptr = grad;
+
+            }
+
+            virtual constexpr void bind_expr(std::shared_ptr<std::shared_ptr<void>> gradx) {
+
+                gradx_ptr = gradx;
+
+            }
+
+        };
+
+        template <typename T>
+        struct independent_variable_expr : variable_expr<T> {
+
+            using variable_expr<T>::grad_ptr;
+            using variable_expr<T>::gradx_ptr;
+
+
+            constexpr independent_variable_expr(const T& v) noexcept 
+                : variable_expr<T>(v) {}
+
+
+            virtual constexpr void propagate(std::shared_ptr<void> wprime) {
+
+                if (grad_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<T>(wprime);
+                    auto value = std::static_pointer_cast<T>(grad_ptr);
+
+                    *value += *derivative;
+                    
+                }
+
+            }
+
+            constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+                
+                if (gradx_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+                    auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+
+                    *value += *derivative;
+                    
+                }
+
+            }
+
+
+            virtual constexpr void update() override {}
+
+        };
+
+        template <typename T>
+        struct dependent_variable_expr : variable_expr<T> {
+
+            using variable_expr<T>::grad_ptr;
+            using variable_expr<T>::gradx_ptr;
+
+            expr_ptr<T> expr;
+
+            constexpr dependent_variable_expr(const expr_ptr<T>& e) noexcept
+                : variable_expr<T>(e->val), expr(e) {}
+
+
+            constexpr void propagate(std::shared_ptr<void> wprime) override {
+
+                if (grad_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<T>(wprime);
+                    auto value = std::static_pointer_cast<T>(grad_ptr);
+
+                    *value += *derivative;
+
+                }
+
+                expr->propagate(wprime);
+
+            }
+
+
+            constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+
+                if (gradx_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+                    auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+
+                    *value += *derivative;
+
+                }
+
+                expr->propagatex(wprime);
+                
+            }
+
+
+            virtual constexpr void update() override {
+
+                expr->update();
+                this->val = expr->val;
+
+            }
+            
+        };
 
 
         /// The autodiff variable type used for detail mode automatic differentiation.

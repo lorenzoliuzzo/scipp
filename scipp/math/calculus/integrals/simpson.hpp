@@ -62,7 +62,6 @@ namespace scipp::math {
                 std::ranges::for_each(t_range,
                     [&](auto t) {
                         if (t >= 1.0 || t <= 0.0)
-                            std::cout << "Dioporco\n";
                         const typename FUNCTION_TYPE::function_t::arg_t t_i((1.0 - t) / t);
                         result += FUNCTION_TYPE::f(I.start + t_i) * h / op::sq(t);
                     }

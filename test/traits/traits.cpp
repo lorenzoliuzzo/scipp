@@ -8,7 +8,7 @@
  */
 
 
-#include "sci++.hpp"
+#include "scipp"
 
 using namespace scipp;
 

@@ -24,7 +24,7 @@ namespace scipp::tools {
     /// @brief Print a message with a description
     inline static void print(const std::string& description, const std::string& message) noexcept {
 
-        std::cout << description << ": " << message << '\n';
+        std::cout << description << message << '\n';
 
     }
 
@@ -54,7 +54,7 @@ namespace scipp::tools {
         requires (physics::is_generic_measurement_v<MEAS_TYPE>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other) noexcept {
 
-        std::cout << description << ": " << other << '\n'; 
+        std::cout << description << other << '\n'; 
 
     }
 
@@ -120,7 +120,7 @@ namespace scipp::tools {
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << description << ": " << other / static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
+        std::cout << description << other / static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
         if (newline)
             std::cout << '\n'; 
 
@@ -197,7 +197,7 @@ namespace scipp::tools {
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
 
-        std::cout << description << ": "; 
+        std::cout << description; 
 
         const MEAS_TYPE meas = other / UNIT_TYPE::mult;
         const double abs_value = std::fabs(meas.value);
@@ -314,7 +314,7 @@ namespace scipp::tools {
         requires (geometry::is_vector_v<VECTOR_TYPE>)
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other) noexcept {
 
-        std::cout << description << ": [ "; 
+        std::cout << description << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i)
             std::cout << other.data[i] << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
 
@@ -345,7 +345,7 @@ namespace scipp::tools {
                   physics::is_same_base_v<typename VECTOR_TYPE::measurement_t::base, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const std::string& description, const VECTOR_TYPE& other, const UNIT_TYPE& units) noexcept {
 
-        std::cout << description << ": [ "; 
+        std::cout << description << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
             print(other.data[i], units, false); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
@@ -420,7 +420,7 @@ namespace scipp::tools {
     template <typename PRINTABLE_TYPE>
     inline static void print(const std::string& description, const PRINTABLE_TYPE& printable) noexcept {
 
-        std::cout << description << ": " << printable << '\n';
+        std::cout << description << printable << '\n';
 
     }
 
@@ -428,7 +428,7 @@ namespace scipp::tools {
     template <typename PRINTABLE_TYPE>
     inline static void print(const std::string& description, const std::vector<PRINTABLE_TYPE>& printable) noexcept {
 
-        std::cout << description << ":\n";
+        std::cout << description << '\n';
         for (const auto& element : printable)
             std::cout << element << '\n';
 

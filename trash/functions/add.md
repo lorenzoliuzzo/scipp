@@ -60,7 +60,7 @@ To use the addition functions provided by this library, include the `math/functi
 Here's an example of using the addition function for numbers:
 
 ```cpp
-#include "sci++.hpp"
+#include "scipp"
 
 using namespace scipp::math;
 

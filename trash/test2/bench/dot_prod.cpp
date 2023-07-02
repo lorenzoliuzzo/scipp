@@ -1,4 +1,4 @@
-#include "sci++.hpp"
+#include "scipp"
 #include <thread>
 
 

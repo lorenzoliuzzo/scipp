@@ -157,39 +157,39 @@ namespace scipp::physics {
         }
       
 
-        template <size_t N>
-        void plot_evolution(const measurement<units::second>& tmax) noexcept {
+        // template <size_t N>
+        // void plot_evolution(const measurement<units::second>& tmax) noexcept {
 
-            std::vector<double> x_i(N), p_i(N), E_i(N), t_i(N);             /// value containers for plotting
-            const auto dt = tmax / N;                                       /// time step
+        //     std::vector<double> x_i(N), p_i(N), E_i(N), t_i(N);             /// value containers for plotting
+        //     const auto dt = tmax / N;                                       /// time step
 
-            meta::for_<N>([&](auto i) constexpr {
+        //     meta::for_<N>([&](auto i) constexpr {
 
-                this->rk4(dt);                                              /// evolving the system with rk4
-                t_i[i] = val(this->t).value; 
-                x_i[i] = val(this->x).value;                                /// extracting the variable value and then extracting the measurement value
-                p_i[i] = val(this->p).value; 
-                E_i[i] = val(this->operator()()).value;
+        //         this->rk4(dt);                                              /// evolving the system with rk4
+        //         t_i[i] = val(this->t).value; 
+        //         x_i[i] = val(this->x).value;                                /// extracting the variable value and then extracting the measurement value
+        //         p_i[i] = val(this->p).value; 
+        //         E_i[i] = val(this->operator()()).value;
 
-            }); 
+        //     }); 
 
-            plt::figure(); 
-            plt::title("phase space p-x");                          
-            plt::plot(x_i, p_i); 
-            // plt::xlabel(std::string("x [", units::m::to_string(), "]"));
-            // // plt::ylabel(std::string("p [", units::m_s::to_string(), "]"));
-            plt::grid(true);
-            plt::tight_layout(); 
+        //     plt::figure(); 
+        //     plt::title("phase space p-x");                          
+        //     plt::plot(x_i, p_i); 
+        //     // plt::xlabel(std::string("x [", units::m::to_string(), "]"));
+        //     // // plt::ylabel(std::string("p [", units::m_s::to_string(), "]"));
+        //     plt::grid(true);
+        //     plt::tight_layout(); 
 
-            plt::figure(); 
-            plt::title("Energy - time"); 
-            plt::plot(t_i, E_i);
-            plt::grid(true);
-            plt::tight_layout(); 
+        //     plt::figure(); 
+        //     plt::title("Energy - time"); 
+        //     plt::plot(t_i, E_i);
+        //     plt::grid(true);
+        //     plt::tight_layout(); 
             
-            plt::show(); 
+        //     plt::show(); 
 
-        }
+        // }
 
 
 

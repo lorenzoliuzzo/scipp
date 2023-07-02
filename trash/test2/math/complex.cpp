@@ -9,7 +9,7 @@
 
 
 
-#include "sci++.hpp"
+#include "scipp"
 using namespace scipp; 
 using namespace physics; 
 using namespace physics::units; 

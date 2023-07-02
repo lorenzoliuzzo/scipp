@@ -8,7 +8,7 @@
  */
 
 
-#include "sci++.hpp"
+#include "scipp"
 #include "../plot/gplot++.hpp"
 #include <thread>
 

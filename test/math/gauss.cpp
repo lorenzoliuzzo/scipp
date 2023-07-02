@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "sci++.hpp"
+#include "scipp"
 
 using namespace scipp;
 using namespace scipp::math;

@@ -2,7 +2,6 @@
 title: Geometry namespace
 layout: default
 permalink: /geometry/
-redirect_from: /geometry/
 nav_order: 3
 has_children: true
 author_profile: true

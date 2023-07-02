@@ -10,10 +10,10 @@ nav_order: 0
 
 This is the home page of the site! I will introduce the library and many usefull ways to use it in your works! Ciao G!
 
-* [Math namespace](/math/)
-    - [Operations](/math/operations/)
+* [Math namespace](/scipp/math/)
+    - [Operations](/scipp/math/operations/)
     
-* [Physics namespace](/physics/)
-    - [Measurements](/physics/measurements/)
+* [Physics namespace](/scipp/physics/)
+    - [Measurements](/scipp/physics/measurements/)
 
-* [Geometry namespace](/geometry/)
+* [Geometry namespace](/scipp/geometry/)

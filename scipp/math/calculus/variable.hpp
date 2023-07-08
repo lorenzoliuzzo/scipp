@@ -2,7 +2,7 @@
  * @file    math/calculus/variable.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation
- * @date    2023-07-02
+ * @date    2023-07-03
  *
  * @copyright Copyright (c) 2023
  */
@@ -17,11 +17,10 @@ namespace scipp::math {
         struct variable_expr : expr<T> {
 
             std::shared_ptr<void> grad_ptr;
-            std::shared_ptr<std::shared_ptr<void>> gradx_ptr;
+            std::shared_ptr<void> gradx_ptr;
 
 
-            constexpr variable_expr(const T& v) noexcept 
-                : expr<T>(v) {}
+            constexpr variable_expr(const T& v) noexcept : expr<T>(v) {}
 
 
             virtual constexpr void bind_value(std::shared_ptr<void> grad) {   
@@ -30,9 +29,9 @@ namespace scipp::math {
 
             }
 
-            virtual constexpr void bind_expr(std::shared_ptr<std::shared_ptr<void>> gradx) {
+            virtual constexpr void bind_expr(std::shared_ptr<void> gradx) {
 
-                gradx_ptr = gradx;
+                gradx_ptr = std::static_pointer_cast<expr<T>>(gradx);
 
             }
 
@@ -45,8 +44,7 @@ namespace scipp::math {
             using variable_expr<T>::gradx_ptr;
 
 
-            constexpr independent_variable_expr(const T& v) noexcept 
-                : variable_expr<T>(v) {}
+            constexpr independent_variable_expr(const T& v) noexcept : variable_expr<T>(v) {}
 
 
             virtual constexpr void propagate(std::shared_ptr<void> wprime) {
@@ -62,16 +60,16 @@ namespace scipp::math {
 
             }
 
-            constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+            virtual constexpr void propagatex(std::shared_ptr<void>) {
                 
-                if (gradx_ptr.get()) {
+                // if (gradx_ptr.get()) {
 
-                    auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
-                    auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+                //     auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+                //     auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
 
-                    *value += *derivative;
+                //     *value += *derivative;
                     
-                }
+                // }
 
             }
 
@@ -108,26 +106,26 @@ namespace scipp::math {
             }
 
 
-            constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) {
+            constexpr void propagatex(std::shared_ptr<void>) override {
 
-                if (gradx_ptr.get()) {
+                // if (gradx_ptr.get()) {
 
-                    auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
-                    auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
+                //     auto derivative = std::static_pointer_cast<expr_ptr<T>>(wprime);
+                //     auto value = std::static_pointer_cast<expr_ptr<T>>(gradx_ptr);
 
-                    *value += *derivative;
+                //     *value += *derivative;
 
-                }
+                // }
 
-                expr->propagatex(wprime);
+                // this->expr->propagatex(wprime);
                 
             }
 
 
-            virtual constexpr void update() override {
+            constexpr void update() override {
 
-                expr->update();
-                this->val = expr->val;
+                this->expr->update();
+                this->val = this->expr->val;
 
             }
             
@@ -146,12 +144,14 @@ namespace scipp::math {
 
 
             /// Construct a default variable object
-            constexpr variable() noexcept :
-                variable(0.0) {}
+            constexpr variable() noexcept : variable(0.0) {}
 
             /// Construct a copy of a variable object
-            constexpr variable(const variable& other) noexcept :
-                variable(other.expr) {}
+            constexpr variable(const variable& other) noexcept : variable(other.expr) {}
+
+            /// Construct a copy of a variable object
+            constexpr variable(variable&& other) noexcept : variable(std::move(other.expr)) {}
+
 
             /// Construct a variable object with given arithmetic value
             template <typename U>
@@ -225,26 +225,26 @@ namespace scipp::math {
 
             // }
 
-            constexpr variable& operator-=(const expr_ptr<value_t> &x) {
+            // constexpr variable& operator-=(const expr_ptr<value_t> &x) {
 
-                *this = variable(expr - x);
-                return *this;
+            //     *this = variable(expr - x);
+            //     return *this;
 
-            }
+            // }
 
-            constexpr variable& operator*=(const expr_ptr<value_t> &x) {
+            // constexpr variable& operator*=(const expr_ptr<value_t> &x) {
 
-                *this = variable(expr * x);
-                return *this;
+            //     *this = variable(expr * x);
+            //     return *this;
 
-            }
+            // }
 
-            constexpr variable& operator/=(const expr_ptr<value_t> &x) {
+            // constexpr variable& operator/=(const expr_ptr<value_t> &x) {
 
-                *this = variable(expr / x);
-                return *this;
+            //     *this = variable(expr / x);
+            //     return *this;
                 
-            }
+            // }
 
             // // Assignment operators with arithmetic values
             // template <typename U>
@@ -255,36 +255,36 @@ namespace scipp::math {
 
             // }
 
-            template <typename U>
-                requires physics::is_scalar_v<U>
-            constexpr variable& operator-=(const U &x) {
+            // template <typename U>
+            //     requires physics::is_scalar_v<U>
+            // constexpr variable& operator-=(const U &x) {
 
-                *this = variable(expr - x);
-                return *this;
+            //     *this = variable(expr - x);
+            //     return *this;
 
-            }
+            // }
 
-            template <typename U>
-                requires physics::is_scalar_v<U>
-            constexpr variable& operator*=(const U &x) {
+            // template <typename U>
+            //     requires physics::is_scalar_v<U>
+            // constexpr variable& operator*=(const U &x) {
 
-                *this = variable(expr * x);
-                return *this;
+            //     *this = variable(expr * x);
+            //     return *this;
 
-            }
+            // }
 
-            template <typename U>
-                requires physics::is_scalar_v<U>
-            constexpr variable& operator/=(const U &x) {
+            // template <typename U>
+            //     requires physics::is_scalar_v<U>
+            // constexpr variable& operator/=(const U &x) {
 
-                *this = variable(expr / x);
-                return *this;
+            //     *this = variable(expr / x);
+            //     return *this;
 
-            }
+            // }
 
             constexpr explicit operator value_t() const {
 
-                return expr->val;
+                return this->expr->val;
 
             }
 
@@ -295,7 +295,8 @@ namespace scipp::math {
 
             // }
 
-        };
+
+        }; // struct variable
 
         //------------------------------------------------------------------------------
         // EXPRESSION TRAITS

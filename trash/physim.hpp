@@ -494,7 +494,7 @@ namespace physics {
 
 
                     /**
-                     * @brief Printing on video the unit_base litterals
+                     * @brief Printing on video the unit_base literals
                      * 
                      * @param os: std::ostream& 
                      * @param base: unit_base as l-value const reference
@@ -511,7 +511,7 @@ namespace physics {
 
 
                     /**
-                     * @brief Printing on file the unit_base litterals
+                     * @brief Printing on file the unit_base literals
                      * 
                      * @param file: std::ofstream& 
                      * @param base: unit_base as l-value const reference
@@ -677,7 +677,7 @@ namespace physics {
 
 
                     /**
-                     * @brief Units litterals to string
+                     * @brief Units literals to string
                      * 
                      * @return std::string 
                      */
@@ -918,7 +918,7 @@ namespace physics {
 
 
                     /**
-                     * @brief Printing on video the unit_prefix litterals
+                     * @brief Printing on video the unit_prefix literals
                      * 
                      * @param os: std::ostream& 
                      * @param prefix: unit_prefix as l-value const reference
@@ -933,7 +933,7 @@ namespace physics {
 
 
                     /**
-                     * @brief Printing on file the unit_prefix litterals
+                     * @brief Printing on file the unit_prefix literals
                      * 
                      * @param file: std::ofstream& 
                      * @param prefix: unit_prefix as l-value const reference

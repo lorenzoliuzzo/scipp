@@ -80,7 +80,7 @@ namespace scipp::physics {
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
             constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept :
 
-                value{std::forward<value_t>(val) * UNIT_TYPE::mult} {}
+                value{std::forward<value_t>(val * UNIT_TYPE::mult)} {}
 
 
             /// @brief Construct a measurement from another measurement
@@ -95,6 +95,13 @@ namespace scipp::physics {
             constexpr measurement(measurement&& other) noexcept :
 
                 value{std::move(other.value)} {}
+
+
+            template <typename OTHER_VALUE_T>
+                requires math::is_number_v<OTHER_VALUE_T>
+            constexpr measurement(const measurement<BASE_TYPE, OTHER_VALUE_T>& other) noexcept :
+
+                value{static_cast<value_t>(other.value)} {}
 
 
             template <typename PointerType>

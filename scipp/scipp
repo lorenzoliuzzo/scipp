@@ -2,7 +2,7 @@
  * @file    scipp.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the scipp library headers files and its standard dependency. 
- * @date    2023-07-02
+ * @date    2023-07-03
  * 
  * @copyright Copyright (c) 2023
  */
@@ -18,6 +18,7 @@
 
         #include <algorithm>
         #include <array>        /// geometry::vector, geometry::matrix
+        #include <complex>      /// math::calculus
         #include <concepts>     /// traits
         #include <chrono>       /// tools::timer
         #include <cmath>        /// math::functions
@@ -50,7 +51,7 @@
 
         namespace scipp {
 
-            inline static constexpr size_t version = 1; 
+            inline static constexpr double version = 1.1; 
 
         }    
         
@@ -70,14 +71,31 @@
             #include "math/calculus/variable.hpp" /// @ok
             #include "math/calculus/constant.hpp" /// @ok
 
-            #include "math/calculus/expressions/add.hpp"
-            #include "math/calculus/expressions/negate.hpp"
-            #include "math/calculus/expressions/multiply.hpp"
-            #include "math/calculus/expressions/invert.hpp"
+            #include "math/calculus/expressions/algebraic/negate.hpp"           // ok
+            #include "math/calculus/expressions/algebraic/add.hpp"              // ok
+            #include "math/calculus/expressions/algebraic/multiply.hpp"         // ok
+            #include "math/calculus/expressions/algebraic/invert.hpp"
+            #include "math/calculus/expressions/algebraic/power.hpp"
+            #include "math/calculus/expressions/algebraic/root.hpp"
+            // #include "math/calculus/expressions/power_series/exponential.hpp"
+            // #include "math/calculus/expressions/power_series/logarithm.hpp"
+            #include "math/calculus/expressions/power_series/trigonometric/sine.hpp"        // ok
+            #include "math/calculus/expressions/power_series/trigonometric/cosine.hpp"      // ok
+            #include "math/calculus/expressions/power_series/trigonometric/tangent.hpp"     // ok
+            // #include "math/calculus/expressions/power_series/trigonometric/arcsine.hpp"
+            // #include "math/calculus/expressions/power_series/trigonometric/arccosine.hpp"
+            // #include "math/calculus/expressions/power_series/trigonometric/arctangent.hpp"
+            // #include "math/calculus/expressions/power_series/hyperbolic/sine.hpp"           // ok
+            // #include "math/calculus/expressions/power_series/hyperbolic/cosine.hpp"         // ok
+            // #include "math/calculus/expressions/power_series/hyperbolic/tangent.hpp"        // ok 
+            // #include "math/calculus/expressions/power_series/hyperbolic/arcsine.hpp"
+            // #include "math/calculus/expressions/power_series/hyperbolic/arccosine.hpp"
+            // #include "math/calculus/expressions/power_series/hyperbolic/arctangent.hpp"
 
             #include "math/calculus/derivatives.hpp"
             // #include "math/calculus/ode/solver.hpp"
             // #include "math/calculus/legendre_transformation.hpp"
+            #include "math/calculus/linear_regression.hpp"
 
         /// ---------------------------------------------------------------
 
@@ -107,16 +125,18 @@
             #include "physics/measurements/measurement.hpp"
             #include "physics/measurements/umeasurement.hpp"
             
+            #include "physics/measurements/types/base_quantities.hpp"
             #include "physics/measurements/types/units.hpp" 
-            #include "physics/measurements/types/measurements.hpp" 
             #include "physics/constants.hpp"
 
-
-            #include "math/calculus/taylor_series.hpp"
-            #include "math/calculus/curve.hpp"
+            #include "math/calculus/function.hpp"
+            #include "math/calculus/norm.hpp"
+            #include "math/calculus/integrals/curvilinear.hpp"
             #include "math/calculus/interval.hpp"
+            #include "math/calculus/curve.hpp"
+            #include "math/calculus/taylor_series.hpp"
 
-
+            #include "physics/material_point.hpp"
             #include "physics/kinetic_energy.hpp"
             #include "physics/potential_energy.hpp"
             #include "physics/lagrangian.hpp"
@@ -189,6 +209,8 @@
         /// @brief math/calculus
         /// ---------------------------------------------------------------
 
+            // #include "math/calculus/complex/complex.hpp"
+            #include "math/calculus/complex/möbius_map.hpp"
             // #include "math/calculus/curves/interval.hpp"
             // #include "math/calculus/curves/line.hpp"
             // #include "math/calculus/curves/circumference.hpp"
@@ -200,7 +222,6 @@
             // #include "math/calculus/integrals/midpoint.hpp"
             // #include "math/calculus/integrals/endpoint.hpp"
             // #include "math/calculus/integrals/simpson.hpp"
-            // #include "math/calculus/integrals/curvilinear.hpp"
             // #include "math/calculus/integrals/gauss.hpp"  
 
         //     #include "math/calculus/hilbert_space.hpp"

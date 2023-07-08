@@ -29,38 +29,62 @@ namespace scipp::tools {
     }
 
 
-    /// @brief Print a number
-    template <typename T>
+    template <bool NEWLINE = true, typename T>
         requires (std::is_arithmetic_v<T>)
-    inline static constexpr void print(const T& number) noexcept {
+    inline static void print(const T& x) noexcept {
 
-        std::cout << number << '\n';
+        std::cout << x; 
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
+
+    }
+    
+    /// @brief Print a number with a description
+    template <bool NEWLINE = true, typename T>
+        requires (std::is_arithmetic_v<T>)
+    inline static void print(const std::string& description, const T& x) noexcept {
+
+        std::cout << description << x; 
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
 
     }
 
 
     /// @brief Print a measurement 
-    template <typename MEAS_TYPE>
-        requires (physics::is_measurement_v<MEAS_TYPE>)
+    template <bool NEWLINE = true, typename MEAS_TYPE>
+        requires physics::is_measurement_v<MEAS_TYPE>
     inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
-        std::cout << other.value << ' ' << MEAS_TYPE::base_t::to_string() << '\n'; 
+        std::cout << other.value << ' ' << MEAS_TYPE::base_t::to_string(); 
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
 
     }
     
 
     /// @brief Print a measurement with a description
-    template <typename MEAS_TYPE>
-        requires (physics::is_generic_measurement_v<MEAS_TYPE>)
+    template <bool NEWLINE = true, typename MEAS_TYPE>
+        requires physics::is_generic_measurement_v<MEAS_TYPE>
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other) noexcept {
 
-        std::cout << description << other << '\n'; 
+        std::cout << description << other; 
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
 
     }
 
 
     /// @brief Print a measurement with a fixed number of digits and a description
-    template <typename PREFIX_TYPE, typename MEAS_TYPE>
+    template <bool NEWLINE = true, typename PREFIX_TYPE, typename MEAS_TYPE>
         requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
     inline static constexpr void print(const std::string& message, const MEAS_TYPE& other) noexcept {
 
@@ -73,13 +97,17 @@ namespace scipp::tools {
 
         std::cout << message << ": "; 
         std::cout.precision(fixed_precision);
-        std::cout << std::fixed << other << std::defaultfloat << '\n';
+        std::cout << std::fixed << other << std::defaultfloat; 
         std::cout.precision(6);
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
 
     }
 
     /// @brief Print a measurement with a fixed number of digits
-    template <typename PREFIX_TYPE, typename MEAS_TYPE>
+    template <bool NEWLINE = true, typename PREFIX_TYPE, typename MEAS_TYPE>
         requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
     inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
@@ -91,22 +119,26 @@ namespace scipp::tools {
             fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den));
 
         std::cout.precision(fixed_precision);
-        std::cout << std::fixed << other << std::defaultfloat << '\n';
+        std::cout << std::fixed << other << std::defaultfloat; 
         std::cout.precision(6);
+        if constexpr (NEWLINE) 
+            std::cout << '\n';
+        else 
+            std::cout << ' '; 
 
     }
 
     
     /// @brief Print the measurement with a specific unit of measure 
     /// @note The unit must be of the same base of the measurement
-    template <typename MEAS_TYPE, typename UNIT_TYPE>
+    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
-    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
-        std::cout << other.value / static_cast<physics::scalar_m>(UNIT_TYPE::mult) << ' ' << UNIT_TYPE::to_string(); 
-        if (newline)
+        std::cout << other.value / static_cast<double>(UNIT_TYPE::mult) << ' ' << UNIT_TYPE::to_string(); 
+        if constexpr (NEWLINE)
             std::cout << '\n'; 
 
     }
@@ -114,25 +146,25 @@ namespace scipp::tools {
 
     /// @brief Print the measurement with a specific unit of measure and a description
     /// @note The unit must be of the same base of the measurement
-    template <typename MEAS_TYPE, typename UNIT_TYPE>
+    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
-    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
-        std::cout << description << other / static_cast<physics::scalar_m>(UNIT_TYPE::mult); 
-        if (newline)
+        std::cout << description << other / static_cast<double>(UNIT_TYPE::mult); 
+        if constexpr (NEWLINE)
             std::cout << '\n'; 
 
     }
 
     /// @brief Print the umeasurement with a specific unit of measure and a description
     /// @note The unit must be of the same base of the measurement
-    template <typename MEAS_TYPE, typename UNIT_TYPE>
+    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_umeasurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
-    static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+    static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
         const double abs_value = std::fabs(other.value);
 
@@ -184,18 +216,18 @@ namespace scipp::tools {
             
         }
 
-        if (newline)
-            std::cout << '\n';
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
     
     }
 
     /// @brief Print the umeasurement with a specific unit of measure and a description
     /// @note The unit must be of the same base of the measurement
-    template <typename MEAS_TYPE, typename UNIT_TYPE>
+    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
         requires (physics::is_umeasurement_v<MEAS_TYPE> && 
                   physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
-    static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&, bool newline = true) noexcept {
+    static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
         std::cout << description; 
 
@@ -250,8 +282,8 @@ namespace scipp::tools {
             
         }
 
-        if (newline)
-            std::cout << '\n';
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
     
     }
 
@@ -274,6 +306,21 @@ namespace scipp::tools {
     }
     
 
+    template <bool NEWLINE = true, typename T>
+    inline static constexpr void print(const math::calculus::variable<T>& other) noexcept {
+
+        print<NEWLINE>(math::calculus::val(other));
+
+    }
+
+    template <bool NEWLINE = true, typename T>
+    inline static constexpr void print(const std::string& description, const math::calculus::variable<T>& other) noexcept {
+
+        print<NEWLINE>(description, math::calculus::val(other));
+
+    }
+
+
     // template <typename MEAS_TYPE>
     //     requires (math::is_dual_measurement_v<MEAS_TYPE>)
     // static constexpr void print(const MEAS_TYPE& other) noexcept {
@@ -283,23 +330,9 @@ namespace scipp::tools {
     // }
 
 
-    template <typename T>
-    inline static constexpr void print(const math::calculus::variable<T>& other) noexcept {
-
-        print(math::calculus::val(other));
-
-    }
-
-    template <typename T>
-    inline static constexpr void print(const std::string& description, const math::calculus::variable<T>& other) noexcept {
-
-        print(description, math::calculus::val(other));
-
-    }
-
     /// @brief Print a geometry::vector
     template <typename VECTOR_TYPE>
-        requires (geometry::is_vector_v<VECTOR_TYPE>)
+        requires geometry::is_vector_v<VECTOR_TYPE>
     inline static constexpr void print(const VECTOR_TYPE& other) noexcept {
 
         std::cout << "[ "; 
@@ -331,7 +364,7 @@ namespace scipp::tools {
 
         std::cout << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
-            print(other.data[i], units, false); 
+            print<false>(other.data[i], units); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
         }
 
@@ -347,7 +380,7 @@ namespace scipp::tools {
 
         std::cout << description << "[ "; 
         for (size_t i{}; i < VECTOR_TYPE::dim; ++i) {
-            print(other.data[i], units, false); 
+            print<false>(other.data[i], units); 
             std::cout << ((i < VECTOR_TYPE::dim - 1) ? ", " : " ]\n"); 
         }
 
@@ -400,39 +433,57 @@ namespace scipp::tools {
     // }
 
 
-    template <typename PRINTABLE_TYPE>
-    inline static void print(const PRINTABLE_TYPE& printable) noexcept {
+    template <typename... Ts>
+    static constexpr void print(const std::tuple<Ts...>& other) noexcept {
 
-        std::cout << printable << '\n';
-
-    }
-
-
-    template <typename PRINTABLE_TYPE>
-    inline static void print(const std::vector<PRINTABLE_TYPE>& printable) noexcept {
-
-        for (const auto& element : printable)
-            std::cout << element << '\n';
+        std::cout << "[ "; 
+        std::apply([](auto&&... args) { (print<false>(args), ...); }, other);
+        std::cout << "]\n"; 
 
     }
 
+    template <typename... Ts>
+    static constexpr void print(std::string message, const std::tuple<Ts...>& other) noexcept {
 
-    template <typename PRINTABLE_TYPE>
-    inline static void print(const std::string& description, const PRINTABLE_TYPE& printable) noexcept {
-
-        std::cout << description << printable << '\n';
-
-    }
-
-
-    template <typename PRINTABLE_TYPE>
-    inline static void print(const std::string& description, const std::vector<PRINTABLE_TYPE>& printable) noexcept {
-
-        std::cout << description << '\n';
-        for (const auto& element : printable)
-            std::cout << element << '\n';
+        std::cout << message << "[ "; 
+        std::apply([](auto&&... args) { (print<false>(args), ...); }, other);
+        std::cout << "]\n"; 
 
     }
+
+    // template <typename PRINTABLE_TYPE>
+    // inline static void print(const PRINTABLE_TYPE& printable) noexcept {
+
+    //     std::cout << printable << '\n';
+
+    // }
+
+
+    // template <typename PRINTABLE_TYPE>
+    // inline static void print(const std::vector<PRINTABLE_TYPE>& printable) noexcept {
+
+    //     for (const auto& element : printable)
+    //         std::cout << element << '\n';
+
+    // }
+
+
+    // template <typename PRINTABLE_TYPE>
+    // inline static void print(const std::string& description, const PRINTABLE_TYPE& printable) noexcept {
+
+    //     std::cout << description << printable << '\n';
+
+    // }
+
+
+    // template <typename PRINTABLE_TYPE>
+    // inline static void print(const std::string& description, const std::vector<PRINTABLE_TYPE>& printable) noexcept {
+
+    //     std::cout << description << '\n';
+    //     for (const auto& element : printable)
+    //         std::cout << element << '\n';
+
+    // }
 
 
     template <typename MEAS_TYPE, size_t DIM>

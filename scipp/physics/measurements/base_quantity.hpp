@@ -38,7 +38,7 @@ namespace scipp::physics {
         inline static constexpr int luminous_intensity = LUMINOUS_INTENSITY; //< power of luminous intensity 
         
 
-        inline static constexpr std::array<std::string_view, 7> base_litterals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the litterals of the base quantities
+        inline static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
 
         
         /// @brief Returns the string representation of the base_quantity
@@ -65,13 +65,13 @@ namespace scipp::physics {
 
             };
 
-            print_unit(LENGTH, base_litterals[0]);
-            print_unit(TIME, base_litterals[1]);
-            print_unit(MASS, base_litterals[2]);
-            print_unit(TEMPERATURE, base_litterals[3]);
-            print_unit(ELETTRIC_CURRENT, base_litterals[4]);
-            print_unit(SUBSTANCE_AMOUNT, base_litterals[5]);
-            print_unit(LUMINOUS_INTENSITY, base_litterals[6]);
+            print_unit(LENGTH, base_literals[0]);
+            print_unit(TIME, base_literals[1]);
+            print_unit(MASS, base_literals[2]);
+            print_unit(TEMPERATURE, base_literals[3]);
+            print_unit(ELETTRIC_CURRENT, base_literals[4]);
+            print_unit(SUBSTANCE_AMOUNT, base_literals[5]);
+            print_unit(LUMINOUS_INTENSITY, base_literals[6]);
 
             return ss.str();
 

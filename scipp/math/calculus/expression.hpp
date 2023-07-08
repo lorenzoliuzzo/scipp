@@ -24,8 +24,7 @@ namespace scipp::math {
 
 
             /// Construct an expr object with given value.
-            explicit constexpr expr(const T& v) noexcept 
-                : val(v) {}
+            explicit constexpr expr(const T& v) noexcept : val(v) {}
 
             virtual constexpr ~expr() {}
 
@@ -34,7 +33,7 @@ namespace scipp::math {
             virtual constexpr void bind_value(std::shared_ptr<void>) {}
 
             /// Bind an expression pointer for writing the derivative expression during propagation
-            virtual constexpr void bind_expr(std::shared_ptr<std::shared_ptr<void>>) {}
+            virtual constexpr void bind_expr(std::shared_ptr<void>) {}
 
 
             /// Update the contribution of this expression in the derivative of the root node of the expression tree.
@@ -44,8 +43,7 @@ namespace scipp::math {
             /// Update the contribution of this expression in the derivative of the root node of the expression tree.
             /// @param wprime The derivative of the root expression node w.r.t. the child expression of this expression node (as an expression).
             // virtual 
-            constexpr void propagatex(std::shared_ptr<void>) {}
-            // = 0;
+            virtual constexpr void propagatex(std::shared_ptr<void>) = 0; 
 
 
             /// Update the value of this expression

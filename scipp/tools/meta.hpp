@@ -39,4 +39,15 @@ namespace scipp::meta {
     }
 
 
+    template <typename T, size_t... Indices>
+    constexpr auto make_tuple_repeated_impl(T value, std::index_sequence<Indices...>) {
+        return std::make_tuple((static_cast<void>(Indices), value)...);
+    }
+
+    template <typename T, size_t N>
+    constexpr auto make_tuple_repeated(T value) {
+        return make_tuple_repeated_impl(value, std::make_index_sequence<N>{});
+    }
+
+
 } // scipp::meta

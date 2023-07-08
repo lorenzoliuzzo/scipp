@@ -62,7 +62,7 @@ namespace scipp::math {
     /// @brief Negate operator 
     inline static constexpr auto operator-(auto x) noexcept { 
         
-        return op::negate(x);
+        return op::neg(x);
         
     }
     
@@ -86,7 +86,7 @@ namespace scipp::math {
     /// @brief Multiplication operator
     inline static constexpr auto operator*(auto x, auto y) noexcept { 
         
-        return op::multiply(x, y);
+        return op::mult(x, y);
         
     }
 
@@ -94,7 +94,7 @@ namespace scipp::math {
     /// @brief Division operator
     inline static constexpr auto operator/(auto x, auto y) noexcept { 
 
-        return op::divide(x, y);
+        return op::div(x, y);
         
     }
 
@@ -120,7 +120,7 @@ namespace scipp::math {
         requires physics::is_scalar_v<T>
     inline static constexpr auto operator*=(auto& x, const T& y) noexcept { 
 
-        return x = op::multiply(x, y);
+        return x = op::mult(x, y);
         
     }
 
@@ -130,7 +130,7 @@ namespace scipp::math {
         requires physics::is_scalar_v<T>
     inline static constexpr auto operator/=(auto& x, const T& y) {
 
-        return x = op::divide(x, y);
+        return x = op::div(x, y);
         
     }
 

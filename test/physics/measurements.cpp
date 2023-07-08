@@ -13,44 +13,31 @@
 
 
 using namespace scipp;
-using namespace tools; 
+using tools::print; 
 using namespace physics;
 using namespace physics::units; 
 using namespace math; 
+using namespace calculus;
 
 
 int main() {
 
+    // variable<measurement<metre>> x = 1.0;
+    // variable<measurement<metre>> y = 2.0;
 
-    scalar_m z = 0.5; 
-    print(z); 
-    print(z += 0.5);
-    print(z);
+    // variable<measurement<metre>> z = x + 2.0 * y;
+    // auto [d_dx, d_dy] = derivativesx(z, wrt(x, y));
 
-    z += 0.5;
-    print(z);
+    // print("d_dx = ", d_dx);
+    // print("d_dy = ", d_dy);
 
-    auto x = 3.14m; 
-    print(x); 
+    // variable<measurement<metre2>> z2 = x * x + y * y;
+    // auto [d2_dx2, d2_dy2] = derivatives(z2, wrt(x, y));
 
-    auto y = 1.0m;
-    print(y); 
+    // print("d2_dx2 = ", d2_dx2);
+    // print("d2_dy2 = ", d2_dy2);
 
-    y += x; 
-    print(y); 
-
-    y += 0.5m;
-    print(y);
-
-
-    print(x + y); 
-    print(x * y); 
-    print(x * -1.5m); 
-    print(op::sq(x)); 
-    print(op::cb(x)); 
     
-    // print(x / y); 
-
 
     return 0; 
 

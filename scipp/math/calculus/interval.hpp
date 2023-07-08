@@ -2,7 +2,7 @@
  * @file    math/calculus/interval.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-06-29
+ * @date    2023-07-07
  * 
  * @copyright Copyright (c) 2023
  */
@@ -19,12 +19,12 @@ namespace scipp::math {
         template <typename T>
         struct interval {
 
-            using arg_t = T;
+            using value_t = T;
 
-            arg_t start, end;
+            value_t start, end;
 
 
-            constexpr interval(const arg_t& A, const arg_t& B) noexcept {
+            constexpr interval(const value_t& A, const value_t& B) noexcept {
 
                 if (A > B) {  
 
@@ -40,7 +40,7 @@ namespace scipp::math {
 
             }
 
-            constexpr interval(arg_t&& A, arg_t&& B) noexcept {
+            constexpr interval(value_t&& A, value_t&& B) noexcept {
 
                 if (A > B) {  
 
@@ -69,7 +69,7 @@ namespace scipp::math {
                 end(std::move(other.end)) {}
 
 
-            constexpr arg_t operator()(double t) const {
+            constexpr value_t operator()(double t) const {
 
                 if (t < 0.0 || t > 1.0) {
 
@@ -83,19 +83,19 @@ namespace scipp::math {
             }
 
 
-            constexpr arg_t step(size_t N) const noexcept {
+            constexpr value_t step(size_t N) const noexcept {
                     
                 return (this->end - this->start) / static_cast<double>(N);
         
             }
 
 
-            constexpr arg_t length() const noexcept {
+            constexpr bool contains(const value_t& x) const noexcept {
 
-                return this->end - this->start; 
+                return x >= this->start && x <= this->end;
 
             }
-
+            
 
         }; // struct interval
 

@@ -187,6 +187,34 @@ namespace scipp::math {
         
         };
 
+
+        template <int N, typename T>
+        struct power_impl<N, calculus::expr_ptr<T>> {
+
+            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::power_expr<N, T>>(op::pow<N>(x->val), x);
+
+            }
+
+        };
+
+
+        template <int N, typename T>
+        struct power_impl<N, calculus::variable<T>> {
+
+            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::variable<T>& x) {
+
+                return op::pow<N>(x.expr); 
+
+            }
+
+        };
+
     
     } // namespace op
 

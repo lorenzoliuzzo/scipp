@@ -1,14 +1,24 @@
-# add_executable(functions functions.cpp)
-# target_link_libraries(functions ${PROJECT_NAME})
+add_executable(functions functions.cpp)
+target_link_libraries(functions ${PROJECT_NAME})
+
+add_executable(curvilinear curvilinear.cpp)
+target_link_libraries(curvilinear ${PROJECT_NAME})
+
 
 # add_executable(dual dual.cpp)
 # target_link_libraries(dual ${PROJECT_NAME} python3.10)
 
-add_executable(taylor taylor.cpp)
-target_link_libraries(taylor ${PROJECT_NAME} python3.10)
+# add_executable(mobius mobius.cpp)
+# target_link_libraries(mobius ${PROJECT_NAME} python3.10)
 
-add_executable(variables variables.cpp)
-target_link_libraries(variables ${PROJECT_NAME} python3.10)
+# add_executable(taylor taylor.cpp)
+# target_link_libraries(taylor ${PROJECT_NAME} python3.10)
+
+# add_executable(variables variables.cpp)
+# target_link_libraries(variables ${PROJECT_NAME} python3.10)
+
+# add_executable(lin_reg lin_reg.cpp)
+# target_link_libraries(lin_reg ${PROJECT_NAME} python3.10)
 
 
 # add_executable(statistics statistics.cpp)

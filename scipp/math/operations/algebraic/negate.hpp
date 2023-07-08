@@ -77,7 +77,7 @@ namespace scipp::math {
                 T result;
                 std::transform(x.data.begin(), x.data.end(), result.data.begin(), 
                     [](const auto& val) { 
-                        return op::negate(val); 
+                        return op::neg(val); 
                     }
                 );
                 return result;
@@ -96,7 +96,7 @@ namespace scipp::math {
                 T result;
                 std::transform(x.data.begin(), x.data.end(), result.data.begin(), 
                     [](const auto& val) { 
-                        return op::negate(val); 
+                        return op::neg(val); 
                     }
                 );
                 return result;
@@ -115,7 +115,7 @@ namespace scipp::math {
             
             inline static constexpr result_t f(const calculus::expr_ptr<T>& x) noexcept {
                 
-                return std::make_shared<calculus::neg_expr<T>>(-x->val, x);
+                return std::make_shared<calculus::negate_expr<T>>(-x->val, x);
 
             }
                     

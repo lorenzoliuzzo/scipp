@@ -182,6 +182,21 @@ namespace scipp::math {
         };
 
 
+        /// @brief Multiply specialization for prefix and unit
+        /// @tparam ARG_TYPE1
+        /// @tparam ARG_TYPE2
+        template <typename ARG_TYPE1, typename ARG_TYPE2>
+        requires (physics::is_prefix_v<ARG_TYPE1> && physics::is_unit_v<ARG_TYPE2>)
+        struct multiply_impl<ARG_TYPE1, ARG_TYPE2> {
+            
+            using result_t = physics::unit<typename ARG_TYPE2::base_t, multiply_t<ARG_TYPE1, typename ARG_TYPE2::prefix_t>>;
+
+            inline static constexpr result_t f(const ARG_TYPE1&, const ARG_TYPE2&) noexcept {
+                return {};
+            }
+            
+        };
+
         /// @brief Multiply specialization for physics::unit
         /// @tparam ARG_TYPE1
         /// @tparam ARG_TYPE2
@@ -208,11 +223,11 @@ namespace scipp::math {
             requires (is_number_v<VALUE_T> && physics::is_unit_v<UNIT_T>)
         struct multiply_impl<VALUE_T, UNIT_T> { 
             
-            using result_t = physics::measurement<typename UNIT_T::base_t, VALUE_T>;
+            using result_t = physics::measurement<typename UNIT_T::base_t, decltype(VALUE_T{} * UNIT_T::mult)>;
 
             inline static constexpr result_t f(const VALUE_T& x, const UNIT_T&) noexcept {
 
-                return static_cast<VALUE_T>(x * UNIT_T::mult);
+                return x * UNIT_T::mult;
 
             }       
 
@@ -529,7 +544,7 @@ namespace scipp::math {
             
             inline static constexpr result_t f(const calculus::expr_ptr<ARG_TYPE1>& x, const calculus::expr_ptr<ARG_TYPE2>& y) noexcept {
                 
-                return std::make_shared<calculus::mult_expr<multiply_t<ARG_TYPE1, ARG_TYPE2>, ARG_TYPE1, ARG_TYPE2>>(x->val * y->val, x, y);
+                return std::make_shared<calculus::multiply_expr<multiply_t<ARG_TYPE1, ARG_TYPE2>, ARG_TYPE1, ARG_TYPE2>>(x->val * y->val, x, y);
 
             }
                     

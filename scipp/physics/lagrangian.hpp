@@ -15,19 +15,19 @@ namespace scipp::physics {
     template <typename... PotArgs>
     struct lagrangian {
 
-        measurement<units::kilogram>& m; 
-        calculus::variable<measurement<units::metre>>& x;
-        calculus::variable<measurement<units::metre_per_second>>& x_dot;
-        calculus::variable<measurement<units::second>>& t; 
+        measurement<base::mass>& m; 
+        calculus::variable<measurement<base::length>>& x;
+        calculus::variable<measurement<base::velocity>>& x_dot;
+        calculus::variable<measurement<base::time>>& t; 
 
         potential_energy<PotArgs...>& potential;
-        calculus::variable<measurement<units::joule>> V{}, T{}; 
+        calculus::variable<measurement<base::energy>> V{}, T{}; 
 
 
-        lagrangian(measurement<units::kilogram>& mass,
-                   calculus::variable<measurement<units::metre>>& position, 
-                   calculus::variable<measurement<units::metre_per_second>>& velocity, 
-                   calculus::variable<measurement<units::second>>& time,
+        lagrangian(measurement<base::mass>& mass,
+                   calculus::variable<measurement<base::length>>& position, 
+                   calculus::variable<measurement<base::velocity>>& velocity, 
+                   calculus::variable<measurement<base::time>>& time,
                    potential_energy<PotArgs...>& potential) noexcept 
                 
             : m{mass}, x{position}, x_dot{velocity}, t{time}, potential{potential} {}
@@ -45,7 +45,7 @@ namespace scipp::physics {
 
         }
 
-        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+        inline calculus::variable<measurement<base::energy>> operator()() noexcept {
             
             update_kinetic();
             update_potential();
@@ -67,19 +67,19 @@ namespace scipp::physics {
 
         // inline static constexpr dim = sizeof...(Vars);
 
-        measurement<units::kilogram>& m; 
+        measurement<base::mass>& m; 
 
-        std::array<calculus::variable<measurement<units::metre>>, DIM>& x;
-        std::array<calculus::variable<measurement<units::metre_per_second>>, DIM>& x_dot;
-        calculus::variable<measurement<units::second>>& t; 
+        std::array<calculus::variable<measurement<base::length>>, DIM>& x;
+        std::array<calculus::variable<measurement<base::velocity>>, DIM>& x_dot;
+        calculus::variable<measurement<base::time>>& t; 
 
         // potential_energy<VArgs...>& potential;
-        calculus::variable<measurement<units::joule>> V{}, T{}; 
+        calculus::variable<measurement<base::energy>> V{}, T{}; 
 
-        lagrangian_multidim(measurement<units::kilogram>& mass,
-                            std::array<calculus::variable<measurement<units::metre>>, DIM>& variables,
-                            std::array<calculus::variable<measurement<units::metre_per_second>>, DIM>& tangents,
-                            calculus::variable<measurement<units::second>>& time) noexcept
+        lagrangian_multidim(measurement<base::mass>& mass,
+                            std::array<calculus::variable<measurement<base::length>>, DIM>& variables,
+                            std::array<calculus::variable<measurement<base::velocity>>, DIM>& tangents,
+                            calculus::variable<measurement<base::time>>& time) noexcept
             
             : m{mass}, x{variables}, x_dot{tangents}, t{time} {}
 
@@ -97,7 +97,7 @@ namespace scipp::physics {
         // }
 
 
-        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+        inline calculus::variable<measurement<base::energy>> operator()() noexcept {
 
             update_kinetic();
             // update_potential();
@@ -119,21 +119,21 @@ namespace scipp::physics {
 
         inline static constexpr size_t dim = sizeof...(Vars);
 
-        measurement<units::kilogram>& m; 
-        // calculus::variable<measurement<units::second>>& t; 
+        measurement<base::mass>& m; 
+        // calculus::variable<measurement<base::time>>& t; 
 
         std::tuple<Vars...> variables;
-        std::function<std::array<calculus::variable<measurement<units::metre>>, dim>(Vars...)>& parametrization;
-        // std::array<calculus::variable<measurement<units::metre_per_second>>, dim>& x_dot;
+        std::function<std::array<calculus::variable<measurement<base::length>>, dim>(Vars...)>& parametrization;
+        // std::array<calculus::variable<measurement<base::velocity>>, dim>& x_dot;
 
         // potential_energy<VArgs...>& potential;
-        calculus::variable<measurement<units::joule>> V{}, T{}; 
+        calculus::variable<measurement<base::energy>> V{}, T{}; 
 
-        lagrangian_multi(measurement<units::kilogram>& mass,
-                        //  calculus::variable<measurement<units::second>>& time, 
-                         std::function<std::array<calculus::variable<measurement<units::metre>>, dim>(Vars...)>& gamma,
+        lagrangian_multi(measurement<base::mass>& mass,
+                        //  calculus::variable<measurement<base::time>>& time, 
+                         std::function<std::array<calculus::variable<measurement<base::length>>, dim>(Vars...)>& gamma,
                          Vars... variables
-                        //  std::array<calculus::variable<measurement<units::metre_per_second>>, dim>& tangents
+                        //  std::array<calculus::variable<measurement<base::velocity>>, dim>& tangents
                          ) noexcept
             
             : m{mass}, variables{std::forward_as_tuple(variables...)} {} //, parametrization{gamma} {}
@@ -152,7 +152,7 @@ namespace scipp::physics {
         // }
 
 
-        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+        inline calculus::variable<measurement<base::energy>> operator()() noexcept {
 
             update_kinetic();
             // update_potential();

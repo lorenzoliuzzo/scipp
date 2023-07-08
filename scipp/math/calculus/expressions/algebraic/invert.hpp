@@ -16,9 +16,8 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct inv_expr : unary_expr<op::invert_t<T>, T> {
+        struct invert_expr : unary_expr<op::invert_t<T>, T> {
 
-            // Using declarations for data members of base class
             using unary_expr<op::invert_t<T>, T>::x;
             using unary_expr<op::invert_t<T>, T>::unary_expr;
 
@@ -26,23 +25,23 @@ namespace scipp::math {
             constexpr void propagate(std::shared_ptr<void> wprime) override {
                 
                 auto wprime_v = *std::static_pointer_cast<T>(wprime);
-                auto aux = - wprime_v / op::square(x->val);
+                auto aux = -wprime_v / op::square(x->val);
                 x->propagate(std::make_shared<decltype(aux)>(aux));
 
             }
 
-            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>> wprime) override {
+            constexpr void propagatex(std::shared_ptr<void>) override {
                 
             //     auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
             //     auto aux = - wprime_v / op::square(x->expr);
             //     x->propagatex(std::make_shared<decltype(aux)>(aux));
 
-            // }
+            }
 
-            virtual constexpr void update() override {
+            constexpr void update() override {
 
                 x->update();
-                this->val = 1.0 / x->val;
+                this->val = op::inv(x->val);
 
             }        
             

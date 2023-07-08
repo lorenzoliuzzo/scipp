@@ -2,7 +2,7 @@
  * @file    test/math/functions.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
- * @date    2023-05-17
+ * @date    2023-07-07
  * 
  * @copyright Copyright (c) 2023
  */
@@ -12,77 +12,77 @@
 #include "scipp"
 
 using namespace scipp;
+using tools::print; 
 
-using namespace tools; 
 using namespace math; 
+using namespace math::calculus; 
 using namespace physics;
+using namespace physics::base;
 using namespace physics::units; 
+using namespace physics::units::literals;
+using namespace geometry;
+
 
 
 int main() { 
 
+    // variable<double> x = 1.0; 
+    // variable<double> y = 2.0;
+    // auto f = function<double, double, double>([](auto x, auto y) { return 2.0 * op::square(x) + y; }, x, y);
 
-    print("size int", sizeof(int));
-    print("size double", sizeof(double));
-    print("size long double", sizeof(long double));
-    print("size measurement with int", sizeof(measurement<metre, int>));
-    print("size measurement with double", sizeof(measurement<metre, double>));
-    print("size measurement with long double", sizeof(measurement<metre, long double>));
+    // auto z = f();
+    // print(z);
 
+    // auto [dx, dy] = f.gradient();
+    // print(dx);
+    // print(dy);
 
-    // auto a = measurement<metre, int>(3);
-    // auto b = measurement<metre>(4.6);
-    // auto c = a + b; 
-    // auto d = a + a; 
+    // auto vars = f.variables;
+    // print(std::get<0>(vars));
+    // print(std::get<1>(vars));
 
-    // print(sizeof(a));
-    // print(sizeof(b));
-    // print(sizeof(c));
-    // print(sizeof(d));
-
-    // print(a);
-    // print(b);
-    // print(a + b);
-    // print(a + c);
-
-    // print(op::inv(3.0m)); 
-
-    // auto x = 3.0m;
-    // print(x);
-    // op::add(x, 3.0m);
-    // print(x);
-
-    // x -= 6.0m;
-    // print(x);
-
-    // x += x; 
-    // print(x);
-
-    // x *= 300.0; 
-    // print<std::micro>(x);
-    // x /= 3000.0;
-    // print<std::micro>(x);
+    // std::get<0>(vars) = 3.0;
+    // print(x); 
+    // print(f());
 
 
-    // print(x + 3.0m);
-    // print(x - 3.0m);
-    // print(x * 3.0m);
+    // auto line = curves::line<measurement<length>, measurement<time>>(0.5 * op::div(units::m, units::s), 0.0m);
+    // print(line());
+    // // print(line.at(1.0 * s));
+    // // print(line.at(2.0 * s));
+    // print(line.slope);
 
-    // print(op::abs(x));
-    // print(op::sq(x) * 2.0);
-    // print(op::abs(complex(x, x)));
-    // print(op::exp(-4.0));
-    // print(op::sin(0.0));
-    // print(op::sin(math::constants::pi * 0.5));
-
-
-    double oi = 5.0; 
-    double oa = -5.0; 
-
-    auto r = op::add(oi, oa);
-    print(r);
+    // auto par = curves::parabola<double, double>(1.0, 0.0, 0.0);
+    // print(par());
+    // // print(par.at(1.0));
+    // // print(par.at(2.0));
 
 
+    print(1.0s);    
+    measurement t = 1.0min;
+    print(t);
+    // variable<measurement<time>> t = 0.0s;
+    // auto x_t_line = curves::line<measurement<length>, measurement<time>>(1.0 * op::div(units::m, units::s), -10.0 * m, t);
+    // print(x_t_line());
+
+    // t = 10.0s;
+    // print(x_t_line());
+    // t = 20.0s;
+    // print(x_t_line());  
+    // print(x_t_line.at(50.0s));
+
+    // auto param = x_t_line.parametrization;
+    // auto grad = param.gradient();
+    // print(std::get<0>(grad)); // 1.0 * m/s
+
+    // auto grad2 = param.gradient(50.0 * s);
+    // print(std::get<0>(grad2)); // 0.0 * m/s because i am not passing a reference and so it cannot operate the differentiation
+
+    // vector<double, 2> v1 = {1.0, 2.0};
+    // auto cir = curves::circle<vector<double, 2>, double>(v1, 1.0);
+    // print(cir()); 
+
+    
     return 0; 
 
 }

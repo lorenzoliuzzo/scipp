@@ -15,382 +15,147 @@ namespace scipp::math {
     namespace calculus {
 
 
+        template <typename T>
+        struct exponential_expr : unary_expr<T, T> {
+
+            using unary_expr<T, T>::unary_expr;
+            using unary_expr<T, T>::val;
+            using unary_expr<T, T>::x;
 
 
-        // template <typename T>
-        // struct sinh_expr : unary_expr<T, T> {
+            constexpr void propagate(std::shared_ptr<void> wprime) override {
 
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr sinh_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(wprime * cosh(x->val));
-        //     }
-
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         x->propagatex(wprime * cosh(x));
-        //     }
-
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = sinh(x->val);
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct cosh_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr cosh_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(wprime * sinh(x->val));
+                auto wprime_v = *std::static_pointer_cast<T>(wprime);
+                auto xval = wprime_v * val;
+                x->propagate(std::make_shared<decltype(rval)>(rval)); // exp(x)' = exp(x) * x'
             
-        //     }
+            }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+            // constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
-        //         x->propagatex(wprime * sinh(x));
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = cosh(x->val);
-
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct tanh_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr tanh_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         const auto aux = 1.0 / cosh(x->val);
-        //         x->propagate(wprime * aux * aux);
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         const auto aux = 1.0 / cosh(x);
-        //         x->propagatex(wprime * aux * aux);
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = tanh(x->val);
-
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct arcsin_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
+            //     x->propagatex(wprime * exp(x));
             
-        //     constexpr arcsin_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
+            // }
 
+            constexpr void update() override {
 
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(wprime / sqrt(1.0 - x->val * x->val));
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         x->propagatex(wprime / sqrt(1.0 - x * x));
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = asin(x->val);
-
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct arccos_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr arccos_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(-wprime / sqrt(1.0 - x->val * x->val));
+                x->update();
+                this->val = op::exp(x->val);
             
-        //     }
+            }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        };
 
-        //         x->propagatex(-wprime / sqrt(1.0 - x * x));
-            
-        //     }
 
-        //     constexpr void update() override {
+        template <typename T>
+        struct log_expr : unary_expr<T, T> {
 
-        //         x->update();
-        //         this->val = acos(x->val);
-            
-        //     }
+            using unary_expr<T, T>::x;
+           using unary_expr<T, T>::unary_expr;
 
-        // };
 
+            constexpr void propagate(const T& wprime) override {
 
-        // template <typename T>
-        // struct arctan_expr : unary_expr<T, T> {
+                x->propagate(wprime / x->val); // log(x)' = x'/x
 
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
+            }
 
+            constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
-        //     constexpr arctan_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
+                x->propagatex(wprime / x);
 
+            }
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+            constexpr void update() override {
 
-        //         x->propagate(wprime / (1.0 + x->val * x->val));
+                x->update();
+                this->val = log(x->val);
 
-        //     }
+            }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        };
 
-        //         x->propagatex(wprime / (1.0 + x * x));
 
-        //     }
+        template <typename T>
+        struct log10_expr : unary_expr<T, T> {
 
-        //     constexpr void update() override {
+            using unary_expr<T, T>::x;
 
-        //         x->update();
-        //         this->val = atan(x->val);
+            constexpr static auto ln10 = static_cast<variable_value_t<T>>(2.3025850929940456840179914546843);
 
-        //     }
+            constexpr log10_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
 
-        // };
 
+            constexpr void propagate(const T& wprime) override {
 
-        // template <typename T>
-        // struct arctan2_expr : binary_expr<T> {
+                x->propagate(wprime / (ln10 * x->val));
 
-        //     using binary_expr<T>::val;
-        //     using binary_expr<T>::l;
-        //     using binary_expr<T>::r;
+            }
 
+            constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
-        //     constexpr arctan2_expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr) {}
+                x->propagatex(wprime / (ln10 * x));
 
+            }
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+            constexpr void update() override {
 
-        //         const auto aux = wprime / (l->val * l->val + r->val * r->val);
-        //         l->propagate(r->val * aux);
-        //         r->propagate(-l->val * aux);
+                x->update();
+                this->val = log10(x->val);
 
-        //     }
+            }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        };
 
-        //         const auto aux = wprime / (l * l + r * r);
-        //         l->propagatex(r * aux);
-        //         r->propagatex(-l * aux);
 
-        //     }
+        template <typename T>
+        struct pow_expr : binary_expr<T> {
 
-        //     constexpr void update() override {
+            // Using declarations for data members of base class
+            using binary_expr<T>::val;
+            using binary_expr<T>::l;
+            using binary_expr<T>::r;
 
-        //         l->update();
-        //         r->update();
-        //         this->val = atan2(l->val, r->val);
 
-        //     }
+            T log_l;
 
-        // };
 
+            constexpr pow_expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr), log_l(log(ll->val)) {}
 
-        // template <typename T>
-        // struct exp_expr : unary_expr<T, T> {
 
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::unary_expr;
-        //     using unary_expr<T, T>::val;
-        //     using unary_expr<T, T>::x;
+            constexpr void propagate(const T& wprime) override {
 
+                using U = variable_value_t<T>;
+                constexpr auto zero = U(0.0);
+                const auto lval = l->val;
+                const auto rval = r->val;
+                const auto aux = wprime * pow(lval, rval - 1);
+                l->propagate(aux * rval);
+                const auto auxr = lval == zero ? 0.0 : lval * log(lval); // since x*log(x) -> 0 as x -> 0
+                r->propagate(aux * auxr);
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+            }
 
-        //         x->propagate(wprime * val); // exp(x)' = exp(x) * x'
-            
-        //     }
+            constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+                using U = variable_value_t<T>;
+                constexpr auto zero = U(0.0);
+                const auto aux = wprime * pow(l, r - 1);
+                l->propagatex(aux * r);
+                const auto auxr = l == zero ? 0.0*l : l * log(l); // since x*log(x) -> 0 as x -> 0
+                r->propagatex(aux * auxr);
 
-        //         x->propagatex(wprime * exp(x));
-            
-        //     }
+            }
 
-        //     constexpr void update() override {
+            constexpr void update() override {
 
-        //         x->update();
-        //         this->val = exp(x->val);
-            
-        //     }
+                l->update();
+                r->update();
+                this->val = pow(l->val, r->val);
 
-        // };
+            }
 
-
-        // template <typename T>
-        // struct log_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-        //     using unary_expr<T, T>::unary_expr;
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(wprime / x->val); // log(x)' = x'/x
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         x->propagatex(wprime / x);
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = log(x->val);
-
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct log10_expr : unary_expr<T, T> {
-
-        //     // Using declarations for data members of base class
-        //     using unary_expr<T, T>::x;
-
-
-        //     constexpr static auto ln10 = static_cast<variable_value_t<T>>(2.3025850929940456840179914546843);
-
-        //     constexpr log10_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         x->propagate(wprime / (ln10 * x->val));
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         x->propagatex(wprime / (ln10 * x));
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         x->update();
-        //         this->val = log10(x->val);
-
-        //     }
-
-        // };
-
-
-        // template <typename T>
-        // struct pow_expr : binary_expr<T> {
-
-        //     // Using declarations for data members of base class
-        //     using binary_expr<T>::val;
-        //     using binary_expr<T>::l;
-        //     using binary_expr<T>::r;
-
-
-        //     T log_l;
-
-
-        //     constexpr pow_expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr), log_l(log(ll->val)) {}
-
-
-        //     virtual constexpr void propagate(const T& wprime) override {
-
-        //         using U = variable_value_t<T>;
-        //         constexpr auto zero = U(0.0);
-        //         const auto lval = l->val;
-        //         const auto rval = r->val;
-        //         const auto aux = wprime * pow(lval, rval - 1);
-        //         l->propagate(aux * rval);
-        //         const auto auxr = lval == zero ? 0.0 : lval * log(lval); // since x*log(x) -> 0 as x -> 0
-        //         r->propagate(aux * auxr);
-
-        //     }
-
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
-
-        //         using U = variable_value_t<T>;
-        //         constexpr auto zero = U(0.0);
-        //         const auto aux = wprime * pow(l, r - 1);
-        //         l->propagatex(aux * r);
-        //         const auto auxr = l == zero ? 0.0*l : l * log(l); // since x*log(x) -> 0 as x -> 0
-        //         r->propagatex(aux * auxr);
-
-        //     }
-
-        //     constexpr void update() override {
-
-        //         l->update();
-        //         r->update();
-        //         this->val = pow(l->val, r->val);
-
-        //     }
-
-        // };
+        };
 
 
         // template <typename T>
@@ -405,7 +170,7 @@ namespace scipp::math {
         //     constexpr pow_constant_left_expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         const auto lval = l->val;
         //         const auto rval = r->val;
@@ -415,7 +180,7 @@ namespace scipp::math {
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         const auto aux = wprime * pow(l, r - 1);
         //         const auto auxr = l == 0.0 ? 0.0*l : l * log(l); // since x*log(x) -> 0 as x -> 0
@@ -445,13 +210,13 @@ namespace scipp::math {
         //     constexpr pow_constant_right_expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         l->propagate(wprime * pow(l->val, r->val - 1) * r->val); // pow(l, r)'l = r * pow(l, r - 1) * l'
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         l->propagatex(wprime * pow(l, r - 1) * r);
 
@@ -477,13 +242,13 @@ namespace scipp::math {
         //     constexpr sqrt_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         x->propagate(wprime / (2.0 * sqrt(x->val))); // sqrt(x)' = 1/2 * 1/sqrt(x) * x'
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         x->propagatex(wprime / (2.0 * sqrt(x)));
         //     }
@@ -509,7 +274,7 @@ namespace scipp::math {
         //     constexpr abs_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T>(v, e) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         if (x->val < 0.0)
         //             x->propagate(-wprime);
@@ -520,7 +285,7 @@ namespace scipp::math {
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         if (x->val < 0.0)
         //             x->propagatex(-wprime);
@@ -554,14 +319,14 @@ namespace scipp::math {
         //     constexpr erf_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T>(v, e) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         const auto aux = 2.0 / sqrt_pi * exp(-(x->val) * (x->val)); // erf(x)' = 2/sqrt(pi) * exp(-x * x) * x'
         //         x->propagate(wprime * aux);
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         const auto aux = 2.0 / sqrt_pi * exp(-x * x);
         //         x->propagatex(wprime * aux);
@@ -590,14 +355,14 @@ namespace scipp::math {
         //     constexpr hypot2expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& rr) noexcept : binary_expr<T>(v, ll, rr) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         l->propagate(wprime * l->val / val); // sqrt(l*l + r*r)'l = 1/2 * 1/sqrt(l*l + r*r) * (2*l*l') = (l*l')/sqrt(l*l + r*r)
         //         r->propagate(wprime * r->val / val); // sqrt(l*l + r*r)'r = 1/2 * 1/sqrt(l*l + r*r) * (2*r*r') = (r*r')/sqrt(l*l + r*r)
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         l->propagatex(wprime * l / hypot(l, r));
         //         r->propagatex(wprime * r / hypot(l, r));
@@ -628,7 +393,7 @@ namespace scipp::math {
         //     constexpr hypot3expr(const T& v, const expr_ptr<T>& ll, const expr_ptr<T>& cc, const expr_ptr<T>& rr) noexcept : ternary_expr<T>(v, ll, cc, rr) {}
 
 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         l->propagate(wprime * l->val / val);
         //         c->propagate(wprime * c->val / val);
@@ -636,7 +401,7 @@ namespace scipp::math {
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         l->propagatex(wprime * l / hypot(l, c, r));
         //         c->propagatex(wprime * c / hypot(l, c, r));
@@ -750,7 +515,7 @@ namespace scipp::math {
         //         expr<T>(wrappedPred ? ll->val : rr->val), predicate(wrappedPred), l(ll), r(rr) {}
 
                 
-        //     virtual constexpr void propagate(const T& wprime) override {
+        //     constexpr void propagate(const T& wprime) override {
 
         //         if (predicate.val) 
         //             l->propagate(wprime);
@@ -759,7 +524,7 @@ namespace scipp::math {
 
         //     }
 
-        //     virtual constexpr void propagatex(const expr_ptr<T>& wprime) override {
+        //     constexpr void propagatex(const expr_ptr<T>& wprime) override {
 
         //         l->propagatex(derive(wprime, constant<T>(0.0)));
         //         r->propagatex(derive(constant<T>(0.0), wprime));

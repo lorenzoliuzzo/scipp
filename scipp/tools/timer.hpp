@@ -35,23 +35,23 @@ namespace scipp::tools {
         // =============================================   
 
 
-            inline void start() noexcept {
+            void start() noexcept {
 
                 start_ = std::chrono::high_resolution_clock::now();
 
             }
 
 
-            inline void stop() noexcept {
+            void stop() noexcept {
 
                 stop_ = std::chrono::high_resolution_clock::now();
 
             }
 
 
-            inline physics::time_m elapsed() noexcept {
+            auto elapsed() noexcept {
 
-                return physics::time_m(static_cast<double>(std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count()), physics::units::ns);
+                return physics::measurement<physics::base::time>(std::chrono::duration_cast<std::chrono::nanoseconds>(stop_ - start_).count(), physics::units::ns);
             
             }             
 
@@ -102,9 +102,9 @@ namespace scipp::tools {
             }
 
 
-            constexpr physics::time_m elapsed() {
+            constexpr physics::measurement<base::time> elapsed() {
 
-                return physics::time_m(stop_ - start_);
+                return physics::measurement<base::time>(stop_ - start_);
             
             }             
 

@@ -23,7 +23,7 @@ namespace scipp::math {
 
             constexpr void propagate(std::shared_ptr<void>) override {}
 
-            // constexpr void propagatex(std::shared_ptr<std::shared_ptr<void>>) override {}
+            constexpr void propagatex(std::shared_ptr<void>) override {}
 
             constexpr void update() override {}
 

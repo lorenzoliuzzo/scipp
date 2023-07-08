@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(scipp VERSION 2.0 LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit=0 -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096")
+set(CMAKE_CXX_FLAGS "-std=c++23 -O3 -g -pg --pedantic -ftemplate-backtrace-limit=0 -ftemplate-depth=4096 -Wall -Wextra -Wno-literal-suffix -flto -ftree-loop-vectorize -fconstexpr-depth=4096 ")
 
 add_library(${PROJECT_NAME} 
     STATIC   
@@ -20,4 +20,4 @@ set_target_properties(${PROJECT_NAME}
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/scipp/ DESTINATION include/scipp)
     
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples)
+# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples)

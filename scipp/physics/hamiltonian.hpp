@@ -15,13 +15,13 @@ namespace scipp::physics {
     template <typename... VArgs>
     struct hamiltonian {
 
-        measurement<units::kilogram>& m;
-        calculus::variable<measurement<units::metre>>& x; 
-        calculus::variable<measurement<op::divide_t<units::joule, units::metre_per_second>>> p;
-        calculus::variable<measurement<units::second>>& t; 
+        measurement<base::mass>& m;
+        calculus::variable<measurement<base::length>>& x; 
+        calculus::variable<measurement<base::momentum>> p;
+        calculus::variable<measurement<base::time>>& t; 
         
         potential_energy<VArgs...>& potential;
-        calculus::variable<measurement<units::joule>> V{}, T{}; 
+        calculus::variable<measurement<base::energy>> V{}, T{}; 
 
         hamiltonian(lagrangian<VArgs...>& L) noexcept 
             
@@ -43,7 +43,7 @@ namespace scipp::physics {
 
         }
 
-        inline calculus::variable<measurement<units::joule>> operator()() noexcept {
+        inline calculus::variable<measurement<base::energy>> operator()() noexcept {
             
             update_kinetic();
             update_potential();
@@ -59,7 +59,7 @@ namespace scipp::physics {
 
 
         template <size_t N>
-        void evolve(const measurement<units::second>& tmax) noexcept {
+        void evolve(const measurement<base::time>& tmax) noexcept {
 
             const auto dt = tmax / N;
             for (size_t i = 0; i < N; ++i) 
@@ -68,7 +68,7 @@ namespace scipp::physics {
         }
 
 
-        void euler(const measurement<units::second>& dt) noexcept {
+        void euler(const measurement<base::time>& dt) noexcept {
 
             auto [dHdx, dHdp] = calculus::derivatives(this->operator()(), calculus::wrt(this->x, this->p));
             this->x += dt * dHdp;
@@ -77,7 +77,7 @@ namespace scipp::physics {
 
         }
 
-        void rk2(const measurement<units::second>& dt) noexcept {
+        void rk2(const measurement<base::time>& dt) noexcept {
 
             // Store the original values
             auto temp_x = this->x;
@@ -104,7 +104,7 @@ namespace scipp::physics {
 
         }
 
-        void rk4(const measurement<units::second>& dt) noexcept {
+        void rk4(const measurement<base::time>& dt) noexcept {
 
             // Store the original values
             auto temp_x = this->x;
@@ -158,7 +158,7 @@ namespace scipp::physics {
       
 
         // template <size_t N>
-        // void plot_evolution(const measurement<units::second>& tmax) noexcept {
+        // void plot_evolution(const measurement<base::time>& tmax) noexcept {
 
         //     std::vector<double> x_i(N), p_i(N), E_i(N), t_i(N);             /// value containers for plotting
         //     const auto dt = tmax / N;                                       /// time step

@@ -2,7 +2,7 @@
  * @file    traits/math.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the type traits for the scipp::math namespace
- * @date    2023-06-12
+ * @date    2023-07-03
  * 
  * @copyright Copyright (c) 2023
  */
@@ -182,23 +182,6 @@ namespace scipp::math {
         inline static constexpr bool is_expr_ptr_v = is_expr_ptr<T>::value; 
 
 
-        // template <typename T>
-        // struct neg_expr; 
-
-        // template <typename T>
-        // struct add_expr; 
-
-
-        // template <typename T>
-        // struct sub_expr; 
-
-        // template <typename T>
-        // struct mul_expr; 
-
-
-
-
-
         template <typename VALUE_T>
         struct variable; 
 
@@ -215,22 +198,22 @@ namespace scipp::math {
         inline static constexpr bool are_variables_v = std::conjunction_v<is_variable<Ts>...>;
 
 
-        template <typename T>
-        struct variable_value_t; 
+        // template <typename T>
+        // struct variable_value_t; 
 
-        template <typename VALUE_T>
-        struct variable_value_t<variable<VALUE_T>> { 
+        // template <typename VALUE_T>
+        // struct variable_value_t<variable<VALUE_T>> { 
             
-            using type = VALUE_T; 
+        //     using type = VALUE_T; 
                     
-        };
+        // };
 
-        template <typename T>
-        struct variable_value_t<expr_ptr<T>> { 
+        // template <typename T>
+        // struct variable_value_t<expr_ptr<T>> { 
             
-            using type = typename variable_value_t<T>::type; 
+        //     using type = typename variable_value_t<T>::type; 
         
-        };
+        // };
 
         template <typename T>
         struct variable_order { 
@@ -248,18 +231,20 @@ namespace scipp::math {
 
 
 
-        template <typename T, size_t DIM>
-            requires is_variable_v<T>  
-        struct curve; 
+        template <typename RANGE, typename... DOMAIN>
+        struct function;
 
         template <typename T>
-        struct is_curve : std::false_type {};
+        struct is_function : std::false_type {};
 
-        template <typename T, size_t DIM>
-        struct is_curve<curve<T, DIM>> : std::true_type {};
+        template <typename RANGE, typename... DOMAIN>
+        struct is_function<function<RANGE, DOMAIN...>> : std::true_type {};
+
+        template <typename RANGE, typename... DOMAIN>
+        struct is_function<function<RANGE, DOMAIN...>&> : std::true_type {};
 
         template <typename T>
-        inline static constexpr bool is_curve_v = is_curve<T>::value;
+        inline static constexpr bool is_function_v = is_function<T>::value;
 
 
         template <typename T>
@@ -273,6 +258,19 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr bool is_interval_v = is_interval<T>::value;
+
+
+        template <typename T, typename... ARGs>
+        struct curve; 
+
+        template <typename T>
+        struct is_curve : std::false_type {};
+
+        template <typename T, typename... ARGs>
+        struct is_curve<curve<T, ARGs...>> : std::true_type {};
+
+        template <typename T>
+        inline static constexpr bool is_curve_v = is_curve<typename T::curve_t>::value;
 
 
     } // namespace calculus
@@ -302,7 +300,7 @@ namespace scipp::math {
         using negate_t = typename negate_impl<T>::result_t;  
 
         template <typename ARG_TYPE>
-        inline static constexpr auto negate(const ARG_TYPE& x) noexcept {
+        inline static constexpr auto neg(const ARG_TYPE& x) noexcept {
             
             return negate_impl<ARG_TYPE>::f(x); 
 
@@ -318,13 +316,13 @@ namespace scipp::math {
 
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        struct multiply_impl; 
+        struct multiply_impl;       
 
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using multiply_t = typename multiply_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
+        using multiply_t = typename multiply_impl<std::decay_t<ARG_TYPE1>, std::decay_t<ARG_TYPE2>>::result_t;
     
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto multiply(const ARG_TYPE1& x, const ARG_TYPE2& y) {
+        inline static constexpr auto mult(const ARG_TYPE1& x, const ARG_TYPE2& y) {
             
             return multiply_impl<ARG_TYPE1, ARG_TYPE2>::f(x, y); 
 
@@ -338,7 +336,7 @@ namespace scipp::math {
         using power_t = typename power_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
 
         template <int ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto power(const ARG_TYPE2& x) {
+        inline static constexpr auto pow(const ARG_TYPE2& x) {
             
             return power_impl<ARG_TYPE1, ARG_TYPE2>::f(x); 
 
@@ -347,14 +345,14 @@ namespace scipp::math {
         template <typename ARG_TYPE>
         inline static constexpr auto square(const ARG_TYPE& x) {
             
-            return power_impl<size_t{2}, ARG_TYPE>::f(x); 
+            return pow<2>(x); 
 
         }
 
         template <typename ARG_TYPE>
         inline static constexpr auto cube(const ARG_TYPE& x) {
             
-            return power_impl<size_t{3}, ARG_TYPE>::f(x); 
+            return pow<3>(x); 
 
         }
 
@@ -380,7 +378,7 @@ namespace scipp::math {
         using invert_t = typename invert_impl<T>::result_t;  
 
         template <typename ARG_TYPE>
-        inline static constexpr auto invert(const ARG_TYPE& x) {
+        inline static constexpr auto inv(const ARG_TYPE& x) {
             
             return invert_impl<ARG_TYPE>::f(x); 
 
@@ -391,7 +389,7 @@ namespace scipp::math {
         using divide_t = typename multiply_impl<ARG_TYPE1, invert_t<ARG_TYPE2>>::result_t;
     
         template <typename ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto divide(const ARG_TYPE1& x, const ARG_TYPE2& y) {
+        inline static constexpr auto div(const ARG_TYPE1& x, const ARG_TYPE2& y) {
             
             return multiply_impl<ARG_TYPE1, invert_t<ARG_TYPE2>>::f(x, invert_impl<ARG_TYPE2>::f(y)); 
 
@@ -408,6 +406,20 @@ namespace scipp::math {
         inline static constexpr auto root(const ARG_TYPE2& x) {
             
             return root_impl<ARG_TYPE1, ARG_TYPE2>::f(x); 
+
+        }
+
+        template <typename T> 
+        inline static constexpr auto sqrt(const T& x) {
+            
+            return root<2>(x); 
+
+        }
+
+        template <typename T>
+        inline static constexpr auto cbrt(const T& x) {
+            
+            return root<3>(x); 
 
         }
 
@@ -434,14 +446,6 @@ namespace scipp::math {
         }
 
 
-        // template <typename T>
-        // inline static constexpr auto tan(const T& x, const T& y) noexcept {
-
-        //     return tangent_impl<T>::f(x, y);
-
-        // }
-
-
         template <typename T>
         struct sine_impl;
 
@@ -449,6 +453,16 @@ namespace scipp::math {
         inline static constexpr auto sin(const T& x) {
 
             return sine_impl<T>::f(x); 
+
+        }
+
+        template <typename T>
+        struct arcsine_impl;
+
+        template <typename T>   
+        inline static constexpr auto asin(const T& x) {
+
+            return arcsine_impl<T>::f(x); 
 
         }
 
@@ -463,6 +477,16 @@ namespace scipp::math {
 
         }
 
+        template <typename T>
+        struct arccosine_impl;
+
+        template <typename T>   
+        inline static constexpr auto acos(const T& x) {
+
+            return arccosine_impl<T>::f(x); 
+
+        }
+
 
         template <typename T>
         struct tangent_impl;
@@ -471,6 +495,89 @@ namespace scipp::math {
         inline static constexpr auto tan(const T& x) {
 
             return tangent_impl<T>::f(x); 
+
+        }
+
+        template <typename T>
+        struct arctangent_impl;
+
+        template <typename T>   
+        inline static constexpr auto atan(const T& x) {
+
+            return arctangent_impl<T>::f(x); 
+
+        }
+
+        template <typename T>
+        struct arctangent2_impl;
+
+        template <typename T>   
+        inline static constexpr auto atan(const T& x, const T& y) {
+
+            return arctangent2_impl<T>::f(x, y); 
+
+        }
+
+
+        template <typename T>
+        struct sine_hyp_impl;
+
+        template <typename T>
+        inline static constexpr T sinh(const T& x) noexcept {
+            
+            return sine_hyp_impl<T>::f(x);
+
+        }
+
+        template <typename T>
+        struct arcsine_hyp_impl;
+
+        template <typename T>
+        inline static constexpr T asinh(const T& x) noexcept {
+
+            return arcsine_hyp_impl<T>::f(x);
+
+        }
+
+
+        template <typename T>
+        struct cosine_hyp_impl; 
+
+        template <typename T>
+        inline static constexpr T cosh(const T& x) noexcept {
+            
+            return cosine_hyp_impl<T>::f(x);
+
+        }
+
+        template <typename T>
+        struct arccosine_hyp_impl; 
+
+        template <typename T>
+        inline static constexpr T acosh(const T& x) noexcept {
+            
+            return arccosine_hyp_impl<T>::f(x);
+
+        }
+
+
+        template <typename T>
+        struct tangent_hyp_impl;
+
+        template <typename T>
+        inline static constexpr T tanh(const T& x) noexcept {
+            
+            return tangent_hyp_impl<T>::f(x);
+
+        }
+
+        template <typename T>
+        struct arctangent_hyp_impl;
+
+        template <typename T>
+        inline static constexpr T atanh(const T& x) noexcept {
+            
+            return arctangent_hyp_impl<T>::f(x);
 
         }
 
@@ -509,39 +616,6 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct arcsine_impl;
-
-        template <typename T>
-        inline static constexpr auto asin(const T& x) noexcept {
-
-            return arcsine_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        struct arccosine_impl;
-
-        template <typename T>
-        inline static constexpr auto acos(const T& x) noexcept {
-
-            return arccosine_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        struct arctangent_impl;
-
-        template <typename T>
-        inline static constexpr auto atan(const T& x) noexcept {
-
-            return arctangent_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
         struct arccosecant_impl;
         
         template <typename T>
@@ -575,55 +649,13 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct hyperbolic_sine_impl;
+        struct cosecant_hyp_impl;
 
         template <typename T>
-        struct hyperbolic_cosine_impl; 
-
-        template <typename T>
-        struct hyperbolic_tangent_impl;
-
-
-        template <typename T>
-        struct hyperbolic_cosecant_impl;
-
-        template <typename T>
-        struct hyperbolic_secant_impl;
+        struct secant_hyp_impl;
         
         template <typename T>
-        struct hyperbolic_cotangent_impl;
-
-
-        template <typename T>
-        inline static constexpr T sinh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T cosh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T tanh(const T&) noexcept;
-
-
-        template <typename T>
-        inline static constexpr T asin(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T acos(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T atan(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr auto atan(const T&, const T&) noexcept; 
-
-        template <typename T>
-        inline static constexpr T asinh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T acosh(const T&) noexcept;
-
-        template <typename T>
-        inline static constexpr T atanh(const T&) noexcept;
+        struct cotangent_hyp_impl;
 
 
     } // namespace op

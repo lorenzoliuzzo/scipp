@@ -12,31 +12,54 @@
 namespace scipp::math {
 
 
-    namespace integrals {
+    namespace calculus {
 
 
-        template <typename FUNCTION_TYPE> 
-            requires (functions::is_unary_function_v<typename FUNCTION_TYPE::function_t>)
-        static constexpr auto curvilinear(const curves::curve<typename FUNCTION_TYPE::value_t, FUNCTION_TYPE::value_t::dim>& gamma,
-                                          size_t steps,
-                                          double incr_der = 1.e-6) {
+        namespace integrals {
 
-            using result_t = functions::multiply_t<typename FUNCTION_TYPE::result_t, typename FUNCTION_TYPE::arg_t>;
-            result_t result{}; 
-            const double N = static_cast<double>(steps);
-            // auto d_curve = total_derivative(curve); // @todo
-            for (size_t i{}; i < steps; ++i) {
 
-                double t = static_cast<double>(i) / N;
-                auto x = gamma(t);
-                auto dgamma = calculus::derivatives(x, calculus::wrt(t));
-                result += FUNCTION_TYPE::f(x) * op::norm((gamma(t + incr_der) - x) / incr_der);
+            template <size_t N, typename CURVE_T, typename RANGE, typename... DOMAIN> 
+                requires is_curve_v<CURVE_T> && (sizeof...(DOMAIN) == std::tuple_size_v<typename CURVE_T::parametrization_t::variable_t> == 1)
+            static constexpr auto curvilinear(CURVE_T gamma, function<RANGE, DOMAIN...> f) {
+
+                variable<op::multiply_t<RANGE, std::tuple_element_t<0, std::tuple<DOMAIN...>>>> result{}; 
+
+                const auto I = std::get<0>(gamma.intervals); 
+                const auto step = I.step(N);
+                auto& x = std::get<0>(gamma.parametrization.variables);
+                x = I.start;
+                f.variables = gamma.parametrization.variables;
+
+                meta::for_<N>([&](auto) constexpr {
+                    x += step;
+                    result += f() * norm(gamma.gradient()) * step;
+                });
+
+                return result; 
 
             }
 
-            return result / N; 
 
-        }
+            template <size_t N, typename CURVE_T>
+            static constexpr auto curvilinear(CURVE_T gamma) {
+
+                variable<typename CURVE_T::value_t> result{}; 
+
+                const auto I = std::get<0>(gamma.intervals); 
+                const auto step = I.step(N);
+                auto& x = std::get<0>(gamma.parametrization.variables);
+                x = I.start;
+
+                meta::for_<N>([&](auto) constexpr {
+                    x += step;
+                    result += norm(gamma.gradient()) * step;
+                });
+
+                return result; 
+            }
+
+
+        } // namespace integrals
 
 
     } // namespace integrals

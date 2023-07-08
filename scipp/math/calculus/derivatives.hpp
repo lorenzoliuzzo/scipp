@@ -66,13 +66,12 @@ namespace scipp::math {
     
         //     meta::for_<N>([&](auto i) constexpr {
         //         using grad_t = std::tuple_element_t<i, decltype(values)>;
-        //         std::shared_ptr<grad_t> sharedPtr(&std::get<i>(values), [](grad_t*){});
+        //         std::shared_ptr<expr_ptr<typename grad_t::value_t>> sharedPtr(&std::get<i>(values).expr, [](expr_ptr<typename grad_t::value_t>*){}); 
         //         std::get<i>(wrt.args).expr->bind_expr(sharedPtr);
         //     });
 
-        //     std::shared_ptr<grad_t> sharedPtr(&std::get<i>(values), [](grad_t*){});
-
-        //     y.expr->propagatex(std::shared_ptr<std::shared_ptr<void>>(1.0)); 
+        //     std::shared_ptr<std::shared_ptr<void>> sharedOne; 
+        //     y.expr->propagatex(sharedOne); 
 
         //     meta::for_<N>([&](auto i) constexpr {
 

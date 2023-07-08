@@ -67,17 +67,17 @@ int main() {
     auto par = parabola(1.0 / m, 0.0, 0.0 * m, x);
 
     point = r();
-    print("x", point[0]);
-    print("y", point[1]);
+    print("x = ", point[0]);
+    print("y = ", point[1]);
     
     auto [dydx] = derivatives(point[1], wrt(x)); 
     print(dydx);
 
     point = par();
-    print("x", point[0]);
-    print("y", point[1]);
+    print("x = ", point[0]);
+    print("y = ", point[1]);
     
-    auto [dydx_] = derivatives(point[1], wrt(x)); 
+    auto [dydx_] = derivativesx(point[1], wrt(x)); 
     print(dydx_);
 
     // auto cir = circle(centre, 1.0 * m, x);

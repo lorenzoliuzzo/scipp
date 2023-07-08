@@ -10,8 +10,8 @@
 # add_executable(potentials potentials.cpp)
 # target_link_libraries(potentials ${PROJECT_NAME} python3.10)
 
-add_executable(curves curves.cpp)
-target_link_libraries(curves ${PROJECT_NAME} python3.10)
+# add_executable(curves curves.cpp)
+# target_link_libraries(curves ${PROJECT_NAME} python3.10)
 
 # add_executable(multidim multidim.cpp)
 # target_link_libraries(multidim ${PROJECT_NAME} python3.10)
@@ -19,3 +19,7 @@ target_link_libraries(curves ${PROJECT_NAME} python3.10)
 
 # add_executable(termo termo.cpp)
 # target_link_libraries(termo ${PROJECT_NAME} python3.10)
+
+
+add_executable(point point.cpp)
+target_link_libraries(point ${PROJECT_NAME})

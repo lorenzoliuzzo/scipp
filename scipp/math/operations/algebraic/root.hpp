@@ -161,11 +161,39 @@ namespace scipp::math {
             inline static constexpr result_t f(const VECTOR_TYPE& x) {
 
                 result_t x_pow;
-                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::power<POWER>(x_i); });
+                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
                 return x_pow;
 
             }
         
+        };
+
+
+        template <size_t N, typename T>
+        struct root_impl<N, calculus::expr_ptr<T>> {
+
+            using result_t = calculus::expr_ptr<op::root_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::root_expr<N, T>>(op::root<N>(x->val), x);
+
+            }
+
+        };
+
+
+        template <size_t N, typename T>
+        struct root_impl<N, calculus::variable<T>> {
+
+            using result_t = calculus::expr_ptr<op::root_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::variable<T>& x) {
+
+                return op::root<N>(x.expr); 
+
+            }
+
         };
 
 

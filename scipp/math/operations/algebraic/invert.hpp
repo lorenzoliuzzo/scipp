@@ -229,7 +229,7 @@ namespace scipp::math {
 
             inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
 
-                return std::make_shared<calculus::inv_expr<T>>(1.0 / x->val, x);
+                return std::make_shared<calculus::invert_expr<T>>(1.0 / x->val, x);
 
             }
 

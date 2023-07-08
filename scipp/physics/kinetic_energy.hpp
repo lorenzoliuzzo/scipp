@@ -12,70 +12,70 @@
 namespace scipp::physics {
 
 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const measurement<units::kilogram>& mass, const calculus::variable<measurement<units::metre_per_second>>& velocity) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const measurement<base::mass>& mass, const calculus::variable<measurement<base::velocity>>& v) {
         
-        return 0.5 * mass * velocity * velocity; 
+        return 0.5 * mass * math::op::square(v); 
 
     } 
 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const calculus::variable<measurement<units::metre_per_second>>& velocity, const measurement<units::kilogram>& mass) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const calculus::variable<measurement<base::velocity>>& v, const measurement<base::mass>& mass) {
         
-        return 0.5 * mass * velocity * velocity; 
+        return 0.5 * mass * math::op::square(v); 
 
     } 
 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const measurement<units::kilogram>& mass, const calculus::variable<measurement<units::kilogram_metre_per_second>>& momentum) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const measurement<base::mass>& mass, const calculus::variable<measurement<base::momentum>>& p) {
         
-        return 0.5 * momentum * momentum / mass; 
+        return 0.5 * math::op::square(p) / mass; 
 
     } 
 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const calculus::variable<measurement<units::kilogram_metre_per_second>>& momentum, const measurement<units::kilogram>& mass) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const calculus::variable<measurement<base::momentum>>& p, const measurement<base::mass>& mass) {
         
-        return 0.5 * momentum * momentum / mass; 
+        return 0.5 * math::op::square(p) / mass; 
 
     } 
 
 
     template <size_t N> 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const measurement<units::kilogram>& mass, const std::array<calculus::variable<measurement<units::metre_per_second>>, N>& velocity) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const measurement<base::mass>& mass, const std::array<calculus::variable<measurement<base::velocity>>, N>& velocity) {
 
-        calculus::variable<measurement<units::joule>> T;
+        calculus::variable<measurement<base::energy>> T;
         meta::for_<N>([&](auto i) constexpr {
-            T += 0.5 * mass * velocity[i] * velocity[i]; 
+            T += 0.5 * mass * math::op::square(velocity[i]); 
         });    
         return T; 
 
     } 
 
     template <size_t N> 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const std::array<calculus::variable<measurement<units::metre_per_second>>, N>& velocity, const measurement<units::kilogram>& mass) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const std::array<calculus::variable<measurement<base::velocity>>, N>& velocity, const measurement<base::mass>& mass) {
 
-        calculus::variable<measurement<units::joule>> T;
+        calculus::variable<measurement<base::energy>> T;
         meta::for_<N>([&](auto i) constexpr {
-            T += 0.5 * mass * velocity[i] * velocity[i]; 
+            T += 0.5 * mass * math::op::square(velocity[i]); 
         });    
         return T; 
 
     } 
 
     template <size_t N> 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const measurement<units::kilogram>& mass, const std::array<calculus::variable<measurement<units::kilogram_metre_per_second>>, N>& momentum) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const measurement<base::mass>& mass, const std::array<calculus::variable<measurement<base::momentum>>, N>& p) {
 
-        calculus::variable<measurement<units::joule>> T;
+        calculus::variable<measurement<base::energy>> T;
         meta::for_<N>([&](auto i) constexpr {
-            T += 0.5 * momentum[i] * momentum[i] / mass; 
+            T += 0.5 * math::op::square(p[i]) / mass; 
         });    
         return T; 
 
     } 
 
     template <size_t N> 
-    inline calculus::variable<measurement<units::joule>> kinetic_energy(const std::array<calculus::variable<measurement<units::kilogram_metre_per_second>>, N>& momentum, const measurement<units::kilogram>& mass) {
+    inline calculus::variable<measurement<base::energy>> kinetic_energy(const std::array<calculus::variable<measurement<base::momentum>>, N>& p, const measurement<base::mass>& mass) {
 
-        calculus::variable<measurement<units::joule>> T;
+        calculus::variable<measurement<base::energy>> T;
         meta::for_<N>([&](auto i) constexpr {
-            T += 0.5 * momentum[i] * momentum[i] / mass; 
+            T += 0.5 * math::op::square(p[i]) / mass; 
         });    
         return T; 
 

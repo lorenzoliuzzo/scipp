@@ -13,41 +13,30 @@
 
 using namespace scipp;
 
-using namespace tools; 
+using tools::print; 
 using namespace math; 
-using namespace math::differentials;    
+using namespace math::calculus;    
 
 
 int main() {
 
-    double x_val = 2.0;
-    double y_val = 3.0;
 
-    // Create independent variable nodes
-    ExprPtr<double> x = std::make_shared<IndependentVariableExpr<double>>(x_val);
-    ExprPtr<double> y = std::make_shared<IndependentVariableExpr<double>>(y_val);
+    variable<double> x = 9.0;
+    variable<double> y = 1.0;
+    variable<double> z = 3.0 * y + op::square(x); 
 
-    // Create dependent variable node with an expression
-    ExprPtr<double> z = std::make_shared<DependentVariableExpr<double>>(x * y);
+    print("x = ", x);
+    print("y = ", y);
+    print("z = x^2 + 3 * y -> ", z);
 
-    // Perform forward propagation
-    z->update();
+    std::tuple<variable<double>, variable<double>> der = derivatives(z, wrt(x, y));
+    auto dx = std::get<0>(der);
+    auto dy = std::get<1>(der);
+    print("dz/dx = ", dx);
+    print("dz/dy = ", dy);
 
-    // Print the computed value of z
-    std::cout << "z = " << z->val << std::endl;
-
-    // Perform backward propagation to compute gradients
-    double dz_dx = 0.0;
-    double dz_dy = 0.0;
-    z->bind_value(&dz_dx);
-    z->propagate(1.0);
-
-    z->bind_value(&dz_dy);
-    z->propagate(1.0);
-
-    // Print the gradients
-    std::cout << "dz/dx = " << dz_dx << std::endl;
-    std::cout << "dz/dy = " << dz_dy << std::endl;
+    auto [ddx] = derivatives(dx, wrt(x));
+    print("d^2z/dx^2 = ", ddx); // Error here: this gives zero because dx does not depend on x -> @todo derivativesx
 
     return 0;
 }

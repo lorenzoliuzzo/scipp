@@ -14,12 +14,12 @@
 
 using namespace scipp;
 
-using namespace tools; 
+using tools::print; 
 using namespace math; 
 using namespace math::calculus; 
-using namespace math::calculus::curves; 
 using namespace physics;
-using namespace physics::units; 
+using namespace physics::base; 
+using namespace physics::units::literals;
 
 
 // void plot_circle() { 
@@ -60,33 +60,21 @@ using namespace physics::units;
 int main() {
     
 
-    variable<measurement<metre>> x = 3.0;
-    std::array<variable<measurement<metre>>, 2> point, centre;
-
-    auto r = line(2.0, 1.0 * m, x);
-    auto par = parabola(1.0 / m, 0.0, 0.0 * m, x);
-
-    point = r();
-    print("x = ", point[0]);
-    print("y = ", point[1]);
+    variable<measurement<length>> rho = 1.0m;
     
-    auto [dydx] = derivatives(point[1], wrt(x)); 
-    print(dydx);
+    auto line = unary_function<measurement<length>, measurement<length>>([](auto& x) { return x; }, rho); 
+    auto I = interval(-10.0m, 10.0m);
+    auto gamma = curve(line, I);
+    print("y = ", gamma());
+    print("dy = ", gamma.gradient());
 
-    point = par();
-    print("x = ", point[0]);
-    print("y = ", point[1]);
-    
-    auto [dydx_] = derivativesx(point[1], wrt(x)); 
-    print(dydx_);
+    variable<measurement<angle>> theta = 0.0 * rad;
+    auto circle_x = unary_function<measurement<length>, measurement<angle>>([rho](auto& theta) { return rho * op::cos(theta); }, theta);
+    auto circle_y = unary_function<measurement<length>, measurement<angle>>([rho](auto& theta) { return rho * op::sin(theta); }, theta);
+    auto circle = curve(circle_x, circle_y, interval(0.0, 2.0 * std::numbers::pi));
 
-    // auto cir = circle(centre, 1.0 * m, x);
-    // point = cir();
-    // print("x", point[0]);
-    // print("y", point[1]);
 
-    // auto [dydx__] = derivatives(point[1], wrt(x)); 
-    // print(dydx__);
+
 
     return 0; 
 

@@ -78,9 +78,13 @@ namespace scipp::physics {
             /// @note The unit must be of the same base of the measurement
             template <typename UNIT_TYPE> 
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
-            constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept :
+            constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept {
 
-                value{std::forward<value_t>(val * UNIT_TYPE::mult)} {}
+                using prefix_t = typename UNIT_TYPE::prefix_t;
+                constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+                this->value = std::forward<value_t>(val * factor);
+                
+            }
 
 
             /// @brief Construct a measurement from another measurement
@@ -232,8 +236,6 @@ namespace scipp::physics {
 
     }; // struct measurement
 
-
-    using double_m = measurement<scalar_base, double>; 
 
     // =============================================
     // measurement template guidelines

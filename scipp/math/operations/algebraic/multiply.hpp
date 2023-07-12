@@ -223,11 +223,13 @@ namespace scipp::math {
             requires (is_number_v<VALUE_T> && physics::is_unit_v<UNIT_T>)
         struct multiply_impl<VALUE_T, UNIT_T> { 
             
-            using result_t = physics::measurement<typename UNIT_T::base_t, decltype(VALUE_T{} * UNIT_T::mult)>;
+            using result_t = physics::measurement<typename UNIT_T::base_t, VALUE_T>;
 
             inline static constexpr result_t f(const VALUE_T& x, const UNIT_T&) noexcept {
 
-                return x * UNIT_T::mult;
+                using prefix_t = typename UNIT_T::prefix_t;
+                constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+                return x * factor;
 
             }       
 

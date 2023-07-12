@@ -107,7 +107,7 @@ namespace scipp::tools {
     }
 
     /// @brief Print a measurement with a fixed number of digits
-    template <bool NEWLINE = true, typename PREFIX_TYPE, typename MEAS_TYPE>
+    template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
         requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
     inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
@@ -128,16 +128,45 @@ namespace scipp::tools {
 
     }
 
+
+    /// @brief Print the measurement with a specific number of digits
+    template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
+        requires (physics::is_prefix_v<PREFIX_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
+    inline static constexpr void print(const MEAS_TYPE& other) noexcept {
+
+        constexpr int digits = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
+        const auto rounded_value = std::round(other.value * std::pow(10.0, digits)) / std::pow(10.0, digits);
+        std::cout << rounded_value << ' ' << MEAS_TYPE::base_t::to_string(); 
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
+        
+    }
+
+
+    /// @brief Print the measurement with a specific number of digits and a description
+    template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
+        requires (physics::is_prefix_v<PREFIX_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
+    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other) noexcept {
+
+        constexpr int digits = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
+        const auto rounded_value = std::round(other.value * std::pow(10.0, digits)) / std::pow(10.0, digits);
+        std::cout << description << rounded_value << ' ' << MEAS_TYPE::base_t::to_string(); 
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
+
+    }
+
     
     /// @brief Print the measurement with a specific unit of measure 
     /// @note The unit must be of the same base of the measurement
-    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
-        requires (physics::is_measurement_v<MEAS_TYPE> && 
-                  physics::is_unit_v<UNIT_TYPE> && 
+    template <typename UNIT_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
+        requires (physics::is_unit_v<UNIT_TYPE> && physics::is_measurement_v<MEAS_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
-    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
+    inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
-        std::cout << other.value / static_cast<double>(UNIT_TYPE::mult) << ' ' << UNIT_TYPE::to_string(); 
+        using prefix_t = typename UNIT_TYPE::prefix_t;
+        constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+        std::cout << other.value / factor << ' ' << UNIT_TYPE::to_string(); 
         if constexpr (NEWLINE)
             std::cout << '\n'; 
 
@@ -146,13 +175,46 @@ namespace scipp::tools {
 
     /// @brief Print the measurement with a specific unit of measure and a description
     /// @note The unit must be of the same base of the measurement
-    template <bool NEWLINE = true, typename MEAS_TYPE, typename UNIT_TYPE>
-        requires (physics::is_measurement_v<MEAS_TYPE> && 
-                  physics::is_unit_v<UNIT_TYPE> && 
+    template <typename UNIT_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
+        requires (physics::is_unit_v<UNIT_TYPE> && physics::is_measurement_v<MEAS_TYPE> && 
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
+    inline static constexpr void print(const std::string& description, const MEAS_TYPE& other) noexcept {
+
+        using prefix_t = typename UNIT_TYPE::prefix_t;
+        constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+        std::cout << description << other / factor; 
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
+
+    }
+
+    
+    /// @brief Print the measurement with a specific unit of measure 
+    /// @note The unit must be of the same base of the measurement
+    template <typename MEAS_TYPE, typename UNIT_TYPE, bool NEWLINE = true>
+        requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_unit_v<UNIT_TYPE> && 
+                  physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
+    inline static constexpr void print(const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
+
+        using prefix_t = typename UNIT_TYPE::prefix_t;
+        constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+        std::cout << other.value / factor << ' ' << UNIT_TYPE::to_string(); 
+        if constexpr (NEWLINE)
+            std::cout << '\n'; 
+
+    }
+
+
+    /// @brief Print the measurement with a specific unit of measure and a description
+    /// @note The unit must be of the same base of the measurement
+    template <typename MEAS_TYPE, typename UNIT_TYPE, bool NEWLINE = true>
+        requires (physics::is_measurement_v<MEAS_TYPE> && physics::is_unit_v<UNIT_TYPE> && 
                   physics::is_same_base_v<typename MEAS_TYPE::base_t, typename UNIT_TYPE::base_t>)
     inline static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
-        std::cout << description << other / static_cast<double>(UNIT_TYPE::mult); 
+        using prefix_t = typename UNIT_TYPE::prefix_t;
+        constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+        std::cout << description << other / factor;
         if constexpr (NEWLINE)
             std::cout << '\n'; 
 
@@ -230,8 +292,10 @@ namespace scipp::tools {
     static constexpr void print(const std::string& description, const MEAS_TYPE& other, const UNIT_TYPE&) noexcept {
 
         std::cout << description; 
+        using prefix_t = typename UNIT_TYPE::prefix_t;
+        constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
 
-        const MEAS_TYPE meas = other / UNIT_TYPE::mult;
+        const MEAS_TYPE meas = other / factor;
         const double abs_value = std::fabs(meas.value);
 
         // determine number of digits before decimal point in value

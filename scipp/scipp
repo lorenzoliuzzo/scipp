@@ -123,7 +123,7 @@
             #include "physics/measurements/unit.hpp" 
         
             #include "physics/measurements/measurement.hpp"
-            #include "physics/measurements/umeasurement.hpp"
+            // #include "physics/measurements/umeasurement.hpp"
             
             #include "physics/measurements/types/base_quantities.hpp"
             #include "physics/measurements/types/units.hpp" 
@@ -133,14 +133,14 @@
             #include "math/calculus/norm.hpp"
             #include "math/calculus/integrals/curvilinear.hpp"
             #include "math/calculus/interval.hpp"
-            #include "math/calculus/curve.hpp"
+            // #include "math/calculus/curve.hpp"   
             #include "math/calculus/taylor_series.hpp"
 
             #include "physics/material_point.hpp"
-            #include "physics/kinetic_energy.hpp"
-            #include "physics/potential_energy.hpp"
-            #include "physics/lagrangian.hpp"
-            #include "physics/hamiltonian.hpp"
+            #include "physics/mechanics/kinetic_energy.hpp"
+            #include "physics/mechanics/potential_energy.hpp"
+            #include "physics/mechanics/lagrangian.hpp"
+            #include "physics/mechanics/hamiltonian.hpp"
             
 
         /// ---------------------------------------------------------------

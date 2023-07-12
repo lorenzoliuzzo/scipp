@@ -1,8 +1,8 @@
-add_executable(functions functions.cpp)
-target_link_libraries(functions ${PROJECT_NAME})
+# add_executable(functions functions.cpp)
+# target_link_libraries(functions ${PROJECT_NAME})
 
-add_executable(curvilinear curvilinear.cpp)
-target_link_libraries(curvilinear ${PROJECT_NAME})
+# add_executable(curvilinear curvilinear.cpp)
+# target_link_libraries(curvilinear ${PROJECT_NAME})
 
 
 # add_executable(dual dual.cpp)

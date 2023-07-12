@@ -17,11 +17,17 @@ namespace scipp::physics {
     namespace units {
 
 
-        using metre = unit<base::length, std::ratio<1>>; ///< metre unit
-        inline static constexpr metre m; ///< m; unit
+        using metre = unit<base::length, std::ratio<1>>;    ///< metre unit
+        inline static constexpr metre m;                    ///< m; unit
 
-        using kilometre = unit<base::length, std::kilo>; ///< kilometre unit
-        inline static constexpr kilometre km; ///< Km unit
+        using kilometre = unit<base::length, std::kilo>;    ///< kilometre unit
+        inline static constexpr kilometre km;               ///< Km unit
+
+        using decimetre = unit<base::length, std::deci>;    ///< decimetre unit
+        inline static constexpr decimetre dm;               ///< dm unit
+
+        using centimetre = unit<base::length, std::centi>;  ///< centimetre unit
+        inline static constexpr centimetre cm;              ///< cm unit
 
         using hectometre = unit<base::length, std::hecto>; ///< hectometre unit
         inline static constexpr hectometre hm; ///< hm unit
@@ -29,11 +35,6 @@ namespace scipp::physics {
         using decametre = unit<base::length, std::deca>; ///< decametre unit
         inline static constexpr decametre dam; ///< dam unit
 
-        using decimetre = unit<base::length, std::deci>; ///< decimetre unit
-        inline static constexpr decimetre dm; ///< dm unit
-
-        using centimetre = unit<base::length, std::centi>; 
-        inline static constexpr centimetre cm; ///< cm unit
 
         using millimetre = unit<base::length, std::milli>; ///< millimetre unit
         inline static constexpr millimetre mm; ///< mm unit

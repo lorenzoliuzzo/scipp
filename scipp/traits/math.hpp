@@ -260,14 +260,14 @@ namespace scipp::math {
         inline static constexpr bool is_interval_v = is_interval<T>::value;
 
 
-        template <typename T, typename... ARGs>
+        template <typename Y, typename X>
         struct curve; 
 
         template <typename T>
         struct is_curve : std::false_type {};
 
-        template <typename T, typename... ARGs>
-        struct is_curve<curve<T, ARGs...>> : std::true_type {};
+        template <typename Y, typename X>
+        struct is_curve<curve<Y, X>> : std::true_type {};
 
         template <typename T>
         inline static constexpr bool is_curve_v = is_curve<typename T::curve_t>::value;

@@ -59,13 +59,6 @@ namespace scipp::physics {
 
 
         // =============================================
-        // static members
-        // =============================================
-
-            inline static constexpr double mult = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
-
-
-        // =============================================
         // operators
         // =============================================
 
@@ -85,10 +78,11 @@ namespace scipp::physics {
             static constexpr std::string to_string() noexcept {
 
                 std::stringstream ss;
-                auto prefix = std::lower_bound(prefix_map.begin(), prefix_map.end(), mult,
+                constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
+                constexpr auto prefix = std::lower_bound(prefix_map.begin(), prefix_map.end(), factor,
                     [](const auto& p, const auto& value) { return p.first < value; });
                 
-                if (prefix == prefix_map.end())
+                if constexpr (prefix == prefix_map.end())
                     ss << base_t::to_string();
                 else
                     ss << "[" << prefix->second << "]" << base_t::to_string();

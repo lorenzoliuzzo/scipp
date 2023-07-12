@@ -10,4 +10,4 @@ author_profile: true
 {:toc}
 
 # Physics namespace
-Brief description of the scipp::physics namespace and its structure.
+Brief description of the `scipp::physics namespace` and its structure.

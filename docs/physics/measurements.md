@@ -1,51 +1,79 @@
 ---
-title: Measurements
+title: Measurements and units of measure
 layout: default
 permalink: /physics/measurements/
 parent: Physics namespace
 author_profile: true
 ---
 
-{:toc}
-
 # Measurements and units of measure
-Brief description of the measurement structure. 
-Please note that all the tools that are here presented are defined inside the scipp::physics namespace.
+Please note that all the tools that are here presented are defined inside the `scipp::physics namespace`.
 
 ## Base quantity
-The base_quantity struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units (SI) - length, time, mass, temperature, electric current, substance amount, and luminous intensity, as template parameters:
+The `base_quantity` struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units (SI) - `length`, `time`, `mass`, `temperature`, `electric_current`, `substance_amount`, and `luminous_intensity`, as template parameters:
 ```cpp
 template <int LENGTH, int TIME, int MASS, int TEMPERATURE, 
           int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY>
 struct base_quantity {
 
-    // Implementation details...
+    //< array of the literals of the base quantities
+    static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; 
+
+    /// @brief Return the string representation of the base_quantity
+    static constexpr std::string_view to_string() noexcept {
+
+        std::stringstream ss;
+        bool first_unit = true;
+
+        auto print_unit = [&](int power, std::string_view unit) constexpr {
+
+            if (power != 0) {
+
+                if (!first_unit)
+                    ss << ' ';
+                else
+                    first_unit = false;
+
+                ss << unit;
+
+                if (power != 1)
+                    ss << '^' << power;
+
+            }
+
+        };
+
+        print_unit(LENGTH, base_literals[0]);
+        print_unit(TIME, base_literals[1]);
+        print_unit(MASS, base_literals[2]);
+        print_unit(TEMPERATURE, base_literals[3]);
+        print_unit(ELETTRIC_CURRENT, base_literals[4]);
+        print_unit(SUBSTANCE_AMOUNT, base_literals[5]);
+        print_unit(LUMINOUS_INTENSITY, base_literals[6]);
+
+        return ss.str();
+
+    }
 
 };
 ```
 
 The powers of the base quantities can be accessed using the corresponding aliases.
-It is possible to define custom base_quantities using the constuctor providing the powers, or just by combining existing types using the basic operations, defined inside the scipp::math::op namespace, such as multiplication, division, and exponentiation.
-However, the principal base quantities are defined in the scipp::physics::base namespace and should be used whenever possible.
+It is possible to define custom base_quantities using the constuctor providing the powers, or just by combining existing types using the basic operations, defined inside the `scipp::math::op` namespace, such as multiplication, division, and exponentiation.
+However, the principal base quantities are defined in the `scipp::physics::base` namespace and should be used whenever possible.
 The base quantities are not meant to be used directly, but rather as template parameters for the unit and measurement structs.
 
+Some other useful base_quantity aliases are defined in the `scipp::physics::base` namespace:
 ```cpp
 namespace base {
 
-    using length = base_quantity<1, 0, 0, 0, 0, 0, 0>;
-    using time = base_quantity<0, 1, 0, 0, 0, 0, 0>;
-    using mass = base_quantity<0, 0, 1, 0, 0, 0, 0>;
-    using temperature = base_quantity<0, 0, 0, 1, 0, 0, 0>;
-    using electric_current = base_quantity<0, 0, 0, 0, 1, 0, 0>;
-    using substance_amount = base_quantity<0, 0, 0, 0, 0, 1, 0>;
-    using luminous_intensity = base_quantity<0, 0, 0, 0, 0, 0, 1>;
-
-}
-```
-
-Some other useful derived base_quantity aliases are defined in the scipp::physics::base namespace:
-```cpp
-namespace base {
+    using length = base_quantity<1, 0, 0, 0, 0, 0, 0>;                      ///< metre base_quantity
+    using time = base_quantity<0, 1, 0, 0, 0, 0, 0>;                        ///< second base_quantity                   
+    using mass = base_quantity<0, 0, 1, 0, 0, 0, 0>;                        ///< kilogram base_quantity
+    using temperature = base_quantity<0, 0, 0, 1, 0, 0, 0>;                 ///< kelvin base_quantity
+    using electric_current = base_quantity<0, 0, 0, 0, 1, 0, 0>;            ///< ampere base_quantity
+    using substance_amount = base_quantity<0, 0, 0, 0, 0, 1, 0>;            ///< mole base_quantity
+    using luminous_intensity = base_quantity<0, 0, 0, 0, 0, 0, 1>;          ///< candela base_quantity
 
     using angle = math::op::divide_t<length, length>;                        ///< radian base_quantity
     using area = math::op::multiply_t<length, length>;                       ///< square_metre base_quantity
@@ -72,7 +100,7 @@ namespace base {
 ```
 
 ## Unit of measure
-The unit struct represents a unit of measurement by combining a base_quantity with an std::ratio prefix. 
+The `unit` struct represents a unit of measurement by combining a `base_quantity` with an `std::ratio` prefix. 
 ```cpp
 template <typename BASE_T, typename PREFIX_T = std::ratio<1>> 
     requires (is_base_v<BASE_T> && is_prefix_v<PREFIX_T>)  
@@ -101,7 +129,7 @@ struct unit {
 };
 ```
 
-In the namespace units are defined the most common units of measure: 
+In the `units` namespace are defined the most common units of measure: 
 ```cpp
 namespace units {
 
@@ -157,10 +185,13 @@ namespace units {
 ```
 
 ## Measurement
-The measurement struct represents a physical measurement as a value with a dimensional-aware template meta-structure. 
-The value type is defaulted to double, but it can be changed to any type that supports the basic arithmetic operations without loss of precision and overhead. 
+The `measurement` struct represents a physical measurement as a value with a `dimensional-aware template meta-structure`. 
+The value type is defaulted to double, but it can be changed to any type that supports the basic arithmetic operations. 
+Operations between measurements with different units are allowed and respect the dimensional analysis rules.
+Using the measurement struct, it is possible to perform dimensional analysis `at compile-time without loss of precision` and overhead. Writing physical accurate code is now possible and easy!
 ```cpp
 template <typename BASE_T, typename VALUE_TYPE = double>
+    requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
 struct measurement {
 
     using base_t = BASE_TYPE;   ///< The base of the measurement
@@ -184,6 +215,7 @@ struct measurement {
     constexpr measurement(value_t&& val) noexcept : value{std::move(val)} {}
 
     /// @brief Construct a measurement from a scalar value and an unit
+    /// @note The unit must be of the same base of the measurement and the value is immediatly converted to the base unit
     template <typename UNIT_TYPE> 
         requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
     constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept {
@@ -195,7 +227,7 @@ struct measurement {
     }
 
     /// @brief Convert the measurement to a scalar value if it is a scalar base measurement
-    constexpr operator value_t() const requires (is_scalar_base_v<base_t>) { 
+    constexpr operator value_t() const requires is_scalar_base_v<base_t> { 
         return this->value; 
     }
 
@@ -212,7 +244,23 @@ struct measurement {
 };
 ```
 
-## Usage
+
+In the units namespace there is also defined a macro for costructing measurements from units using literal operators:
+```cpp
+namespace units::literals {
+
+
+    /// @brief Define a literal operator for the given unit
+    #define UNIT_LITERALS(unit)                                                    \
+        inline constexpr auto operator"" unit(long double value) noexcept {        \
+            return static_cast<double>(value) * units::unit;                       \
+        }                                                                           
+
+
+}
+```
+
+### Usage
 In the following example we show how to create measurements and how to use them.
 ```cpp
     // Creating measurements with explicit value_type and base_quantity

@@ -23,22 +23,23 @@ namespace scipp::physics {
         using _t = base_quantity<LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY>; //< type of the base_quantity
 
 
-        static constexpr int length = LENGTH; //< power of length
+        static constexpr int length = LENGTH;                           //< power of length
         
-        static constexpr int time = TIME; //< power of time 
+        static constexpr int time = TIME;                               //< power of time 
         
-        static constexpr int mass = MASS; //< power of mass 
+        static constexpr int mass = MASS;                               //< power of mass 
         
-        static constexpr int temperature = TEMPERATURE; //< power of temperature 
+        static constexpr int temperature = TEMPERATURE;                 //< power of temperature 
         
-        static constexpr int elettric_current = ELETTRIC_CURRENT; //< power of elettric_current 
+        static constexpr int elettric_current = ELETTRIC_CURRENT;       //< power of elettric_current 
         
-        static constexpr int substance_amount = SUBSTANCE_AMOUNT; //< power of substance_amount 
+        static constexpr int substance_amount = SUBSTANCE_AMOUNT;       //< power of substance_amount 
 
-        static constexpr int luminous_intensity = LUMINOUS_INTENSITY; //< power of luminous intensity 
+        static constexpr int luminous_intensity = LUMINOUS_INTENSITY;   //< power of luminous intensity 
         
 
-        static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
+        //< array of the literals of the base quantities
+        static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; 
 
         
         /// @brief Returns the string representation of the base_quantity

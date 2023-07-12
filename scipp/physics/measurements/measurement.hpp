@@ -58,24 +58,19 @@ namespace scipp::physics {
                 value{value_t{}} {}
 
 
-
             /// @brief Construct a measurement from a scalar value
-            /// @param val: The value of the measurement
             constexpr measurement(const value_t& val) noexcept :
 
                 value{val} {}
 
             /// @brief Construct a measurement from a scalar value
-            /// @param val: The value of the measurement
             constexpr measurement(value_t&& val) noexcept :
 
                 value{std::move(val)} {}
 
 
             /// @brief Construct a measurement from a scalar value and an unit
-            /// @param val: The value of the measurement
-            /// @param UNIT_TYPE: The unit of the measurement
-            /// @note The unit must be of the same base of the measurement
+            /// @note The unit must be of the same base of the measurement and the value is immediatly converted to the base unit
             template <typename UNIT_TYPE> 
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
             constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept {
@@ -88,14 +83,12 @@ namespace scipp::physics {
 
 
             /// @brief Construct a measurement from another measurement
-            /// @param meas: The measurement to move
             constexpr measurement(const measurement& other) noexcept :
 
                 value{other.value} {}
 
 
             /// @brief Construct a measurement from another measurement
-            /// @param meas: The measurement to move
             constexpr measurement(measurement&& other) noexcept :
 
                 value{std::move(other.value)} {}
@@ -120,7 +113,7 @@ namespace scipp::physics {
         // ==============================================
 
             constexpr operator value_t() const noexcept 
-                requires (is_scalar_base_v<base_t>) { 
+                requires is_scalar_base_v<base_t> { 
                 
                 return this->value; 
                 

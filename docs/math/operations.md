@@ -8,7 +8,7 @@ author_profile: true
 
 # Operations namespace
 Brief description of the scipp::math operations among the different types declared on the library, i.e. numbers, measurements, vectors, matrices, etc.
-All the operations are defined in the `scipp::math::op` namespace and are implemented as functions calling the corresponding methods of the types involved in the operation. For example, the addition operation for numbers is implemented as a function calling the `add` method of the `Number` class. 
+All the operations are defined in the `scipp::math::op` namespace and are implemented as functions calling the corresponding methods of the types involved in the operation. For example, the addition operation for numbers is implemented as a function calling the `add` method of the `number` class. 
 In this way, the operations are defined in a single place and the implementation of the methods is hidden from the user. As a consequence, the user can use the operations without knowing the implementation details of the types involved in the operation.
 Another thing that adds value to this approach is that with a single operator overload we can define the operation for different types. 
 For example, the addition operation for numbers is defined in a single function that can be used to add two numbers, two measurements, two complex numbers, etc.

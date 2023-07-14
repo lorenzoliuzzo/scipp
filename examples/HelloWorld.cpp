@@ -18,7 +18,6 @@ using tools::print;
 int main() {
 
     print("Hello World!"); 
-    print("You are using scipp version: ", scipp::version);
     return 0; 
 
 }

@@ -89,6 +89,19 @@ namespace scipp::math {
         
             }
 
+            constexpr size_t steps(value_t step) const noexcept {
+                    
+                return op::abs((this->end - this->start) / step); 
+        
+            }
+
+
+            constexpr value_t length() const noexcept {
+
+                return op::abs(this->end - this->start);
+
+            }
+
 
             constexpr bool contains(const value_t& x) const noexcept {
 

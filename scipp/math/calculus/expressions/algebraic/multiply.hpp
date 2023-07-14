@@ -1,8 +1,8 @@
 /**
- * @file    math/calculus/expressions/multiply.hpp
+ * @file    scipp/math/calculus/expressions/algebraic/multiply.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-07-02
+ * @date    2023-07-14
  * 
  * @copyright Copyright (c) 2023
  */
@@ -33,17 +33,6 @@ namespace scipp::math {
 
             }
 
-
-            constexpr void propagatex(std::shared_ptr<void> ) override {
-
-                // static_assert(false, "diocan");
-                // auto wprime_v = std::static_pointer_cast<expr_ptr<T>>(wprime);
-                // auto rval = wprime_v * r->val;
-                // auto lval = wprime_v * l->val;
-                // l->propagatex(wprime * r->val); // (l * r)'l = w' * r
-                // r->propagatex(std::make_shared<decltype(lval)>(lval)); // (l * r)'r = l * w'
-
-            }
 
             constexpr void update() override {
 

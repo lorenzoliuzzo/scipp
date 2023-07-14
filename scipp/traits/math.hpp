@@ -182,6 +182,27 @@ namespace scipp::math {
         inline static constexpr bool is_expr_ptr_v = is_expr_ptr<T>::value; 
 
 
+        template <typename T> 
+        struct constant_expr; 
+
+        template <typename T> 
+        inline constexpr expr_ptr<T> constant(const T& val) { 
+            
+            return std::make_shared<constant_expr<T>>(val); 
+            
+        }
+
+
+        template <typename T> 
+        struct variable_expr; 
+
+        template <typename T> 
+        struct independent_variable_expr; 
+
+        template <typename T> 
+        struct dependent_variable_expr; 
+
+
         template <typename VALUE_T>
         struct variable; 
 
@@ -198,38 +219,35 @@ namespace scipp::math {
         inline static constexpr bool are_variables_v = std::conjunction_v<is_variable<Ts>...>;
 
 
-        // template <typename T>
-        // struct variable_value_t; 
+        template <typename T>
+            requires std::is_arithmetic_v<T>
+        constexpr T expr_value(const T &t) {
 
-        // template <typename VALUE_T>
-        // struct variable_value_t<variable<VALUE_T>> { 
-            
-        //     using type = VALUE_T; 
-                    
-        // };
+            return t;
 
-        // template <typename T>
-        // struct variable_value_t<expr_ptr<T>> { 
-            
-        //     using type = typename variable_value_t<T>::type; 
-        
-        // };
+        }
 
         template <typename T>
-        struct variable_order { 
+        constexpr T expr_value(const expr_ptr<T> &t) {
+
+            return t->val;
+
+        }
+
+        template <typename T>
+        constexpr T expr_value(const variable<T> &t) {
+
+            return t.expr->val;
             
-            constexpr static auto value = 0; 
+        }
+
+        template <typename T>
+        inline constexpr auto val(const T &t) {
+
+            return expr_value(t);
+
+        }
         
-        };
-
-        template <typename VALUE_T>
-        struct variable_order<variable<VALUE_T>> { 
-            
-            constexpr static auto value = 1 + variable_order<VALUE_T>::value; 
-        
-        };
-
-
 
         template <typename RANGE, typename... DOMAIN>
         struct function;
@@ -279,30 +297,82 @@ namespace scipp::math {
     namespace op {
 
 
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        struct add_impl;
+        template <typename T1, typename T2>
+        struct equal_impl;
 
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using add_t = typename add_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
-
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto add(const ARG_TYPE1& x, const ARG_TYPE2& y) {
+        template <typename T1, typename T2>
+        inline static constexpr bool equal(const T1& x, const T2& y) noexcept {
             
-            return add_impl<ARG_TYPE1, ARG_TYPE2>::f(x, y); 
+            return equal_impl<T1, T2>::f(x, y); 
+
+        }
+
+
+        template <typename T1, typename T2>
+        struct greater_impl;
+
+        template <typename T1, typename T2>
+        inline static constexpr bool greater(const T1& x, const T2& y) noexcept {
+            
+            return greater_impl<T1, T2>::f(x, y); 
+
+        }
+
+
+        template <typename T1, typename T2>
+        struct less_impl;
+
+        template <typename T1, typename T2>
+        inline static constexpr bool less(const T1& x, const T2& y) noexcept {
+            
+            return less_impl<T1, T2>::f(x, y); 
+
+        }
+
+
+        template <typename T1, typename T2>
+        struct greater_equal_impl;
+
+        template <typename T1, typename T2>
+        inline static constexpr bool greater_equal(const T1& x, const T2& y) noexcept {
+            
+            return greater_equal_impl<T1, T2>::f(x, y); 
+
+        }
+
+
+        template <typename T1, typename T2>
+        struct less_equal_impl;
+
+        template <typename T1, typename T2>
+        inline static constexpr bool less_equal(const T1& x, const T2& y) noexcept {
+            
+            return less_equal_impl<T1, T2>::f(x, y); 
 
         }
 
 
         template <typename T>
-        struct negate_impl;
+        struct negate_impl; 
 
         template <typename T>
-        using negate_t = typename negate_impl<T>::result_t;  
-
-        template <typename ARG_TYPE>
-        inline static constexpr auto neg(const ARG_TYPE& x) noexcept {
+        inline static constexpr auto neg(const T& x) noexcept {
             
-            return negate_impl<ARG_TYPE>::f(x); 
+            return negate_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T1, typename T2>
+        struct add_impl;
+
+        template <typename T1, typename T2>
+        using add_t = typename add_impl<T1, T2>::result_t;
+
+        template <typename T1, typename T2>
+        inline static constexpr auto add(const T1& x, const T2& y) noexcept {
+            
+            return add_impl<T1, T2>::f(x, y); 
 
         }
 
@@ -315,133 +385,147 @@ namespace scipp::math {
         }
 
 
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        struct multiply_impl;       
-
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using multiply_t = typename multiply_impl<std::decay_t<ARG_TYPE1>, std::decay_t<ARG_TYPE2>>::result_t;
-    
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto mult(const ARG_TYPE1& x, const ARG_TYPE2& y) {
-            
-            return multiply_impl<ARG_TYPE1, ARG_TYPE2>::f(x, y); 
-
-        }
-
-
-        template <int ARG_TYPE1, typename ARG_TYPE2>
-        struct power_impl; 
-
-        template <int ARG_TYPE1, typename ARG_TYPE2>
-        using power_t = typename power_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
-
-        template <int ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto pow(const ARG_TYPE2& x) {
-            
-            return power_impl<ARG_TYPE1, ARG_TYPE2>::f(x); 
-
-        }
-
-        template <typename ARG_TYPE>
-        inline static constexpr auto square(const ARG_TYPE& x) {
-            
-            return pow<2>(x); 
-
-        }
-
-        template <typename ARG_TYPE>
-        inline static constexpr auto cube(const ARG_TYPE& x) {
-            
-            return pow<3>(x); 
-
-        }
-
-
-        template <typename T>
-        struct modulo_impl; 
-
-        template <typename T>
-        using modulo_t = typename modulo_impl<T>::result_t;
-
-        template <typename ARG_TYPE>
-        inline static constexpr auto abs(const ARG_TYPE& x) {
-            
-            return modulo_impl<ARG_TYPE>::f(x); 
-
-        }
-
-
         template <typename T>
         struct invert_impl;
 
         template <typename T>
         using invert_t = typename invert_impl<T>::result_t;  
 
-        template <typename ARG_TYPE>
-        inline static constexpr auto inv(const ARG_TYPE& x) {
+        template <typename T>
+        inline static constexpr auto inv(const T& x) {
             
-            return invert_impl<ARG_TYPE>::f(x); 
+            return invert_impl<T>::f(x); 
 
         }
 
 
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        using divide_t = typename multiply_impl<ARG_TYPE1, invert_t<ARG_TYPE2>>::result_t;
+        template <typename T1, typename T2>
+        struct multiply_impl;       
+
+        template <typename T1, typename T2>
+        using multiply_t = typename multiply_impl<T1, T2>::result_t;
     
-        template <typename ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto div(const ARG_TYPE1& x, const ARG_TYPE2& y) {
+        template <typename T1, typename T2>
+        inline static constexpr auto mult(const T1& x, const T2& y) noexcept {
             
-            return multiply_impl<ARG_TYPE1, invert_t<ARG_TYPE2>>::f(x, invert_impl<ARG_TYPE2>::f(y)); 
+            return multiply_impl<T1, T2>::f(x, y); 
 
         }
 
 
-        template <size_t ARG_TYPE1, typename ARG_TYPE2>
+        template <typename T1, typename T2>
+        using divide_t = typename multiply_impl<T1, invert_t<T2>>::result_t;
+    
+        template <typename T1, typename T2>
+        inline static constexpr auto div(const T1& x, const T2& y) {
+            
+            return multiply_impl<T1, invert_t<T2>>::f(x, invert_impl<T2>::f(y)); 
+
+        }
+
+
+        template <int T1, typename T2>
+        struct power_impl; 
+
+        template <int T1, typename T2>
+        using power_t = typename power_impl<T1, T2>::result_t;
+
+        template <int T1, typename T2>
+        inline static constexpr auto pow(const T2& x) noexcept {
+            
+            return power_impl<T1, T2>::f(x); 
+
+        }
+
+        inline static constexpr auto square(const auto& x) noexcept {
+            
+            return pow<2>(x); 
+
+        }
+
+        inline static constexpr auto cube(const auto& x) noexcept {
+            
+            return pow<3>(x); 
+
+        }
+
+
+        template <size_t T1, typename T2>
         struct root_impl; 
 
-        template <size_t ARG_TYPE1, typename ARG_TYPE2>
-        using root_t = typename root_impl<ARG_TYPE1, ARG_TYPE2>::result_t;
+        template <size_t T1, typename T2>
+        using root_t = typename root_impl<T1, T2>::result_t;
 
-        template <size_t ARG_TYPE1, typename ARG_TYPE2>
-        inline static constexpr auto root(const ARG_TYPE2& x) {
+        template <size_t T1, typename T2>
+        inline static constexpr auto root(const T2& x) {
             
-            return root_impl<ARG_TYPE1, ARG_TYPE2>::f(x); 
+            return root_impl<T1, T2>::f(x); 
 
         }
 
-        template <typename T> 
-        inline static constexpr auto sqrt(const T& x) {
+        inline static constexpr auto sqrt(const auto& x) {
             
             return root<2>(x); 
 
         }
 
-        template <typename T>
-        inline static constexpr auto cbrt(const T& x) {
+        inline static constexpr auto cbrt(const auto& x) {
             
             return root<3>(x); 
 
         }
 
-        
+
+        inline static constexpr auto hypot(const auto& x, const auto& y) noexcept {
+            
+            return sqrt(square(x) + square(y)); 
+
+        }
+
+
+        template <typename T>
+        struct sign_impl; 
+
+        template <typename T>
+        inline static constexpr auto sign(const T& x) noexcept {
+            
+            return sign_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct absolute_impl; 
+
+        template <typename T>
+        using absolute_t = typename absolute_impl<T>::result_t;
+
+        template <typename T>
+        inline static constexpr auto abs(const T& x) noexcept {
+            
+            return absolute_impl<T>::f(x); 
+
+        }
+
+
         template <typename T>
         struct exponential_impl;
 
         template <typename T>
-        inline static constexpr auto exp(const T& x) noexcept {  
-
-            return exponential_impl<T>::f(x);
+        inline static constexpr auto exp(const T& x) noexcept {
+            
+            return exponential_impl<T>::f(x); 
 
         }
 
 
         template <typename T>
         struct logarithm_impl;
-        
+
         template <typename T>
         inline static constexpr auto log(const T& x) {
-
-            return logarithm_impl<T>::f(x);
+            
+            return logarithm_impl<T>::f(x); 
 
         }
 
@@ -449,20 +533,10 @@ namespace scipp::math {
         template <typename T>
         struct sine_impl;
 
-        template <typename T>   
-        inline static constexpr auto sin(const T& x) {
-
-            return sine_impl<T>::f(x); 
-
-        }
-
         template <typename T>
-        struct arcsine_impl;
-
-        template <typename T>   
-        inline static constexpr auto asin(const T& x) {
-
-            return arcsine_impl<T>::f(x); 
+        inline static constexpr auto sin(const T& x) noexcept {
+            
+            return sine_impl<T>::f(x); 
 
         }
 
@@ -470,114 +544,31 @@ namespace scipp::math {
         template <typename T>
         struct cosine_impl;
 
-        template <typename T>   
-        inline static constexpr auto cos(const T& x) {
-
+        template <typename T>
+        inline static constexpr auto cos(const T& x) noexcept {
+            
             return cosine_impl<T>::f(x); 
 
         }
-
+        
         template <typename T>
-        struct arccosine_impl;
-
-        template <typename T>   
-        inline static constexpr auto acos(const T& x) {
-
-            return arccosine_impl<T>::f(x); 
-
-        }
-
-
+        struct tangent_impl; 
+        
         template <typename T>
-        struct tangent_impl;
-
-        template <typename T>   
-        inline static constexpr auto tan(const T& x) {
-
+        inline static constexpr auto tan(const T& x) noexcept {
+            
             return tangent_impl<T>::f(x); 
 
         }
 
-        template <typename T>
-        struct arctangent_impl;
-
-        template <typename T>   
-        inline static constexpr auto atan(const T& x) {
-
-            return arctangent_impl<T>::f(x); 
-
-        }
 
         template <typename T>
-        struct arctangent2_impl;
-
-        template <typename T>   
-        inline static constexpr auto atan(const T& x, const T& y) {
-
-            return arctangent2_impl<T>::f(x, y); 
-
-        }
-
+        struct secant_impl;
 
         template <typename T>
-        struct sine_hyp_impl;
-
-        template <typename T>
-        inline static constexpr T sinh(const T& x) noexcept {
+        inline static constexpr auto sec(const T& x) noexcept {
             
-            return sine_hyp_impl<T>::f(x);
-
-        }
-
-        template <typename T>
-        struct arcsine_hyp_impl;
-
-        template <typename T>
-        inline static constexpr T asinh(const T& x) noexcept {
-
-            return arcsine_hyp_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        struct cosine_hyp_impl; 
-
-        template <typename T>
-        inline static constexpr T cosh(const T& x) noexcept {
-            
-            return cosine_hyp_impl<T>::f(x);
-
-        }
-
-        template <typename T>
-        struct arccosine_hyp_impl; 
-
-        template <typename T>
-        inline static constexpr T acosh(const T& x) noexcept {
-            
-            return arccosine_hyp_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        struct tangent_hyp_impl;
-
-        template <typename T>
-        inline static constexpr T tanh(const T& x) noexcept {
-            
-            return tangent_hyp_impl<T>::f(x);
-
-        }
-
-        template <typename T>
-        struct arctangent_hyp_impl;
-
-        template <typename T>
-        inline static constexpr T atanh(const T& x) noexcept {
-            
-            return arctangent_hyp_impl<T>::f(x);
+            return secant_impl<T>::f(x); 
 
         }
 
@@ -587,19 +578,8 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr auto csc(const T& x) noexcept {
-
-            return cosecant_impl<T>::f(x);
-
-        }
-
-
-        template <typename T>
-        struct secant_impl;
-                
-        template <typename T>
-        inline static constexpr auto sec(const T& x) noexcept {
-
-            return secant_impl<T>::f(x);
+            
+            return cosecant_impl<T>::f(x); 
 
         }
 
@@ -609,19 +589,41 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr auto cot(const T& x) noexcept {
-
-            return cotangent_impl<T>::f(x);
+            
+            return cotangent_impl<T>::f(x); 
 
         }
 
 
         template <typename T>
-        struct arccosecant_impl;
-        
-        template <typename T>
-        inline static constexpr auto acsc(const T& x) noexcept {
+        struct arcsine_impl;
 
-            return arccosecant_impl<T>::f(x);
+        template <typename T>
+        inline static constexpr auto asin(const T& x) noexcept {
+            
+            return arcsine_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct arccosine_impl;
+
+        template <typename T>
+        inline static constexpr auto acos(const T& x) noexcept {
+            
+            return arccosine_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct arctangent_impl;
+
+        template <typename T>
+        inline static constexpr auto atan(const T& x) noexcept {
+            
+            return arctangent_impl<T>::f(x); 
 
         }
 
@@ -631,31 +633,472 @@ namespace scipp::math {
 
         template <typename T>
         inline static constexpr auto asec(const T& x) noexcept {
+            
+            return arcsecant_impl<T>::f(x); 
 
-            return arcsecant_impl<T>::f(x);
+        }
+
+
+        template <typename T>
+        struct arccosecant_impl;
+
+        template <typename T>
+        inline static constexpr auto acsc(const T& x) noexcept {
+            
+            return arccosecant_impl<T>::f(x); 
 
         }
 
 
         template <typename T>
         struct arccotangent_impl;
-        
+
         template <typename T>
         inline static constexpr auto acot(const T& x) noexcept {
-
-            return arccotangent_impl<T>::f(x);
+            
+            return arccotangent_impl<T>::f(x); 
 
         }
 
 
         template <typename T>
-        struct cosecant_hyp_impl;
+        struct hyperbolic_sine_impl;
 
         template <typename T>
-        struct secant_hyp_impl;
-        
+        inline static constexpr auto sinh(const T& x) noexcept {
+            
+            return hyperbolic_sine_impl<T>::f(x); 
+
+        }
+
+
         template <typename T>
-        struct cotangent_hyp_impl;
+        struct hyperbolic_cosine_impl;
+
+        template <typename T>
+        inline static constexpr auto cosh(const T& x) noexcept {
+            
+            return hyperbolic_cosine_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_tangent_impl;
+
+        template <typename T>
+        inline static constexpr auto tanh(const T& x) noexcept {
+            
+            return hyperbolic_tangent_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_secant_impl;
+
+        template <typename T>
+        inline static constexpr auto sech(const T& x) noexcept {
+            
+            return hyperbolic_secant_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_cosecant_impl;
+
+        template <typename T>
+        inline static constexpr auto csch(const T& x) noexcept {
+            
+            return hyperbolic_cosecant_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_cotangent_impl;
+
+        template <typename T>
+        inline static constexpr auto coth(const T& x) noexcept {
+            
+            return hyperbolic_cotangent_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arcsine_impl;
+
+        template <typename T>
+        inline static constexpr auto asinh(const T& x) noexcept {
+            
+            return hyperbolic_arcsine_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arccosine_impl;
+
+        template <typename T>
+        inline static constexpr auto acosh(const T& x) noexcept {
+            
+            return hyperbolic_arccosine_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arctangent_impl;
+
+        template <typename T>
+        inline static constexpr auto atanh(const T& x) noexcept {
+            
+            return hyperbolic_arctangent_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arcsecant_impl;
+
+        template <typename T>
+        inline static constexpr auto asech(const T& x) noexcept {
+            
+            return hyperbolic_arcsecant_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arccosecant_impl;
+
+        template <typename T>
+        inline static constexpr auto acsch(const T& x) noexcept {
+            
+            return hyperbolic_arccosecant_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct hyperbolic_arccotangent_impl;
+
+        template <typename T>
+        inline static constexpr auto acoth(const T& x) noexcept {
+            
+            return hyperbolic_arccotangent_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct erf_impl;
+
+        template <typename T>
+        inline static constexpr auto erf(const T& x) noexcept {
+            
+            return erf_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct erfc_impl;
+
+        template <typename T>
+        inline static constexpr auto erfc(const T& x) noexcept {
+            
+            return erfc_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct gamma_impl;
+
+        template <typename T>
+        inline static constexpr auto gamma(const T& x) noexcept {
+            
+            return gamma_impl<T>::f(x); 
+
+        }
+
+
+        // template <typename T>
+        // struct lgamma_impl;
+
+        // template <typename T>
+        // inline static constexpr auto lgamma(const T& x) {
+            
+        //     return lgamma_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct digamma_impl;
+
+        // template <typename T>
+        // inline static constexpr auto digamma(const T& x) {
+            
+        //     return digamma_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct trigamma_impl;
+
+        // template <typename T>
+        // inline static constexpr auto trigamma(const T& x) {
+            
+        //     return trigamma_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct beta_impl;
+
+        // template <typename T>
+        // inline static constexpr auto beta(const T& x, const T& y) {
+            
+        //     return beta_impl<T>::f(x, y); 
+
+        // }
+
+
+        // template <typename T>
+        // struct zeta_impl;
+
+        // template <typename T>
+        // inline static constexpr auto zeta(const T& x, const T& y) {
+            
+        //     return zeta_impl<T>::f(x, y); 
+
+        // }
+
+
+        // template <typename T>
+        // struct polygamma_impl;
+
+        // template <typename T>
+        // inline static constexpr auto polygamma(const T& x, const T& y) {
+            
+        //     return polygamma_impl<T>::f(x, y); 
+
+        // }
+
+
+        // template <typename T>
+        // struct binomial_impl;
+
+        // template <typename T>
+        // inline static constexpr auto binomial(const T& x, const T& y) {
+            
+        //     return binomial_impl<T>::f(x, y); 
+
+        // }
+
+
+        // template <typename T>
+        // struct bernoulli_impl;
+
+        // template <typename T>
+        // inline static constexpr auto bernoulli(const T& x) {
+            
+        //     return bernoulli_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct harmonic_impl;
+
+        // template <typename T>
+        // inline static constexpr auto harmonic(const T& x) {
+            
+        //     return harmonic_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct euler_impl;
+
+        // template <typename T>
+        // inline static constexpr auto euler(const T& x) {
+            
+        //     return euler_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct catalan_impl;
+
+        // template <typename T>
+        // inline static constexpr auto catalan(const T& x) {
+            
+        //     return catalan_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct riemann_zeta_impl;
+
+        // template <typename T>
+        // inline static constexpr auto riemann_zeta(const T& x) {
+            
+        //     return riemann_zeta_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct dirichlet_eta_impl;
+
+        // template <typename T>
+        // inline static constexpr auto dirichlet_eta(const T& x) {
+            
+        //     return dirichlet_eta_impl<T>::f(x); 
+
+        // }
+     
+        // template <typename T>
+        // struct bessel_j0_impl;
+
+        // template <typename T>
+        // inline static constexpr auto bessel_j0(const T& x) {
+            
+        //     return bessel_j0_impl<T>::f(x); 
+
+        // }
+
+
+        // template <typename T>
+        // struct bessel_j1_impl;
+
+        // template <typename T>
+        // inline static constexpr auto bessel_j1(const T& x) {
+            
+        //     return bessel_j1_impl<T>::f(x); 
+
+        // }
+
+
+        template <typename T>
+        struct round_impl;
+
+        template <typename T>
+        inline static constexpr T round(const T& x) noexcept {
+
+            return round_impl<T>::f(x);
+            
+        }
+        
+
+        template <typename T>
+        struct floor_impl;
+
+        template <typename T>
+        inline static constexpr T floor(const T& x) noexcept {
+
+            return floor_impl<T>::f(x);
+            
+        }
+        
+
+        template <typename T>
+        struct ceil_impl;
+
+        template <typename T>
+        inline static constexpr T ceil(const T& x) noexcept {
+
+            return ceil_impl<T>::f(x);
+            
+        }
+
+
+        template <typename T>
+        struct trunc_impl;
+
+        template <typename T>
+        inline static constexpr T trunc(const T& x) noexcept {
+
+            return trunc_impl<T>::f(x);
+            
+        }
+
+
+        template <typename T>
+        struct frac_impl;
+
+        template <typename T>
+        inline static constexpr T frac(const T& x) noexcept {
+
+            return frac_impl<T>::f(x);
+            
+        }
+
+
+        template <typename T>
+        struct fmod_impl;
+
+        template <typename T>
+        inline static constexpr T fmod(const T& x, const T& y) noexcept {
+
+            return fmod_impl<T>::f(x, y);
+            
+        }
+
+
+        template <typename T>
+        struct mod_impl;
+
+        template <typename T>
+        inline static constexpr T mod(const T& x, const T& y) noexcept {
+
+            return mod_impl<T>::f(x, y);
+            
+        }
+
+
+        template <typename T>
+        struct min_impl;
+
+        template <typename T>
+        inline static constexpr T min(const T& x, const T& y) noexcept {
+
+            return min_impl<T>::f(x, y);
+            
+        }
+
+
+        template <typename T>
+        struct max_impl;
+
+        template <typename T>
+        inline static constexpr T max(const T& x, const T& y) noexcept {
+
+            return max_impl<T>::f(x, y);
+            
+        }
+
+
+        template <typename T>
+        struct clip_impl;
+
+        template <typename T>
+        inline static constexpr T clip(const T& x, const T& y, const T& z) noexcept {
+
+            return clip_impl<T>::f(x, y, z);
+            
+        }
+        
 
 
     } // namespace op
@@ -664,13 +1107,13 @@ namespace scipp::math {
     // namespace functions {
 
 
-    //     template <typename ARG_TYPE, typename RESULT_TYPE, typename BACK_TYPE>
+    //     template <typename T, typename RESULT_TYPE, typename BACK_TYPE>
     //     struct unary_function;
 
     //     template <typename T>
     //     struct is_unary_function : std::false_type {};
 
-    //     template <typename ARG_TYPE, typename RESULT_TYPE, typename BACK_TYPE>
+    //     template <typename T, typename RESULT_TYPE, typename BACK_TYPE>
     //     struct is_unary_function<unary_function<ARG_TYPE, RESULT_TYPE, BACK_TYPE>> : std::true_type {};
 
     //     template <typename T>
@@ -721,49 +1164,8 @@ namespace scipp::math {
     //     inline static constexpr bool is_nary_function_v = is_nary_function<T>::value; 
 
 
-    //     template <typename T1, typename T2>
-    //     struct equal;
 
 
-    //     template <typename T>
-    //     struct greater;
-
-
-    //     template <typename T>
-    //     struct less;
-
-
-    //     template <typename T>
-    //     struct greater_equal;
-
-
-    //     template <typename T>
-    //     struct less_equal;
-
-
-    //     template <typename T>
-    //     struct sign; 
-
-
-    //     template <typename T>
-    //     struct exponential;
-
-    //     template <typename T>
-    //     struct logarithm;
-
-
-    //     template <typename T>
-    //     struct sine;
-
-    //     template <typename T>
-    //     struct cosine;
-
-    //     template <typename T>
-    //     struct tangent;    
-
-
-    //     template <typename ARG_TYPE>
-    //     struct round;
 
 
     // }

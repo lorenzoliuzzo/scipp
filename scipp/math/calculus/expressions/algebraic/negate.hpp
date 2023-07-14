@@ -1,9 +1,9 @@
 /**
- * @file    math/calculus/expressions/algebraic/negate.hpp
+ * @file    scipp/math/calculus/expressions/algebraic/negate.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-07-03
- * 
+ * @date    2023-07-14
+ *
  * @copyright Copyright (c) 2023
  */
 
@@ -26,18 +26,10 @@ namespace scipp::math {
             constexpr void propagate(std::shared_ptr<void> wprime) override {
 
                 auto wprime_v = *std::static_pointer_cast<T>(wprime);
-                auto x_v = -wprime_v; 
-                x->propagate(std::make_shared<decltype(x_v)>(x_v));
+                x->propagate(std::make_shared<T>(-wprime_v));
 
             }
 
-            constexpr void propagatex(std::shared_ptr<void> ) override {
-
-                // auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
-                // auto x_v = - wprime_v; 
-                // x->propagatex(std::make_shared<decltype(x_v)>(x_v));
-
-            }
 
             constexpr void update() override {
 

@@ -182,7 +182,7 @@ namespace scipp::tools {
 
         using prefix_t = typename UNIT_TYPE::prefix_t;
         constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
-        std::cout << description << other / factor; 
+        std::cout << description << other.value / factor << ' ' << UNIT_TYPE::to_string(); 
         if constexpr (NEWLINE)
             std::cout << '\n'; 
 
@@ -474,6 +474,22 @@ namespace scipp::tools {
     }
 
 
+    template <typename T>
+        requires math::calculus::is_interval_v<T>
+    inline static constexpr void print(const T& other) noexcept {
+
+        std::cout << "[ " << other.start << ", " << other.end << " ]\n"; 
+
+    }
+    
+
+    template <typename T>
+        requires math::calculus::is_interval_v<T>
+    inline static constexpr void print(const std::string& message, const T& other) noexcept {
+
+        std::cout << message << "[ " << other.start << ", " << other.end << " ]\n"; 
+
+    }
 
     // /// @brief Print a geometry::MATRIX
     // template <typename MATRIX_TYPE>

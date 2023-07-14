@@ -1,8 +1,8 @@
 /**
- * @file    math/calculus/expressions/invert.hpp
+ * @file    scipp/math/calculus/expressions/algeabric/invert.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-07-02
+ * @date    2023-07-14
  * 
  * @copyright Copyright (c) 2023
  */
@@ -30,13 +30,6 @@ namespace scipp::math {
 
             }
 
-            constexpr void propagatex(std::shared_ptr<void>) override {
-                
-            //     auto wprime_v = *std::static_pointer_cast<expr_ptr<T>>(wprime);
-            //     auto aux = - wprime_v / op::square(x->expr);
-            //     x->propagatex(std::make_shared<decltype(aux)>(aux));
-
-            }
 
             constexpr void update() override {
 

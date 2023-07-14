@@ -6,4 +6,4 @@ parent: Calculus namespace
 author_profile: true
 ---
 
-# Calculus namespace
+# Variables

@@ -2,7 +2,7 @@
  * @file    scipp.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the scipp library headers files and its standard dependency. 
- * @date    2023-07-03
+ * @date    2023-07-12
  * 
  * @copyright Copyright (c) 2023
  */
@@ -24,7 +24,7 @@
         #include <cmath>        /// math::functions
         #include <execution>    /// math::functions, math::integrals
         #include <fstream>      /// tools::io
-        #include <functional> 
+        #include <functional>   /// math::calculus
         #include <iostream>     /// tools::io
         #include <map>          /// physics::prefix_map
         #include <memory>       /// math::calculus
@@ -36,24 +36,17 @@
         #include <sstream>      /// tools::io
         #include <type_traits>  /// traits
         #include <utility>
-        #include <variant>      
+        // #include <variant>      
         #include <vector>
 
 
-
-        // #include "external/matplotlibcpp.h"
-        // namespace plt = matplotlibcpp;
+        #include "../external/matplotlibcpp.h"
+        namespace plt = matplotlibcpp;
 
 
     /// ===============================================================
     /// @brief scipp library headers
     /// ===============================================================
-
-        namespace scipp {
-
-            inline static constexpr double version = 1.1; 
-
-        }    
         
         /// ---------------------------------------------------------------
         /// @brief scipp traits
@@ -63,75 +56,181 @@
             #include "traits/physics.hpp"
             #include "traits/geometry.hpp"
 
+
+        /// ---------------------------------------------------------------
+        /// @brief scipp::tools
         /// ---------------------------------------------------------------
 
             #include "tools/meta.hpp"
+            #include "tools/io.hpp"
 
-            #include "math/calculus/expression.hpp" /// @ok
-            #include "math/calculus/variable.hpp" /// @ok
-            #include "math/calculus/constant.hpp" /// @ok
 
-            #include "math/calculus/expressions/algebraic/negate.hpp"           // ok
-            #include "math/calculus/expressions/algebraic/add.hpp"              // ok
-            #include "math/calculus/expressions/algebraic/multiply.hpp"         // ok
+        /// ---------------------------------------------------------------
+        /// @brief scipp::math::calculus differentation
+        /// ---------------------------------------------------------------
+
+            #include "math/calculus/differentiation/expression.hpp" 
+            #include "math/calculus/differentiation/constant.hpp" 
+            #include "math/calculus/differentiation/variable.hpp" 
+
+
+        /// ---------------------------------------------------------------
+        /// @brief scipp::math::calculus expressions
+        /// ---------------------------------------------------------------
+
+            #include "math/calculus/expressions/algebraic/negate.hpp"           
+            #include "math/calculus/expressions/algebraic/add.hpp"              
+            #include "math/calculus/expressions/algebraic/multiply.hpp"         
             #include "math/calculus/expressions/algebraic/invert.hpp"
             #include "math/calculus/expressions/algebraic/power.hpp"
             #include "math/calculus/expressions/algebraic/root.hpp"
-            // #include "math/calculus/expressions/power_series/exponential.hpp"
-            // #include "math/calculus/expressions/power_series/logarithm.hpp"
-            #include "math/calculus/expressions/power_series/trigonometric/sine.hpp"        // ok
-            #include "math/calculus/expressions/power_series/trigonometric/cosine.hpp"      // ok
-            #include "math/calculus/expressions/power_series/trigonometric/tangent.hpp"     // ok
-            // #include "math/calculus/expressions/power_series/trigonometric/arcsine.hpp"
-            // #include "math/calculus/expressions/power_series/trigonometric/arccosine.hpp"
-            // #include "math/calculus/expressions/power_series/trigonometric/arctangent.hpp"
-            // #include "math/calculus/expressions/power_series/hyperbolic/sine.hpp"           // ok
-            // #include "math/calculus/expressions/power_series/hyperbolic/cosine.hpp"         // ok
-            // #include "math/calculus/expressions/power_series/hyperbolic/tangent.hpp"        // ok 
-            // #include "math/calculus/expressions/power_series/hyperbolic/arcsine.hpp"
-            // #include "math/calculus/expressions/power_series/hyperbolic/arccosine.hpp"
-            // #include "math/calculus/expressions/power_series/hyperbolic/arctangent.hpp"
 
-            #include "math/calculus/derivatives.hpp"
-            // #include "math/calculus/ode/solver.hpp"
-            // #include "math/calculus/legendre_transformation.hpp"
-            #include "math/calculus/linear_regression.hpp"
+            /// ---------------------------------------------------------------
 
-        /// ---------------------------------------------------------------
+            #include "math/calculus/expressions/mathematical/exponential.hpp"
+            #include "math/calculus/expressions/mathematical/logarithm.hpp"
 
-            #include "math/operations/operators.hpp" 
-            #include "math/operations/algebraic/add.hpp" /// @ok
-            #include "math/operations/algebraic/negate.hpp" /// @ok          
-            #include "math/operations/algebraic/multiply.hpp" /// @ok
-            #include "math/operations/algebraic/invert.hpp" /// @ok
-            #include "math/operations/algebraic/power.hpp" /// @ok
-            #include "math/operations/algebraic/root.hpp" /// @ok
-            #include "math/operations/mathematical/sine.hpp"
-            #include "math/operations/mathematical/cosine.hpp"
-            #include "math/operations/mathematical/tangent.hpp"
-            // #include "math/operations/mathematical/trigonometric.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/sine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/cosine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/tangent.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/secant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/cosecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/cotangent.hpp"
+
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arcsine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccosine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arctangent.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arcsecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccosecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccotangent.hpp" 
             
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/sine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cosine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/tangent.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/secant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cosecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cotangent.hpp"
+
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arcsine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccosine.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arcsecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccosecant.hpp"
+            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccotangent.hpp"
+
 
         /// ---------------------------------------------------------------
+        /// @brief scipp::math::calculus expressions
+        /// ---------------------------------------------------------------
 
+            #include "math/operators.hpp" 
+
+            /// ---------------------------------------------------------------
+
+            #include "math/logical/equal.hpp"
+            #include "math/logical/greater.hpp"
+            #include "math/logical/greater_equal.hpp"
+            #include "math/logical/less.hpp"
+            #include "math/logical/less_equal.hpp"
+
+            /// ---------------------------------------------------------------
+
+            #include "math/algebraic/negate.hpp"           
+            #include "math/algebraic/add.hpp" 
+            #include "math/algebraic/invert.hpp" 
+            #include "math/algebraic/multiply.hpp" 
+            #include "math/algebraic/power.hpp" 
+            #include "math/algebraic/root.hpp" 
+
+            /// ---------------------------------------------------------------
+
+            #include "math/mathematical/sign.hpp"
+            #include "math/mathematical/absolute.hpp"
+
+            #include "math/mathematical/exponential.hpp"
+            #include "math/mathematical/logarithm.hpp"
+
+            #include "math/mathematical/trigonometric/sine.hpp"
+            #include "math/mathematical/trigonometric/cosine.hpp"
+            #include "math/mathematical/trigonometric/tangent.hpp"
+            #include "math/mathematical/trigonometric/secant.hpp"
+            #include "math/mathematical/trigonometric/cosecant.hpp"
+            #include "math/mathematical/trigonometric/cotangent.hpp"
+
+            #include "math/mathematical/trigonometric/inverse/arcsine.hpp"
+            #include "math/mathematical/trigonometric/inverse/arccosine.hpp"
+            #include "math/mathematical/trigonometric/inverse/arctangent.hpp"
+            #include "math/mathematical/trigonometric/inverse/arcsecant.hpp"
+            #include "math/mathematical/trigonometric/inverse/arccosecant.hpp"
+            #include "math/mathematical/trigonometric/inverse/arccotangent.hpp" 
+            
+            #include "math/mathematical/trigonometric/hyperbolic/sine.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/cosine.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/tangent.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/secant.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/cosecant.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/cotangent.hpp"
+
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arcsine.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arccosine.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arcsecant.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arccosecant.hpp"
+            #include "math/mathematical/trigonometric/hyperbolic/inverse/arccotangent.hpp"
+
+            #include "math/mathematical/erf.hpp"
+            #include "math/mathematical/erfc.hpp"
+            #include "math/mathematical/gamma.hpp"
+
+            /// ---------------------------------------------------------------
+
+            #include "math/numerical/round.hpp"
+            #include "math/numerical/floor.hpp"
+            #include "math/numerical/ceil.hpp"
+            #include "math/numerical/trunc.hpp"
+            #include "math/numerical/frac.hpp" // frac is a function that returns the fractional part of a number ie frac(3.14) = 0.14
+            #include "math/numerical/mod.hpp"
+            #include "math/numerical/min.hpp"
+            #include "math/numerical/max.hpp"
+            #include "math/numerical/clip.hpp" // clip is a function that takes a value, a minimum and a maximum and returns the value if it is between the minimum and maximum, otherwise it returns the minimum or maximum
+            // #include "math/numerical/sum.hpp"
+            // #include "math/numerical/mean.hpp"
+            // #include "math/numerical/stddev.hpp"
+            // #include "math/numerical/var.hpp"
+            // #include "math/numerical/median.hpp"
+            
+            // #include "math/logical/are_close.hpp"
+
+            
             
         /// ---------------------------------------------------------------
         /// @brief physics/measurements
         /// ---------------------------------------------------------------
     
-            #include "physics/measurements/base_quantity.hpp" 
-            #include "physics/measurements/unit.hpp" 
-        
-            #include "physics/measurements/measurement.hpp"
-            // #include "physics/measurements/umeasurement.hpp"
+            #include "physics/base_quantity.hpp" 
+            #include "physics/unit.hpp" 
+            #include "physics/measurement.hpp"
             
-            #include "physics/measurements/types/base_quantities.hpp"
-            #include "physics/measurements/types/units.hpp" 
+            #include "physics/base_quantity_types.hpp"
+            #include "physics/unit_types.hpp" 
             #include "physics/constants.hpp"
 
-            #include "math/calculus/function.hpp"
+
+        /// ---------------------------------------------------------------
+
+            #include "tools/timer.hpp"
+
+
+
+            #include "math/calculus/differentiation/derivatives.hpp"
+            // #include "math/calculus/ode/solver.hpp"
+            // #include "math/calculus/legendre_transformation.hpp"
+            // #include "math/calculus/linear_regression.hpp"
+            
+
+            #include "math/calculus/differentiation/function.hpp"
             #include "math/calculus/norm.hpp"
-            #include "math/calculus/integrals/curvilinear.hpp"
+            #include "math/calculus/integration/curvilinear.hpp"
             #include "math/calculus/interval.hpp"
             // #include "math/calculus/curve.hpp"   
             #include "math/calculus/taylor_series.hpp"
@@ -143,24 +242,6 @@
             #include "physics/mechanics/hamiltonian.hpp"
             
 
-        /// ---------------------------------------------------------------
-        /// @brief math/numbers
-        /// ---------------------------------------------------------------
-        
-            // #include "math/numbers/complex.hpp" 
-            // #include "math/numbers/dual.hpp" 
-
-
-        /// ---------------------------------------------------------------
-        /// @brief math/functions
-        /// ---------------------------------------------------------------
-            
-
-            // #include "math/functions/logical/equal.hpp"
-            // #include "math/functions/logical/greater.hpp"
-            // #include "math/functions/logical/less.hpp"            
-
-            
         /// ---------------------------------------------------------------
         /// @brief math/numbers
         /// ---------------------------------------------------------------
@@ -217,12 +298,12 @@
             // #include "math/calculus/curves/ellipse.hpp"
             // #include "math/calculus/curves/sphere.hpp"
 
-            // #include "math/calculus/integrals/rectangle.hpp"
-            // #include "math/calculus/integrals/trapezoid.hpp"
-            // #include "math/calculus/integrals/midpoint.hpp"
-            // #include "math/calculus/integrals/endpoint.hpp"
-            // #include "math/calculus/integrals/simpson.hpp"
-            // #include "math/calculus/integrals/gauss.hpp"  
+            // #include "math/calculus/integration/rectangle.hpp"
+            // #include "math/calculus/integration/trapezoid.hpp"
+            #include "math/calculus/integration/midpoint.hpp"
+            // #include "math/calculus/integration/endpoint.hpp"
+            // #include "math/calculus/integration/simpson.hpp"
+            // #include "math/calculus/integration/gauss.hpp"  
 
         //     #include "math/calculus/hilbert_space.hpp"
 
@@ -244,8 +325,6 @@
         /// @brief tools
         /// ---------------------------------------------------------------
 
-            #include "tools/io.hpp"
-            #include "tools/timer.hpp"
             // #include "tools/plot.hpp"
         //     #include "tools/bench.hpp"
 

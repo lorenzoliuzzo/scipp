@@ -471,4 +471,4 @@ x = 0 m
 I(x) = 9.99983e-06 m
 ```
 
-![plot](../../images/diffracted_intensity.png)
+![plot](../images/diffracted_intensity.png)

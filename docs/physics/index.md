@@ -2,7 +2,7 @@
 title: Physics namespace
 layout: default
 permalink: /physics/
-nav_order: 2
+nav_order: 1
 has_children: true
 author_profile: true
 ---

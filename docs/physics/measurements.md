@@ -1,17 +1,15 @@
 ---
 title: Units and measurements
-title: Units and measurements
 layout: default
-permalink: /physics/units-and-measurements/
 permalink: /physics/units-and-measurements/
 parent: Physics namespace
 author_profile: true
 ---
 
 # Units and measurements
+Please note that all the tools that are here presented are defined inside the `scipp::physics` namespace.
 
 ## Base quantity
-The `base_quantity` struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units ([SI](https://en.wikipedia.org/wiki/International_System_of_Units)) - `length`, `time`, `mass`, `temperature`, `electric_current`, `substance_amount`, and `luminous_intensity`, as template parameters:
 The `base_quantity` struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units ([SI](https://en.wikipedia.org/wiki/International_System_of_Units)) - `length`, `time`, `mass`, `temperature`, `electric_current`, `substance_amount`, and `luminous_intensity`, as template parameters:
 ```cpp
 template <int LENGTH, int TIME, int MASS, int TEMPERATURE, 
@@ -21,11 +19,7 @@ struct base_quantity {
     static constexpr std::array<int, 7> powers = {LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY}; ///< array of the powers of the base quantities
 
     static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
-    static constexpr std::array<int, 7> powers = {LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY}; ///< array of the powers of the base quantities
 
-    static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
-
-    /// @brief Returns the string representation of the base_quantity
     /// @brief Returns the string representation of the base_quantity
     static constexpr std::string_view to_string() noexcept {
 
@@ -33,25 +27,16 @@ struct base_quantity {
 
         // Iterate over the base quantities and their powers
         meta::for_<7>([&](auto i) constexpr {
-        // Iterate over the base quantities and their powers
-        meta::for_<7>([&](auto i) constexpr {
 
-            if constexpr (powers[i] != 0) {
             if constexpr (powers[i] != 0) {
 
                 if constexpr (powers[i] == 1) // Append the base quantity to the string builder
                     ss << base_literals[i]; 
-                if constexpr (powers[i] == 1) // Append the base quantity to the string builder
-                    ss << base_literals[i]; 
 
-                else // Append the base quantity and its power to the string builder
-                    ss << base_literals[i] << '^' << powers[i]; 
                 else // Append the base quantity and its power to the string builder
                     ss << base_literals[i] << '^' << powers[i]; 
 
             }
-            
-        });
             
         });
 
@@ -64,9 +49,10 @@ struct base_quantity {
 
 The powers of the base quantities can be accessed using the corresponding aliases.
 It is possible to define custom base_quantities using the constuctor providing the powers, or just by combining existing types using the basic operations, defined inside the `scipp::math::op` namespace, such as multiplication, division, and exponentiation.
+However, the principal base quantities are defined in the `scipp::physics::base` namespace and should be used whenever possible.
 The base quantities are not meant to be used directly, but rather as template parameters for the unit and measurement structs.
 
-The principal base quantities are defined in the `scipp::physics::base` namespace:
+Some other useful base_quantity aliases are defined in the `scipp::physics::base` namespace:
 ```cpp
 namespace base {
 
@@ -103,7 +89,7 @@ namespace base {
 ```
 
 ## Unit of measure
-The `unit` struct represents a unit of measurement by combining a `base_quantity` with an `std::ratio` prefix:
+The `unit` struct represents a unit of measurement by combining a `base_quantity` with an `std::ratio` prefix. 
 ```cpp
 template <typename BASE_T, typename PREFIX_T = std::ratio<1>> 
     requires (is_base_v<BASE_T> && is_prefix_v<PREFIX_T>)  
@@ -188,36 +174,10 @@ namespace units {
 ```
 
 ## Measurement
-Most of the time we write code to solve a problem that has a physical meaning, we assume that the code that we write is physically correct, but often we do make mistakes or, simply, we do not fully understand the problem we are trying to solve yet.
-
-### A simple example 
-Consider this basic example, where we want to do something physically meaningful, like calculating the force upon an object.
-Suppose an apple fell from a tree and hit your head so hard that you can not remember Newton's second law of motion. You decide to calculate the force using whatever physical quantity presents itself to you. You measure the length of the tree and the mass of the apple and use them to calculate the force in this way:
-```cpp
-double calculate_force(double mass, double length) {
-
-  return mass + length;
-
-}
-
-int main() {
-
-  // This code will compile because it's not wrong to add any generic numbers
-  double length{2.5};
-  double mass{3.0};
-  double force = calculate_force(length, mass);
-
-  return 0;   
-}
-```
-
-The code compiles, but it would give you a wrong anwser, because of the wrong physics law you choose to invent to calculate the force. 
-This is due to the fact that the compiler does not know the physical meaning of the code, it only knows the type of the variables, which is not enough to understand the physical meaning of the code.
-To find these types of error, if we are lucky enough to notice some weird numerical results, we need to read the code and understand the physical meaning of the code, which is not always easy. As long as the compiler can not distinguish between numbers used to represents different physical quantities, it does not help us in any way and we are left with a mad search through the code.
-The solution is to use a type that encodes the physical meaning of the variable as well as its value type. The scipp library comes in handy here.
-
-The `measurement` struct represents a physical measurement as a value with a dimensional-aware template meta-structure. 
-Using the measurement struct, it is possible to perform dimensional analysis at compile-time without loss of precision and overhead. Basically, writing physical accurate code is now possible and easy!
+The `measurement` struct represents a physical measurement as a value with a `dimensional-aware template meta-structure`. 
+The value type is defaulted to double, but it can be changed to any type that supports the basic arithmetic operations. 
+Operations between measurements with different units are allowed and respect the dimensional analysis rules.
+Using the measurement struct, it is possible to perform dimensional analysis `at compile-time without loss of precision` and overhead. Writing physical accurate code is now possible and easy!
 ```cpp
 template <typename BASE_T, typename VALUE_TYPE = double>
     requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
@@ -256,22 +216,12 @@ struct measurement {
         
     }
 
-    /// @brief Implicitly convert the measurement to a scalar value if it is a scalar base measurement
+    /// @brief Convert the measurement to a scalar value if it is a scalar base measurement
     constexpr operator value_t() const requires is_scalar_base_v<base_t> { 
         
         return this->value; 
 
     }
-
-    /// @brief Extract the value of this measurement converted to a specific unit
-    /// @note The unit must be of the same base of the measurement
-    template <typename T>
-    constexpr auto value_as(const unit<base_t, T>&) const noexcept {
-
-        return this->value / static_cast<double>(T::num) * static_cast<double>(T::den);
-
-    }   
-
 
     /// @brief Print a measurement to an output stream
     friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
@@ -286,9 +236,22 @@ struct measurement {
 };
 ```
 
-The value type is defaulted to double, but it can be changed to any type that supports the basic arithmetic operations. 
-Operations between measurements with different units are allowed and they respect the dimensional analysis rules, i.e. we cannot sum two measurements with different base units, but we can multiply them to product something with a different physical meaning.
-For example, we can write the previous code in this way:
+Consider this basic example, where the physical meaning of a variable it is completely given by its name rather than its type.
+
+```cpp
+int main() {
+
+  // This code will compile, but it will produce physical incorrect results.
+  double length{1.0};
+  double mass{60.0};
+  double force{length + mass};
+
+}
+```
+We assume that all the code that we write is always physically correct, but this is not true... We do make mistakes of this kind all the time, and to find these bugs we don't just need to read the code, we need to understand the physical meaning of the code.
+Who has never written a code like this? And we are alone in doing this crazy search between values and value types, because the compiler does not help us in any way. In fact, the compiler does not know the physical meaning of the code, it only knows the type of the variables, and the type of the variables is not enough to understand the physical meaning of the code.
+The solution is to use a type that encodes the physical meaning of the variable, so that the compiler can understand the physical meaning of the code.
+The scipp `measurement` comes in handy here, because it is a type that encodes the physical meaning of the variable, and it is also a type that can be used in arithmetic operations. So we can write the previous code in this way:
 
 ```cpp
 int main() {
@@ -298,13 +261,16 @@ int main() {
 }
 ```
 
-This code will not compile yet because it contains incorrect physical operations, but at least the physical error in the code is now clear to the compiler, which will give us an error message that will help us understand the problem:
+This code will not compile yet because it contains incorrect physical operations, but at least the physical error in the code is now clear to the compiler, which will give us an error message that will help us understand the problem.
 ```cpp
 error: conversion from ‘measurement<base_quantity<[...],0,[...],[...],[...],[...],[...]>,[...]>’ to non-scalar type ‘measurement<base_quantity<[...],-2,[...],[...],[...],[...],[...]>,[...]>’ requested here:
     measurement<base::force, double> force = length * mass;
 ```
 
 We are indeed trying to assign a value obtained from the multiplication of a length and a mass, which does not correspond to the physical meaning of the force, to a variable of type `measurement<base::force, double>`.
+Please note that this is all done at compile time, so we don't have to run the code and maybe, if we are lucky, to find a little suspicius numerical result that will make us think that something is wrong in the code and then manually debug the code to find the error, if we ever find it.
+
+Maybe you are thinking that this is all very nice, but that it is not worth the effort to write code in this way, because it is too complicated and it is not worth the effort to write code in this way. But this is not true. In fact, the code is not more complicated, it is just different. And it is not more complicated because the compiler does all the work for us, we just have to write the code in a different way. And it is worth the effort because we can write physically correct code without any effort, and we can be sure that the code is physically correct, because the compiler will tell us if it is not.
 
 Remembering Newton second law, we can rewrite the previous code in the correct way:
 ```cpp
@@ -315,15 +281,22 @@ int main() {
 }
 ```
 
-Maybe you are thinking that this is all very nice, but that it is not worth the effort to write code in this way, because it is too complicated, but simply this is not true. In fact, the code is not more complicated, it is just different.
-Please note that this is all done at compile time, so we don't have to run the code and maybe, if we are lucky, find a little suspicius numerical result that will make us think that something is wrong in the code and then manually debug it to find the error.
-The compiler will tell us exactly where the error is and what the error is, so we can fix it immediately and return to code.
-Another advantage of using the measurement struct is that we can do not bother about conversions between units, instead we can just write our physical code in a natural way, as we would do on paper.
+In the units namespace there is also defined a macro for costructing measurements from units using literal operators:
+```cpp
+namespace units::literals {
 
+
+    /// @brief Define a literal operator for the given unit
+    #define UNIT_LITERALS(unit)                                                    \
+        inline constexpr auto operator"" unit(long double value) noexcept {        \
+            return static_cast<double>(value) * units::unit;                       \
+        }                                                                           
+
+
+}
+```
 
 ### Usage
-
-#### Creating measurements
 In the following example we show how to create measurements and how to use them.
 ```cpp
     // Creating measurements with explicit value_type and base_quantity
@@ -373,118 +346,3 @@ In the following example we show how to create measurements and how to use them.
     print<std::milli>("l1 / l2 = ", l1 / l2);           ///< 'l1 / l2 = 0.667'
 
 ```
-
-
-#### A more concrete example
-Consider an example, a little more complex, in which we want to plot the intensity of the diffraction pattern generated by a light beam, passing through a slit on a screen at a fixed distance, given by the integral function:
-
-$I (x) = \int _{-\frac{d}{2}} ^{\frac{d}{2}} dx' cos(\frac{2\pi}{\lambda} \cdot (\sqrt{L^2 + (x - x')^2} - \sqrt{L^2 + x^2}))$
-
-where $d$ is the slit width, $\lambda$ is the wavelength of the light and $x$ is the distance from the center of the screen.
-
-We can write the code in this way:
-```cpp
-#include "scipp"
-
-using namespace scipp;
-
-using namespace physics;            // for measurements 
-using namespace units;              // for the units
-using namespace units::literals;    // for the units literals
-
-using namespace math; 
-using namespace op;                 // for the operators and the functions
-using namespace calculus;           // for the integral function and the interval struct
-
-using tools::print;                 // for the print function
-
-
-int main() {
-
-    /// parameters of the experiment
-    constexpr auto d = 10.0um;                      /// slit width
-    constexpr auto lambda = 589.0nm;                /// wavelength
-    constexpr auto L = 0.5m;                        /// distance from the slit to the screen
-
-
-    measurement<base::length> x = -0.2m;            /// variable for the function I(x)
-    constexpr auto I = interval(-0.2m, 0.2m);       /// interval of points where we want to evaluate I(x)
-    constexpr auto dx = 1.0mm;                      /// distance between two points
-    constexpr size_t N = I.steps(dx);               /// numer of points with the math::calculus::interval function
-
-    measurement<base::length> x_;                   /// variable for the integral function     
-    auto I_ = interval(-0.5 * d, 0.5 * d);          /// interval of integration
-
-    print<micrometre>("d = ", d);                   /// we can specify the unit of measurement as a template parameter (type)
-    print("lambda = ", lambda, nm);                 /// or we can specify the unit of measurement as a function parameter (value)
-    print("interval of x_ = ", I_);                 /// we can print the interval too
-    print("interval of x = ", I);          
-
-
-    /// we define the integral function of I(x) as a math::calculus::unary_function 
-    /// we can construct the unary_function by simply using a lambda function and passing the variable as a reference
-    /// the unary_function takes a math::calculus::variable and returns a measurement
-    auto f = unary_function<measurement<base::scalar>, measurement<base::length>>(
-        
-        /// we pass by value the parameters and by reference the x variable
-        /// note that the lambda function only *has* to take a variable.
-        [lambda, L, &x](variable<measurement<base::length>>& t) {   
-
-            constexpr auto k = 2.0 * std::numbers::pi / lambda;     /// wave number
-            return cos(k * (hypot(L, x - t) - hypot(L, x)));        /// using the math::op::hypot function     
-
-        }, x_ /// we pass the x variable to the unary_function constructor to bind with its variable member
-
-    ); /// please note that the integral function is a scalar function, in the sense that it returns measurement with base::scalar
-
-
-    std::vector<double> integral_values(N), x_values(N); /// to store the values for the plot
-
-    /// we iterate over the interval using the meta::for_ function
-    meta::for_<N>([&](auto i) { 
-
-        /// we store the value of x, not the measurement
-        x_values[i] = x.value; 
-
-        /// we evaluate the integral using i.e. the midpoint rule from the math::calculus namespace
-        /// the precision of the calculation could be specified using an std::ratio as a template parameter
-        /// the result of the integral is the width of the diffraction pattern
-        integral_values[i] = midpoint<std::ratio<1, 10000>>(f, I_).value_as(um); /// we extract the value of the integral in micrometres
-
-        /// we increment the x variable by dx
-        x += dx; 
-
-    });
-
-    /// The integration here is correct from the dimensional point of view!
-    /// the result of the integral is a measurement with base::length
-    auto integral = midpoint<std::ratio<1, 10000>>(f, I_);
-    print("integral = ", integral); 
-    static_assert(are_same_measurement_v<decltype(integral), measurement<base::length>>); 
-
-
-    /// we plot the results using the matplotlib-cpp library
-    plt::figure();
-    plt::title("Diffracted intensity");
-    plt::plot(x_values, integral_values);
-    plt::xlabel("x [m]");  // we can specify the unit of measurement
-    plt::ylabel("I [um]"); // we can specify the unit of measurement
-    plt::grid(true);
-    plt::show();
-
-    return 0; 
-
-}
-```
-
-Here is the output of the program:
-``` bash
-d = 10 [u]m
-lambda = 589 [n]m
-interval of x_ = [ -5e-06 m, 5e-06 m ]
-interval of x = [ -0.2 m, 0.2 m ]
-x = 0 m
-I(x) = 9.99983e-06 m
-```
-
-![plot](../../images/diffracted_intensity.png)

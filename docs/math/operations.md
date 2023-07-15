@@ -3,6 +3,7 @@ title: Operations namespace
 layout: default
 permalink: /math/operations/
 parent: Math namespace
+nav_order: 1
 author_profile: true
 ---
 

@@ -1,11 +1,11 @@
 ---
-title: Functions
+title: Integrals
 layout: default
-permalink: /math/calculus/functions/
+permalink: /math/calculus/integrals/
 parent: Calculus namespace
 grand_parent: Math namespace
-nav_order: 1
+nav_order: 3
 author_profile: true
 ---
 
-# Functions
+# Integrals

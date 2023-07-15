@@ -1,5 +1,5 @@
-title: Scipp documentation
-description: A documentation for the scipp library
+title: Scipp Library documentation
+description: A documentation for the Scipp Library
 
 theme: just-the-docs
 
@@ -9,7 +9,7 @@ theme: just-the-docs
 url: https://lorenzoliuzzo.github.io/scipp
 
 aux_links:
-  "scipp library on GitHub": 
+  "Scipp Library on GitHub": 
     - https://github.com/lorenzoliuzzo/scipp
 
 
@@ -38,7 +38,7 @@ search:
   rel_url: true
   # Enable or disable the search button that appears in the bottom right corner of every page
   # Supports true or false (default)
-  button: false
+  button: true
 
 # For copy button on code
 enable_copy_code_button: true
@@ -47,53 +47,4 @@ enable_copy_code_button: true
 back_to_top: true
 back_to_top_text: "Back to top"
 
-# footer_content: "Copyright &copy; 2017-2020 Patrick Marsceill. Distributed by an <a href=\"https://github.com/just-the-docs/just-the-docs/tree/main/LICENSE.txt\">MIT license.</a> <a href=\"https://www.netlify.com/\">This site is powered by Netlify.</a>"
-
-# # Footer last edited timestamp
-# last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
-# last_edit_time_format: "%b %e %Y at %I:%M %p" # uses ruby's time format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
-
-# include: 
-#   - _pages/
-#   - _pages/_physics/
-#   - _pages/math/
-#   - _pages/math/functions/
-#   - _includes/functions/
-
-# # Collections
-# collections:
-
-#   functions:
-#     permalink: "/math/functions/"
-#     output: true
-#     order:
-#       - add.md
-#       - multiply.md
-#       - power.md
-
-# defaults:
-
-#   - scope:
-#       path: "/math/"
-#       type: defauly
-#     values:
-#       layout: default
-#       output: true
-#       author_profile: true
-
-#   - scope:
-#       path: "/math/functions/"
-#       type: default
-#     values:
-#       layout: default
-#       output: true
-#       author_profile: true
-
-      
-#   - scope:
-#       path: ""
-#       type: physics
-#     values:
-#       layout: default
-#       author_profile: true
-      
+footer_content: "Copyright &copy; 2023 Lorenzo Liuzzo"

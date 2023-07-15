@@ -13,18 +13,16 @@ This site contains the documentation of the **scipp** library, which is a c++ _h
 The site is still WIP and it will be updated in the next days with more and more examples and code snippets. 
 The documentation is also available in the `docs` folder of the repository.
 
-The library provides a set of tools for scientific computing, including dimensional analysis, automatic differentiation, integration and more in general it could be used for performing accurate and reliable scientific computations. 
+The library provides a set of tools for scientific computing, including dimensional analysis, automatic differentiation, integration and more in general it could be used to perform accurate and reliable scientific computations. 
 Whether it's simulating physical systems, optimizing designs, or solving differential equations, the library equips users with the tools they need to drive scientific discoveries and technological advancements. 
 
 The library is written in modern c++ and it is designed to be easy to use and to integrate with existing code.
 
 # Key features
 ## Dimensional analysis
-Dimensional analysis plays a crucial role in scientific computations by ensuring that mathematical expressions and equations are consistent in terms of units and dimensions. The library incorporates a compile-time structure for dimensional analysis, allowing users to define and manipulate physical quantities with their associated units. This feature provides compile-time checks to catch unit mismatches and enforce dimensional consistency, reducing errors and improving code reliability.
+Dimensional analysis plays a crucial role in scientific computations by ensuring that mathematical expressions and equations are consistent in terms of units and dimensions. The library incorporates a compile-time structure for dimensional analysis, allowing users to define and manipulate physical quantities with their associated units. 
 
-```cpp
-```
-
+This feature is better illustrated in the documentation of the [units and measurements](https://lorenzoliuzzo.github.io/scipp/physics/units-and-measurements/) defined inside the scipp::physics namespace.
 
 ## Automatic differentiation
 The library also provides a simple and efficient implementation of automatic differentiation, which is a powerful tool for calculus and physics. Automatic differentiation is a technique for evaluating derivatives of functions specified by a computer program. It is implemented by applying the chain rule repeatedly to obtain derivatives of higher order. This implementation is based on the [reverse mode autodiff](https://autodiff.github.io/#reverse-mode) library, with the major advantage of being dimensionally consistent.

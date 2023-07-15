@@ -1,8 +1,8 @@
 /**
- * @file    math/calculus/expressions/algebraic/add.hpp
+ * @file    scipp/math/calculus/expressions/algebraic/add.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-07-03
+ * @date    2023-07-14
  * 
  * @copyright Copyright (c) 2023
  */
@@ -30,12 +30,6 @@ namespace scipp::math {
 
             }
 
-            constexpr void propagatex(std::shared_ptr<void> ) override {
-
-                // l->propagatex(wprime);
-                // r->propagatex(wprime);
-
-            }
 
             constexpr void update() override {
 

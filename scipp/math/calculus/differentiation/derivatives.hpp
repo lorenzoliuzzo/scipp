@@ -52,7 +52,11 @@ namespace scipp::math {
 
             });
 
-            return values; 
+
+            if constexpr (N == 1)
+                return std::get<0>(values);
+            else 
+                return values; 
 
         }
 

@@ -3,7 +3,7 @@
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation of the measurement struct.
  * @date    2023-05-28
- * 
+ *
  * @copyright Copyright (c) 2023
  */
 
@@ -13,10 +13,10 @@
 namespace scipp::physics {
 
 
-    /// @brief Struct measurement represents a physical measurement as a double and a dimentional template meta-structure 
+    /// @brief Struct measurement represents a physical measurement as a double and a dimentional template meta-structure
     /// @tparam BASE_TYPE: base_quantity of the measurement
     /// @see in physics: base_quantity, prefix, unit1
-    template <typename BASE_TYPE, typename VALUE_TYPE = double> 
+    template <typename BASE_TYPE, typename VALUE_TYPE = double>
         requires (is_base_v<BASE_TYPE> && math::is_number_v<VALUE_TYPE>)
     struct measurement {
 
@@ -53,7 +53,7 @@ namespace scipp::physics {
         // ==============================================
 
             /// @brief Default constructor
-            constexpr measurement() noexcept : 
+            constexpr measurement() noexcept :
 
                 value{value_t{}} {}
 
@@ -70,16 +70,16 @@ namespace scipp::physics {
 
 
             /// @brief Construct a measurement from a scalar value and an unit
-            /// @note The unit must be of the same base of the measurement 
+            /// @note The unit must be of the same base of the measurement
             /// @note The value is immediatly converted to the base unit
-            template <typename UNIT_TYPE> 
+            template <typename UNIT_TYPE>
                 requires (is_unit_v<UNIT_TYPE> && is_same_base_v<base_t, typename UNIT_TYPE::base_t>)
             constexpr measurement(value_t&& val, const UNIT_TYPE&) noexcept {
 
                 using prefix_t = typename UNIT_TYPE::prefix_t;
                 constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
                 this->value = std::forward<value_t>(val * factor);
-                
+
             }
 
 
@@ -104,22 +104,14 @@ namespace scipp::physics {
 
             template <typename PointerType>
                 requires std::is_pointer_v<PointerType>
-            constexpr measurement(PointerType ptr) noexcept :   
-                
+            constexpr measurement(PointerType ptr) noexcept :
+
                 value(static_cast<measurement<base_t, value_t>>(*ptr)) {}
-                
+
 
         // ==============================================
         // operators
         // ==============================================
-
-            constexpr operator value_t() const noexcept 
-                requires is_scalar_base_v<base_t> { 
-                
-                return this->value; 
-                
-            }
-
 
             /// @brief Copy assignment operator
             constexpr measurement& operator=(const measurement& other) noexcept {
@@ -129,7 +121,6 @@ namespace scipp::physics {
 
             }
 
-
             /// @brief Move assignment operator
             constexpr measurement& operator=(measurement&& other) noexcept {
 
@@ -138,62 +129,56 @@ namespace scipp::physics {
 
             }
 
+            /// @brief Copy assignment operator
+            template <typename T>
+            constexpr measurement& operator=(const measurement<base_t, T>& other) noexcept {
 
-            /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator==(const measurement& other) const noexcept {
-
-                return this->value == other.value; 
-
-            }
-            
-            /// @brief Check if this measurement is equal to another measurement
-            constexpr bool operator!=(const measurement& other) const noexcept {
-
-                return this->value != other.value; 
+                this->value = static_cast<value_t>(other.value);
+                return *this;
 
             }
 
-            /// @brief Check if this measurement is greater than another measurement
-            constexpr bool operator>(const measurement& other) const noexcept {
+            /// @brief Move assignment operator
+            template <typename T>
+            constexpr measurement& operator=(measurement<base_t, T>&& other) noexcept {
 
-                return this->value > other.value; 
-
-            }
-
-            /// @brief Check if this measurement is less than another measurement
-            constexpr bool operator<(const measurement& other) const noexcept {
-
-                return this->value < other.value; 
+                this->value = std::move(static_cast<value_t>(other.value));
+                return *this;
 
             }
 
-            /// @brief Check if this measurement is greater or equal to another measurement
-            constexpr bool operator>=(const measurement& other) const noexcept {
 
-                return this->value >= other.value; 
+            /// @brief Implicitly convert the measurement to a scalar value if it is a scalar base measurement
+            constexpr operator value_t() const noexcept
+                requires is_scalar_base_v<base_t> {
+
+                return this->value;
+
+            }
+
+
+            /// @brief Extract the value of this measurement converted to a specific unit
+            /// @note The unit must be of the same base of the measurement
+            template <typename T>
+            constexpr auto value_as(const unit<base_t, T>&) const noexcept {
+
+                return this->value / static_cast<double>(T::num) * static_cast<double>(T::den);
 
             }
 
-            /// @brief Check if this measurement is less or equal to another measurement
-            constexpr bool operator<=(const measurement& other) const noexcept {
-
-                return this->value <= other.value; 
-
-            }
-            
 
             /// @brief Print a measurement to an output stream
-            friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept { 
-                
-                os << other.value; 
-                if constexpr (!is_scalar_base_v<base_t>) 
+            friend constexpr std::ostream& operator<<(std::ostream& os, const measurement& other) noexcept {
+
+                os << other.value;
+                if constexpr (!is_scalar_base_v<base_t>)
                     os << ' ' << base_t::to_string();
                 return os;
-                
+
             }
 
             /// @brief Read a measurement from an input stream
-            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) { 
+            friend constexpr std::istream& operator>>(std::istream& is, measurement& other) {
 
                 std::string unit;
 
@@ -207,8 +192,8 @@ namespace scipp::physics {
                     if (unit_stream.get() == '[' && unit_stream.get(prefix_char) && unit_stream.get() == ']') {
 
                         auto prefix_it = std::find_if(prefix_map.begin(), prefix_map.end(),
-                            [prefix_char](const auto& pair) { 
-                                return pair.second == prefix_char; 
+                            [prefix_char](const auto& pair) {
+                                return pair.second == prefix_char;
                             }
                         );
 
@@ -223,10 +208,10 @@ namespace scipp::physics {
 
                 }
 
-                return is; 
-                
+                return is;
+
             }
-                        
+
 
     }; // struct measurement
 
@@ -234,15 +219,15 @@ namespace scipp::physics {
     // =============================================
     // measurement template guidelines
     // =============================================
-        
-        template <typename VALUE_TYPE, typename UNIT_TYPE> 
+
+        template <typename VALUE_TYPE, typename UNIT_TYPE>
             requires (math::is_number_v<VALUE_TYPE> && is_unit_v<UNIT_TYPE>)
-        measurement(const VALUE_TYPE&, const UNIT_TYPE&) 
+        measurement(const VALUE_TYPE&, const UNIT_TYPE&)
             -> measurement<typename UNIT_TYPE::base_t, VALUE_TYPE>;
 
-        template <typename VALUE_TYPE, typename UNIT_TYPE> 
+        template <typename VALUE_TYPE, typename UNIT_TYPE>
             requires (math::is_number_v<VALUE_TYPE> && is_unit_v<UNIT_TYPE>)
-        measurement(VALUE_TYPE&&, const UNIT_TYPE&) 
+        measurement(VALUE_TYPE&&, const UNIT_TYPE&)
             -> measurement<typename UNIT_TYPE::base_t, VALUE_TYPE>;
 
 

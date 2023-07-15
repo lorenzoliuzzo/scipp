@@ -103,7 +103,7 @@ namespace scipp::math {
         };
 
 
-        /// The autodiff variable type used for detail mode automatic differentiation.
+        /// The variable type used for reverse mode automatic differentiation.
         template <typename T>
         struct variable {
 
@@ -138,8 +138,44 @@ namespace scipp::math {
             constexpr ~variable() {}
 
 
+            /// Assign an arithmetic value to this variable.
+            template <typename U>
+            constexpr variable& operator=(const U& val) noexcept {
+
+                *this = variable(val);
+                return *this;
+
+            }
+
+            /// Assign an expression to this variable.
+            constexpr variable& operator=(const expr_ptr<value_t>& x) noexcept {
+
+                *this = variable(x);
+                return *this;
+
+            }
+
             /// Default copy assignment
-            constexpr variable& operator=(const variable& ) noexcept = default;
+            constexpr variable& operator=(const variable& x) noexcept {
+
+                this->expr = x.expr;
+                return *this;
+
+            }
+
+
+            /// Implicitly convert this variable object into an expression pointer.
+            constexpr operator const expr_ptr<value_t>&() const {
+
+                return expr;
+
+            }
+
+            constexpr explicit operator value_t() const {
+
+                return this->expr->val;
+
+            }
 
 
             /// Update the value of this variable with changes in its expression tree
@@ -160,111 +196,6 @@ namespace scipp::math {
                     throw std::logic_error("Cannot update the value of a dependent expression stored in a variable");
 
             }
-
-
-            /// Implicitly convert this variable object into an expression pointer.
-            constexpr operator const expr_ptr<value_t> &() const {
-
-                return expr;
-
-            }
-
-
-            /// Assign an arithmetic value to this variable.
-            template <typename U>
-                requires std::is_arithmetic_v<U>
-            constexpr auto operator=(const U &val) -> variable& {
-
-                *this = variable(val);
-                return *this;
-
-            }
-
-            /// Assign an expression to this variable.
-            constexpr auto operator=(const expr_ptr<value_t> &x) -> variable& {
-
-                *this = variable(x);
-                return *this;
-
-            }
-
-            // // Assignment operator
-            // constexpr variable& operator+=(const expr_ptr<value_t> &x) {
-
-            //     *this = variable(expr + x);
-            //     return *this;
-
-            // }
-
-            // constexpr variable& operator-=(const expr_ptr<value_t> &x) {
-
-            //     *this = variable(expr - x);
-            //     return *this;
-
-            // }
-
-            // constexpr variable& operator*=(const expr_ptr<value_t> &x) {
-
-            //     *this = variable(expr * x);
-            //     return *this;
-
-            // }
-
-            // constexpr variable& operator/=(const expr_ptr<value_t> &x) {
-
-            //     *this = variable(expr / x);
-            //     return *this;
-                
-            // }
-
-            // // Assignment operators with arithmetic values
-            // template <typename U>
-            // constexpr variable& operator+=(const U &x) {
-
-            //     *this = variable(expr + x);
-            //     return *this;
-
-            // }
-
-            // template <typename U>
-            //     requires physics::is_scalar_v<U>
-            // constexpr variable& operator-=(const U &x) {
-
-            //     *this = variable(expr - x);
-            //     return *this;
-
-            // }
-
-            // template <typename U>
-            //     requires physics::is_scalar_v<U>
-            // constexpr variable& operator*=(const U &x) {
-
-            //     *this = variable(expr * x);
-            //     return *this;
-
-            // }
-
-            // template <typename U>
-            //     requires physics::is_scalar_v<U>
-            // constexpr variable& operator/=(const U &x) {
-
-            //     *this = variable(expr / x);
-            //     return *this;
-
-            // }
-
-            constexpr explicit operator value_t() const {
-
-                return this->expr->val;
-
-            }
-
-            // template <typename U>
-            // constexpr explicit operator U() const {
-
-            //     return static_cast<U>(expr->val);
-
-            // }
 
 
         }; // struct variable
@@ -324,55 +255,55 @@ namespace scipp::math {
         // COMPARISON OPERATORS
         //------------------------------------------------------------------------------
 
-        template <typename Comparator, typename T, typename U>
-        constexpr auto comparison_operator(const T &t, const U &u) {
+        // template <typename Comparator, typename T, typename U>
+        // constexpr auto comparison_operator(const T &t, const U &u) {
 
-            using C = expr_common_t<T, U>;
-            return expr_comparison(coerce_expr<C>(t), coerce_expr<C>(u), Comparator{});
+        //     using C = expr_common_t<T, U>;
+        //     return expr_comparison(coerce_expr<C>(t), coerce_expr<C>(u), Comparator{});
 
-        }
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator==(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator==(const T &t, const U &u) {
 
-            return comparison_operator<std::equal_to<>>(t, u);
-        }
+        //     return comparison_operator<std::equal_to<>>(t, u);
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator!=(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator!=(const T &t, const U &u) {
 
-            return comparison_operator<std::not_equal_to<>>(t, u);
-        }
+        //     return comparison_operator<std::not_equal_to<>>(t, u);
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator<=(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator<=(const T &t, const U &u) {
 
-            return comparison_operator<std::less_equal<>>(t, u);
-        }
+        //     return comparison_operator<std::less_equal<>>(t, u);
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator>=(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator>=(const T &t, const U &u) {
 
-            return comparison_operator<std::greater_equal<>>(t, u);
-        }
+        //     return comparison_operator<std::greater_equal<>>(t, u);
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator<(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator<(const T &t, const U &u) {
 
-            return comparison_operator<std::less<>>(t, u);
-        }
+        //     return comparison_operator<std::less<>>(t, u);
+        // }
 
-        template <typename T, typename U>
-            requires is_binary_expr_v<T, U>
-        constexpr auto operator>(const T &t, const U &u) {
+        // template <typename T, typename U>
+        //     requires is_binary_expr_v<T, U>
+        // constexpr auto operator>(const T &t, const U &u) {
 
-            return comparison_operator<std::greater<>>(t, u);
-        }
+        //     return comparison_operator<std::greater<>>(t, u);
+        // }
 
         // //------------------------------------------------------------------------------
         // // CONDITION AND RELATED FUNCTIONS

@@ -11,63 +11,89 @@
 
 #include "scipp"
 
-
 using namespace scipp;
 
-using namespace physics;
-using namespace units;
+using namespace physics;            // for measurements 
+using namespace units;              // for the units
+using namespace units::literals;    // for the units literals
 
-using namespace math;
-using namespace op; 
-using namespace calculus;
+using namespace math; 
+using namespace op;                 // for the operators and the functions
+using namespace calculus;           // for the integral function and the interval struct
 
-using tools::print; 
-
-using namespace std::numbers; 
+using tools::print;                 // for the print function
 
 
 int main() {
 
-    constexpr auto a = 0.2 * m;                     /// apertura del reticolo
-    constexpr auto d = 10.0 * um;                   /// passo del reticolo
-    constexpr auto lambda = 589.0 * nm;             /// lunghezza d'onda
-    constexpr auto L = 1.0 * m;                     /// distanza sorgente-reticolo
+    /// parameters of the experiment
+    constexpr auto d = 10.0um;                      /// slit width
+    constexpr auto lambda = 589.0nm;                /// wavelength
+    constexpr auto L = 0.5m;                        /// distance from the slit to the screen
 
-    measurement<base::length> x_ = -a;              /// posizione sull'asse x
-    constexpr auto I_ = interval(-a, a);            /// intervallo di campionamento
-    constexpr auto dx = 1.0 * mm;                   /// passo di campionamento
-    constexpr size_t N = I_.steps(dx);              /// numero di campioni
 
-    variable<measurement<base::length>> x;          /// variabile di integrazione
-    constexpr auto I = interval(-0.5 * d, 0.5 * d); /// intervallo di integrazione
-    constexpr auto interval_length = I.length();    /// lunghezza dell'intervallo di integrazione    
+    measurement<base::length> x = -0.2m;            /// variable for the function I(x)
+    constexpr auto I = interval(-0.2m, 0.2m);       /// interval of points where we want to evaluate I(x)
+    constexpr auto dx = 1.0mm;                      /// distance between two points
+    constexpr size_t N = I.steps(dx);               /// numer of points with the math::calculus::interval function
 
+    measurement<base::length> x_;                   /// variable for the integral function     
+    auto I_ = interval(-0.5 * d, 0.5 * d);          /// interval of integration
+
+    print<micrometre>("d = ", d);                   /// we can specify the unit of measurement as a template parameter (type)
+    print("lambda = ", lambda, nm);                 /// or we can specify the unit of measurement as a function parameter (value)
+    print("interval of x_ = ", I_);                 /// we can print the interval too
+    print("interval of x = ", I);          
+
+
+    /// we define the integral function of I(x) as a math::calculus::unary_function 
+    /// we can construct the unary_function by simply using a lambda function and passing the variable as a reference
+    /// the unary_function takes a math::calculus::variable and returns a measurement
     auto f = unary_function<measurement<base::scalar>, measurement<base::length>>(
-        [lambda, L, &x_](variable<measurement<base::length>>& t) { 
-            constexpr auto k = 2.0 * pi / lambda;
-            auto delta = hypot(L, x_ - t) - hypot(L, x_);
-            return cos(k * delta); 
-        }, x);                                      /// funzione dell'ampiezza sullo schermo
+        
+        /// we pass by value the parameters and by reference the x variable
+        /// note that the lambda function only *has* to take a variable.
+        [lambda, L, &x](variable<measurement<base::length>>& t) {   
 
-    print<micrometre>("d = ", d);
-    print<nanometre>("lambda = ", lambda);
-    print("L = ", L);
-    print("interval = ", I); 
+            constexpr auto k = 2.0 * std::numbers::pi / lambda;     /// wave number
+            return cos(k * (hypot(L, x - t) - hypot(L, x)));        /// using the math::op::hypot function     
 
-    std::vector<double> integral_values(N), x_values(N); 
-    meta::for_<N>([&](auto i) {
+        }, x_ /// we pass the x variable to the unary_function constructor to bind with its variable member
 
-        x_values[i] = x_.value;
-        integral_values[i] = midpoint<std::ratio<1, 10000>>(f, I) / interval_length;
-        x_ += dx;
+    ); /// please note that the function f is a cosine, so it is a scalar function, in the sense that it returns measurement with base::scalar
+
+
+    std::vector<double> integral_values(N), x_values(N); /// to store the values for the plot
+
+    /// we iterate over the interval using the meta::for_ function
+    meta::for_<N>([&](auto i) { 
+
+        /// we store the value of x, not the measurement
+        x_values[i] = x.value; 
+
+        /// we evaluate the integral using i.e. the midpoint rule from the math::calculus namespace
+        /// the precision of the calculation could be specified using an std::ratio as a template parameter
+        /// the result of the integral is the width of the diffraction pattern
+        integral_values[i] = midpoint<std::ratio<1, 10000>>(f, I_).value_as(um); /// we extract the value of the integral in micrometres
+
+        /// we increment the x variable by dx
+        x += dx; 
 
     });
 
+    /// The integration here is correct from the dimensional point of view!
+    /// the result of the integral is a measurement with base::length
+    auto integral = midpoint<std::ratio<1, 10000>>(f, I_);
+    print("integral = ", integral); 
+    static_assert(are_same_measurement_v<decltype(integral), measurement<base::length>>); 
+
+
+    /// we plot the results using the matplotlib-cpp library
     plt::figure();
     plt::title("Diffracted intensity");
     plt::plot(x_values, integral_values);
-    plt::xlabel("x [m]");
-    plt::ylabel("I / I_0");
+    plt::xlabel("x [m]");  // we can specify the unit of measurement
+    plt::ylabel("I [um]"); // we can specify the unit of measurement
     plt::grid(true);
     plt::tight_layout();
     plt::save("images/diffracted_intensity.png");

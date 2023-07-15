@@ -42,15 +42,12 @@ namespace scipp::math {
 
 
         template <typename T1, typename T2>
-            requires physics::are_measurements_v<T1, T2>
+            requires (physics::are_measurements_v<T1, T2> && physics::are_same_base_v<typename T1::base_t, typename T2::base_t>)
         struct greater_equal_impl<T1, T2> {
             
             static constexpr bool f(const T1& x, const T2& y) {
 
-                if constexpr (physics::are_same_base_v<T1, T2>)
-                    return x.value >= y.value;
-                
-                return false; 
+                return x.value >= y.value;
 
             }       
 

@@ -1,0 +1,9 @@
+# Build files
+build/
+.build/
+
+docs/_site/
+docs/vendor/
+docs/.jekyll-cache/
+
+gmon.out

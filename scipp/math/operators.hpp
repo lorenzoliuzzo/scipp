@@ -11,52 +11,52 @@
 namespace scipp::math {
     
     
-    // /// @brief Equal operator
-    // inline static constexpr auto operator==(const auto& x, const auto& y) noexcept { 
+    /// @brief Equal operator
+    inline static constexpr auto operator==(const auto& x, const auto& y) noexcept { 
 
-    //     return op::equal(x, y);
+        return op::equal(x, y);
         
-    // }
+    }
 
 
-    // /// @brief Disqual operator
-    // inline static constexpr auto operator!=(auto x, auto y) noexcept { 
+    /// @brief Disqual operator
+    inline static constexpr auto operator!=(auto x, auto y) noexcept { 
 
-    //     return !op::equal(x, y);
+        return !op::equal(x, y);
         
-    // }
+    }
 
 
-    // /// @brief Greater than operator
-    // inline static constexpr auto operator>(auto&& x, auto&& y) noexcept { 
+    /// @brief Greater than operator
+    inline static constexpr auto operator>(const auto& x, const auto& y) noexcept { 
 
-    //     return op::greater(std::move(x), std::move(y));
+        return op::greater(x, y);
         
-    // }
+    }
 
 
-    // /// @brief Less than operator
-    // inline static constexpr auto operator<(auto&& x, auto&& y) noexcept { 
+    /// @brief Less than operator
+    inline static constexpr auto operator<(const auto& x, const auto& y) noexcept { 
 
-    //     return op::less(std::move(x), std::move(y));
+        return op::less(x, y);
         
-    // }
+    }
 
 
-    // /// @brief Greater than or equal operator
-    // inline static constexpr auto operator>=(auto&& x, auto&& y) noexcept { 
+    /// @brief Greater than or equal operator
+    inline static constexpr auto operator>=(const auto& x, const auto& y) noexcept { 
 
-    //     return op::greater_equal(std::move(x), std::move(y));
+        return op::greater_equal(x, y);
         
-    // }
+    }
 
 
-    // /// @brief Less than or equal operator
-    // inline static constexpr auto operator<=(auto&& x, auto&& y) noexcept { 
+    /// @brief Less than or equal operator
+    inline static constexpr auto operator<=(const auto& x, const auto& y) noexcept { 
 
-    //     return op::less_equal(std::move(x), std::move(y));
+        return op::less_equal(x, y);
         
-    // }
+    }
 
 
     /// @brief Negate operator 

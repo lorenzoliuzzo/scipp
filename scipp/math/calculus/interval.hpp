@@ -89,7 +89,7 @@ namespace scipp::math {
         
             }
 
-            constexpr size_t steps(value_t step) const noexcept {
+            constexpr size_t steps(const value_t& step) const noexcept {
                     
                 return op::abs((this->end - this->start) / step); 
         

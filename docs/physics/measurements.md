@@ -1,6 +1,8 @@
 ---
 title: Units and measurements
+title: Units and measurements
 layout: default
+permalink: /physics/units-and-measurements/
 permalink: /physics/units-and-measurements/
 parent: Physics namespace
 author_profile: true
@@ -10,6 +12,7 @@ author_profile: true
 
 ## Base quantity
 The `base_quantity` struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units ([SI](https://en.wikipedia.org/wiki/International_System_of_Units)) - `length`, `time`, `mass`, `temperature`, `electric_current`, `substance_amount`, and `luminous_intensity`, as template parameters:
+The `base_quantity` struct represents a physical quantity by storing the powers of the seven base quantities of the International System of Units ([SI](https://en.wikipedia.org/wiki/International_System_of_Units)) - `length`, `time`, `mass`, `temperature`, `electric_current`, `substance_amount`, and `luminous_intensity`, as template parameters:
 ```cpp
 template <int LENGTH, int TIME, int MASS, int TEMPERATURE, 
           int ELETTRIC_CURRENT, int SUBSTANCE_AMOUNT, int LUMINOUS_INTENSITY>
@@ -18,7 +21,11 @@ struct base_quantity {
     static constexpr std::array<int, 7> powers = {LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY}; ///< array of the powers of the base quantities
 
     static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
+    static constexpr std::array<int, 7> powers = {LENGTH, TIME, MASS, TEMPERATURE, ELETTRIC_CURRENT, SUBSTANCE_AMOUNT, LUMINOUS_INTENSITY}; ///< array of the powers of the base quantities
 
+    static constexpr std::array<std::string_view, 7> base_literals = {"m", "s", "kg", "K", "A", "mol", "cd"}; //< array of the literals of the base quantities
+
+    /// @brief Returns the string representation of the base_quantity
     /// @brief Returns the string representation of the base_quantity
     static constexpr std::string_view to_string() noexcept {
 
@@ -26,16 +33,25 @@ struct base_quantity {
 
         // Iterate over the base quantities and their powers
         meta::for_<7>([&](auto i) constexpr {
+        // Iterate over the base quantities and their powers
+        meta::for_<7>([&](auto i) constexpr {
 
             if constexpr (powers[i] != 0) {
+            if constexpr (powers[i] != 0) {
 
+                if constexpr (powers[i] == 1) // Append the base quantity to the string builder
+                    ss << base_literals[i]; 
                 if constexpr (powers[i] == 1) // Append the base quantity to the string builder
                     ss << base_literals[i]; 
 
                 else // Append the base quantity and its power to the string builder
                     ss << base_literals[i] << '^' << powers[i]; 
+                else // Append the base quantity and its power to the string builder
+                    ss << base_literals[i] << '^' << powers[i]; 
 
             }
+            
+        });
             
         });
 

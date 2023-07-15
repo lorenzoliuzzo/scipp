@@ -2,8 +2,10 @@
 build/
 .build/
 
+# Site files
 docs/_site/
 docs/vendor/
 docs/.jekyll-cache/
 
+# gprof file
 gmon.out

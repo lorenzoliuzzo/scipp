@@ -364,7 +364,7 @@ Consider an example, a little more complex, in which we want to plot the intensi
 
 $$ I (x) = \int _{-\frac{d}{2}} ^{\frac{d}{2}} dx' cos(\frac{2\pi}{\lambda} \cdot (\sqrt{L^2 + (x - x')^2} - \sqrt{L^2 + x^2})) $$
 
-where $$d$$ is the slit width, $&\lambda$$ is the wavelength of the light and $$x$$ is the distance from the center of the screen.
+where $d$ is the slit width, $\lambda$ is the wavelength of the light and $x$ is the distance from the center of the screen.
 
 We can write the code in this way:
 ```cpp
@@ -470,5 +470,4 @@ interval of x = [ -0.2 m, 0.2 m ]
 x = 0 m
 I(x) = 9.99983e-06 m
 ```
-
 ![plot](../../images/diffracted_intensity.png)

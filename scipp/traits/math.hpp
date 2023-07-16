@@ -964,6 +964,43 @@ namespace scipp::math {
             
         }
 
+        // /// @brief Truncation function
+        // /// @tparam precision of the truncation
+        // /// @param value to truncate
+        // template <class PRECISION, typename T>
+        //     requires physics::is_prefix_v<PRECISION>
+        // inline static constexpr auto trunc(const T& x) noexcept {
+    
+        //     /// truct up to the precision of the type
+        //     constexpr double relative_precision = static_cast<double>(PRECISION::num) / static_cast<double>(PRECISION::den);
+
+        //     if (op::abs(x) > T{1.0}) 
+        //         return trunc_impl<T>::f(x / relative_precision, PRECISION) * relative_precision;
+
+        //     else 
+        //         return trunc_impl<T>::f(x * relative_precision, PRECISION) / relative_precision;
+    
+        // }
+
+
+        // /// @brief Truncation function
+        // /// @tparam precision of the truncation
+        // /// @param value to truncate
+        // template <typename T, typename PRECISION>
+        //     requires physics::is_prefix_v<PRECISION>
+        // inline static constexpr auto trunc(const T& x, const PRECISION&) noexcept {
+    
+        //     /// truct up to the precision of the type
+        //     constexpr double relative_precision = static_cast<double>(PRECISION::num) / static_cast<double>(PRECISION::den);
+
+        //     if (op::abs(x) > T{1.0}) 
+        //         return trunc_impl<T>::f(x / relative_precision, PRECISION) * relative_precision;
+
+        //     else 
+        //         return trunc_impl<T>::f(x * relative_precision, PRECISION) / relative_precision;
+    
+        // }
+
 
         template <typename T>
         struct frac_impl;

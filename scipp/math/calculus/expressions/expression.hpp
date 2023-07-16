@@ -52,6 +52,114 @@ namespace scipp::math {
         }; /// struct expr
         
 
+        /// The node in the expression tree representing a constant expression.
+        template <typename T>
+        struct constant_expr : expr<T> {
+
+            using expr<T>::expr;
+
+            constexpr void propagate(std::shared_ptr<void>) override {}
+
+            constexpr void update() override {}
+
+        };
+
+
+        /// The node in the expression tree representing a variable expression.
+        template <typename T>
+        struct variable_expr : expr<T> {
+
+            std::shared_ptr<void> grad_ptr;
+            std::shared_ptr<void> gradx_ptr;
+
+
+            constexpr variable_expr(const T& v) noexcept : expr<T>(v) {}
+
+
+            virtual constexpr void bind_value(std::shared_ptr<void> grad) {   
+
+                grad_ptr = grad;
+
+            }
+
+            virtual constexpr void bind_expr(std::shared_ptr<void> gradx) {
+
+                gradx_ptr = std::static_pointer_cast<expr<T>>(gradx);
+
+            }
+
+        };
+
+
+        /// @brief The node in the expression tree representing an independent variable expression.
+        template <typename T>
+        struct independent_variable_expr : variable_expr<T> {
+
+            using variable_expr<T>::grad_ptr;
+            using variable_expr<T>::gradx_ptr;
+
+
+            constexpr independent_variable_expr(const T& v) noexcept : variable_expr<T>(v) {}
+
+
+            virtual constexpr void propagate(std::shared_ptr<void> wprime) {
+
+                if (grad_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<T>(wprime);
+                    auto value = std::static_pointer_cast<T>(grad_ptr);
+
+                    *value += *derivative;
+                    
+                }
+
+            }
+
+
+            virtual constexpr void update() override {}
+
+        };
+
+
+        /// @brief The node in the expression tree representing a dependent variable expression.
+        template <typename T>
+        struct dependent_variable_expr : variable_expr<T> {
+
+            using variable_expr<T>::grad_ptr;
+            using variable_expr<T>::gradx_ptr;
+
+            expr_ptr<T> expr;
+
+            constexpr dependent_variable_expr(const expr_ptr<T>& e) noexcept
+                : variable_expr<T>(e->val), expr(e) {}
+
+
+            constexpr void propagate(std::shared_ptr<void> wprime) override {
+
+                if (grad_ptr.get()) {
+
+                    auto derivative = std::static_pointer_cast<T>(wprime);
+                    auto value = std::static_pointer_cast<T>(grad_ptr);
+
+                    *value += *derivative;
+
+                }
+
+                expr->propagate(wprime);
+
+            }
+
+
+            constexpr void update() override {
+
+                this->expr->update();
+                this->val = this->expr->val;
+
+            }
+            
+        };
+
+
         template <typename T, typename T1>
         struct unary_expr : expr<T> {
 

@@ -84,6 +84,8 @@ namespace scipp::math {
 
 			}
 
+        };
+
 
         // template <typename T>
         //     requires physics::is_scalar_umeasurement_v<T>
@@ -109,9 +111,6 @@ namespace scipp::math {
 		// 	}
 
 		// };
-
-
-		};
 
 
     } // namespace op

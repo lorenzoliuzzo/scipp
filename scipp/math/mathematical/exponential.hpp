@@ -16,6 +16,30 @@ namespace scipp::math {
 
 
         template <typename T>
+        struct exponential_impl<calculus::expr_ptr<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::exponential_expr<T>>(abs(x->val), x);
+
+            }
+
+        };
+
+
+        template <typename T>
+        struct exponential_impl<calculus::variable<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::variable<T>& x) {
+
+                return exp(x.expr); 
+
+            }
+
+        };
+
+
+        template <typename T>
             requires (is_number_v<T> || physics::is_scalar_measurement_v<T>)
         struct exponential_impl<T> {
 

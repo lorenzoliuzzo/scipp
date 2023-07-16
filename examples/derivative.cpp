@@ -2,7 +2,7 @@
  * @file    examples/physics/derivative.cpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   Example of function derivative
- * @date    2023-07-15
+ * @date    2023-07-16
  * 
  * @copyright Copyright (c) 2023
  */
@@ -21,31 +21,33 @@ int main() {
 
     std::vector<double> x_values(500), f_values(500), df_values(500);
 
-    variable<measurement<base::scalar>> x = 0.0;
+    variable<measurement<base::scalar>> x = -25.0;
 
-    auto f = [&](const auto& x) { return op::sinh(x); };
+    auto f = [&](const auto& x) { return op::abs(x); };
 
 
     meta::for_<500>([&](auto i) {
 
-        x = 0.01 * i.index;
+        x += 0.1;
+
         variable y = f(x);
 
         x_values[i] = val(x);
         f_values[i] = val(y);
+
         df_values[i] = derivatives(y, wrt(x));
 
     });
 
     plt::figure();
-    plt::title("Derivative of sinh(x)");
-    plt::named_plot("sinh", x_values, f_values);
-    plt::named_plot("d(sinh(x))/dx", x_values, df_values);
+    plt::title("Derivative of abs(x)");
+    plt::named_plot("abs", x_values, f_values);
+    plt::named_plot("d(abs(x))/dx", x_values, df_values);
     plt::xlabel("x");
     plt::ylabel("y");
     plt::legend();
     plt::grid(true);
-    plt::save("images/derivative.png");
+    plt::save("images/derivative_abs.png");
     plt::show();
 
 

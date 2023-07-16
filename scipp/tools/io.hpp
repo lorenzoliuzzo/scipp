@@ -84,7 +84,7 @@ namespace scipp::tools {
 
 
     /// @brief Print a measurement with a fixed number of digits and a description
-    template <bool NEWLINE = true, typename PREFIX_TYPE, typename MEAS_TYPE>
+    template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
         requires (physics::is_prefix_v<PREFIX_TYPE> && (physics::is_generic_measurement_v<MEAS_TYPE> || math::is_number_v<MEAS_TYPE>))
     inline static constexpr void print(const std::string& message, const MEAS_TYPE& other) noexcept {
 
@@ -95,7 +95,7 @@ namespace scipp::tools {
         else
             fixed_precision = std::log10(static_cast<double>(PREFIX_TYPE::num) / static_cast<double>(PREFIX_TYPE::den));
 
-        std::cout << message << ": "; 
+        std::cout << message; 
         std::cout.precision(fixed_precision);
         std::cout << std::fixed << other << std::defaultfloat; 
         std::cout.precision(6);
@@ -129,18 +129,18 @@ namespace scipp::tools {
     }
 
 
-    /// @brief Print the measurement with a specific number of digits
-    template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
-        requires (physics::is_prefix_v<PREFIX_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
-    inline static constexpr void print(const MEAS_TYPE& other) noexcept {
+    // /// @brief Print the measurement with a specific number of digits
+    // template <typename PREFIX_TYPE, typename MEAS_TYPE, bool NEWLINE = true>
+    //     requires (physics::is_prefix_v<PREFIX_TYPE> && physics::is_measurement_v<MEAS_TYPE>)
+    // inline static constexpr void print(const MEAS_TYPE& other) noexcept {
 
-        constexpr int digits = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
-        const auto rounded_value = std::round(other.value * std::pow(10.0, digits)) / std::pow(10.0, digits);
-        std::cout << rounded_value << ' ' << MEAS_TYPE::base_t::to_string(); 
-        if constexpr (NEWLINE)
-            std::cout << '\n'; 
+    //     constexpr int digits = std::log10(static_cast<double>(PREFIX_TYPE::den) / static_cast<double>(PREFIX_TYPE::num));
+    //     const auto rounded_value = std::round(other.value * std::pow(10.0, digits)) / std::pow(10.0, digits);
+    //     std::cout << rounded_value << ' ' << MEAS_TYPE::base_t::to_string(); 
+    //     if constexpr (NEWLINE)
+    //         std::cout << '\n'; 
         
-    }
+    // }
 
 
     /// @brief Print the measurement with a specific number of digits and a description
@@ -214,7 +214,7 @@ namespace scipp::tools {
 
         using prefix_t = typename UNIT_TYPE::prefix_t;
         constexpr auto factor = static_cast<double>(prefix_t::num) / static_cast<double>(prefix_t::den);
-        std::cout << description << other / factor;
+        std::cout << description << other.value / factor << ' ' << UNIT_TYPE::to_string(); 
         if constexpr (NEWLINE)
             std::cout << '\n'; 
 

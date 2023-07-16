@@ -16,6 +16,30 @@ namespace scipp::math {
 
 
         template <typename T>
+        struct logarithm_impl<calculus::expr_ptr<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::logarithm_expr<T>>(abs(x->val), x);
+
+            }
+
+        };
+
+
+        template <typename T>
+        struct logarithm_impl<calculus::variable<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::variable<T>& x) {
+
+                return log(x.expr); 
+
+            }
+
+        };
+
+
+        template <typename T>
             requires (is_number_v<T> || physics::is_scalar_measurement_v<T>)
         struct logarithm_impl<T> {
 

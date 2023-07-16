@@ -39,7 +39,7 @@ namespace scipp::physics {
 
         
         /// @brief Returns the string representation of the base_quantity
-        static constexpr std::string_view to_string() noexcept {
+        static constexpr std::string to_string() noexcept {
 
             std::stringstream ss;
 

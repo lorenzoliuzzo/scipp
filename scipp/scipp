@@ -66,30 +66,26 @@
 
 
         /// ---------------------------------------------------------------
-        /// @brief scipp::math::calculus differentation
-        /// ---------------------------------------------------------------
-
-            #include "math/calculus/differentiation/expression.hpp" 
-            #include "math/calculus/differentiation/constant.hpp" 
-            #include "math/calculus/differentiation/variable.hpp" 
-
-
-        /// ---------------------------------------------------------------
         /// @brief scipp::math::calculus expressions
         /// ---------------------------------------------------------------
 
+            #include "math/calculus/expressions/expression.hpp" 
+
             #include "math/calculus/expressions/algebraic/negate.hpp"           
-            #include "math/calculus/expressions/algebraic/add.hpp"              
+            #include "math/calculus/expressions/algebraic/add.hpp"      
+
             #include "math/calculus/expressions/algebraic/multiply.hpp"         
             #include "math/calculus/expressions/algebraic/invert.hpp"
+
             #include "math/calculus/expressions/algebraic/power.hpp"
             #include "math/calculus/expressions/algebraic/root.hpp"
 
             /// ---------------------------------------------------------------
 
+            #include "math/calculus/expressions/mathematical/absolute.hpp"
             #include "math/calculus/expressions/mathematical/exponential.hpp"
             #include "math/calculus/expressions/mathematical/logarithm.hpp"
-
+            
             #include "math/calculus/expressions/mathematical/trigonometric/sine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/cosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/tangent.hpp"
@@ -106,27 +102,32 @@
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
 
+            #include "math/calculus/expressions/mathematical/erf.hpp"
 
         /// ---------------------------------------------------------------
-        /// @brief scipp::math::calculus expressions
+        /// @brief scipp::math::op functions
         /// ---------------------------------------------------------------
 
             #include "math/operators.hpp" 
 
-            /// ---------------------------------------------------------------
+            /// --------------------------------------------------------------- ok
 
             #include "math/logical/equal.hpp"
+
             #include "math/logical/greater.hpp"
             #include "math/logical/greater_equal.hpp"
+
             #include "math/logical/less.hpp"
             #include "math/logical/less_equal.hpp"
 
-            /// ---------------------------------------------------------------
+            /// --------------------------------------------------------------- ok
 
             #include "math/algebraic/negate.hpp"           
             #include "math/algebraic/add.hpp" 
+
             #include "math/algebraic/invert.hpp" 
             #include "math/algebraic/multiply.hpp" 
+
             #include "math/algebraic/power.hpp" 
             #include "math/algebraic/root.hpp" 
 
@@ -155,8 +156,8 @@
             #include "math/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
 
             #include "math/mathematical/erf.hpp"
-            #include "math/mathematical/erfc.hpp"
-            #include "math/mathematical/gamma.hpp"
+            // #include "math/mathematical/erfc.hpp"
+            // #include "math/mathematical/gamma.hpp"
 
             /// ---------------------------------------------------------------
 
@@ -177,8 +178,7 @@
             
             // #include "math/logical/are_close.hpp"
 
-            
-            
+
         /// ---------------------------------------------------------------
         /// @brief physics/measurements
         /// ---------------------------------------------------------------
@@ -193,23 +193,39 @@
 
 
         /// ---------------------------------------------------------------
-
-            #include "tools/timer.hpp"
-
-
-
+        /// @brief scipp::math::calculus differentation
+        /// ---------------------------------------------------------------
+        
+            #include "math/calculus/variable.hpp" 
             #include "math/calculus/differentiation/derivatives.hpp"
+
+            #include "math/calculus/function.hpp"
+
+
             // #include "math/calculus/ode/solver.hpp"
             // #include "math/calculus/legendre_transformation.hpp"
             // #include "math/calculus/linear_regression.hpp"
             
 
-            #include "math/calculus/differentiation/function.hpp"
-            #include "math/calculus/norm.hpp"
-            #include "math/calculus/integration/curvilinear.hpp"
+            // #include "math/mathematical/norm.hpp"
+
             #include "math/calculus/interval.hpp"
             // #include "math/calculus/curve.hpp"   
             #include "math/calculus/taylor_series.hpp"
+
+
+        /// ---------------------------------------------------------------
+        /// @brief scipp::math::calculus integration
+        /// ---------------------------------------------------------------
+
+            #include "math/calculus/integration/curvilinear.hpp"
+            // #include "math/calculus/integration/rectangle.hpp"
+            // #include "math/calculus/integration/trapezoid.hpp"
+            #include "math/calculus/integration/midpoint.hpp"
+            // #include "math/calculus/integration/endpoint.hpp"
+            #include "math/calculus/integration/simpson.hpp"
+            // #include "math/calculus/integration/gauss.hpp"  
+
 
             #include "physics/material_point.hpp"
             #include "physics/mechanics/kinetic_energy.hpp"
@@ -217,16 +233,6 @@
             #include "physics/mechanics/lagrangian.hpp"
             #include "physics/mechanics/hamiltonian.hpp"
             
-
-        /// ---------------------------------------------------------------
-        /// @brief math/numbers
-        /// ---------------------------------------------------------------
-        
-            // #include "math/numbers/complex.hpp" 
-            // #include "math/numbers/dual.hpp" 
-
-            // #include "math/numbers/constants.hpp" 
-
 
         /// ---------------------------------------------------------------
         /// @brief geometry/linear_algebra
@@ -274,12 +280,6 @@
             // #include "math/calculus/curves/ellipse.hpp"
             // #include "math/calculus/curves/sphere.hpp"
 
-            // #include "math/calculus/integration/rectangle.hpp"
-            // #include "math/calculus/integration/trapezoid.hpp"
-            #include "math/calculus/integration/midpoint.hpp"
-            // #include "math/calculus/integration/endpoint.hpp"
-            // #include "math/calculus/integration/simpson.hpp"
-            // #include "math/calculus/integration/gauss.hpp"  
 
         //     #include "math/calculus/hilbert_space.hpp"
 
@@ -301,8 +301,12 @@
         /// @brief tools
         /// ---------------------------------------------------------------
 
-            // #include "tools/plot.hpp"
+            #include "tools/timer.hpp"
+
+            #include "tools/plot.hpp"
         //     #include "tools/bench.hpp"
+
+        /// ---------------------------------------------------------------
 
 
 #endif

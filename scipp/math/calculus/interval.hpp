@@ -1,7 +1,7 @@
 /**
- * @file    math/calculus/interval.hpp
+ * @file    scipp/math/calculus/interval.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the interval struct.
  * @date    2023-07-07
  * 
  * @copyright Copyright (c) 2023

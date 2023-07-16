@@ -13,54 +13,48 @@
 
 using namespace scipp;
 
-using namespace physics;            // for measurements 
-using namespace units;              // for the units
-using namespace units::literals;    // for the units literals
+using namespace physics;             // for measurements 
+using namespace units;               // for the units
+using namespace units::literals;     // for the units literals
 
 using namespace math; 
-using namespace op;                 // for the operators and the functions
-using namespace calculus;           // for the integral function and the interval struct
+using namespace op;                  // for the operators and the functions
+using namespace calculus::integral;  // for the integral function
+using calculus::interval;            // for the interval struct
 
-using tools::print;                 // for the print function
+using tools::print;                  // for the print function
 
 
 int main() {
 
     /// parameters of the experiment
-    constexpr auto d = 10.0um;                      /// slit width
-    constexpr auto lambda = 589.0nm;                /// wavelength
-    constexpr auto L = 0.5m;                        /// distance from the slit to the screen
+    constexpr auto d = 10.0um;                          /// slit width
+    constexpr auto lambda = 589.0nm;                    /// wavelength
+    constexpr auto L = 0.5m;                            /// distance from the slit to the screen
+
+    constexpr auto I_int = interval(-0.5 * d, 0.5 * d); /// interval of integration
+
+    measurement<base::length> x = -0.2m;                /// variable for the function I(x)
+    constexpr auto I = interval(-0.2m, 0.2m);           /// interval of points where we want to evaluate I(x)
+    constexpr auto dx = 1.0mm;                          /// distance between two points
+    constexpr size_t N = I.steps(dx);                   /// numer of points with the math::calculus::interval function
 
 
-    measurement<base::length> x = -0.2m;            /// variable for the function I(x)
-    constexpr auto I = interval(-0.2m, 0.2m);       /// interval of points where we want to evaluate I(x)
-    constexpr auto dx = 1.0mm;                      /// distance between two points
-    constexpr size_t N = I.steps(dx);               /// numer of points with the math::calculus::interval function
+    /// we define the integral function of I(x) as an std::function 
+    /// we use a lambda function and we pass by value the parameters and by reference the integral variable
+    /// the function is a scalar function, so it returns a measurement with base::scalar
+    std::function f = [lambda, L, &x](measurement<base::length> t) -> measurement<base::scalar> {   
 
-    measurement<base::length> x_;                   /// variable for the integral function     
-    auto I_ = interval(-0.5 * d, 0.5 * d);          /// interval of integration
+        constexpr auto k = 2.0 * std::numbers::pi / lambda;     /// wave number
+        return cos(k * (hypot(L, x - t) - hypot(L, x)));        /// using the math::op::hypot function     
 
-    print<micrometre>("d = ", d);                   /// we can specify the unit of measurement as a template parameter (type)
-    print("lambda = ", lambda, nm);                 /// or we can specify the unit of measurement as a function parameter (value)
-    print("interval of x_ = ", I_);                 /// we can print the interval too
-    print("interval of x = ", I);          
+    }; 
 
 
-    /// we define the integral function of I(x) as a math::calculus::unary_function 
-    /// we can construct the unary_function by simply using a lambda function and passing the variable as a reference
-    /// the unary_function takes a math::calculus::variable and returns a measurement
-    auto f = unary_function<measurement<base::scalar>, measurement<base::length>>(
-        
-        /// we pass by value the parameters and by reference the x variable
-        /// note that the lambda function only *has* to take a variable.
-        [lambda, L, &x](variable<measurement<base::length>>& t) {   
-
-            constexpr auto k = 2.0 * std::numbers::pi / lambda;     /// wave number
-            return cos(k * (hypot(L, x - t) - hypot(L, x)));        /// using the math::op::hypot function     
-
-        }, x_ /// we pass the x variable to the unary_function constructor to bind with its variable member
-
-    ); /// please note that the function f is a cosine, so it is a scalar function, in the sense that it returns measurement with base::scalar
+    print<micrometre>("d = ", d);                       /// we can specify the unit of measurement as a template parameter (type)
+    print("lambda = ", lambda, nm);                     /// or we can specify the unit of measurement as a function parameter (value)
+    print("interval of integration: ", I_int);          /// we can print the interval too
+    print("f(0.0m) = ", f(0.0m));                       /// we can evaluate the function at a point
 
 
     std::vector<double> integral_values(N), x_values(N); /// to store the values for the plot
@@ -72,21 +66,16 @@ int main() {
         x_values[i] = x.value; 
 
         /// we evaluate the integral using i.e. the midpoint rule from the math::calculus namespace
-        /// the precision of the calculation could be specified using an std::ratio as a template parameter
         /// the result of the integral is the width of the diffraction pattern
-        integral_values[i] = midpoint<std::ratio<1, 10000>>(f, I_).value_as(um); /// we extract the value of the integral in micrometres
+        /// the integration is correct from a dimensional point of view: the result is a measurement with base::length
+        /// the precision of the calculation could be specified using an std::ratio as a template parameter
+        /// you can also just fix a number of steps as a function parameter or template parameter, as you prefer
+        integral_values[i] = midpoint<std::micro>(f, I_int).value_as(um); /// we extract the value of the integral in micrometres
 
         /// we increment the x variable by dx
         x += dx; 
 
     });
-
-    /// The integration here is correct from the dimensional point of view!
-    /// the result of the integral is a measurement with base::length
-    auto integral = midpoint<std::ratio<1, 10000>>(f, I_);
-    print("integral = ", integral); 
-    static_assert(are_same_measurement_v<decltype(integral), measurement<base::length>>); 
-
 
     /// we plot the results using the matplotlib-cpp library
     plt::figure();
@@ -100,5 +89,26 @@ int main() {
     plt::show();
 
     return 0; 
+
+}
+
+
+void test_integral() {
+
+
+    auto f = [](auto x) { return op::sin(x); };
+    auto I = interval(0.0, 2.3 * std::numbers::pi);
+
+    auto simpson_result = simpson<100000>(f, I);
+    auto midpoint_result = midpoint<100000>(f, I);
+    auto midpoint_result_fixed = midpoint<std::femto>(f, I);
+
+    print("Interval = ", I);
+    print<std::femto>("simpson = ", simpson_result);
+    print<std::femto>("midpoint = ", midpoint_result);
+    print<std::femto>("midpoint (fixed) = ", midpoint_result_fixed);
+    print<std::femto>("difference = ", simpson_result - midpoint_result);
+    print<std::femto>("difference (fixed) = ", simpson_result - midpoint_result_fixed);
+    print<std::femto>("difference (fixed) = ", midpoint_result - midpoint_result_fixed);
 
 }

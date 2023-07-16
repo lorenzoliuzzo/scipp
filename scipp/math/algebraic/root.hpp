@@ -28,7 +28,7 @@ namespace scipp::math {
                                                     BASE_TYPE::substance_amount / POWER,
                                                     BASE_TYPE::luminous_intensity / POWER>;
 
-            inline static constexpr result_t f(const BASE_TYPE&) noexcept {
+            static constexpr result_t f(const BASE_TYPE&) noexcept {
 
                 return {};
 
@@ -46,7 +46,7 @@ namespace scipp::math {
                                         static_cast<size_t>(std::pow(PREFIX_TYPE::den, 1.0 / POWER))>; 
 
 
-            inline static constexpr result_t f(const PREFIX_TYPE&) noexcept {
+            static constexpr result_t f(const PREFIX_TYPE&) noexcept {
 
                 return {};
 
@@ -62,7 +62,7 @@ namespace scipp::math {
 
             using result_t = physics::unit<root_t<POWER, typename UNIT_TYPE::base_t>, root_t<POWER, typename UNIT_TYPE::prefix_t>>;                                             
 
-            inline static constexpr result_t f(const UNIT_TYPE&) noexcept {
+            static constexpr result_t f(const UNIT_TYPE&) noexcept {
 
                 return {};
 
@@ -73,12 +73,12 @@ namespace scipp::math {
 
         /// @brief power a number
         template <size_t POWER, typename T>
-            requires (is_number_v<T>)
+            requires is_number_v<T>
         struct root_impl<POWER, T> {
 
             using result_t = T;
 
-            inline static constexpr result_t f(const T& x) noexcept {
+            static constexpr result_t f(const T& x) noexcept {
 
                 return std::pow(x, 1.0 / POWER);
 
@@ -89,12 +89,12 @@ namespace scipp::math {
 
         /// @brief power a measurement
         template <size_t POWER, typename MEAS_TYPE>
-            requires (physics::is_measurement_v<MEAS_TYPE>)
+            requires physics::is_measurement_v<MEAS_TYPE>
         struct root_impl<POWER, MEAS_TYPE> {
 
             using result_t = physics::measurement<root_t<POWER, typename MEAS_TYPE::base_t>, typename MEAS_TYPE::value_t>;                                             
 
-            inline static constexpr result_t f(const MEAS_TYPE& x) noexcept {
+            static constexpr result_t f(const MEAS_TYPE& x) noexcept {
 
                 return std::pow(x.value, 1.0 / POWER);
 
@@ -103,20 +103,20 @@ namespace scipp::math {
         };
 
 
-        /// @brief power a umeasurement
-        template <size_t POWER, typename UMEAS_TYPE>
-            requires (physics::is_umeasurement_v<UMEAS_TYPE>)
-        struct root_impl<POWER, UMEAS_TYPE> {
+        // /// @brief power a umeasurement
+        // template <size_t POWER, typename UMEAS_TYPE>
+        //     requires (physics::is_umeasurement_v<UMEAS_TYPE>)
+        // struct root_impl<POWER, UMEAS_TYPE> {
 
-            using result_t = physics::umeasurement<root_t<POWER, typename UMEAS_TYPE::base_t>>;                                             
+        //     using result_t = physics::umeasurement<root_t<POWER, typename UMEAS_TYPE::base_t>>;                                             
 
-            inline static constexpr result_t f(const UMEAS_TYPE& x) noexcept {
+        //     static constexpr result_t f(const UMEAS_TYPE& x) noexcept {
 
-                return {std::pow(x.value, POWER), x.uncertainty * POWER};
+        //         return {std::pow(x.value, POWER), x.uncertainty * POWER};
 
-            }       
+        //     }       
 
-        };
+        // };
 
 
         // /// @brief power a complex number
@@ -126,7 +126,7 @@ namespace scipp::math {
 
         //     using result_t = complex<root_t<POWER, typename T::value_t>>;
 
-        //     inline static constexpr result_t f(const T& x) noexcept {
+        //     static constexpr result_t f(const T& x) noexcept {
 
         //         return polar(op::root<POWER>(op::abs(x)), op::atan(x.imag, x.real) / POWER);
 
@@ -142,7 +142,7 @@ namespace scipp::math {
 
         //     using result_t = dual<root_t<POWER, T>>;
 
-        //     inline static constexpr result_t f(const T& x) noexcept {
+        //     static constexpr result_t f(const T& x) noexcept {
 
         //         return polar(op::root<POWER>(op::abs(x)), op::atan(x.imag, x.real) / POWER);
         
@@ -158,7 +158,7 @@ namespace scipp::math {
 
             using result_t = geometry::vector<root_t<POWER, typename VECTOR_TYPE::value_t>, VECTOR_TYPE::dim, VECTOR_TYPE::flag>; 
 
-            inline static constexpr result_t f(const VECTOR_TYPE& x) {
+            static constexpr result_t f(const VECTOR_TYPE& x) {
 
                 result_t x_pow;
                 std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), [](const auto& x_i) { return op::pow<POWER>(x_i); });
@@ -174,7 +174,7 @@ namespace scipp::math {
 
             using result_t = calculus::expr_ptr<op::root_t<N, T>>;
 
-            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
+            static constexpr result_t f(const calculus::expr_ptr<T>& x) {
 
                 return std::make_shared<calculus::root_expr<N, T>>(op::root<N>(x->val), x);
 
@@ -188,7 +188,7 @@ namespace scipp::math {
 
             using result_t = calculus::expr_ptr<op::root_t<N, T>>;
 
-            inline static constexpr result_t f(const calculus::variable<T>& x) {
+            static constexpr result_t f(const calculus::variable<T>& x) {
 
                 return op::root<N>(x.expr); 
 

@@ -1,9 +1,9 @@
 /**
- * @file    math/calculus/expressions/power_series/trigonometric/cosine.hpp
+ * @file    scipp/math/calculus/expressions/mathematical/trigonometric/cosine.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file contains the implementation 
- * @date    2023-07-03
- * 
+ * @date    2023-07-15 
+ *  
  * @copyright Copyright (c) 2023
  */
 

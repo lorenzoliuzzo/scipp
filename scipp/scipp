@@ -93,30 +93,18 @@
             #include "math/calculus/expressions/mathematical/trigonometric/sine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/cosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/tangent.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/secant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/cosecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/cotangent.hpp"
 
             #include "math/calculus/expressions/mathematical/trigonometric/inverse/arcsine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/inverse/arctangent.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arcsecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccosecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/inverse/arccotangent.hpp" 
             
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/sine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/tangent.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/secant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cosecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/cotangent.hpp"
 
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arcsine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccosine.hpp"
             #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arcsecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccosecant.hpp"
-            #include "math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arccotangent.hpp"
 
 
         /// ---------------------------------------------------------------
@@ -153,30 +141,18 @@
             #include "math/mathematical/trigonometric/sine.hpp"
             #include "math/mathematical/trigonometric/cosine.hpp"
             #include "math/mathematical/trigonometric/tangent.hpp"
-            #include "math/mathematical/trigonometric/secant.hpp"
-            #include "math/mathematical/trigonometric/cosecant.hpp"
-            #include "math/mathematical/trigonometric/cotangent.hpp"
 
             #include "math/mathematical/trigonometric/inverse/arcsine.hpp"
             #include "math/mathematical/trigonometric/inverse/arccosine.hpp"
             #include "math/mathematical/trigonometric/inverse/arctangent.hpp"
-            #include "math/mathematical/trigonometric/inverse/arcsecant.hpp"
-            #include "math/mathematical/trigonometric/inverse/arccosecant.hpp"
-            #include "math/mathematical/trigonometric/inverse/arccotangent.hpp" 
             
             #include "math/mathematical/trigonometric/hyperbolic/sine.hpp"
             #include "math/mathematical/trigonometric/hyperbolic/cosine.hpp"
             #include "math/mathematical/trigonometric/hyperbolic/tangent.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/secant.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/cosecant.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/cotangent.hpp"
 
             #include "math/mathematical/trigonometric/hyperbolic/inverse/arcsine.hpp"
             #include "math/mathematical/trigonometric/hyperbolic/inverse/arccosine.hpp"
             #include "math/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/inverse/arcsecant.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/inverse/arccosecant.hpp"
-            #include "math/mathematical/trigonometric/hyperbolic/inverse/arccotangent.hpp"
 
             #include "math/mathematical/erf.hpp"
             #include "math/mathematical/erfc.hpp"

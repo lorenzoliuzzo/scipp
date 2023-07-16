@@ -56,8 +56,8 @@ struct variable {
 
     using value_t = T; 
 
-    /// The pointer to the expression tree of variable operations
-    expr_ptr<value_t> expr;
+    
+    expr_ptr<value_t> expr; //< The pointer to the expression tree of variable operations
 
 
     /// Construct a default variable object
@@ -88,16 +88,14 @@ struct variable {
     template <typename U>
     constexpr variable& operator=(const U& val) noexcept {
 
-        *this = variable(val);
-        return *this;
+        return *this = variable(val);
 
     }
 
     /// Assign an expression to this variable.
     constexpr variable& operator=(const expr_ptr<value_t>& x) noexcept {
 
-        *this = variable(x);
-        return *this;
+        return *this = variable(x);
 
     }
 
@@ -113,10 +111,11 @@ struct variable {
     /// Implicitly convert this variable object into an expression pointer.
     constexpr operator const expr_ptr<value_t>&() const {
 
-        return expr;
+        return this->expr;
 
-    }
+    }       
 
+    /// Implicitly convert this variable object into an arithmetic value.
     constexpr explicit operator value_t() const {
 
         return this->expr->val;
@@ -127,13 +126,14 @@ struct variable {
     /// Update the value of this variable with changes in its expression tree
     constexpr void update() {
 
-        expr->update();
+        this->expr->update();
         
     }
 
+    /// Update the value of this variable with a given arithmetic value
     constexpr void update(T value) {
 
-        if (auto independent_expr = std::dynamic_pointer_cast<independent_variable_expr<value_t>>(expr)) {
+        if (auto independent_expr = std::dynamic_pointer_cast<independent_variable_expr<value_t>>(this->expr)) {
 
             independent_expr->val = value;
             independent_expr->update();

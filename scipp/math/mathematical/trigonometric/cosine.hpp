@@ -1,8 +1,8 @@
     /**
- * @file    math/operations/mathematical/cosine.hpp
+ * @file    scipp/math/mathematical/trigonometric/cosine.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   
- * @date    2023-06-25
+ * @brief   This file contains the implementation of the cosine function
+ * @date    2023-07-16
  * 
  * @copyright Copyright (c) 2023
  */
@@ -16,37 +16,9 @@ namespace scipp::math {
 
 
         template <typename T>
-            requires is_number_v<T>
-		struct cosine_impl<T> {
-
-			inline static constexpr T f(const T& x) {
-				
-				return std::cos(x);
-
-			}
-
-		};
-
-        template <typename T>
-            requires physics::is_scalar_measurement_v<T>
-		struct cosine_impl<T> {
-
-			inline static constexpr T f(const T& x) {
-				
-				return std::cos(x.value);
-
-			}
-
-		};
-
-
-
-        template <typename T>
         struct cosine_impl<calculus::expr_ptr<T>> {
 
-            using result_t = calculus::expr_ptr<T>;
-
-            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
+            static constexpr calculus::expr_ptr<T> f(const calculus::expr_ptr<T>& x) {
 
                 return std::make_shared<calculus::cosine_expr<T>>(cos(x->val), x);
 
@@ -58,9 +30,7 @@ namespace scipp::math {
         template <typename T>
         struct cosine_impl<calculus::variable<T>> {
 
-            using result_t = calculus::expr_ptr<T>;
-
-            inline static constexpr result_t f(const calculus::variable<T>& x) {
+            static constexpr calculus::expr_ptr<T> f(const calculus::variable<T>& x) {
 
                 return cos(x.expr); 
 
@@ -69,36 +39,37 @@ namespace scipp::math {
         };
 
 
-        // template <typename T>
-        //     requires physics::is_scalar_umeasurement_v<T>
-		// struct cosine_impl<T> {
+        template <typename T>
+            requires is_number_v<T>
+		struct cosine_impl<T> {
 
-		// 	inline static constexpr T f(const T& x) {
+			static constexpr T f(const T& x) {
 				
-		// 		return {std::cos(x.value), x.uncertainty * std::fabs(std::cos(x.value))};
+				return std::cos(x);
 
-		// 	}
+			}
 
-		// };
+		};
 
-        // template <typename T>
-        //     requires physics::is_scalar_complex_v<T>
-		// struct cosine_impl<T> {
 
-		// 	inline static constexpr T f(const T& x) {
+        template <typename T>
+            requires physics::is_scalar_measurement_v<T>
+		struct cosine_impl<T> {
+
+			static constexpr T f(const T& x) {
 				
-		// 		return { std::cos(x.real) * std::cosh(x.imag), 
-		// 				 std::cos(x.real) * std::sinh(x.imag) };
+				return std::cos(x.value);
 
-		// 	}
+			}
 
-		// };
+		};
+
 
         template <typename T>
             requires geometry::is_scalar_vector_v<T>
 		struct cosine_impl<T> {
 
-			inline static constexpr T f(const T& x) {
+			static constexpr T f(const T& x) {
 
                 T x_cos;
                 std::transform(std::execution::par,     
@@ -113,7 +84,7 @@ namespace scipp::math {
 
 			}
 
-		};
+        };
 
 
     } // namespace op

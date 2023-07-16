@@ -1,9 +1,9 @@
 /**
- * @file    math/calculus/expressions/power_series/hyperbolic/tangent.hpp
+ * @file    scipp/math/calculus/expressions/mathematical/trigonometric/hyperbolic/tangent.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
- * @date    2023-07-03
- * 
+ * @brief   This file contains the implementation of the hyperbolic tangent function
+ * @date    2023-07-15 
+ *  
  * @copyright Copyright (c) 2023
  */
 
@@ -16,11 +16,11 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct tangent_hyp_expr : unary_expr<T, T> {
+        struct hyperbolic_tangent_expr : unary_expr<T, T> {
 
             using unary_expr<T, T>::x;
 
-            constexpr tangent_hyp_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
+            constexpr hyperbolic_tangent_expr(const T& v, const expr_ptr<T>& e) noexcept : unary_expr<T, T>(v, e) {}
 
 
             constexpr void propagate(std::shared_ptr<void> wprime) override {

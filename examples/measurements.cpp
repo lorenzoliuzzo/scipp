@@ -23,12 +23,13 @@ void error_in_converting() {
   measurement<base::acceleration, double> acc{1.0};
   measurement<base::mass, double> mass{1.0};
   measurement<base::force, double> force = acc * mass;
+  print(force);
 }
 
 
 int main() {
 
-    error_in_converting();
+    // error_in_converting();
 
     // Creating measurements with explicit value_type and base_quantity
     measurement<base::length, int> l0(1, units::m);     

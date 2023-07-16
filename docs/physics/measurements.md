@@ -470,6 +470,4 @@ interval of x = [ -0.2 m, 0.2 m ]
 x = 0 m
 I(x) = 9.99983e-06 m
 ```
-
-And here is the plot:
-![plot](https://github.com/lorenzoliuzzo/scipp/blob/images/diffracted_intensity.png)
+![plot](../../images/diffracted_intensity.png)

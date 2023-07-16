@@ -278,14 +278,14 @@ namespace scipp::math {
         inline static constexpr bool is_interval_v = is_interval<T>::value;
 
 
-        template <typename Y, typename X>
+        template <typename X, typename Y>
         struct curve; 
 
         template <typename T>
         struct is_curve : std::false_type {};
 
-        template <typename Y, typename X>
-        struct is_curve<curve<Y, X>> : std::true_type {};
+        template <typename X, typename Y>
+        struct is_curve<curve<X, Y>> : std::true_type {};
 
         template <typename T>
         inline static constexpr bool is_curve_v = is_curve<typename T::curve_t>::value;
@@ -504,6 +504,20 @@ namespace scipp::math {
         inline static constexpr auto abs(const T& x) noexcept {
             
             return absolute_impl<T>::f(x); 
+
+        }
+
+
+        template <typename T>
+        struct norm_impl; 
+
+        template <typename T>
+        using norm_t = typename norm_impl<T>::result_t;
+
+        template <typename T>
+        inline static constexpr auto norm(const T& x) noexcept {
+            
+            return norm_impl<T>::f(x); 
 
         }
 

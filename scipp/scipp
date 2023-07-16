@@ -135,6 +135,7 @@
 
             #include "math/mathematical/sign.hpp"
             #include "math/mathematical/absolute.hpp"
+            #include "math/mathematical/norm.hpp"
 
             #include "math/mathematical/exponential.hpp"
             #include "math/mathematical/logarithm.hpp"
@@ -210,7 +211,7 @@
             // #include "math/mathematical/norm.hpp"
 
             #include "math/calculus/interval.hpp"
-            // #include "math/calculus/curve.hpp"   
+            #include "math/calculus/curve.hpp"   
             #include "math/calculus/taylor_series.hpp"
 
 

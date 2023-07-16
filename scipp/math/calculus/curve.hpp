@@ -16,68 +16,117 @@ namespace scipp::math {
 
 
         template <typename Y, typename X>
-        struct parametrization : unary_function<Y, X> {  
+        struct curve {
 
-            using unary_function<Y, X>::f;
-            using unary_function<Y, X>::var;
-            using parametrization_t = parametrization<Y, X>;
-
-            using result_t = variable<Y>;
-            using parameter_t = variable<X>;
-            using interval_t = interval<X>;
-            
-            interval_t domain;
+            using curve_t = curve<Y, X>;
+            using value_t = Y;
+            using parameter_t = X;
 
 
-            constexpr parametrization(std::function<result_t(parameter_t&)>& func, X& variable, interval_t I) noexcept : 
-                
-                unary_function<Y, X>(func, variable), domain(I) {}
-
-            constexpr parametrization(std::function<result_t(parameter_t&)>&& func, X& variable, interval_t I) noexcept :
-
-                unary_function<Y, X>(func, variable), domain(I) {}
+            std::function<variable<value_t>(variable<parameter_t>&)> parametrization;
+            interval<X> domain;
 
 
-            constexpr parametrization(std::function<result_t(parameter_t&)>& func, parameter_t& variable, interval_t I) noexcept :
+            template <typename FUNC>    
+                requires (std::is_invocable_v<FUNC, variable<parameter_t>&> && 
+                          std::is_same_v<variable<value_t>, std::invoke_result_t<FUNC, variable<parameter_t>&>>)
+            constexpr curve(const FUNC& func, const interval<parameter_t>& I) noexcept : 
 
-                unary_function<Y, X>(func, variable), domain(I) {}
-
-            constexpr parametrization(std::function<result_t(parameter_t&)>&& func, parameter_t& variable, interval_t I) noexcept :
-
-                unary_function<Y, X>(func, variable), domain(I) {}
-            
-
-            constexpr parametrization(unary_function<Y, X>& gamma, interval<X> I) noexcept :
-
-                unary_function<Y, X>(gamma), domain(I) {}
-
-            constexpr parametrization(unary_function<Y, X>&& gamma, interval<X> I) noexcept :
-
-                unary_function<Y, X>(gamma), domain(I) {}
+                parametrization{func}, domain(I) {}
 
 
-            constexpr parametrization(parametrization& gamma) noexcept :
+            constexpr auto operator()(variable<X>& x) const {
 
-                unary_function<Y, X>(gamma), domain(gamma.domain) {}
+                if (!this->domain.contains(val(x))) {
 
-
-            constexpr parametrization(parametrization&& gamma) noexcept :
-
-                unary_function<Y, X>(gamma), domain(std::move(gamma.domain)) {}
-
-
-            constexpr auto operator()() {
-
-                if (!this->domain.contains(val(this->var))) {
                     std::cerr << "Trying to evaluate the curve in a point outside the domain of definition\n";
-                    std::cerr << "Value: " << val(this->var) << "\n";
-                    std::cerr << "Interval: [ " << domain.start << ", " << domain.end << " ]\n";
+                    tools::print("Value: ", x); 
+                    tools::print("Interval: ", this->domain); 
                     throw std::runtime_error("The parametrization is not defined outside of the given interval");
+
                 }
 
-                return this->f(this->var);
+                return this->parametrization(x); 
 
             }
+
+
+        }; // struct curve
+
+
+        template <typename FUNC, typename INTERVAL>
+        curve(FUNC, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
+
+
+    } // namespace calculus
+
+
+} // namespace scipp::math
+
+
+        // template <typename Y, typename X>
+        // struct parametrization : unary_function<Y, X> {  
+
+        //     using unary_function<Y, X>::f;
+        //     using unary_function<Y, X>::var;
+        //     using parametrization_t = parametrization<Y, X>;
+
+        //     using result_t = variablevalue_tY>;
+        //     using parameter_t = variable<X>;
+        //     using interval_t = interval<X>;
+            
+        //     interval_t domain;
+
+
+        //     constexpr parametrization(std::function<result_t(parameter_t&)>& func, X& variable, interval_t I) noexcept : 
+                
+        //         unary_function<Y, X>(func, variable), domain(I) {}
+
+        //     constexpr parametrization(std::function<result_t(parameter_t&)>&& func, X& variable, interval_t I) noexcept :
+
+        //         unary_function<Y, X>(func, variable), domain(I) {}
+
+
+        //     constexpr parametrization(std::function<result_t(parameter_t&)>& func, parameter_t& variable, interval_t I) noexcept :
+
+        //         unary_function<Y, X>(func, variable), domain(I) {}
+
+        //     constexpr parametrization(std::function<result_t(parameter_t&)>&& func, parameter_t& variable, interval_t I) noexcept :
+
+        //         unary_function<Y, X>(func, variable), domain(I) {}
+            
+
+        //     constexpr parametrization(unary_function<Y, X>& gamma, interval<X> I) noexcept :
+
+        //         unary_function<Y, X>(gamma), domain(I) {}
+
+        //     constexpr parametrization(unary_function<Y, X>&& gamma, interval<X> I) noexcept :
+
+        //         unary_function<Y, X>(gamma), domain(I) {}
+
+
+        //     constexpr parametrization(parametrization& gamma) noexcept :
+
+        //         unary_function<Y, X>(gamma), domain(gamma.domain) {}
+
+
+        //     constexpr parametrization(parametrization&& gamma) noexcept :
+
+        //         unary_function<Y, X>(gamma), domain(std::move(gamma.domain)) {}
+
+
+        //     constexpr auto operator()() {
+
+        //         if (!this->domain.contains(val(this->var))) {
+        //             std::cerr << "Trying to evaluate the curve in a point outside the domain of definition\n";
+        //             std::cerr << "Value: " << val(this->var) << "\n";
+        //             std::cerr << "Interval: [ " << domain.start << ", " << domain.end << " ]\n";
+        //             throw std::runtime_error("The parametrization is not defined outside of the given interval");
+        //         }
+
+        //         return this->f(this->var);
+
+            // }
 
             // template <size_t N>
             // constexpr auto length() const {
@@ -117,30 +166,30 @@ namespace scipp::math {
 
             // }
 
-        }; // struct curve 
+        // }; // struct curve 
 
 
-        template <size_t N, typename Y, typename... PARAMs>
-            requires (typename PARAMs::result_t == variable<Y> && ...)
-        struct curve {
+        // template <size_t N, typename Y, typename... PARAMs>
+        //     requires (typename PARAMs::result_t == variablevalue_tY> && ...)
+        // struct curve {
 
-            using curve_t = curve<N, Y, Xs...>;
-            using parametrization_t = parametrization<Y, Xs...>;
-            using point_t = std::array<variable<Y>, N>;
+        //     using curve_t = curve<N, Y, Xs...>;
+        //     using parametrization_t = parametrization<Y, Xs...>;
+        //     using point_t = std::array<variablevalue_tY>, N>;
 
-            std::tuple<PARAMs...> parametrizations;
-            std::tuple<typename PARAMs::interval_t...> intervals;
-            std::tuple<typename PARAMs::parameter_t...> parameters;
-
-
-            constexpr curve(PARAMs&&... params) noexcept : 
-
-                parametrizations{std::forward<PARAMs>(params)...}, 
-                intervals{params.domain...}, 
-                parameters{params.var...} {}
+        //     std::tuple<PARAMs...> parametrizations;
+        //     std::tuple<typename PARAMs::interval_t...> intervals;
+        //     std::tuple<typename PARAMs::parameter_t...> parameters;
 
 
-        };
+        //     constexpr curve(PARAMs&&... params) noexcept : 
+
+        //         parametrizations{std::forward<PARAMs>(params)...}, 
+        //         intervals{params.domain...}, 
+        //         parameters{params.var...} {}
+
+
+        // };
 
 
 //         namespace curves {
@@ -156,7 +205,7 @@ namespace scipp::math {
 
 //                 constexpr line(const op::divide_t<Y, X>& m, const Y& q) noexcept : 
 
-//                     curve<Y, X>(function<Y, X>([m, q](variable<X>& t) -> variable<Y> { 
+//                     curve<Y, X>(function<Y, X>([m, q](variable<X>& t) -> variablevalue_tY> { 
                         
 //                             return q + t * m; 
 
@@ -166,7 +215,7 @@ namespace scipp::math {
 
 //                 constexpr line(const op::divide_t<Y, X>& m, const Y& q, variable<X>& var) noexcept : 
 
-//                     curve<Y, X>(function<Y, X>([m, q](variable<X>& t) -> variable<Y> { 
+//                     curve<Y, X>(function<Y, X>([m, q](variable<X>& t) -> variablevalue_tY> { 
                         
 //                             return q + t * m; 
 
@@ -304,8 +353,3 @@ namespace scipp::math {
 
 //         } // namespace curves
 
-
-    } // namespace calculus
-
-
-} // namespace scipp::math

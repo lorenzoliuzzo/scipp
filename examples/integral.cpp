@@ -19,7 +19,7 @@ using namespace units::literals;     // for the units literals
 
 using namespace math; 
 using namespace op;                  // for the operators and the functions
-using namespace calculus::integral;  // for the integral function
+using namespace calculus::integrals;  // for the integral function
 using calculus::interval;            // for the interval struct
 
 using tools::print;                  // for the print function

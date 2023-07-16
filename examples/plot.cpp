@@ -21,7 +21,6 @@ using namespace physics::units;
 using namespace physics::units::literals;
 
 using math::calculus::interval;     
-using namespace math::calculus::integral;
 
 using tools::plot;             
 using tools::print;             

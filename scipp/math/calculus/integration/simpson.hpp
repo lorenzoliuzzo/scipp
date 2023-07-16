@@ -15,7 +15,7 @@ namespace scipp::math {
     namespace calculus {
 
 
-        namespace integral {
+        namespace integrals {
 
             
             /// @brief Simpson rule for numerical integration
@@ -133,7 +133,7 @@ namespace scipp::math {
             }
 
         
-        } // namespace integral
+        } // namespace integrals
 
 
     } // namespace calculus

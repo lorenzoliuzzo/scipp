@@ -15,3 +15,6 @@ target_link_libraries(plot ${PROJECT_NAME} python3.10)
 
 add_executable(derivative derivative.cpp)
 target_link_libraries(derivative ${PROJECT_NAME} python3.10)
+
+add_executable(curves curves.cpp)
+target_link_libraries(curves ${PROJECT_NAME} python3.10)

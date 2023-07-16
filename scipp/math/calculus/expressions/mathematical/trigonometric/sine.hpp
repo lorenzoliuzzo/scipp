@@ -1,7 +1,7 @@
 /**
  * @file    scipp/math/calculus/expressions/mathematical/trigonometric/sine.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the sine expression
  * @date    2023-07-15 
  *  
  * @copyright Copyright (c) 2023

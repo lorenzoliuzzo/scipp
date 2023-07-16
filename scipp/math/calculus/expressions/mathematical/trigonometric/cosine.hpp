@@ -1,7 +1,7 @@
 /**
  * @file    scipp/math/calculus/expressions/mathematical/trigonometric/cosine.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the cosine expression
  * @date    2023-07-15 
  *  
  * @copyright Copyright (c) 2023

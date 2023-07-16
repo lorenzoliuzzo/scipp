@@ -539,6 +539,12 @@ namespace scipp::math {
             return sine_impl<T>::f(x); 
 
         }
+        template <typename T>
+        inline static constexpr auto csc(const T& x) noexcept {
+            
+            return invert_impl<T>::f(sine_impl<T>::f(x));
+
+        }
 
 
         template <typename T>
@@ -550,7 +556,14 @@ namespace scipp::math {
             return cosine_impl<T>::f(x); 
 
         }
-        
+        template <typename T>
+        inline static constexpr auto sec(const T& x) noexcept {
+            
+            return invert_impl<T>::f(cosine_impl<T>::f(x));
+
+        }
+
+
         template <typename T>
         struct tangent_impl; 
         
@@ -561,36 +574,10 @@ namespace scipp::math {
 
         }
 
-
-        template <typename T>
-        struct secant_impl;
-
-        template <typename T>
-        inline static constexpr auto sec(const T& x) noexcept {
-            
-            return secant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct cosecant_impl;
-
-        template <typename T>
-        inline static constexpr auto csc(const T& x) noexcept {
-            
-            return cosecant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct cotangent_impl;
-
         template <typename T>
         inline static constexpr auto cot(const T& x) noexcept {
             
-            return cotangent_impl<T>::f(x); 
+            return invert_impl<T>::f(tangent_impl<T>::f(x));
 
         }
 
@@ -629,45 +616,19 @@ namespace scipp::math {
 
 
         template <typename T>
-        struct arcsecant_impl;
-
-        template <typename T>
-        inline static constexpr auto asec(const T& x) noexcept {
-            
-            return arcsecant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct arccosecant_impl;
-
-        template <typename T>
-        inline static constexpr auto acsc(const T& x) noexcept {
-            
-            return arccosecant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct arccotangent_impl;
-
-        template <typename T>
-        inline static constexpr auto acot(const T& x) noexcept {
-            
-            return arccotangent_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
         struct hyperbolic_sine_impl;
 
         template <typename T>
         inline static constexpr auto sinh(const T& x) noexcept {
             
             return hyperbolic_sine_impl<T>::f(x); 
+
+        }
+
+        template <typename T>
+        inline static constexpr auto csch(const T& x) noexcept {
+            
+            return invert_impl<T>::f(hyperbolic_sine_impl<T>::f(x));
 
         }
 
@@ -682,6 +643,13 @@ namespace scipp::math {
 
         }
 
+        template <typename T>
+        inline static constexpr auto sech(const T& x) noexcept {
+            
+            return invert_impl<T>::f(hyperbolic_cosine_impl<T>::f(x));
+
+        }
+
 
         template <typename T>
         struct hyperbolic_tangent_impl;
@@ -693,36 +661,10 @@ namespace scipp::math {
 
         }
 
-
-        template <typename T>
-        struct hyperbolic_secant_impl;
-
-        template <typename T>
-        inline static constexpr auto sech(const T& x) noexcept {
-            
-            return hyperbolic_secant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct hyperbolic_cosecant_impl;
-
-        template <typename T>
-        inline static constexpr auto csch(const T& x) noexcept {
-            
-            return hyperbolic_cosecant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct hyperbolic_cotangent_impl;
-
         template <typename T>
         inline static constexpr auto coth(const T& x) noexcept {
             
-            return hyperbolic_cotangent_impl<T>::f(x); 
+            return invert_impl<T>::f(hyperbolic_tangent_impl<T>::f(x));
 
         }
 
@@ -759,36 +701,25 @@ namespace scipp::math {
 
         }
 
-
         template <typename T>
-        struct hyperbolic_arcsecant_impl;
+        inline static constexpr auto acoth(const T& x) noexcept {
+            
+            return 0.5 * log((x + static_cast<T>(1.0)) / (x - static_cast<T>(1.0)));
+
+        }
+
 
         template <typename T>
         inline static constexpr auto asech(const T& x) noexcept {
             
-            return hyperbolic_arcsecant_impl<T>::f(x); 
+            return log((static_cast<T>(1.0) + sqrt(static_cast<T>(1.0) - square(x))) / x);
 
         }
-
-
-        template <typename T>
-        struct hyperbolic_arccosecant_impl;
 
         template <typename T>
         inline static constexpr auto acsch(const T& x) noexcept {
             
-            return hyperbolic_arccosecant_impl<T>::f(x); 
-
-        }
-
-
-        template <typename T>
-        struct hyperbolic_arccotangent_impl;
-
-        template <typename T>
-        inline static constexpr auto acoth(const T& x) noexcept {
-            
-            return hyperbolic_arccotangent_impl<T>::f(x); 
+            return log((static_cast<T>(1.0) + hypot(static_cast<T>(1.0), x)) / x);
 
         }
 

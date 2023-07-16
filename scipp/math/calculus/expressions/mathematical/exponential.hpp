@@ -1,7 +1,7 @@
 /**
  * @file    scipp/math/calculus/expressions/mathematical/exponential.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the exponential expression
  * @date    2023-07-15 
  *  
  * @copyright Copyright (c) 2023
@@ -27,7 +27,7 @@ namespace scipp::math {
 
                 auto wprime_v = *std::static_pointer_cast<T>(wprime);
                 auto xval = wprime_v * val;
-                x->propagate(std::make_shared<decltype(xval)>(xval)); // exp(x)' = exp(x) * x'
+                x->propagate(std::make_shared<decltype(xval)>(xval));
             
             }
 

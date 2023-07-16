@@ -1,7 +1,7 @@
 /**
  * @file    scipp/math/calculus/expressions/algebraic/multiply.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the multiply expression
  * @date    2023-07-14
  * 
  * @copyright Copyright (c) 2023

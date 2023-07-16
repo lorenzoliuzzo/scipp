@@ -1,7 +1,7 @@
 /**
  * @file    scipp/math/calculus/expressions/mathematical/trigonometric/hyperbolic/inverse/arctangent.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
- * @brief   This file contains the implementation 
+ * @brief   This file contains the implementation of the hyperbolic arctangent function
  * @date    2023-07-16
  *  
  * @copyright Copyright (c) 2023

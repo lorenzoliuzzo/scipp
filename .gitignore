@@ -2,6 +2,8 @@
 build/
 .build/
 
+.vscode/
+
 # Site files
 docs/_site/
 docs/vendor/

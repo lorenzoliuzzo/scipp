@@ -459,3 +459,44 @@ interval of integration: [ -5e-06 m, 5e-06 m ]
 f(0.0m) = 1
 ```
 ![plot](../../images/diffracted_intensity.png)
+
+
+### Benchmarks
+
+The benchmarks are performed using the [Google Benchmark](https://github.com/google/benchmark) library and can be found in the `benchmark` folder from the root of the repository.
+Here are the results of the benchmarks of the `scipp::math::op functions` on double and measurement, in comparison with the standard operators built-in in the C++ language:
+``` bash
+Run on (8 X 3400 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x4)
+  L1 Instruction 32 KiB (x4)
+  L2 Unified 256 KiB (x4)
+  L3 Unified 6144 KiB (x1)
+Load Average: 0.74, 0.97, 1.12
+
+Running ./build/benchmark/op/double
+------------------------------------------------------
+Benchmark            Time             CPU   Iterations
+------------------------------------------------------
+BM_Add           0.628 ns        0.628 ns   1000000000
+BM_Multiply      0.628 ns        0.628 ns   1000000000
+BM_Invert        0.628 ns        0.628 ns   1000000000
+BM_Square        0.628 ns        0.628 ns   1000000000
+
+Running ./build/benchmark/op/measurement
+------------------------------------------------------
+Benchmark            Time             CPU   Iterations
+------------------------------------------------------
+BM_Add           0.629 ns        0.629 ns   1000000000
+BM_Multiply      0.629 ns        0.629 ns   1000000000
+BM_Invert        0.628 ns        0.628 ns   1000000000
+BM_Square        0.628 ns        0.628 ns   1000000000
+
+Running ./build/benchmark/op/built_in
+------------------------------------------------------
+Benchmark            Time             CPU   Iterations
+------------------------------------------------------
+BM_Add           0.629 ns        0.629 ns   1000000000
+BM_Multiply      0.629 ns        0.629 ns   1000000000
+BM_Invert        0.629 ns        0.629 ns   1000000000
+BM_Square        0.635 ns        0.635 ns   1000000000

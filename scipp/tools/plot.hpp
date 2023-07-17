@@ -149,4 +149,70 @@ namespace scipp::tools {
     }
 
 
+    // template <typename CURVE>
+    // static void plot(size_t N,
+    //                  const CURVE& gamma,
+    //                  const std::string& x_label, const std::string& y_label, 
+    //                  const std::string& title = "", const std::string& filename = "") {
+
+    //     std::vector<double> x_values(N), y_values(N); /// to store the values for the plot
+
+    //     const auto h = gamma.interval.step(N);
+    //     const auto t_range = std::views::iota(0u, N) | std::views::transform(
+    //         [&](size_t i) {
+    //             return I.start + (static_cast<double>(i) + 0.5) * h;
+    //         }
+    //     );
+
+    //     std::ranges::for_each(t_range,
+    //         [&](auto x_i) {
+
+    //             auto point = gamma(x_i);
+
+    //             if constexpr (physics::is_measurement_v<DOMAIN>)
+    //                 x_values.push_back(x_i.value);
+    //             else
+    //                 x_values.push_back(x_i);
+
+    //             if constexpr (physics::is_measurement_v<RANGE>)
+    //                 y_values.push_back(f(x_i).value);
+    //             else 
+    //                 y_values.push_back(f(x_i));
+
+    //         }
+    //     );
+
+    //     plt::figure_size(900, 600);
+    //     plt::grid(true);
+
+    //     plt::plot(x_values, y_values);
+
+    //     if constexpr (physics::is_measurement_v<DOMAIN>) {
+
+    //         plt::xlabel(x_label + " [" + DOMAIN::base_t::to_string() + "]");
+    //         plt::xlim(I.start.value, I.end.value);
+
+    //     } else {
+
+    //         plt::xlabel(x_label);
+    //         plt::xlim(I.start, I.end);
+
+    //     }
+
+    //     if constexpr (physics::is_measurement_v<RANGE>)
+    //         plt::ylabel(y_label + " [" + RANGE::base_t::to_string() + "]");
+    //     else
+    //         plt::ylabel(y_label);
+
+    //     if (title != "")
+    //         plt::title(title);
+
+    //     if (filename != "")
+    //         plt::save(filename);
+
+    //     plt::show();
+
+    // }
+
+
 } // namespace scipp::tools

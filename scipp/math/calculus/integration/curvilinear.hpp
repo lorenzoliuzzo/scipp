@@ -45,17 +45,15 @@ namespace scipp::math {
                 requires is_curve_v<CURVE>
             static constexpr auto curvilinear(CURVE gamma) {
 
-                typename CURVE::value_t result{}; 
+                typename CURVE::interval_t::value_t result{};
 
                 const auto step = gamma.domain.step(N);
-                variable<typename CURVE::parameter_t> x = gamma.domain.start;
+                variable<typename CURVE::parameter_t> t = gamma.domain.start;
 
                 meta::for_<N>([&](auto) constexpr {
 
-                    auto y = gamma(x);
-                    auto dydx = derivatives(y, wrt(x)); 
-                    result += op::norm(std::make_pair(1.0, dydx)) * step;
-                    x += step;
+                    result += op::norm(gradient(gamma(t), t)) * step;
+                    t += step;
 
                 });
 

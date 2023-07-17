@@ -100,5 +100,4 @@ If you want to contribute to the project, you can open a [pull requests](https:/
 Any contributions are welcome! 
 
 ## License
-The code is released under the terms of the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html). 
-See the file [LICENSE.md](https://github.com/lorenzoliuzzo/scipp/blob/master/LICENSE).
+The code is released under the terms of the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html), see the [LICENSE](https://github.com/lorenzoliuzzo/scipp/blob/master/LICENSE).

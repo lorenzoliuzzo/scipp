@@ -19,28 +19,30 @@ namespace scipp::math {
         struct curve {
 
             using curve_t = curve<Y, X>;
-            using value_t = Y;
+            using point_t = Y;
+            // using value_t = 
             using parameter_t = X;
+            using interval_t = interval<typename X::value_t>;
 
 
-            std::function<variable<value_t>(variable<parameter_t>&)> parametrization;
-            interval<X> domain;
+            std::function<point_t(parameter_t&)> parametrization;
+            interval_t domain;
 
 
             template <typename FUNC>    
-                requires (std::is_invocable_v<FUNC, variable<parameter_t>&> && 
-                          std::is_same_v<variable<value_t>, std::invoke_result_t<FUNC, variable<parameter_t>&>>)
-            constexpr curve(const FUNC& func, const interval<parameter_t>& I) noexcept : 
+                requires (std::is_invocable_v<FUNC, parameter_t&> && 
+                          std::is_same_v<point_t, std::invoke_result_t<FUNC, parameter_t&>>)
+            constexpr curve(const FUNC& func, const interval_t& I) noexcept : 
 
                 parametrization{func}, domain(I) {}
 
 
-            constexpr auto operator()(variable<X>& x) const {
+            constexpr auto operator()(parameter_t& x) const {
 
                 if (!this->domain.contains(val(x))) {
 
                     std::cerr << "Trying to evaluate the curve in a point outside the domain of definition\n";
-                    tools::print("Value: ", x); 
+                    tools::print<std::femto>("Value: ", val(x)); 
                     tools::print("Interval: ", this->domain); 
                     throw std::runtime_error("The parametrization is not defined outside of the given interval");
 
@@ -50,13 +52,15 @@ namespace scipp::math {
 
             }
 
-
+            
         }; // struct curve
 
 
-        template <typename FUNC, typename INTERVAL>
-        curve(FUNC, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
+        // template <typename FUNC, typename INTERVAL>
+        // curve(FUNC, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
 
+        // template <typename RANGE>
+        // curve(FUNC, interval<) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
 
     } // namespace calculus
 

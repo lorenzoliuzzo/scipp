@@ -61,7 +61,7 @@ dz_dz = 1
 ```
 
 # How to install
-The library is a header-only library, so there is no need to install it once cloned the repository using this command:
+You can clone the repository using this command:
 ```bash
 git clone https://github.com/lorenzoliuzzo/scipp.git 
 ```

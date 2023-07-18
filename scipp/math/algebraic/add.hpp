@@ -45,6 +45,7 @@ namespace scipp::math {
                     
         };
 
+
         template <typename T1, typename T2>
             requires (is_number_v<T1> || physics::is_measurement_v<T1>)
         struct add_impl<T1, calculus::expr_ptr<T2>> {
@@ -72,6 +73,7 @@ namespace scipp::math {
             }
                     
         };
+        
 
         template <typename T1, typename T2>
         struct add_impl<calculus::expr_ptr<T1>, calculus::variable<T2>> {
@@ -114,6 +116,7 @@ namespace scipp::math {
             }
                     
         };
+
 
         template <typename T1, typename T2>
             requires (is_number_v<T2> || physics::is_measurement_v<T2>)

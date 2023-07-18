@@ -5,10 +5,11 @@ build/
 .vscode/
 
 # Site files
-doc/_site/
-doc/vendor/
-doc/.jekyll-cache/
+docs/_site/
+docs/vendor/
+docs/.jekyll-cache/
 
 external/benchmark/**
+
 # gprof file
 gmon.out

@@ -18,6 +18,34 @@ namespace scipp::math {
     namespace op {
 
 
+        template <int N, typename T>
+        struct power_impl<N, calculus::expr_ptr<T>> {
+
+            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::power_expr<N, T>>(op::pow<N>(x->val), x);
+
+            }
+
+        };
+
+
+        template <int N, typename T>
+        struct power_impl<N, calculus::variable<T>> {
+
+            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
+
+            inline static constexpr result_t f(const calculus::variable<T>& x) {
+
+                return op::pow<N>(x.expr); 
+
+            }
+
+        };
+
+
         /// @brief power a physics::base_quantity
         template <int POWER, typename BASE_TYPE>
             requires physics::is_base_v<BASE_TYPE>
@@ -166,56 +194,32 @@ namespace scipp::math {
         // };
 
 
-        /// @brief power a vector
-        template <int POWER, typename VECTOR_TYPE>
-            requires geometry::is_vector_v<VECTOR_TYPE>
-        struct power_impl<POWER, VECTOR_TYPE> {
+        template <int N, typename T>
+            requires geometry::is_vector_v<T>
+        struct power_impl<N, T> {
             
-            using result_t = geometry::vector<power_t<POWER, typename VECTOR_TYPE::value_t>, VECTOR_TYPE::dim, VECTOR_TYPE::flag>;
+            using result_t = geometry::vector<power_t<N, typename T::value_t>, T::dim, T::flag>; 
 
-            inline static constexpr result_t f(const VECTOR_TYPE& x) noexcept {
+            static constexpr result_t f(const T& x) {
 
                 result_t x_pow;
-                std::transform(std::execution::par, x.data.begin(), x.data.end(), x_pow.data.begin(), 
+                std::transform(
+                    std::execution::par, 
+                    x.data.begin(), x.data.end(), 
+                    x_pow.data.begin(), 
                     [](const auto& x_i) { 
-                        return op::power_impl<POWER, typename VECTOR_TYPE::value_t>(x_i); 
+                        return pow<N>(x_i); 
                     }
                 );
+
                 return x_pow;
 
-            }
-        
-        };
+            }        
 
 
-        template <int N, typename T>
-        struct power_impl<N, calculus::expr_ptr<T>> {
-
-            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
-
-            inline static constexpr result_t f(const calculus::expr_ptr<T>& x) {
-
-                return std::make_shared<calculus::power_expr<N, T>>(op::pow<N>(x->val), x);
-
-            }
-
-        };
+        }; 
 
 
-        template <int N, typename T>
-        struct power_impl<N, calculus::variable<T>> {
-
-            using result_t = calculus::expr_ptr<op::power_t<N, T>>;
-
-            inline static constexpr result_t f(const calculus::variable<T>& x) {
-
-                return op::pow<N>(x.expr); 
-
-            }
-
-        };
-
-    
     } // namespace op
 
 

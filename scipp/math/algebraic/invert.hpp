@@ -125,6 +125,34 @@ namespace scipp::math {
         };
 
 
+
+        /// @brief Invert a vector
+        template <typename VECTOR_TYPE>
+            requires geometry::is_vector_v<VECTOR_TYPE>
+        struct invert_impl<VECTOR_TYPE> {
+            
+            using result_t = geometry::vector<invert_t<typename VECTOR_TYPE::value_t>, VECTOR_TYPE::dim, VECTOR_TYPE::flag>; 
+
+            static constexpr result_t f(const VECTOR_TYPE& x) {
+
+                result_t x_inv;
+                std::transform(
+                    std::execution::par, 
+                    x.data.begin(), x.data.end(), 
+                    x_inv.data.begin(), 
+                    [](const auto& x_i) { 
+                        return inv(x_i); 
+                    }
+                );
+
+                return x_inv;
+
+            }        
+
+
+        }; 
+
+
     } // namespace op
 
 
@@ -190,25 +218,6 @@ namespace scipp::math {
         // };
 
 
-        // /// @brief Invert a vector
-        // template <typename VECTOR_TYPE>
-        //     requires (geometry::is_vector_v<VECTOR_TYPE>)
-        // struct invert_impl<VECTOR_TYPE> {
-            
-        //     using result_t = unary_function<VECTOR_TYPE, 
-        //                                       geometry::vector<invert_t<typename VECTOR_TYPE::value_t>, VECTOR_TYPE::dim, VECTOR_TYPE::flag>,
-        //                                       geometry::vector<square_t<invert_t<typename VECTOR_TYPE::value_t>>, VECTOR_TYPE::dim, VECTOR_TYPE::flag>
-        //                                       >;
-
-        //     static constexpr function_t::result_t f(const function_t::arg_t& x) {
-
-        //         typename function_t::result_t x_inv;
-        //         std::transform(std::execution::par, x.data.begin(), x.data.end(), x_inv.data.begin(), 
-        //             [](const auto& x_i) { return op::inv(x_i); }
-        //         );
-        //         return x_inv;
-
-        //     }        
 
         //     static constexpr function_t::result_t back(const function_t::arg_t& x) {
 

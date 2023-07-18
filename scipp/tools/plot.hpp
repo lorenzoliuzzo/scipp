@@ -149,6 +149,63 @@ namespace scipp::tools {
     }
 
 
+
+    template <typename CURVE>
+        requires calculus::is_curve_v<CURVE>
+    static void plot(size_t N, 
+                     const CURVE& gamma,
+                     const std::string& x_label, const std::string& y_label,
+                     const std::string& title = "", const std::string& filename = "") {
+
+        std::vector<double> x_values, y_values; /// to store the values for the plot
+        x_values.reserve(N);
+        y_values.reserve(N);
+        
+        const auto h = gamma.domain.step(N);
+        const auto t_range = std::views::iota(0u, N) | std::views::transform(
+            [&](size_t i) {
+                return gamma.domain.start + (static_cast<double>(i) + 0.5) * h;
+            }
+        );
+
+        std::ranges::for_each(t_range,
+            [&](auto t_i) {
+
+                const auto point = gamma(t_i);
+
+                // if constexpr (physics::is_measurement_v<decltype(x_i)>)
+                //     x_values.push_back(x_i.value);
+                // else
+                    x_values.emplace_back(val(point[0]).value);
+
+                // if constexpr (physics::is_measurement_v<decltype(y_i)>)
+                //     y_values.emplace_back(y_i.value);
+                // else 
+                    y_values.emplace_back(val(point[1]).value);
+
+            }
+        );
+
+        plt::figure_size(900, 900);
+        plt::grid(true);
+
+        plt::plot(x_values, y_values);
+
+        plt::xlabel(x_label); 
+        plt::ylabel(y_label);
+
+        if (title != "")
+            plt::title(title);
+
+        if (filename != "")
+            plt::save(filename);
+
+        plt::show();
+
+
+    }
+
+
     // template <typename CURVE>
     // static void plot(size_t N,
     //                  const CURVE& gamma,

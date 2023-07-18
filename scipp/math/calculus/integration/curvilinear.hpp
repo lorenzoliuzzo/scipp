@@ -26,13 +26,13 @@ namespace scipp::math {
                 op::multiply_t<std::invoke_result_t<FUNCTION, DOMAIN>, DOMAIN> result{}; 
 
                 const auto step = gamma.interval.step(N);
-                variable<DOMAIN> x = gamma.interval.start;
+                variable<DOMAIN> t = gamma.interval.start;
 
                 meta::for_<N>([&](auto) constexpr {
 
-                    auto [g, g_prime] = gamma(x);
-                    result += f(g) * op::norm(g_prime) * step;
-                    x += step;
+                    auto point = gamma(t); 
+                    result += f(point) * op::norm(gradient(point, t)) * step;
+                    t += step;
 
                 });
 
@@ -43,12 +43,13 @@ namespace scipp::math {
 
             template <size_t N, typename CURVE>
                 requires is_curve_v<CURVE>
-            static constexpr auto curvilinear(CURVE gamma) {
-
-                typename CURVE::interval_t::value_t result{};
+            static constexpr auto length(const CURVE& gamma) {
 
                 const auto step = gamma.domain.step(N);
-                variable<typename CURVE::parameter_t> t = gamma.domain.start;
+                variable<typename CURVE::interval_t::value_t> t = gamma.domain.start;
+
+                using result_t = decltype(op::norm(gradient(gamma(t), t)) * step); 
+                result_t result{};
 
                 meta::for_<N>([&](auto) constexpr {
 
@@ -56,7 +57,7 @@ namespace scipp::math {
                     t += step;
 
                 });
-
+                    
                 return result; 
 
             }

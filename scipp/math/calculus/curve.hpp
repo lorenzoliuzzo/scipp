@@ -16,51 +16,114 @@ namespace scipp::math {
 
 
         template <typename Y, typename X>
+            requires (is_variable_v<X>)
         struct curve {
 
-            using curve_t = curve<Y, X>;
             using point_t = Y;
-            // using value_t = 
-            using parameter_t = X;
+            using param_t = X;
             using interval_t = interval<typename X::value_t>;
 
+            using curve_t = curve<point_t, param_t>;
 
-            std::function<point_t(parameter_t&)> parametrization;
+
+            std::function<point_t(param_t&)> parametrization;
             interval_t domain;
 
 
             template <typename FUNC>    
-                requires (std::is_invocable_v<FUNC, parameter_t&> && 
-                          std::is_same_v<point_t, std::invoke_result_t<FUNC, parameter_t&>>)
+                requires (std::is_invocable_v<FUNC, param_t&> && std::is_same_v<point_t, std::invoke_result_t<FUNC, param_t&>>)
             constexpr curve(const FUNC& func, const interval_t& I) noexcept : 
 
                 parametrization{func}, domain(I) {}
 
 
-            constexpr auto operator()(parameter_t& x) const {
+            constexpr auto operator()(param_t& t) const {
 
-                if (!this->domain.contains(val(x))) {
-
-                    std::cerr << "Trying to evaluate the curve in a point outside the domain of definition\n";
-                    tools::print<std::femto>("Value: ", val(x)); 
-                    tools::print("Interval: ", this->domain); 
+                if (!this->domain.contains(val(t))) 
                     throw std::runtime_error("The parametrization is not defined outside of the given interval");
 
-                }
+                return this->parametrization(t); 
 
-                return this->parametrization(x); 
+            }
+
+
+            constexpr auto operator()(typename param_t::value_t t) const {
+
+                if (!this->domain.contains(t)) 
+                    throw std::runtime_error("The parametrization is not defined outside of the given interval");
+
+                param_t t_var = t; 
+                return this->parametrization(t_var); 
+
+            }
+
+
+            constexpr auto gradient(param_t& t) const {
+
+                return calculus::gradient(this->parametrization(t), t);
 
             }
 
             
+            constexpr auto gradient(typename param_t::value_t t) const {
+
+                param_t t_var = t; 
+                return calculus::gradient(this->parametrization(t_var), t_var);
+
+            }
+            
+        
         }; // struct curve
 
 
-        // template <typename FUNC, typename INTERVAL>
-        // curve(FUNC, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
+        template <typename FUNC, typename INTERVAL>
+        curve(FUNC, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
 
-        // template <typename RANGE>
-        // curve(FUNC, interval<) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
+        template <typename FUNC, typename INTERVAL>
+        curve(FUNC&&, INTERVAL) -> curve<typename std::invoke_result_t<FUNC, variable<typename INTERVAL::value_t>&>::value_t, typename INTERVAL::value_t>;
+
+
+        namespace curves {
+
+            
+            template <typename Y>
+            struct circle {
+
+                using radius_t = Y; 
+                using point_t = geometry::vector<Y, 2>; 
+                using curve_t = curve<geometry::vector<expr_ptr<Y>, 2>, variable<double>>;
+
+                radius_t radius;
+                point_t center;
+
+                curve_t gamma = {
+
+                    [&](variable<double>& theta) -> geometry::vector<expr_ptr<Y>, 2> { 
+
+                        return polar(radius, theta) + center;
+
+                    }, interval(0.0, 2.0 * std::numbers::pi)
+                    
+                };
+                        
+
+                constexpr circle(const radius_t& r, const point_t& c = point_t{}) : 
+
+                    radius{r}, center{c} {}
+
+
+                constexpr auto operator()(auto theta) const {
+
+                    return this->gamma(theta);
+
+                }
+
+
+            }; // struct circle
+
+
+        } // namespace curves
+
 
     } // namespace calculus
 
@@ -76,26 +139,26 @@ namespace scipp::math {
         //     using parametrization_t = parametrization<Y, X>;
 
         //     using result_t = variablevalue_tY>;
-        //     using parameter_t = variable<X>;
+        //     using param_t = variable<X>;
         //     using interval_t = interval<X>;
             
         //     interval_t domain;
 
 
-        //     constexpr parametrization(std::function<result_t(parameter_t&)>& func, X& variable, interval_t I) noexcept : 
+        //     constexpr parametrization(std::function<result_t(param_t&)>& func, X& variable, interval_t I) noexcept : 
                 
         //         unary_function<Y, X>(func, variable), domain(I) {}
 
-        //     constexpr parametrization(std::function<result_t(parameter_t&)>&& func, X& variable, interval_t I) noexcept :
+        //     constexpr parametrization(std::function<result_t(param_t&)>&& func, X& variable, interval_t I) noexcept :
 
         //         unary_function<Y, X>(func, variable), domain(I) {}
 
 
-        //     constexpr parametrization(std::function<result_t(parameter_t&)>& func, parameter_t& variable, interval_t I) noexcept :
+        //     constexpr parametrization(std::function<result_t(param_t&)>& func, param_t& variable, interval_t I) noexcept :
 
         //         unary_function<Y, X>(func, variable), domain(I) {}
 
-        //     constexpr parametrization(std::function<result_t(parameter_t&)>&& func, parameter_t& variable, interval_t I) noexcept :
+        //     constexpr parametrization(std::function<result_t(param_t&)>&& func, param_t& variable, interval_t I) noexcept :
 
         //         unary_function<Y, X>(func, variable), domain(I) {}
             
@@ -183,7 +246,7 @@ namespace scipp::math {
 
         //     std::tuple<PARAMs...> parametrizations;
         //     std::tuple<typename PARAMs::interval_t...> intervals;
-        //     std::tuple<typename PARAMs::parameter_t...> parameters;
+        //     std::tuple<typename PARAMs::param_t...> parameters;
 
 
         //     constexpr curve(PARAMs&&... params) noexcept : 

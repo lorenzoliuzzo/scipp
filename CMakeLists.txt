@@ -24,6 +24,6 @@ set_target_properties(${PROJECT_NAME}
                 
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/scipp/ DESTINATION include/scipp)
     
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
-# add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/examples)
-add_subdirectory(benchmark)
+add_subdirectory(test)
+add_subdirectory(examples)
+# add_subdirectory(benchmark)

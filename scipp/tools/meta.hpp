@@ -18,6 +18,7 @@ namespace scipp::meta {
         constexpr static size_t index = i;
         constexpr operator size_t() const { return index; }
         constexpr operator size_t() { return index; }
+        
     };
 
     template <size_t i, size_t ibegin, size_t iend, typename Function>

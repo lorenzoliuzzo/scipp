@@ -278,17 +278,18 @@ namespace scipp::math {
         inline static constexpr bool is_interval_v = is_interval<T>::value;
 
 
-        template <typename X, typename Y>
+        template <typename Y, typename X>
+            requires (is_variable_v<X>)
         struct curve; 
 
         template <typename T>
         struct is_curve : std::false_type {};
 
-        template <typename X, typename Y>
-        struct is_curve<curve<X, Y>> : std::true_type {};
+        template <typename Y, typename X>
+        struct is_curve<curve<Y, X>> : std::true_type {};
 
         template <typename T>
-        inline static constexpr bool is_curve_v = is_curve<typename T::curve_t>::value;
+        inline static constexpr bool is_curve_v = is_curve<T>::value;
 
 
     } // namespace calculus
@@ -437,11 +438,17 @@ namespace scipp::math {
 
         }
 
+        template <typename T>
+        using square_t = power_t<2, T>;
+
         inline static constexpr auto square(const auto& x) noexcept {
             
             return pow<2>(x); 
 
         }
+
+        template <typename T>
+        using cube_t = power_t<3, T>;
 
         inline static constexpr auto cube(const auto& x) noexcept {
             

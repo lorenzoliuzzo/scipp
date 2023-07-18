@@ -2,7 +2,7 @@
  * @file    scipp.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   This file includes all the scipp library headers files and its standard dependency. 
- * @date    2023-07-12
+ * @date    2023-07-18
  * 
  * @copyright Copyright (c) 2023
  */
@@ -36,8 +36,6 @@
         #include <sstream>      /// tools::io
         #include <type_traits>  /// traits
         #include <utility>
-        // #include <variant>      
-        #include <vector>
 
 
         #include "../external/matplotlibcpp.h"
@@ -83,6 +81,8 @@
             /// ---------------------------------------------------------------
 
             #include "math/calculus/expressions/mathematical/absolute.hpp"
+            #include "math/calculus/expressions/mathematical/norm.hpp"
+
             #include "math/calculus/expressions/mathematical/exponential.hpp"
             #include "math/calculus/expressions/mathematical/logarithm.hpp"
             
@@ -133,6 +133,8 @@
 
             /// ---------------------------------------------------------------
 
+            #include "math/numerical/sum.hpp"
+
             #include "math/mathematical/sign.hpp"
             #include "math/mathematical/absolute.hpp"
             #include "math/mathematical/norm.hpp"
@@ -171,7 +173,6 @@
             #include "math/numerical/min.hpp"
             #include "math/numerical/max.hpp"
             #include "math/numerical/clip.hpp" // clip is a function that takes a value, a minimum and a maximum and returns the value if it is between the minimum and maximum, otherwise it returns the minimum or maximum
-            // #include "math/numerical/sum.hpp"
             // #include "math/numerical/mean.hpp"
             // #include "math/numerical/stddev.hpp"
             // #include "math/numerical/var.hpp"
@@ -194,11 +195,22 @@
 
 
         /// ---------------------------------------------------------------
+        /// @brief geometry/linear_algebra
+        /// ---------------------------------------------------------------
+
+            #include "geometry/vector.hpp"
+            // #include "geometry/matrix.hpp"
+
+
+            #include "math/calculus/transformations/polar.hpp"
+
+        /// ---------------------------------------------------------------
         /// @brief scipp::math::calculus differentation
         /// ---------------------------------------------------------------
         
             #include "math/calculus/variable.hpp" 
             #include "math/calculus/differentiation/derivatives.hpp"
+            #include "math/calculus/differentiation/gradient.hpp"
 
             #include "math/calculus/function.hpp"
 
@@ -234,13 +246,6 @@
             #include "physics/mechanics/lagrangian.hpp"
             #include "physics/mechanics/hamiltonian.hpp"
             
-
-        /// ---------------------------------------------------------------
-        /// @brief geometry/linear_algebra
-        /// ---------------------------------------------------------------
-
-            #include "geometry/vector.hpp"
-            // #include "geometry/matrix.hpp"
 
             // #include "physics/vector_types.hpp"
             // #include "physics/matrix_types.hpp" // @todo

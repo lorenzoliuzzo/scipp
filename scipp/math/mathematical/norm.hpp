@@ -16,6 +16,30 @@ namespace scipp::math {
 
 
         template <typename T>
+        struct norm_impl<calculus::expr_ptr<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::expr_ptr<T>& x) {
+
+                return std::make_shared<calculus::norm_expr<T>>(norm(x->val), x);
+
+            }
+
+        };
+
+
+        template <typename T>
+        struct norm_impl<calculus::variable<T>> {
+
+            static constexpr calculus::expr_ptr<T> f(const calculus::variable<T>& x) {
+
+                return norm(x.expr); 
+
+            }
+
+        };
+
+
+        template <typename T>
             requires is_number_v<T> || physics::is_measurement_v<T>
         struct norm_impl<T> {
 
@@ -46,27 +70,13 @@ namespace scipp::math {
 
             static constexpr typename T::value_t f(const T& other) noexcept {
 
-                if constexpr (T::dim == 1) 
-                    return abs(other.data[0]);
-
-                auto sq_sum = std::accumulate(
-                    other.data.begin(), other.data.end(), 
-                    typename T::value_t{}, 
-                    [](auto& acc, auto& val) { 
-                        return acc + square(val); 
-                    }
-                );
-
-                return sqrt(sq_sum);
+                // return sqrt(dot(other, other));
+                return sqrt(sum(square(other)));
 
             }
 
         };
         
-
-
-
-
 
         // template <typename CMEAS_TYPE>  
         //     requires (math::is_complex_v<CMEAS_TYPE>)

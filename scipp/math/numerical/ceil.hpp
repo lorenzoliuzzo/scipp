@@ -1,5 +1,5 @@
 /**
- * @file    math/functions/ceil.hpp
+ * @file    math/numerical/ceil.hpp
  * @author  Lorenzo Liuzzo (lorenzoliuzzo@outlook.com)
  * @brief   
  * @date    2023-05-28

@@ -87,7 +87,7 @@ namespace scipp::geometry {
             /// @brief Construct a new vector from a pack of measurements
             /// @note The number of components must be the same as the dimension of the vector
             template <typename... OTHER_MEAS_TYPE>
-            constexpr vector(OTHER_MEAS_TYPE... other) noexcept 
+            constexpr vector(OTHER_MEAS_TYPE&&... other) noexcept 
                 requires (sizeof...(other) == dim) : 
                 
                 data{std::forward<value_t>(other)...} {}

@@ -41,7 +41,7 @@ namespace scipp::math {
         /// @tparam T1 
         /// @tparam T2 
         template <typename T1, typename T2>
-            requires (is_number_v<T2> || physics::is_measurement_v<T2>)
+            requires (is_number_v<T2> || physics::is_measurement_v<T2> || geometry::is_vector_v<T2>)
         struct multiply_impl<calculus::expr_ptr<T1>, T2> {
 
             using result_t = calculus::expr_ptr<multiply_t<T1, T2>>;
@@ -55,7 +55,7 @@ namespace scipp::math {
         };
 
         template <typename T1, typename T2>
-            requires (is_number_v<T1> || physics::is_measurement_v<T1>)
+            requires (is_number_v<T1> || physics::is_measurement_v<T1> || geometry::is_vector_v<T1>)
         struct multiply_impl<T1, calculus::expr_ptr<T2>> {
 
             using result_t = calculus::expr_ptr<multiply_t<T1, T2>>;
@@ -120,7 +120,7 @@ namespace scipp::math {
         /// @tparam T1 
         /// @tparam T2 
         template <typename T1, typename T2>
-            requires (is_number_v<T1> || physics::is_measurement_v<T1>)
+            requires (is_number_v<T1> || physics::is_measurement_v<T1> || geometry::is_vector_v<T1>)
         struct multiply_impl<T1, calculus::variable<T2>> {
 
             using result_t = calculus::expr_ptr<multiply_t<T1, T2>>;
@@ -134,7 +134,7 @@ namespace scipp::math {
         };
 
         template <typename T1, typename T2>
-            requires (is_number_v<T2> || physics::is_measurement_v<T2>)
+            requires (is_number_v<T2> || physics::is_measurement_v<T2> || geometry::is_vector_v<T2>)
         struct multiply_impl<calculus::variable<T1>, T2> {
 
             using result_t = calculus::expr_ptr<multiply_t<T1, T2>>;
@@ -552,6 +552,31 @@ namespace scipp::math {
         // };
 
         template <typename T1, typename T2>
+            requires ((geometry::are_row_vectors_v<T1> || geometry::are_column_vectors_v<T2>) && T1::dim == T2::dim)
+        struct multiply_impl<T1, T2> {
+            
+            using result_t = geometry::vector<multiply_t<typename T1::value_t, typename T2::value_t>, T1::dim, T1::flag>;
+
+            static constexpr result_t f(const T1& x, const T2& y) noexcept {
+
+                result_t result{}; 
+                std::transform(
+                    x.data.begin(), x.data.end(), 
+                    y.data.begin(), 
+                    result.data.begin(), 
+                    [](const auto& x, const auto& y) { 
+                        return x * y; 
+                    }
+                ); 
+
+                return result;
+
+            }
+
+        };
+
+
+        template <typename T1, typename T2>
             requires (geometry::is_row_vector_v<T1> && geometry::is_column_vector_v<T2> && T1::dim == T2::dim)
         struct multiply_impl<T1, T2> {
             
@@ -570,7 +595,7 @@ namespace scipp::math {
         /// @tparam T1
         /// @tparam T2
         template <typename T1, typename T2>
-            requires ((physics::is_generic_measurement_v<T1> || is_generic_number_v<T1>) && geometry::is_vector_v<T2>)
+            requires ((physics::is_measurement_v<T1> || is_number_v<T1>) && geometry::is_vector_v<T2>)
         struct multiply_impl<T1, T2> {
             
             using result_t = geometry::vector<multiply_t<T1, typename T2::value_t>, T2::dim, T2::flag>;
@@ -594,7 +619,7 @@ namespace scipp::math {
         };
 
         template <typename T1, typename T2>
-            requires (geometry::is_vector_v<T1> && (physics::is_generic_measurement_v<T2> || is_generic_number_v<T1>))
+            requires (geometry::is_vector_v<T1> && (physics::is_measurement_v<T2> || is_number_v<T2>))
         struct multiply_impl<T1, T2> {
             
             using result_t = geometry::vector<multiply_t<typename T1::value_t, T2>, T1::dim, T1::flag>;

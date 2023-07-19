@@ -16,7 +16,7 @@ namespace scipp::math {
 
 
         /// @brief power a physics::base_quantity
-        template <size_t POWER, typename BASE_TYPE>
+        template <int POWER, typename BASE_TYPE>
             requires (physics::is_base_v<BASE_TYPE>)
         struct root_impl<POWER, BASE_TYPE> {
 
@@ -38,12 +38,12 @@ namespace scipp::math {
 
 
         /// @brief power a prefix
-        template <size_t POWER, typename PREFIX_TYPE>
+        template <int POWER, typename PREFIX_TYPE>
             requires (physics::is_prefix_v<PREFIX_TYPE>)
         struct root_impl<POWER, PREFIX_TYPE> {
             
-            using result_t = std::ratio<static_cast<size_t>(std::pow(PREFIX_TYPE::num, 1.0 / POWER)), 
-                                        static_cast<size_t>(std::pow(PREFIX_TYPE::den, 1.0 / POWER))>; 
+            using result_t = std::ratio<static_cast<int>(std::pow(PREFIX_TYPE::num, 1.0 / POWER)), 
+                                        static_cast<int>(std::pow(PREFIX_TYPE::den, 1.0 / POWER))>; 
 
 
             static constexpr result_t f(const PREFIX_TYPE&) noexcept {
@@ -56,7 +56,7 @@ namespace scipp::math {
 
 
         /// @brief power an unit of measurement
-        template <size_t POWER, typename UNIT_TYPE>
+        template <int POWER, typename UNIT_TYPE>
             requires (physics::is_unit_v<UNIT_TYPE>)
         struct root_impl<POWER, UNIT_TYPE> {
 
@@ -72,7 +72,7 @@ namespace scipp::math {
 
 
         /// @brief power a number
-        template <size_t POWER, typename T>
+        template <int POWER, typename T>
             requires is_number_v<T>
         struct root_impl<POWER, T> {
 
@@ -88,7 +88,7 @@ namespace scipp::math {
 
 
         /// @brief power a measurement
-        template <size_t POWER, typename MEAS_TYPE>
+        template <int POWER, typename MEAS_TYPE>
             requires physics::is_measurement_v<MEAS_TYPE>
         struct root_impl<POWER, MEAS_TYPE> {
 
@@ -104,7 +104,7 @@ namespace scipp::math {
 
 
         // /// @brief power a umeasurement
-        // template <size_t POWER, typename UMEAS_TYPE>
+        // template <int POWER, typename UMEAS_TYPE>
         //     requires (physics::is_umeasurement_v<UMEAS_TYPE>)
         // struct root_impl<POWER, UMEAS_TYPE> {
 
@@ -120,7 +120,7 @@ namespace scipp::math {
 
 
         // /// @brief power a complex number
-        // template <size_t POWER, typename T>
+        // template <int POWER, typename T>
         //     requires (math::is_complex_v<T>)
         // struct root_impl<POWER, T> {
 
@@ -136,7 +136,7 @@ namespace scipp::math {
 
 
         // /// @brief power a dual number
-        // template <size_t POWER, typename T>
+        // template <int POWER, typename T>
         //     requires (math::is_dual_v<T>)
         // struct root_impl<POWER, T> {
 
@@ -152,7 +152,7 @@ namespace scipp::math {
 
 
         /// @brief power a vector
-        template <size_t POWER, typename VECTOR_TYPE>
+        template <int POWER, typename VECTOR_TYPE>
             requires (geometry::is_vector_v<VECTOR_TYPE>)
         struct root_impl<POWER, VECTOR_TYPE> {
 
@@ -169,7 +169,7 @@ namespace scipp::math {
         };
 
 
-        template <size_t N, typename T>
+        template <int N, typename T>
         struct root_impl<N, calculus::expr_ptr<T>> {
 
             using result_t = calculus::expr_ptr<op::root_t<N, T>>;
@@ -183,7 +183,7 @@ namespace scipp::math {
         };
 
 
-        template <size_t N, typename T>
+        template <int N, typename T>
         struct root_impl<N, calculus::variable<T>> {
 
             using result_t = calculus::expr_ptr<op::root_t<N, T>>;

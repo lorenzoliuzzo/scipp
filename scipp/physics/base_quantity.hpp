@@ -49,10 +49,10 @@ namespace scipp::physics {
                 if constexpr (powers[i] != 0) {
 
                     if constexpr (powers[i] == 1) // Append the base quantity to the string builder
-                        ss << base_literals[i]; 
+                        ss << ' ' << base_literals[i]; 
 
                     else // Append the base quantity and its power to the string builder
-                        ss << base_literals[i] << "^" << powers[i]; 
+                        ss << ' ' << base_literals[i] << '^' << powers[i];  
 
                 }
                 
